@@ -207,7 +207,7 @@ const Index = () => {
                 <FileUpload
                   onDataLoad={handleStateDataLoad}
                   mode="states"
-                  geojsonPath="/india_map_states.geojson"
+                  geojsonPath="/India_LGD_states.geojson"
                 />
                 <div className="space-y-4 mt-6">
                   <ColorMapChooser 
@@ -277,13 +277,15 @@ const Index = () => {
                 </div>
 
                 <FileUpload
-                  onDataLoad={handleDistrictDataLoad}
-                  mode="districts"
-                  templateCsvPath={getDistrictMapConfig(selectedDistrictMapType).templateCsvPath}
-                  demoDataPath={getDistrictMapConfig(selectedDistrictMapType).demoDataPath}
-                  googleSheetLink={getDistrictMapConfig(selectedDistrictMapType).googleSheetLink}
-                  geojsonPath={getDistrictMapConfig(selectedDistrictMapType).geojsonPath}
-                />
+  onDataLoad={handleDistrictDataLoad}
+  mode="districts"
+  templateCsvPath={getDistrictMapConfig(selectedDistrictMapType).templateCsvPath}
+  demoDataPath={getDistrictMapConfig(selectedDistrictMapType).demoDataPath}
+  googleSheetLink={getDistrictMapConfig(selectedDistrictMapType).googleSheetLink}
+  geojsonPath={getDistrictMapConfig(selectedDistrictMapType).geojsonPath}
+  selectedDistrictMapType={selectedDistrictMapType}   // ⭐ ADDED
+/>
+
                 <div className="space-y-4 mt-6">
                   <ColorMapChooser
                     selectedScale={districtColorScale}
@@ -398,13 +400,15 @@ const Index = () => {
                 </div>
 
                 <FileUpload
-                  onDataLoad={handleStateDistrictDataLoad}
-                  mode="districts"
-                  templateCsvPath={getDistrictMapConfig(selectedStateMapType).templateCsvPath}
-                  demoDataPath={getDistrictMapConfig(selectedStateMapType).demoDataPath}
-                  googleSheetLink={getDistrictMapConfig(selectedStateMapType).googleSheetLink}
-                  geojsonPath={getDistrictMapConfig(selectedStateMapType).geojsonPath}
-                />
+  onDataLoad={handleStateDistrictDataLoad}
+  mode="districts"
+  templateCsvPath={getDistrictMapConfig(selectedStateMapType).templateCsvPath}
+  demoDataPath={getDistrictMapConfig(selectedStateMapType).demoDataPath}
+  googleSheetLink={getDistrictMapConfig(selectedStateMapType).googleSheetLink}
+  geojsonPath={getDistrictMapConfig(selectedStateMapType).geojsonPath}
+  selectedDistrictMapType={selectedStateMapType}   // ⭐ ADDED
+/>
+
                 <div className="space-y-4 mt-6">
 <ColorMapChooser
                      selectedScale={stateDistrictColorScale}
