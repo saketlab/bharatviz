@@ -870,16 +870,51 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     setDraggingTitle(false);
   };
 
+  const handleTitleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    setDraggingTitle(true);
+    const svgRect = svgRef.current?.getBoundingClientRect();
+    if (svgRect && e.touches.length > 0) {
+      const touch = e.touches[0];
+      const currentX = isMobile ? 175 : 310;
+      const currentY = isMobile ? 35 : 50;
+      setTitleDragOffset({
+        x: touch.clientX - (svgRect.left + currentX + titlePosition.x),
+        y: touch.clientY - (svgRect.top + currentY + titlePosition.y)
+      });
+    }
+  };
+
+  const handleTitleTouchMove = useCallback((e: TouchEvent) => {
+    if (!draggingTitle || !svgRef.current || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const svgRect = svgRef.current.getBoundingClientRect();
+    const currentX = isMobile ? 175 : 310;
+    const currentY = isMobile ? 35 : 50;
+    setTitlePosition({
+      x: touch.clientX - svgRect.left - currentX - titleDragOffset.x,
+      y: touch.clientY - svgRect.top - currentY - titleDragOffset.y
+    });
+  }, [draggingTitle, titleDragOffset, isMobile]);
+
+  const handleTitleTouchEnd = () => {
+    setDraggingTitle(false);
+  };
+
   useEffect(() => {
     if (draggingTitle) {
       document.addEventListener('mousemove', handleTitleMouseMove);
       document.addEventListener('mouseup', handleTitleMouseUp);
+      document.addEventListener('touchmove', handleTitleTouchMove);
+      document.addEventListener('touchend', handleTitleTouchEnd);
       return () => {
         document.removeEventListener('mousemove', handleTitleMouseMove);
         document.removeEventListener('mouseup', handleTitleMouseUp);
+        document.removeEventListener('touchmove', handleTitleTouchMove);
+        document.removeEventListener('touchend', handleTitleTouchEnd);
       };
     }
-  }, [draggingTitle, titleDragOffset, handleTitleMouseMove]);
+  }, [draggingTitle, titleDragOffset, handleTitleMouseMove, handleTitleTouchMove]);
 
   const handleLabelMouseDown = (e: React.MouseEvent, districtKey: string, currentX: number, currentY: number) => {
     e.stopPropagation();
@@ -912,16 +947,53 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     setDraggingLabel(null);
   };
 
+  const handleLabelTouchStart = (e: React.TouchEvent, districtKey: string, currentX: number, currentY: number) => {
+    e.stopPropagation();
+    const svgRect = svgRef.current?.getBoundingClientRect();
+    if (svgRect && e.touches.length > 0) {
+      const touch = e.touches[0];
+      setDraggingLabel({
+        districtKey,
+        offset: {
+          x: touch.clientX - (svgRect.left + currentX),
+          y: touch.clientY - (svgRect.top + currentY)
+        }
+      });
+    }
+  };
+
+  const handleLabelTouchMove = useCallback((e: TouchEvent) => {
+    if (!draggingLabel || !svgRef.current || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const svgRect = svgRef.current.getBoundingClientRect();
+    const newPosition = {
+      x: touch.clientX - svgRect.left - draggingLabel.offset.x,
+      y: touch.clientY - svgRect.top - draggingLabel.offset.y
+    };
+
+    const newPositions = new Map(labelPositions);
+    newPositions.set(draggingLabel.districtKey, newPosition);
+    setLabelPositions(newPositions);
+  }, [draggingLabel, labelPositions]);
+
+  const handleLabelTouchEnd = () => {
+    setDraggingLabel(null);
+  };
+
   useEffect(() => {
     if (draggingLabel) {
       document.addEventListener('mousemove', handleLabelMouseMove);
       document.addEventListener('mouseup', handleLabelMouseUp);
+      document.addEventListener('touchmove', handleLabelTouchMove);
+      document.addEventListener('touchend', handleLabelTouchEnd);
       return () => {
         document.removeEventListener('mousemove', handleLabelMouseMove);
         document.removeEventListener('mouseup', handleLabelMouseUp);
+        document.removeEventListener('touchmove', handleLabelTouchMove);
+        document.removeEventListener('touchend', handleLabelTouchEnd);
       };
     }
-  }, [draggingLabel, handleLabelMouseMove]);
+  }, [draggingLabel, handleLabelMouseMove, handleLabelTouchMove]);
 
   const fixDistrictsLegendGradient = (svgClone: SVGSVGElement) => {
     if (data.length === 0) return;
@@ -1498,6 +1570,7 @@ Chittoor,50`;
                             opacity: 1
                           }}
                           onMouseDown={(e) => handleLabelMouseDown(e, districtKey, labelPosition.x, labelPosition.y)}
+                          onTouchStart={(e) => handleLabelTouchStart(e, districtKey, labelPosition.x, labelPosition.y)}
                         >
                           {districtName}
                         </text>
@@ -1606,6 +1679,7 @@ Chittoor,50`;
                       setEditingMainTitle(true);
                     }}
                     onMouseDown={handleTitleMouseDown}
+                    onTouchStart={handleTitleTouchStart}
                   >
                     {mainTitle}
                   </text>

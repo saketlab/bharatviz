@@ -569,6 +569,72 @@ bv$show_map(result_nfhs5)`}
                 </div>
 
                 <div className="pt-6 border-t">
+                  <h2 className="text-2xl font-bold mb-4">Embedding maps</h2>
+                  <p className="text-muted-foreground mb-4">
+                    Embed interactive BharatViz maps directly into your website, blog, or GitHub Pages without downloading files.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">iframe embed</h3>
+                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+{`<iframe
+  src="https://bharatviz.saketlab.in/api/v1/embed?dataUrl=https://yoursite.com/data.csv&colorScale=viridis&title=My%20Map"
+  width="800"
+  height="600"
+  frameborder="0">
+</iframe>`}
+                      </pre>
+                    </div>
+
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">JavaScript widget</h3>
+                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+{`<div id="my-map"></div>
+<script src="https://bharatviz.saketlab.in/api/embed.js"></script>
+<script>
+  BharatViz.embed({
+    container: '#my-map',
+    dataUrl: 'https://yoursite.com/data.csv',
+    colorScale: 'viridis',
+    title: 'My Map'
+  });
+</script>`}
+                      </pre>
+                    </div>
+
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Direct SVG</h3>
+                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+{`<img src="https://bharatviz.saketlab.in/api/v1/embed/svg?dataUrl=https://yoursite.com/data.csv&colorScale=viridis" />`}
+                      </pre>
+                    </div>
+
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">GitHub Pages example</h3>
+                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+{`# 1. Create data.csv in your GitHub repo
+# 2. Enable GitHub Pages in repo settings
+# 3. Embed using your GitHub Pages URL:
+<iframe src="https://bharatviz.saketlab.in/api/v1/embed?dataUrl=https://USERNAME.github.io/REPO/data.csv&colorScale=viridis"></iframe>`}
+                      </pre>
+                    </div>
+
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="text-lg font-semibold mb-2">Available parameters</h3>
+                      <div className="text-sm text-muted-foreground space-y-1">
+                        <p><code className="bg-muted px-1 py-0.5 rounded">dataUrl</code> - URL to your CSV file (required)</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">mapType</code> - 'states', 'districts', or 'state-districts' (default: 'states')</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">colorScale</code> - 'viridis', 'spectral', 'blues', 'greens', etc. (default: 'spectral')</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">title</code> - Map title (default: 'BharatViz')</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">legendTitle</code> - Legend label (default: 'Values')</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">invertColors</code> - true/false to reverse color scale</p>
+                        <p><code className="bg-muted px-1 py-0.5 rounded">districtBoundary</code> - 'LGD', 'NFHS4', or 'NFHS5' for district maps</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t">
                   <div className="p-4 border rounded-lg bg-muted/50">
                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
                       <Github className="h-5 w-5" />

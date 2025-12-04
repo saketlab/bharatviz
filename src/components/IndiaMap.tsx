@@ -1123,16 +1123,51 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
     setDraggingTitle(false);
   };
 
+  const handleTitleTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    setDraggingTitle(true);
+    const svgRect = svgRef.current?.getBoundingClientRect();
+    if (svgRect && e.touches.length > 0) {
+      const touch = e.touches[0];
+      const currentX = isMobile ? 175 : 400;
+      const currentY = isMobile ? 35 : 60;
+      setTitleDragOffset({
+        x: touch.clientX - (svgRect.left + currentX + titlePosition.x),
+        y: touch.clientY - (svgRect.top + currentY + titlePosition.y)
+      });
+    }
+  };
+
+  const handleTitleTouchMove = useCallback((e: TouchEvent) => {
+    if (!draggingTitle || !svgRef.current || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const svgRect = svgRef.current.getBoundingClientRect();
+    const currentX = isMobile ? 175 : 400;
+    const currentY = isMobile ? 35 : 60;
+    setTitlePosition({
+      x: touch.clientX - svgRect.left - currentX - titleDragOffset.x,
+      y: touch.clientY - svgRect.top - currentY - titleDragOffset.y
+    });
+  }, [draggingTitle, titleDragOffset, isMobile]);
+
+  const handleTitleTouchEnd = () => {
+    setDraggingTitle(false);
+  };
+
   useEffect(() => {
     if (draggingTitle) {
       document.addEventListener('mousemove', handleTitleMouseMove);
       document.addEventListener('mouseup', handleTitleMouseUp);
+      document.addEventListener('touchmove', handleTitleTouchMove);
+      document.addEventListener('touchend', handleTitleTouchEnd);
       return () => {
         document.removeEventListener('mousemove', handleTitleMouseMove);
         document.removeEventListener('mouseup', handleTitleMouseUp);
+        document.removeEventListener('touchmove', handleTitleTouchMove);
+        document.removeEventListener('touchend', handleTitleTouchEnd);
       };
     }
-  }, [draggingTitle, titleDragOffset, handleTitleMouseMove]);
+  }, [draggingTitle, titleDragOffset, handleTitleMouseMove, handleTitleTouchMove]);
 
   if (!mapData) {
     return (
@@ -1336,6 +1371,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
                 setEditingMainTitle(true);
               }}
               onMouseDown={handleTitleMouseDown}
+              onTouchStart={handleTitleTouchStart}
             >
               {mainTitle}
             </text>

@@ -7,6 +7,7 @@
 - **Web application**: [bharatviz.saketlab.in](https://bharatviz.saketlab.in/)
 - **REST api**: [bharatviz.saketlab.in/api](https://bharatviz.saketlab.in/api/)
 - **API documentation**: [server/README.md](server/README.md)
+- **Embed in websites**: [EMBED.md](EMBED.md) - Embed maps directly in any website
 
 ## Supported maps
 
@@ -39,6 +40,36 @@ Maharashtra,Ahmednagar,23.4
 **Sequential**: blues, greens, reds, oranges, purples, pinks, viridis, plasma, inferno, magma
 
 **Diverging**: rdylbu, rdylgn, spectral, brbg, piyg, puor
+
+## Embed in your website
+
+You can embed BharatViz maps directly into any website without downloading images:
+We support two embed modes 1) iframe 2) javascript
+
+**iframe method**:
+```html
+<iframe
+  src="https://bharatviz.saketlab.in/api/v1/embed?dataUrl=https://your-site.com/data.csv&colorScale=viridis&title=My%20Map"
+  width="800"
+  height="600"
+  frameborder="0">
+</iframe>
+```
+
+**JavaScript widget**:
+```html
+<div id="my-map"></div>
+<script src="https://bharatviz.saketlab.in/embed.js"></script>
+<script>
+  BharatViz.embed({
+    container: '#my-map',
+    dataUrl: 'https://your-site.com/data.csv',
+    colorScale: 'viridis',
+    title: 'My Map'
+  });
+</script>
+```
+
 
 ## REST API
 
