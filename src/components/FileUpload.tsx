@@ -372,8 +372,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       Papa.parse(csvText, {
         header: true,
         complete: async (res) => {
-          await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
-          setLoadingSheet(false);
+          try {
+            await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
+          } catch (err) {
+            setSheetError(
+              err instanceof Error ? err.message : "Failed to load or parse data"
+            );
+          } finally {
+            setLoadingSheet(false);
+          }
         }
       });
     } catch (err) {
