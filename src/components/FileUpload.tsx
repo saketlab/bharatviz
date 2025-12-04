@@ -421,8 +421,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
         <p className="text-sm text-muted-foreground mb-4">
           {mode === "districts"
-            ? "Upload CSV / TSV / GZ with state, district, value."
-            : "Upload CSV / TSV / GZ with state and value."}
+            ? "Upload CSV / TSV / GZ with state, district, value. Your data is never stored."
+            : "Upload CSV / TSV / GZ with state and value. Your data is never stored."}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
