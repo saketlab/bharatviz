@@ -63,10 +63,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     try {
       const res = await fetch(path);
       if (!res.ok) return [];
-      const geo = await res.json();
+      const geo = await res.json() as { features: Array<{ properties?: { district_name?: string } }> };
       return geo.features
-        .map((f: any) => f.properties?.district_name?.toLowerCase().trim())
-        .filter(Boolean);
+        .map((f) => f.properties?.district_name?.toLowerCase().trim())
+        .filter(Boolean) as string[];
     } catch {
       return [];
     }
@@ -75,24 +75,44 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   // -------------------------------------------------------------
   // GEOJSON FILTERING
   // -------------------------------------------------------------
+  interface GeoJSONFeature {
+    properties?: {
+      district_name?: string;
+      state_name?: string;
+      NAME_1?: string;
+      name?: string;
+      ST_NM?: string;
+    };
+  }
+
+  interface GeoJSONData {
+    features: GeoJSONFeature[];
+  }
+
+  interface DataRow {
+    state: string;
+    district?: string;
+    value: number;
+  }
+
   const filterDataByGeoJSON = async (
-    data: Array<any>
-  ): Promise<Array<any>> => {
+    data: DataRow[]
+  ): Promise<DataRow[]> => {
     if (!geojsonPath) return data;
 
     try {
       const response = await fetch(geojsonPath);
       if (!response.ok) return data;
 
-      const geojson = await response.json();
+      const geojson = await response.json() as GeoJSONData;
 
       if (mode === 'districts') {
         return data.filter(row =>
-          geojson.features.some((feature: any) => {
+          geojson.features.some((feature) => {
             const geoDistrict = feature.properties?.district_name?.toLowerCase().trim();
             const geoState = feature.properties?.state_name?.toLowerCase().trim();
             return (
-              row.district.toLowerCase().trim() === geoDistrict &&
+              row.district?.toLowerCase().trim() === geoDistrict &&
               row.state.toLowerCase().trim() === geoState
             );
           })
@@ -100,7 +120,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       }
 
       return data.filter(row =>
-        geojson.features.some((feature: any) => {
+        geojson.features.some((feature) => {
           const s =
             (feature.properties?.state_name ||
               feature.properties?.NAME_1 ||
@@ -162,7 +182,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       let validStateNames: string[] = [];
       let validDistrictNames: string[] = [];
 
-      if (geojsonPath) validStateNames = await getUniqueStatesFromGeoJSON(geojsonPath);
+      // Load valid names from GeoJSON for fuzzy matching
+      // If geojsonPath is not provided, fuzzy matching will be skipped (empty arrays)
+      // Actual filtering will still occur in filterDataByGeoJSON
+      if (geojsonPath) {
+        validStateNames = await getUniqueStatesFromGeoJSON(geojsonPath);
+      }
 
       if (mode === "districts" && selectedDistrictMapType) {
         const config = DISTRICT_MAP_TYPES[selectedDistrictMapType];
@@ -302,6 +327,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   // -------------------------------------------------------------
   // CORS FALLBACK FETCH
   // -------------------------------------------------------------
+  const createTimeoutSignal = (timeoutMs: number) => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), timeoutMs);
+    return controller.signal;
+  };
+
   const tryProxyServices = async (url: string) => {
     const proxies = [
       `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
@@ -311,7 +342,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     for (const p of proxies) {
       try {
-        const res = await fetch(p);
+        const res = await fetch(p, { signal: createTimeoutSignal(30000) });
         if (res.ok) return res;
       } catch (e) {
         continue;
@@ -323,11 +354,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   const fetchWithCorsFallback = async (url: string) => {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: createTimeoutSignal(10000) });
       if (res.ok) return res;
       throw new Error("Direct fetch failed");
-    } catch {
-      return tryProxyServices(url);
+    } catch (error) {
+      const isCorsOrNetworkError =
+        error instanceof TypeError ||
+        (error instanceof Error && (
+          error.message.includes('Failed to fetch') ||
+          error.message.includes('NetworkError') ||
+          error.message.includes('timeout') ||
+          error.name === 'AbortError'
+        ));
+
+      if (isCorsOrNetworkError) {
+        return tryProxyServices(url);
+      }
+      throw error;
     }
   };
 
@@ -348,7 +391,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     setSheetError(null);
     setLoadingSheet(true);
 
-    let url = googleSheetUrl.trim();
+    const url = googleSheetUrl.trim();
     const type = detectUrlType(url);
     let csvText = "";
 
