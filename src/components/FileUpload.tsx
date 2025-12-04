@@ -179,7 +179,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           const raw = row[valueColumn];
           const trimmed = raw ? raw.trim() : "";
           const val =
-            trimmed === "" || trimmed.toLowerCase() === "na"
+            trimmed === "" || ["na", "n/a"].includes(trimmed.toLowerCase())
               ? NaN
               : Number(trimmed);
 
