@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Papa from 'papaparse';
 import pako from 'pako';
-import stringSimilarity from "string-similarity";
+import { stringSimilarity } from "string-similarity-js";
 import { getUniqueStatesFromGeoJSON } from "@/lib/stateUtils";
 import { DISTRICT_MAP_TYPES } from "@/lib/districtMapConfig";
 
@@ -45,7 +45,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const cleaned = inputName.trim().toLowerCase();
     const matchList = validNames.map(v => v.toLowerCase());
     const result = stringSimilarity.findBestMatch(cleaned, matchList);
-    return result.bestMatch.target;
+
+    const bestMatch = result.bestMatch;
+    const inputFirstChar = cleaned.charAt(0);
+    const matchFirstChar = bestMatch.target.charAt(0);
+
+    if (inputFirstChar === matchFirstChar && bestMatch.rating >= 0.6) {
+      const matchedIndex = matchList.indexOf(bestMatch.target);
+      return validNames[matchedIndex];
+    }
+
+    return inputName.trim();
   };
 
   const correctDistrictName = (inputName: string, validDistricts: string[]) => {
@@ -54,7 +64,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const cleaned = inputName.trim().toLowerCase();
     const matchList = validDistricts.map(v => v.toLowerCase());
     const result = stringSimilarity.findBestMatch(cleaned, matchList);
-    return result.bestMatch.target;
+
+    const bestMatch = result.bestMatch;
+    const inputFirstChar = cleaned.charAt(0);
+    const matchFirstChar = bestMatch.target.charAt(0);
+
+    if (inputFirstChar === matchFirstChar && bestMatch.rating >= 0.6) {
+      const matchedIndex = matchList.indexOf(bestMatch.target);
+      return validDistricts[matchedIndex];
+    }
+
+    return inputName.trim();
   };
 
   const getDistrictsFromGeoJSON = async (path: string): Promise<string[]> => {
@@ -63,7 +83,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       if (!res.ok) return [];
       const geo = await res.json() as { features: Array<{ properties?: { district_name?: string } }> };
       return geo.features
-        .map((f) => f.properties?.district_name?.toLowerCase().trim())
+        .map((f) => f.properties?.district_name?.trim())
         .filter(Boolean) as string[];
     } catch {
       return [];
@@ -179,11 +199,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       // Actual filtering will still occur in filterDataByGeoJSON
       if (geojsonPath) {
         validStateNames = await getUniqueStatesFromGeoJSON(geojsonPath);
+        if (validStateNames.length === 0) {
+          console.warn('No states found in GeoJSON, fuzzy matching will be skipped');
+        }
       }
 
       if (mode === "districts" && selectedDistrictMapType) {
         const config = DISTRICT_MAP_TYPES[selectedDistrictMapType];
         validDistrictNames = await getDistrictsFromGeoJSON(config.geojsonPath);
+        if (validDistrictNames.length === 0) {
+          console.warn('No districts found in GeoJSON, fuzzy matching will be skipped');
+        }
       }
 
       const processed = data
@@ -229,7 +255,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       onDataLoad(filtered, valueColumn);
     } catch (err) {
-      alert("Error processing file.");
+      console.error('Error processing file:', err);
+      alert("Error processing file: " + (err instanceof Error ? err.message : String(err)));
     }
   };
 

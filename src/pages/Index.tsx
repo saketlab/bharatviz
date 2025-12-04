@@ -283,7 +283,7 @@ const Index = () => {
   demoDataPath={getDistrictMapConfig(selectedDistrictMapType).demoDataPath}
   googleSheetLink={getDistrictMapConfig(selectedDistrictMapType).googleSheetLink}
   geojsonPath={getDistrictMapConfig(selectedDistrictMapType).geojsonPath}
-  selectedDistrictMapType={selectedDistrictMapType}  
+  selectedDistrictMapType={selectedDistrictMapType}
 />
 
                 <div className="space-y-4 mt-6">
@@ -406,7 +406,7 @@ const Index = () => {
   demoDataPath={getDistrictMapConfig(selectedStateMapType).demoDataPath}
   googleSheetLink={getDistrictMapConfig(selectedStateMapType).googleSheetLink}
   geojsonPath={getDistrictMapConfig(selectedStateMapType).geojsonPath}
-  selectedDistrictMapType={selectedStateMapType}   // ⭐ ADDED
+  selectedDistrictMapType={selectedStateMapType}
 />
 
                 <div className="space-y-4 mt-6">
