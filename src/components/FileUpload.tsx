@@ -38,9 +38,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [loadingSheet, setLoadingSheet] = useState(false);
   const [sheetError, setSheetError] = useState<string | null>(null);
 
-  // -------------------------------------------------------------
-  // FUZZY MATCHING HELPERS
-  // -------------------------------------------------------------
+  // Fuzzy matching helpers
   const correctStateName = (inputName: string, validNames: string[]) => {
     if (!inputName || validNames.length === 0) return inputName;
 
@@ -72,9 +70,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // GEOJSON FILTERING
-  // -------------------------------------------------------------
+  // GeoJSON filtering
   interface GeoJSONFeature {
     properties?: {
       district_name?: string;
@@ -137,9 +133,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // GZIP DECOMPRESSOR
-  // -------------------------------------------------------------
+  // Gzip decompressor
   const decompressGzip = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -157,9 +151,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     });
   };
 
-  // -------------------------------------------------------------
-  // UNIFIED CSV/TSV PROCESSOR (FUZZY MATCH INCLUDED)
-  // -------------------------------------------------------------
+  // Unified CSV/TSV processor (fuzzy match included)
   const processUploadedData = async (result: Papa.ParseResult<Record<string, string>>) => {
     try {
       const data = result.data;
@@ -241,9 +233,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // FILE UPLOAD HANDLER
-  // -------------------------------------------------------------
+  // File upload handler
   const handleFileUpload = async (evt: React.ChangeEvent<HTMLInputElement>) => {
     const file = evt.target.files?.[0];
     if (!file) return;
@@ -270,9 +260,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       error: () => alert("Error parsing file")
     });
   };
-  // -------------------------------------------------------------
-  // DEMO LOADER
-  // -------------------------------------------------------------
+  // Demo loader
   const handleLoadDemo = async () => {
     try {
       const demoFile =
@@ -301,9 +289,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // URL TYPE DETECTOR
-  // -------------------------------------------------------------
+  // URL type detector
   const detectUrlType = (url: string) => {
     if (url.includes("docs.google.com/spreadsheets")) return "google-sheet";
     if (url.endsWith(".csv")) return "csv";
@@ -313,9 +299,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return "unknown";
   };
 
-  // -------------------------------------------------------------
-  // GOOGLE SHEET HELPERS
-  // -------------------------------------------------------------
+  // Google sheet helpers
   const extractSheetInfo = (url: string) => {
     const match = url.match(
       /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)(?:\/.*?gid=(\d+))?/
@@ -324,9 +308,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return { sheetId: match[1], gid: match[2] || "0" };
   };
 
-  // -------------------------------------------------------------
-  // CORS FALLBACK FETCH
-  // -------------------------------------------------------------
+  // CORS fallback fetch
   const createTimeoutSignal = (timeoutMs: number) => {
     const controller = new AbortController();
     setTimeout(() => controller.abort(), timeoutMs);
@@ -384,9 +366,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // LOAD FROM URL (GOOGLE SHEETS / CSV / TSV / GZ)
-  // -------------------------------------------------------------
+  // Load from URL (Google Sheets / CSV / TSV / GZ)
   const handleLoadGoogleSheet = async () => {
     setSheetError(null);
     setLoadingSheet(true);
@@ -434,9 +414,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // TEMPLATE DOWNLOAD
-  // -------------------------------------------------------------
+  // Template download
   const downloadCSVTemplate = async () => {
     try {
       const templateFile =
@@ -463,9 +441,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  // -------------------------------------------------------------
-  // RENDER
-  // -------------------------------------------------------------
+  // Render
   return (
     <Card className="p-6 border-dashed border-2 hover:border-primary/50 transition-colors">
       <div className="text-center">
