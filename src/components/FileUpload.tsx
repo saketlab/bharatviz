@@ -331,7 +331,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const fetchAndDecompressGzUrl = async (url: string): Promise<string> => {
     const res = await fetchWithCorsFallback(url);
     const buffer = await res.arrayBuffer();
-    return pako.inflate(new Uint8Array(buffer), { to: "string" });
+    try {
+      return pako.inflate(new Uint8Array(buffer), { to: "string" });
+    } catch (err) {
+      throw new Error("Failed to decompress gzipped data" + (err instanceof Error && err.message ? `: ${err.message}` : ""));
+    }
   };
 
   // -------------------------------------------------------------
