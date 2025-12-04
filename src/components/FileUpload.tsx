@@ -39,20 +39,31 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [sheetError, setSheetError] = useState<string | null>(null);
 
   // Fuzzy matching helpers
+  const findBestMatch = (input: string, targets: string[]) => {
+    let bestMatch = { target: '', rating: 0, index: -1 };
+
+    targets.forEach((target, index) => {
+      const rating = stringSimilarity(input, target);
+      if (rating > bestMatch.rating) {
+        bestMatch = { target, rating, index };
+      }
+    });
+
+    return bestMatch;
+  };
+
   const correctStateName = (inputName: string, validNames: string[]) => {
     if (!inputName || validNames.length === 0) return inputName;
 
     const cleaned = inputName.trim().toLowerCase();
     const matchList = validNames.map(v => v.toLowerCase());
-    const result = stringSimilarity.findBestMatch(cleaned, matchList);
+    const bestMatch = findBestMatch(cleaned, matchList);
 
-    const bestMatch = result.bestMatch;
     const inputFirstChar = cleaned.charAt(0);
     const matchFirstChar = bestMatch.target.charAt(0);
 
     if (inputFirstChar === matchFirstChar && bestMatch.rating >= 0.6) {
-      const matchedIndex = matchList.indexOf(bestMatch.target);
-      return validNames[matchedIndex];
+      return validNames[bestMatch.index];
     }
 
     return inputName.trim();
@@ -63,15 +74,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     const cleaned = inputName.trim().toLowerCase();
     const matchList = validDistricts.map(v => v.toLowerCase());
-    const result = stringSimilarity.findBestMatch(cleaned, matchList);
+    const bestMatch = findBestMatch(cleaned, matchList);
 
-    const bestMatch = result.bestMatch;
     const inputFirstChar = cleaned.charAt(0);
     const matchFirstChar = bestMatch.target.charAt(0);
 
     if (inputFirstChar === matchFirstChar && bestMatch.rating >= 0.6) {
-      const matchedIndex = matchList.indexOf(bestMatch.target);
-      return validDistricts[matchedIndex];
+      return validDistricts[bestMatch.index];
     }
 
     return inputName.trim();
