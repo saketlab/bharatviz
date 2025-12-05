@@ -179,7 +179,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           const raw = row[valueColumn];
           const trimmed = raw ? raw.trim() : "";
           const val =
-            trimmed === "" || trimmed.toLowerCase() === "na"
+            trimmed === "" || ["na", "n/a"].includes(trimmed.toLowerCase())
               ? NaN
               : Number(trimmed);
 
@@ -264,8 +264,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       Papa.parse(csvText, {
         header: true,
         complete: async (res) => {
-          await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
-
+          try {
+            await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
+          } catch (err) {
+            alert("Error processing demo data: " + (err instanceof Error ? err.message : String(err)));
+          }
         }
       });
     } catch {
@@ -331,7 +334,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const fetchAndDecompressGzUrl = async (url: string): Promise<string> => {
     const res = await fetchWithCorsFallback(url);
     const buffer = await res.arrayBuffer();
-    return pako.inflate(new Uint8Array(buffer), { to: "string" });
+    try {
+      return pako.inflate(new Uint8Array(buffer), { to: "string" });
+    } catch (err) {
+      throw new Error("Failed to decompress gzipped data" + (err instanceof Error && err.message ? `: ${err.message}` : ""));
+    }
   };
 
   // -------------------------------------------------------------
@@ -365,8 +372,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       Papa.parse(csvText, {
         header: true,
         complete: async (res) => {
-          await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
-          setLoadingSheet(false);
+          try {
+            await processUploadedData(res as Papa.ParseResult<Record<string, string>>);
+          } catch (err) {
+            setSheetError(
+              err instanceof Error ? err.message : "Failed to load or parse data"
+            );
+          } finally {
+            setLoadingSheet(false);
+          }
         }
       });
     } catch (err) {
@@ -417,8 +431,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
         <p className="text-sm text-muted-foreground mb-4">
           {mode === "districts"
-            ? "Upload CSV / TSV / GZ with state, district, value."
-            : "Upload CSV / TSV / GZ with state and value."}
+            ? "Upload CSV / TSV / GZ with state, district, value. Your data is never stored."
+            : "Upload CSV / TSV / GZ with state and value. Your data is never stored."}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
