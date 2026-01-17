@@ -13,11 +13,15 @@ import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { createRotationCalculator } from '@/lib/rotationUtils';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
-
 import polylabel from "@mapbox/polylabel";
 import * as turf from "@turf/turf";
+import type { Feature, FeatureCollection, GeoJsonProperties, Polygon, MultiPolygon } from "geojson";
 
-function getRingsFromGeometry(geometry: any): number[][][] {
+type GeoJSONGeometry = Polygon | MultiPolygon;
+
+
+function getRingsFromGeometry(geometry: GeoJSONGeometry | null | undefined): number[][][] {
+
   // Returns rings in format polylabel expects: [ [ [x,y], [x,y], ... ] ]
   if (!geometry) return [];
 
@@ -36,7 +40,7 @@ function getRingsFromGeometry(geometry: any): number[][][] {
   return [];
 }
 
-export function getBestLabelPoint(feature: any): [number, number] | null {
+function getBestLabelPoint(feature: GeoJSONFeature): [number, number] | null {
   try {
     const geometry = feature?.geometry;
     const rings = getRingsFromGeometry(geometry);
@@ -112,21 +116,17 @@ export interface IndiaDistrictsMapRef {
   downloadCSVTemplate: () => void;
 }
 
-interface GeoJSONFeature {
-  type: string;
-  properties: {
-    state_name?: string;
-    district_name?: string;
-    nss_region?: string;
-    NAME_1?: string;
-    name?: string;
-    ST_NM?: string;
-  };
-  geometry: {
-    type: 'Polygon' | 'MultiPolygon';
-    coordinates: number[][][] | number[][][][];
-  };
-}
+type GeoJSONProps = {
+  state_name?: string;
+  district_name?: string;
+  nss_region?: string;
+  NAME_1?: string;
+  name?: string;
+  ST_NM?: string;
+};
+
+type GeoJSONFeature = Feature<GeoJSONGeometry, GeoJSONProps>;
+
 
 interface Bounds {
   minLng: number;
@@ -176,8 +176,9 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   naInfo,
   darkMode = false
 }, ref) => {
-  const [geojsonData, setGeojsonData] = useState<{ features: GeoJSONFeature[] } | null>(null);
-  const [statesData, setStatesData] = useState<{ features: GeoJSONFeature[] } | null>(null);
+  const [geojsonData, setGeojsonData] = useState<FeatureCollection<GeoJSONGeometry, GeoJSONFeature["properties"]> | null>(null);
+
+  const [statesData, setStatesData] = useState<FeatureCollection<GeoJSONGeometry, GeoJSONFeature["properties"]> | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [renderingData, setRenderingData] = useState(false);
   const [hoveredDistrict, setHoveredDistrict] = useState<{ district: string; state: string; value?: number | string } | null>(null);
@@ -683,57 +684,56 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   };
 
   // same projection logic as projectCoordinate()
-  const geoToScreen = (lng: number, lat: number): { x: number; y: number } => {
-    const mapWidth = isMobile ? 320 : 760;
-    const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-    const offsetXParam = isMobile ? 55 : 45;
-    const offsetYParam = isMobile ? 15 : 20;
+ // same projection logic as projectCoordinate()
+const geoToScreen = (lng: number, lat: number): { x: number; y: number } => {
+  const mapWidth = isMobile ? 320 : 760;
+  const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
 
-    if (!bounds) return { x: 0, y: 0 };
+  // ✅ Only padding (NO hardcoded offsets)
+  const padding = isMobile ? 10 : 20;
 
-    const geoWidth = bounds.maxLng - bounds.minLng;
-    const geoHeight = bounds.maxLat - bounds.minLat;
-    const geoAspectRatio = geoWidth / geoHeight;
+  if (!bounds) return { x: 0, y: 0 };
 
-    const canvasAspectRatio = mapWidth / mapHeight;
+  const geoWidth = bounds.maxLng - bounds.minLng;
+  const geoHeight = bounds.maxLat - bounds.minLat;
+  const geoAspectRatio = geoWidth / geoHeight;
 
-    let projectionWidth = mapWidth;
-    let projectionHeight = mapHeight;
-    let offsetX = 0;
-    let offsetY = 0;
+  const canvasAspectRatio = mapWidth / mapHeight;
 
-    if (geoAspectRatio > canvasAspectRatio) {
-      projectionHeight = mapWidth / geoAspectRatio;
-      offsetY = (mapHeight - projectionHeight) / 2;
-    } else {
-      projectionWidth = mapHeight * geoAspectRatio;
-      offsetX = (mapWidth - projectionWidth) / 2;
-    }
+  let projectionWidth = mapWidth - padding * 2;
+  let projectionHeight = mapHeight - padding * 2;
 
-    offsetX += offsetXParam;
-    offsetY += offsetYParam;
+  // ✅ Fit the geometry inside available canvas space
+  if (geoAspectRatio > canvasAspectRatio) {
+    projectionHeight = projectionWidth / geoAspectRatio;
+  } else {
+    projectionWidth = projectionHeight * geoAspectRatio;
+  }
 
-    const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX;
-    const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY;
+  // ✅ Auto center
+  const offsetX = (mapWidth - projectionWidth) / 2;
+  const offsetY = (mapHeight - projectionHeight) / 2;
 
-    return { x, y };
-  };
+  const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX;
+  const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY;
 
-  const isPointInsideDistrict = (
-    screenPoint: { x: number; y: number },
-    feature: GeoJSONFeature
-  ): boolean => {
+  return { x, y };
+};
+
+
+ const isPointInsideDistrict = useCallback(
+  (screenPoint: { x: number; y: number }, feature: GeoJSONFeature): boolean => {
     if (!bounds) return false;
 
     const mapWidth = isMobile ? 320 : 760;
     const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-    const offsetXParam = isMobile ? 55 : 45;
-    const offsetYParam = isMobile ? 15 : 20;
+
+    const padding = isMobile ? 10 : 20;
 
     let polygonCoords: number[][] = [];
-    if (feature.geometry.type === 'MultiPolygon') {
+    if (feature.geometry.type === "MultiPolygon") {
       polygonCoords = (feature.geometry.coordinates[0] as number[][][])[0];
-    } else if (feature.geometry.type === 'Polygon') {
+    } else if (feature.geometry.type === "Polygon") {
       polygonCoords = (feature.geometry.coordinates as number[][][])[0];
     }
 
@@ -742,32 +742,30 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     const geoWidth = bounds.maxLng - bounds.minLng;
     const geoHeight = bounds.maxLat - bounds.minLat;
     const geoAspectRatio = geoWidth / geoHeight;
+
     const canvasAspectRatio = mapWidth / mapHeight;
 
-    let projectionWidth = mapWidth;
-    let projectionHeight = mapHeight;
-    let offsetX = 0;
-    let offsetY = 0;
+    let projectionWidth = mapWidth - padding * 2;
+    let projectionHeight = mapHeight - padding * 2;
 
     if (geoAspectRatio > canvasAspectRatio) {
-      projectionHeight = mapWidth / geoAspectRatio;
-      offsetY = (mapHeight - projectionHeight) / 2;
+      projectionHeight = projectionWidth / geoAspectRatio;
     } else {
-      projectionWidth = mapHeight * geoAspectRatio;
-      offsetX = (mapWidth - projectionWidth) / 2;
+      projectionWidth = projectionHeight * geoAspectRatio;
     }
 
-    offsetX += offsetXParam;
-    offsetY += offsetYParam;
+    const offsetX = (mapWidth - projectionWidth) / 2;
+    const offsetY = (mapHeight - projectionHeight) / 2;
 
     const screenPolygon = polygonCoords.map(([lng, lat]) => [
       ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX,
       ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY
     ]);
 
-return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
-
-  };
+    return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
+  },
+  [bounds, isMobile, selectedState]
+);
 
   const wouldLabelsOverlap = (
     pos1: { x: number; y: number }, text1: string, fontSize1: number,
@@ -845,33 +843,42 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
     }
   }, [colorScale, invertColors, data, colorBarSettings, dataType, geojsonData]);
 
-  const projectCoordinate = (lng: number, lat: number, width = 800, height = 890): [number, number] => {
-    if (!bounds) return [0, 0];
-    
-    const geoWidth = bounds.maxLng - bounds.minLng;
-    const geoHeight = bounds.maxLat - bounds.minLat;
-    const geoAspectRatio = geoWidth / geoHeight;
-    
-    const canvasAspectRatio = width / height;
-    
-    let projectionWidth = width;
-    let projectionHeight = height;
-    let offsetX = 0;
-    let offsetY = 0;
-    
-    if (geoAspectRatio > canvasAspectRatio) {
-      projectionHeight = width / geoAspectRatio;
-      offsetY = (height - projectionHeight) / 2;
-    } else {
-      projectionWidth = height * geoAspectRatio;
-      offsetX = (width - projectionWidth) / 2;
-    }
-    
-    const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX;
-    const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY;
-    
-    return [x, y];
-  };
+  const projectCoordinate = (
+  lng: number,
+  lat: number,
+  width = 800,
+  height = 890
+): [number, number] => {
+  if (!bounds) return [0, 0];
+
+  const padding = 20;
+
+  const geoWidth = bounds.maxLng - bounds.minLng;
+  const geoHeight = bounds.maxLat - bounds.minLat;
+  const geoAspectRatio = geoWidth / geoHeight;
+
+  const canvasAspectRatio = width / height;
+
+  let projectionWidth = width - padding * 2;
+  let projectionHeight = height - padding * 2;
+
+  // ✅ Fit
+  if (geoAspectRatio > canvasAspectRatio) {
+    projectionHeight = projectionWidth / geoAspectRatio;
+  } else {
+    projectionWidth = projectionHeight * geoAspectRatio;
+  }
+
+  // ✅ Center
+  const offsetX = (width - projectionWidth) / 2;
+  const offsetY = (height - projectionHeight) / 2;
+
+  const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX;
+  const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY;
+
+  return [x, y];
+};
+
 
   const convertCoordinatesToPath = (coordinates: number[][][] | number[][][][], width = 800, height = 890, yOffset = 0, xOffset = 0): string => {
     if (!coordinates || !Array.isArray(coordinates)) return '';
@@ -1066,7 +1073,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
     }
   };
 
-  const handleLabelMouseMove = useCallback(
+ const handleLabelMouseMove = useCallback(
   (e: MouseEvent) => {
     if (!draggingLabel || !svgRef.current) return;
 
@@ -1077,7 +1084,6 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       y: e.clientY - svgRect.top - draggingLabel.offset.y
     };
 
-    // ✅ Find the district feature for this label
     const [stateName, districtName] = draggingLabel.districtKey.split("|");
 
     const feature = geojsonData?.features.find((f) => {
@@ -1086,18 +1092,23 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       return dn === districtName && sn === stateName;
     });
 
-    // ✅ Only update if label is inside district
     if (feature) {
       const inside = isPointInsideDistrict(newPosition, feature);
-      if (!inside) return; // ❌ stop if outside
+      if (!inside) return;
     }
 
     const newPositions = new Map(labelPositions);
     newPositions.set(draggingLabel.districtKey, newPosition);
     setLabelPositions(newPositions);
   },
-  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
+  [
+  draggingLabel,
+  labelPositions,
+  geojsonData,
+  isPointInsideDistrict
+]
 );
+
 const handleLabelMouseUp = () => {
   setDraggingLabel(null);
 };
@@ -1148,7 +1159,12 @@ const handleLabelTouchMove = useCallback(
     newPositions.set(draggingLabel.districtKey, newPosition);
     setLabelPositions(newPositions);
   },
-  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
+  [
+  draggingLabel,
+  labelPositions,
+  geojsonData,
+  isPointInsideDistrict
+]
 );
 
 
@@ -1573,7 +1589,8 @@ const dataExtent =
               {geojsonData.features.map((feature, index) => {
                 const mapWidth = isMobile ? 320 : 760;
                 const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-                const path = convertCoordinatesToPath(feature.geometry.coordinates, mapWidth, mapHeight, isMobile ? 55 : 45, isMobile ? 15 : 20);
+                const path = convertCoordinatesToPath( feature.geometry.coordinates, mapWidth, mapHeight );
+
                 const districtOrRegion = feature.properties.district_name || feature.properties.nss_region || '';
                 const districtData = data.find(d =>
                   d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
@@ -1803,7 +1820,8 @@ const dataExtent =
                 .map((stateFeature, index) => {
                 const mapWidth = isMobile ? 320 : 760;
                 const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-                const path = convertCoordinatesToPath(stateFeature.geometry.coordinates, mapWidth, mapHeight, isMobile ? 55 : 45, isMobile ? 15 : 20);
+                const path = convertCoordinatesToPath( stateFeature.geometry.coordinates, mapWidth, mapHeight);
+
                 
                 return (
                   <path
