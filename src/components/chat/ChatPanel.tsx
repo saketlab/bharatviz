@@ -67,7 +67,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
       if (!stale && questions.length > 0) setLlmQuestions(questions);
     });
     return () => { stale = true; };
-  }, [contextFingerprint, modelReady]);
+  }, [contextFingerprint, modelReady, context]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {

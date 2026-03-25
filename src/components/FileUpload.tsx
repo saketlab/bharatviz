@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import pako from 'pako';
 import { processStateData, processDistrictData } from '@/lib/dataProcessor';
 import { fetchWithCorsFallback, fetchAndDecompressGz } from '@/lib/corsProxy';
+import { extractNumericColumns, extractNumericColumnsDistricts, getDimensionColumnDistricts, getLongFormatDimensionValuePair } from '@/lib/csvUtils';
 import { getNextDemo } from '@/lib/showcaseDemos';
 
 interface NAInfo {
@@ -17,14 +18,22 @@ interface NAInfo {
 type StateValueRow = { state: string; value: number | string };
 type DistrictValueRow = { state: string; district: string; value: number | string };
 
+type WideFormatMeta = {
+  numericColumns: string[];
+  globalMin: number;
+  globalMax: number;
+};
+
 type MultiSeriesPayload =
   | {
       kind: 'states';
       series: Array<{ key: string; title: string; data: StateValueRow[]; naInfo?: NAInfo }>;
+      wideFormat?: WideFormatMeta;
     }
   | {
       kind: 'districts';
       series: Array<{ key: string; title: string; data: DistrictValueRow[]; naInfo?: NAInfo }>;
+      wideFormat?: WideFormatMeta;
     };
 
 interface FileUploadProps {
@@ -97,6 +106,197 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
         const num = Number(trimmed);
         return isNaN(num) ? trimmed : num;
       };
+
+      // Wide format: numeric columns > 2 → one map per column
+      const numericColumns = extractNumericColumns(data);
+      if (mode === 'states' && onMultiDataLoad && numericColumns.length > 2) {
+        let globalMin = Infinity;
+        let globalMax = -Infinity;
+        for (const row of data) {
+          for (const col of numericColumns) {
+            const v = parseValue(row[col]);
+            if (typeof v === 'number' && !isNaN(v) && isFinite(v)) {
+              if (v < globalMin) globalMin = v;
+              if (v > globalMax) globalMax = v;
+            }
+          }
+        }
+        if (globalMin === Infinity) globalMin = 0;
+        if (globalMax === -Infinity) globalMax = 1;
+
+        const allSeries: Array<{ key: string; title: string; data: StateValueRow[]; naInfo?: NAInfo }> = [];
+        for (const col of numericColumns) {
+          const seriesRaw = data
+            .filter(row => row[stateColumn])
+            .map(row => ({ state: row[stateColumn].trim(), value: parseValue(row[col]) }));
+          const processed = await processStateData(
+            seriesRaw as StateValueRow[],
+            geojsonPath || '',
+            fuzzyThreshold
+          );
+          allSeries.push({
+            key: col,
+            title: col,
+            data: processed.matched,
+            naInfo: processed.naInfo
+          });
+        }
+        onMultiDataLoad({
+          kind: 'states',
+          series: allSeries,
+          wideFormat: { numericColumns, globalMin, globalMax }
+        });
+        return;
+      }
+
+      // District mode: detect narrow/wide/long by position 
+      if (mode === 'districts' && onMultiDataLoad && headers.length >= 4) {
+        const numericCols = extractNumericColumnsDistricts(data);
+        const dimensionCol = getDimensionColumnDistricts(data);
+        const longPair = numericCols.length === 2 ? getLongFormatDimensionValuePair(data, numericCols) : null;
+        if (numericCols.length >= 1) {
+          let globalMin = Infinity;
+          let globalMax = -Infinity;
+          const allSeries: Array<{ key: string; title: string; data: DistrictValueRow[]; naInfo?: NAInfo }> = [];
+
+          if (numericCols.length === 1 && dimensionCol) {
+            const valueCol = numericCols[0];
+            const byDim = new Map<string, DistrictValueRow[]>();
+            for (const row of data) {
+              if (!row[stateColumn] || !row[locationColumn]) continue;
+              const dimVal = String(row[dimensionCol] ?? '').trim();
+              if (!dimVal) continue;
+              const value = parseValue(row[valueCol]);
+              if (!byDim.has(dimVal)) byDim.set(dimVal, []);
+              byDim.get(dimVal)!.push({
+                state: row[stateColumn].trim(),
+                district: row[locationColumn].trim(),
+                value
+              });
+            }
+            const dimKeys = Array.from(byDim.keys()).sort((a, b) => {
+              const na = Number(a);
+              const nb = Number(b);
+              if (!isNaN(na) && !isNaN(nb)) return na - nb;
+              return a.localeCompare(b);
+            });
+            for (const key of dimKeys) {
+              const seriesRaw = byDim.get(key) ?? [];
+              for (const r of seriesRaw) {
+                const v = typeof r.value === 'number' && !isNaN(r.value) && isFinite(r.value) ? r.value : null;
+                if (v !== null) {
+                  if (v < globalMin) globalMin = v;
+                  if (v > globalMax) globalMax = v;
+                }
+              }
+              const processed = await processDistrictData(
+                seriesRaw as Array<{ state: string; district: string; value: number | string }>,
+                geojsonPath || '',
+                fuzzyThreshold,
+                selectedState
+              );
+              allSeries.push({ key, title: key, data: processed.matched, naInfo: processed.naInfo });
+            }
+          } else if (longPair) {
+            const [dimCol, valueCol] = longPair;
+            const byDim = new Map<string, DistrictValueRow[]>();
+            for (const row of data) {
+              if (!row[stateColumn] || !row[locationColumn]) continue;
+              const dimVal = String(row[dimCol] ?? '').trim();
+              if (!dimVal) continue;
+              const value = parseValue(row[valueCol]);
+              if (!byDim.has(dimVal)) byDim.set(dimVal, []);
+              byDim.get(dimVal)!.push({
+                state: row[stateColumn].trim(),
+                district: row[locationColumn].trim(),
+                value
+              });
+            }
+            const dimKeys = Array.from(byDim.keys()).sort((a, b) => {
+              const na = Number(a);
+              const nb = Number(b);
+              if (!isNaN(na) && !isNaN(nb)) return na - nb;
+              return a.localeCompare(b);
+            });
+            for (const key of dimKeys) {
+              const seriesRaw = byDim.get(key) ?? [];
+              for (const r of seriesRaw) {
+                const v = typeof r.value === 'number' && !isNaN(r.value) && isFinite(r.value) ? r.value : null;
+                if (v !== null) {
+                  if (v < globalMin) globalMin = v;
+                  if (v > globalMax) globalMax = v;
+                }
+              }
+              const processed = await processDistrictData(
+                seriesRaw as Array<{ state: string; district: string; value: number | string }>,
+                geojsonPath || '',
+                fuzzyThreshold,
+                selectedState
+              );
+              allSeries.push({ key, title: key, data: processed.matched, naInfo: processed.naInfo });
+            }
+          } else if (numericCols.length > 1) {
+            // Wide:multiple numeric columns → one series per column
+            for (const col of numericCols) {
+              const seriesRaw = data
+                .filter(row => row[stateColumn] && row[locationColumn])
+                .map(row => ({
+                  state: row[stateColumn].trim(),
+                  district: row[locationColumn].trim(),
+                  value: parseValue(row[col])
+                }));
+              for (const r of seriesRaw) {
+                const v = typeof r.value === 'number' && !isNaN(r.value) && isFinite(r.value) ? r.value : null;
+                if (v !== null) {
+                  if (v < globalMin) globalMin = v;
+                  if (v > globalMax) globalMax = v;
+                }
+              }
+              const processed = await processDistrictData(
+                seriesRaw as Array<{ state: string; district: string; value: number | string }>,
+                geojsonPath || '',
+                fuzzyThreshold,
+                selectedState
+              );
+              allSeries.push({ key: col, title: col, data: processed.matched, naInfo: processed.naInfo });
+            }
+          } else {
+            // Narrow: single numeric column
+            const valueCol = numericCols[0];
+            const seriesRaw = data
+              .filter(row => row[stateColumn] && row[locationColumn])
+              .map(row => ({
+                state: row[stateColumn].trim(),
+                district: row[locationColumn].trim(),
+                value: parseValue(row[valueCol])
+              }));
+            for (const r of seriesRaw) {
+              const v = typeof r.value === 'number' && !isNaN(r.value) && isFinite(r.value) ? r.value : null;
+              if (v !== null) {
+                if (v < globalMin) globalMin = v;
+                if (v > globalMax) globalMax = v;
+              }
+            }
+            const processed = await processDistrictData(
+              seriesRaw as Array<{ state: string; district: string; value: number | string }>,
+              geojsonPath || '',
+              fuzzyThreshold,
+              selectedState
+            );
+            allSeries.push({ key: valueCol, title: valueCol, data: processed.matched, naInfo: processed.naInfo });
+          }
+
+          if (globalMin === Infinity) globalMin = 0;
+          if (globalMax === -Infinity) globalMax = 1;
+          const wideFormatMeta = allSeries.length > 1 ? { numericColumns: allSeries.map(s => s.key), globalMin, globalMax } : undefined;
+          onMultiDataLoad({
+            kind: 'districts',
+            series: allSeries,
+            wideFormat: wideFormatMeta
+          });
+          return;
+        }
+      }
 
       /**
        * SPECIAL CASE: state, value, year format

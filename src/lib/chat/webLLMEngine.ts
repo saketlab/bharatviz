@@ -165,7 +165,9 @@ export class WebLLMEngine {
     try {
       console.warn('KV cache corrupted, reloading engine...');
       if (this.engine) {
-        try { await this.engine.unload(); } catch (_) {}
+        try { await this.engine.unload(); } catch (_) {
+          // Ignore unload errors
+        }
       }
       this.isReady = false;
       this.engine = await webllm.CreateMLCEngine(this.selectedModel, { logLevel: "WARN" });
@@ -372,7 +374,7 @@ export class WebLLMEngine {
           temperature: 0,
           max_tokens: 512,
           tools: toolDefinitions as webllm.ChatCompletionTool[],
-          tool_choice: forceTools ? "required" : "auto"
+          tool_choice: forceTools ? "auto" : "auto"
         });
       } catch (toolCallError) {
         if (isToolCallParseError(toolCallError)) {
@@ -528,7 +530,7 @@ export class WebLLMEngine {
       const raw = stripThinkTags(completion.choices[0].message.content || '');
       const questions = raw
         .split('\n')
-        .map(l => l.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
+        .map(l => l.replace(/^\d+[.)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
         .filter(l => l.length > 10 && l.length < 120);
 
       await this.engine.resetChat();
@@ -538,7 +540,9 @@ export class WebLLMEngine {
         return this.generateDataQuestions(context);
       }
       console.error("Failed to generate data questions:", error);
-      try { await this.engine?.resetChat(); } catch (_) {}
+      try { await this.engine?.resetChat(); } catch (_) {
+        // Ignore errors
+      }
       return [];
     }
   }
@@ -562,9 +566,9 @@ export class WebLLMEngine {
     }
   }
 
-  getRuntimeStats(): string {
+  async getRuntimeStats(): Promise<string> {
     if (this.engine) {
-      return this.engine.runtimeStatsText();
+      return await this.engine.runtimeStatsText();
     }
     return "Engine not initialized";
   }

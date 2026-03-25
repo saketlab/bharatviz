@@ -19,24 +19,20 @@ export const StatesMapRequestSchema = z.object({
   colorScale: z.enum(ColorScales).optional().default('spectral'),
 
   invertColors: z.boolean().optional().default(false),
-
   hideStateNames: z.boolean().optional().default(false),
-
   hideValues: z.boolean().optional().default(false),
-
   mainTitle: z.string().optional().default('BharatViz'),
-
   legendTitle: z.string().optional().default('Values'),
-
   darkMode: z.boolean().optional().default(false),
-
   colorBarSettings: z.object({
     mode: z.enum(['continuous', 'discrete']).default('continuous'),
     binCount: z.number().min(2).max(20).optional().default(5),
     customBoundaries: z.array(z.number()).optional()
   }).optional(),
 
-  formats: z.array(z.enum(['png', 'svg', 'pdf'])).optional().default(['png'])
+  formats: z.array(z.enum(['png', 'svg', 'pdf'])).optional().default(['png']),
+
+  domain: z.tuple([z.number(), z.number()]).optional()
 });
 
 export type StatesMapRequest = z.infer<typeof StatesMapRequestSchema>;

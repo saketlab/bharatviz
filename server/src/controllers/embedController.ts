@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { StatesMapRenderer } from '../services/mapRenderer.js';
 import { DistrictsMapRenderer } from '../services/districtsMapRenderer.js';
+import { extractNumericColumns } from '../utils/csvUtils.js';
 import axios from 'axios';
 import Papa from 'papaparse';
 import { gunzipSync } from 'zlib';
@@ -148,6 +149,23 @@ export class EmbedController {
     }
   }
 
+  private globalMinMax(data: CSVRow[], columnNames: string[]): { min: number; max: number } {
+    let min = Infinity;
+    let max = -Infinity;
+    for (const row of data) {
+      for (const col of columnNames) {
+        const v = parseFloat(String(row[col] ?? ''));
+        if (Number.isFinite(v)) {
+          if (v < min) min = v;
+          if (v > max) max = v;
+        }
+      }
+    }
+    if (min === Infinity) min = 0;
+    if (max === -Infinity) max = 1;
+    return { min, max };
+  }
+
   async getEmbedPage(req: Request, res: Response) {
     try {
       const {
@@ -163,7 +181,8 @@ export class EmbedController {
         hideStateNames = 'false',
         hideDistrictNames = 'true',
         showStateBoundaries = 'true',
-        valueColumn,
+        valueColumn: valueColumnParam,
+        colorScaleMode = 'independent',
         darkMode = 'false'
       } = req.query;
 
@@ -191,15 +210,34 @@ export class EmbedController {
         mapType = 'state-districts';
       }
 
-      const parsedData = this.parseCSVData(parseResult.data as CSVRow[], mapType, valueColumn as string);
+      const rows = parseResult.data as CSVRow[];
+      if (!rows.length) {
+        return res.status(400).json({
+          success: false,
+          error: { message: 'No valid data found in CSV', code: 'NO_DATA' }
+        });
+      }
+
+      const numericColumns = extractNumericColumns(rows);
+      const wideFormat = numericColumns.length > 2;
+      const valueColumn = valueColumnParam
+        ? (numericColumns.includes(valueColumnParam as string) ? valueColumnParam : numericColumns[0])
+        : (wideFormat ? numericColumns[0] : this.findValueColumnName(rows[0]));
+      const resolvedColumn = (valueColumn as string) || undefined;
+
+      const parsedData = this.parseCSVData(rows, mapType, resolvedColumn);
 
       let autoDetectedColumnName: string | null = null;
-      if (parseResult.data.length > 0) {
-        autoDetectedColumnName = this.findValueColumnName(parseResult.data[0] as CSVRow, valueColumn as string);
-      }
+      autoDetectedColumnName = this.findValueColumnName(rows[0], resolvedColumn);
 
       const finalTitle = (title === 'BharatViz' && autoDetectedColumnName) ? autoDetectedColumnName : title;
       const finalLegendTitle = (legendTitle === 'Values' && autoDetectedColumnName) ? autoDetectedColumnName : legendTitle;
+
+      let domain: [number, number] | undefined;
+      if (mapType === 'states' && wideFormat && colorScaleMode === 'single' && numericColumns.length > 0) {
+        const { min, max } = this.globalMinMax(rows, numericColumns);
+        domain = [min, max];
+      }
 
       const hideDistrictNamesProvided = req.query.hideDistrictNames !== undefined;
       const finalHideDistrictNames = hideDistrictNamesProvided ?
@@ -231,7 +269,8 @@ export class EmbedController {
         showStateBoundaries: showStateBoundaries === 'true',
         mainTitle: finalTitle as string,
         legendTitle: finalLegendTitle as string,
-        darkMode: darkMode === 'true'
+        darkMode: darkMode === 'true',
+        ...(domain && { domain })
       });
 
       const html = this.generateEmbedHTML(svgContent, finalTitle as string, darkMode === 'true');
@@ -265,7 +304,8 @@ export class EmbedController {
         hideStateNames = 'false',
         hideDistrictNames = 'true',
         showStateBoundaries = 'true',
-        valueColumn,
+        valueColumn: valueColumnParam,
+        colorScaleMode = 'independent',
         darkMode = 'false'
       } = req.query;
 
@@ -303,12 +343,24 @@ export class EmbedController {
         mapType = 'state-districts';
       }
 
-      const parsedData = this.parseCSVData(parseResult.data as CSVRow[], mapType, valueColumn as string);
-
-      let autoDetectedColumnName: string | null = null;
-      if (parseResult.data.length > 0) {
-        autoDetectedColumnName = this.findValueColumnName(parseResult.data[0] as CSVRow, valueColumn as string);
+      const rows = parseResult.data as CSVRow[];
+      if (!rows.length) {
+        return res.status(400).json({
+          success: false,
+          error: { message: 'No valid data found in CSV', code: 'NO_DATA' }
+        });
       }
+
+      const numericColumns = extractNumericColumns(rows);
+      const wideFormat = numericColumns.length > 2;
+      const valueColumn = valueColumnParam
+        ? (numericColumns.includes(valueColumnParam as string) ? valueColumnParam : numericColumns[0])
+        : (wideFormat ? numericColumns[0] : this.findValueColumnName(rows[0]));
+      const resolvedColumn = (valueColumn as string) || undefined;
+
+      const parsedData = this.parseCSVData(rows, mapType, resolvedColumn);
+
+      const autoDetectedColumnName = this.findValueColumnName(rows[0], resolvedColumn);
 
       const finalLegendTitle = (legendTitle === 'Values' && autoDetectedColumnName) ? autoDetectedColumnName : legendTitle;
 
@@ -329,6 +381,12 @@ export class EmbedController {
         });
       }
 
+      let domain: [number, number] | undefined;
+      if (mapType === 'states' && wideFormat && colorScaleMode === 'single' && numericColumns.length > 0) {
+        const { min, max } = this.globalMinMax(rows, numericColumns);
+        domain = [min, max];
+      }
+
       const svgContent = await this.generateSVG({
         data: parsedData,
         mapType,
@@ -342,7 +400,8 @@ export class EmbedController {
         showStateBoundaries: showStateBoundaries === 'true',
         mainTitle: '',
         legendTitle: finalLegendTitle as string,
-        darkMode: darkMode === 'true'
+        darkMode: darkMode === 'true',
+        ...(domain && { domain })
       });
 
       this.setCachedData(this.svgCache, svgCacheKey, svgContent);
@@ -379,6 +438,7 @@ export class EmbedController {
         showStateBoundaries = true,
         format = 'html',
         valueColumn,
+        colorScaleMode = 'independent',
         darkMode = false
       } = req.body;
 
@@ -420,6 +480,15 @@ export class EmbedController {
         });
       }
 
+      const rawRows = data as CSVRow[];
+      const numericCols = extractNumericColumns(rawRows);
+      const wide = numericCols.length > 2;
+      let domain: [number, number] | undefined;
+      if (mapType === 'states' && wide && colorScaleMode === 'single' && numericCols.length > 0) {
+        const { min, max } = this.globalMinMax(rawRows, numericCols);
+        domain = [min, max];
+      }
+
       const svgContent = await this.generateSVG({
         data: parsedData,
         mapType,
@@ -433,7 +502,8 @@ export class EmbedController {
         showStateBoundaries,
         mainTitle: title,
         legendTitle,
-        darkMode
+        darkMode,
+        ...(domain && { domain })
       });
 
       if (format === 'svg') {
@@ -484,6 +554,7 @@ export class EmbedController {
     mainTitle: string;
     legendTitle: string;
     darkMode?: boolean;
+    domain?: [number, number];
   }): Promise<string> {
     const {
       data,
@@ -498,7 +569,8 @@ export class EmbedController {
       showStateBoundaries,
       mainTitle,
       legendTitle,
-      darkMode = false
+      darkMode = false,
+      domain
     } = options;
 
     if (mapType === 'states') {
@@ -511,7 +583,8 @@ export class EmbedController {
         hideStateNames,
         mainTitle,
         legendTitle,
-        darkMode
+        darkMode,
+        ...(domain && { domain })
       });
     } else if (mapType === 'state-districts') {
       if (!state) {

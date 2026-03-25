@@ -129,8 +129,8 @@ const Credits: React.FC<CreditsProps> = ({ darkMode = false }) => {
       <div className={`border rounded-lg p-6 ${darkMode ? 'bg-[#1a1a1a] border-[#444]' : 'bg-primary/5 border-primary/20'}`}>
         <h2 className={`text-lg font-bold mb-3 ${darkMode ? 'text-white' : ''}`}>Special Thanks</h2>
         <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
-			  BharatViz is made possible by the community efforts of collating shapefiles (geojsons) for India across the years.
-			  Sources and contributors are mentioned below. We thank all the contributors for generating and sharing the shape files!
+          BharatViz is made possible by the community efforts of collating shapefiles (geojsons) for India across the years.
+          Sources and contributors are mentioned below. We thank all the contributors for generating and sharing the shape files!
           In particular, we would like to thank{' '}
           <a
             href="https://github.com/ramSeraph/"

@@ -89,14 +89,17 @@ export class StatesMapRenderer {
       hideValues = false,
       mainTitle = 'BharatViz',
       legendTitle = 'Values',
-      darkMode = false
+      darkMode = false,
+      domain: domainOverride
     } = request;
 
-    // Calculate statistics
     const values = data.map(d => d.value);
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
-    const meanValue = values.reduce((a, b) => a + b, 0) / values.length;
+    const minValue = domainOverride ? domainOverride[0] : Math.min(...values);
+    const maxValue = domainOverride ? domainOverride[1] : Math.max(...values);
+    const meanValue = domainOverride
+      ? (domainOverride[0] + domainOverride[1]) / 2
+      : values.reduce((a, b) => a + b, 0) / values.length;
+    const valuesForScale = domainOverride ? [domainOverride[0], domainOverride[1]] : values;
 
     // Create a virtual DOM
     const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
@@ -147,13 +150,13 @@ export class StatesMapRenderer {
         const stateName = this.getStateName(d.properties);
         const value = dataMap.get(stateName);
         if (value === undefined) return darkMode ? '#1a1a1a' : 'white';
-        return getColorForValue(value, values, colorScale, invertColors);
+        return getColorForValue(value, valuesForScale, colorScale, invertColors);
       })
       .attr('stroke', (d: StateFeature) => {
         const stateName = this.getStateName(d.properties);
         const value = dataMap.get(stateName);
         if (value === undefined) return darkMode ? '#ffffff' : '#0f172a';
-        const fillColor = getColorForValue(value, values, colorScale, invertColors);
+        const fillColor = getColorForValue(value, valuesForScale, colorScale, invertColors);
         return isColorDark(fillColor) ? '#ffffff' : '#0f172a';
       })
       .attr('stroke-width', 0.5)
@@ -217,7 +220,7 @@ export class StatesMapRenderer {
             fontSize = Math.max(6, fontSize * 0.7);
           }
 
-          const color = getColorForValue(value, values, colorScale, invertColors);
+          const color = getColorForValue(value, valuesForScale, colorScale, invertColors);
           const textColor = this.shouldUseWhiteText(stateName, color) ? 'white' : 'black';
 
           text.attr('font-size', `${fontSize}px`);
