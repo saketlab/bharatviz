@@ -67,7 +67,7 @@ function fetchGeoJSON(year: number): Promise<any> {
 
 function fetchEvoData(): Promise<EvolutionData> {
   if (evoCache) return Promise.resolve(evoCache);
-  return fetch('/evolution/bombay_evolution.json')
+  return fetch('/evolution-data/bombay_evolution.json')
     .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
     .then(d => { evoCache = d; return d; });
 }

@@ -167,7 +167,7 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
   const [tooltip, setTooltip] = useState<{ x: number; y: number; node: EvoNode; sources: string[]; targets: string[] } | null>(null);
 
   useEffect(() => {
-    fetch('/evolution/bombay_evolution.json')
+    fetch('/evolution-data/bombay_evolution.json')
       .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });

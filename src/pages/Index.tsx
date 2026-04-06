@@ -164,6 +164,12 @@ const Index = () => {
   const selectedStateRef = useRef(selectedStateForMap);
   useEffect(() => { selectedStateRef.current = selectedStateForMap; }, [selectedStateForMap]);
 
+  // Disable state boundaries by default for pre-1947 maps (enclave geometry causes spikes)
+  useEffect(() => {
+    const year = parseInt(selectedDistrictMapType, 10);
+    if (!isNaN(year) && year < 1947) setShowStateBoundaries(false);
+  }, [selectedDistrictMapType]);
+
   const cityList = useMemo(() => getCityList(), []);
   const currentCityDataset = useMemo(() => getCityDataset(selectedCityDataset), [selectedCityDataset]);
   const currentCityDatasets = useMemo(() => getCityDatasets(selectedCity), [selectedCity]);
