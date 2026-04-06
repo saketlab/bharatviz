@@ -62,7 +62,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const getTabFromPath = (pathname: string): string => {
-    const path = pathname.slice(1);
+    const path = pathname.replace(/^\/|\/$/g, '');
     const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
