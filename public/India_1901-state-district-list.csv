@@ -1,354 +1,352 @@
-"state_name","district_name","id"
-"Punjab","Punjab",10
-"Punjab","Punjab",11
-"Punjab","Punjab",12
-"Punjab","Punjab",14
-"Punjab","Punjab",1
-"Punjab","Punjab",2
-"Punjab","Punjab",3
-"Central Province","Central Province",18
-"Bengal Province","Bihar",6
-"Punjab","Punjab",13
-"Punjab","Punjab",16
-"Punjab","Punjab",17
-"Punjab","Punjab",9
-"Punjab","Punjab",5
-"Punjab","Punjab",4
-"Punjab","Punjab",6
-"Punjab","Punjab",8
-"Punjab","Punjab",7
-"Punjab","Punjab",15
-"Central India Agency","Central India Agency",42
-"Bengal Province","Bihar",8
-"Bengal Province","Bihar",7
-"Bengal Province","Bengal",11
-"Bengal Province","Bihar",5
-"Assam Province","Assam Province",11
-"Assam Province","Assam Province",12
-"Assam Province","Assam Province",9
-"Assam Province","Assam Province",10
-"Assam Province","Assam Province",8
-"Assam Province","Assam Province",7
-"Assam Province","Assam Province",4
-"Assam Province","Assam Province",1
-"Assam Province","Assam Province",2
-"Assam Province","Assam Province",5
-"Assam Province","Assam Province",3
-"Bengal Province","Bengal",1
-"Bengal Province","Bengal",12
-"Bengal Province","Bengal",13
-"Bengal Province","Bihar",2
-"North West Province","North West Province",28
-"North West Province","North West Province",29
-"North West Province","North West Province",12
-"North West Province","North West Province",10
-"North West Province","North West Province",13
-"North West Province","North West Province",6
-"North West Province","North West Province",9
-"North West Province","North West Province",7
-"North West Province","North West Province",1
-"North West Province","North West Province",2
-"Punjab","Punjab",18
-"North West Province","North West Province",3
-"North West Province","North West Province",4
-"North West Province","North West Province",8
-"North West Province","North West Province",14
-"North West Province","North West Province",17
-"North West Province","North West Province",36
-"North West Province","North West Province",35
-"North West Province","North West Province",33
-"North West Province","North West Province",21
-"North West Province","North West Province",20
-"North West Province","North West Province",22
-"North West Province","North West Province",32
-"North West Province","North West Province",23
-"North West Province","North West Province",27
-"Bengal Province","Bihar",1
-"North West Province","North West Province",24
-"North West Province","North West Province",5
-"North West Province","North West Province",11
-"North West Province","North West Province",15
-"North West Province","North West Province",19
-"North West Province","North West Province",18
-"North West Province","North West Province",31
-"North West Province","North West Province",25
-"North West Province","North West Province",26
-"North West Province","North West Province",40
-"North West Province","North West Province",30
-"North West Province","North West Province",41
-"Bengal Province","Bihar",11
-"North West Province","North West Province",44
-"North West Province","North West Province",45
-"North West Province","North West Province",46
-"North West Province","North West Province",43
-"North West Province","North West Province",42
-"Bengal Province","Bihar",3
-"Bengal Province","Bihar",4
-"Bengal Province","Bihar",9
-"Bengal Province","Bihar",12
-"Bengal Province","Chota Nagpore",1
-"Bengal Province","Chota Nagpore",5
-"Bengal Province","Chota Nagpore",7
-"Bengal Province","Chota Nagpore",4
-"Bengal Province","Chota Nagpore",3
-"Bengal Province","Chota Nagpore",2
-"North West Province","North West Province",37
-"Central India Agency","Central India Agency",34
-"Central India Agency","Central India Agency",30
-"Central India Agency","Central India Agency",33
-"Central India Agency","Central India Agency",31
-"Central India Agency","Central India Agency",39
-"Central India Agency","Central India Agency",41
-"Central India Agency","Central India Agency",37
-"Central India Agency","Central India Agency",35
-"Central India Agency","Central India Agency",32
-"Central India Agency","Central India Agency",36
-"Central India Agency","Central India Agency",40
-"North West Province","North West Province",47
-"North West Province","North West Province",48
-"North West Province","North West Province",38
-"Central India Agency","Central India Agency",46
-"Central India Agency","Central India Agency",45
-"North West Province","North West Province",39
-"North West Province","North West Province",34
-"Bengal Province","Chota Nagpore",6
-"Bengal Province","Chota Nagpore",8
-"Bengal Province","Chota Nagpore",9
-"Bengal Province","Bengal",2
-"Bengal Province","Bengal",5
-"Bengal Province","Bengal",6
-"Bengal Province","Bengal",9
-"Bengal Province","Bengal",10
-"Bengal Province","Bengal",8
-"Bengal Province","Bengal",3
-"Bengal Province","Bengal",7
-"Bengal Province","Tributary State Orissa",3
-"Bengal Province","Tributary State Orissa",16
-"Bengal Province","Tributary State Orissa",17
-"Madras Presidency","Madras Presidency",2
-"Bengal Province","Tributary State Orissa",2
-"Central India Agency","Central India Agency",28
-"Central India Agency","Central India Agency",29
-"Central India Agency","Central India Agency",27
-"Rajputana Agency","Rajputana Agency",14
-"Bombay Presidency","Bombay Presidency",62
-"Bombay Presidency","Bombay Presidency",50
-"Bombay Presidency","Bombay Presidency",12
-"Bombay Presidency","Bombay Presidency",56
-"Bombay Presidency","Bombay Presidency",51
-"Bombay Presidency","Bombay Presidency",10
-"Bombay Presidency","Bombay Presidency",13
-"Bombay Presidency","Bombay Presidency",53
-"Bombay Presidency","Bombay Presidency",57
-"Bombay Presidency","Bombay Presidency",61
-"Bombay Presidency","Bombay Presidency",60
-"Bombay Presidency","Bombay Presidency",59
-"Bombay Presidency","Bombay Presidency",55
-"Bombay Presidency","Bombay Presidency",17
-"Bombay Presidency","Bombay Presidency",15
-"Bombay Presidency","Bombay Presidency",54
-"Hyderabad","Hyderabad",1
-"Bombay Presidency","Bombay Presidency",9
-"Baroda","Baroda",4
-"Bombay Presidency","Bombay Presidency",4
-"Baroda","Baroda",3
-"Bombay Presidency","Bombay Presidency",40
-"Rajputana Agency","Rajputana Agency",13
-"Bombay Presidency","Bombay Presidency",6
-"Baroda","Baroda",1
-"Bombay Presidency","Bombay Presidency",7
-"Bombay Presidency","Bombay Presidency",5
-"Bombay Presidency","Bombay Presidency",8
-"Bombay Presidency","Bombay Presidency",32
-"Bombay Presidency","Bombay Presidency",2
-"Bombay Presidency","Bombay Presidency",1
-"Bombay Presidency","Bombay Presidency",11
-"Bombay Presidency","Bombay Presidency",3
-"Bombay Presidency","Bombay Presidency",16
-"Bombay Presidency","Bombay Presidency",22
-"Bombay Presidency","Bombay Presidency",27
-"Bombay Presidency","Bombay Presidency",28
-"Bombay Presidency","Bombay Presidency",23
-"Bombay Presidency","Bombay Presidency",26
-"Bombay Presidency","Bombay Presidency",29
-"Bombay Presidency","Bombay Presidency",31
-"Baroda","Baroda",2
-"Bombay Presidency","Bombay Presidency",30
-"Bombay Presidency","Bombay Presidency",24
-"Bombay Presidency","Bombay Presidency",25
-"Bombay Presidency","Bombay Presidency",21
-"Bombay Presidency","Bombay Presidency",18
-"Bombay Presidency","Bombay Presidency",14
-"Bombay Presidency","Bombay Presidency",19
-"Bombay Presidency","Bombay Presidency",34
-"Bombay Presidency","Bombay Presidency",35
-"Rajputana Agency","Rajputana Agency",19
-"Rajputana Agency","Rajputana Agency",16
-"Central India Agency","Central India Agency",2
-"Central India Agency","Central India Agency",3
-"Rajputana Agency","Rajputana Agency",3
-"Rajputana Agency","Rajputana Agency",5
-"Rajputana Agency","Rajputana Agency",6
-"Rajputana Agency","Rajputana Agency",4
-"Rajputana Agency","Rajputana Agency",9
-"Ajmer Merwara","Ajmer Merwara",1
-"Rajputana Agency","Rajputana Agency",12
-"Rajputana Agency","Rajputana Agency",10
-"Rajputana Agency","Rajputana Agency",2
-"North West Province","North West Province",16
-"Rajputana Agency","Rajputana Agency",1
-"Rajputana Agency","Rajputana Agency",15
-"Ajmer Merwara","Ajmer Merwara",2
-"Rajputana Agency","Rajputana Agency",20
-"Rajputana Agency","Rajputana Agency",7
-"Rajputana Agency","Rajputana Agency",8
-"Bombay Presidency","Bombay Presidency",36
-"Rajputana Agency","Rajputana Agency",17
-"Bombay Presidency","Bombay Presidency",38
-"Bombay Presidency","Bombay Presidency",44
-"Central India Agency","Central India Agency",12
-"Central India Agency","Central India Agency",19
-"Central India Agency","Central India Agency",1
-"Central India Agency","Central India Agency",5
-"Central India Agency","Central India Agency",4
-"Central India Agency","Central India Agency",10
-"Central India Agency","Central India Agency",11
-"Central India Agency","Central India Agency",13
-"Central India Agency","Central India Agency",14
-"Central India Agency","Central India Agency",17
-"Central India Agency","Central India Agency",7
-"Central India Agency","Central India Agency",6
-"Central India Agency","Central India Agency",15
-"Central India Agency","Central India Agency",8
-"Central India Agency","Central India Agency",18
-"Central India Agency","Central India Agency",24
-"Central India Agency","Central India Agency",26
-"Central Province","Central Province",1
-"Central India Agency","Central India Agency",20
-"Central India Agency","Central India Agency",25
-"Central India Agency","Central India Agency",21
-"Bombay Presidency","Bombay Presidency",49
-"Bombay Presidency","Bombay Presidency",47
-"Bombay Presidency","Bombay Presidency",46
-"Bombay Presidency","Bombay Presidency",45
-"Bombay Presidency","Bombay Presidency",48
-"Hyderabad","Hyderabad",10
-"Hyderabad","Hyderabad",9
-"Hyderabad","Hyderabad",2
-"Central Province","Central Province",12
-"Hyderabad","Hyderabad",7
-"Hyderabad","Hyderabad",12
-"Hyderabad","Hyderabad",14
-"Hyderabad","Hyderabad",8
-"Hyderabad","Hyderabad",6
-"Hyderabad","Hyderabad",5
-"Hyderabad","Hyderabad",13
-"Hyderabad","Hyderabad",4
-"Hyderabad","Hyderabad",3
-"Hyderabad","Hyderabad",16
-"Hyderabad","Hyderabad",17
-"Hyderabad","Hyderabad",15
-"Hyderabad","Hyderabad",11
-"Madras Presidency","Madras Presidency",3
-"Madras Presidency","Madras Presidency",1
-"Madras Presidency","Madras Presidency",7
-"Madras Presidency","Madras Presidency",8
-"Madras Presidency","Madras Presidency",10
-"Madras Presidency","Madras Presidency",6
-"Madras Presidency","Madras Presidency",11
-"Madras Presidency","Madras Presidency",5
-"Mysore","Mysore",6
-"Madras Presidency","Madras Presidency",4
-"Madras Presidency","Madras Presidency",9
-"Madras Presidency","Madras Presidency",13
-"Madras Presidency","Madras Presidency",12
-"Mysore","Mysore",3
-"Mysore","Mysore",7
-"Mysore","Mysore",4
-"Mysore","Mysore",8
-"Mysore","Mysore",5
-"Mysore","Mysore",1
-"Mysore","Mysore",2
-"Madras Presidency","Madras Presidency",16
-"Madras Presidency","Madras Presidency",15
-"Madras Presidency","Madras Presidency",17
-"Madras Presidency","Madras Presidency",18
-"Madras Presidency","Madras Presidency",19
-"Madras Presidency","Madras Presidency",14
-"Madras Presidency","Madras Presidency",20
-"Madras Presidency","Madras Presidency",21
-"Madras Presidency","Madras Presidency",22
-"Bengal Province","Tributary State Orissa",4
-"Bengal Province","Tributary State Orissa",11
-"Bengal Province","Tributary State Orissa",10
-"Bengal Province","Tributary State Orissa",5
-"Bengal Province","Tributary State Orissa",9
-"Bengal Province","Tributary State Orissa",6
-"Bengal Province","Tributary State Orissa",8
-"Bengal Province","Tributary State Orissa",14
-"Bengal Province","Tributary State Orissa",13
-"Bengal Province","Tributary State Orissa",12
-"Bengal Province","Tributary State Orissa",1
-"Bengal Province","Tributary State Orissa",15
-"Central Province","Central Province",11
-"Central Province","Central Province",10
-"Central Province","Central Province",9
-"Central Province","Central Province",8
-"Central Province","Central Province",15
-"Central Province","Central Province",13
-"Central Province","Central Province",14
-"Central Province","Central Province",16
-"Central Province","Central Province",4
-"Central Province","Central Province",3
-"Central Province","Central Province",2
-"Central Province","Central Province",6
-"Central Province","Central Province",17
-"Central Province","Central Province",7
-"Berar","Berar",4
-"Berar","Berar",3
-"Berar","Berar",1
-"Berar","Berar",2
-"Berar","Berar",6
-"Berar","Berar",5
-"Central Province","Central Province",5
-"Central India Agency","Central India Agency",43
-"Central India Agency","Central India Agency",44
-"Central India Agency","Central India Agency",23
-"Bombay Presidency","Bombay Presidency",42
-"Bombay Presidency","Bombay Presidency",43
-"Bombay Presidency","Bombay Presidency",39
-"Rajputana Agency","Rajputana Agency",11
-"Bombay Presidency","Bombay Presidency",37
-"Central India Agency","Central India Agency",9
-"Central India Agency","Central India Agency",16
-"Assam Province","Assam Province",6
-"Bengal Province","Bengal",4
-"Central India Agency","Central India Agency",38
-"Rajputana Agency","Rajputana Agency",18
-"Bombay Presidency","Bombay Presidency",20
-"Bombay Presidency","Bombay Presidency",41
-"Bombay Presidency","Bombay Presidency",63
-"Jammu and Kashmir","Jammu and Kashmir",0
-"Unknown","Unknown",0
-"Sikkim","Sikkim",0
-"Bhutan","Bhutan",0
-"North East Frontier Agency","North East Frontier Agency",0
-"Manipur","Manipur",0
-"Nepal","Nepal",0
-"Bengal Province","Bihar",101
-"Goa","Goa",0
-"Bombay Presidency","Bombay Presidency",58
-"Rann of Kutch","Rann of Kutch",0
-"Bombay Presidency","Bombay Presidency",64
-"Rajputana Agency","Rajputana Agency",21
-"Daman","Daman",0
-"Mahe","Mahe",0
-"Coorg","Coorg",0
-"Yanam","Yanam",0
-"Naga tribes","Naga tribes",0
-"Karikal","Karikal",0
-"Pondicherry","Pondicherry",0
-"Bengal Province","Tributary State Orissa",7
-"Central India Agency","Central India Agency",22
-"Bombay Presidency","Bombay Presidency",33
-"Bombay Presidency","Bombay Presidency",52
+state_name,district_name,id
+Punjab,Punjab,10
+Punjab,Punjab,11
+Punjab,Punjab,12
+Punjab,Punjab,14
+Punjab,Punjab,1
+Punjab,Punjab,2
+Punjab,Punjab,3
+Central Province,Central Province,18
+Bengal Province,Bihar,6
+Punjab,Punjab,13
+Punjab,Punjab,16
+Punjab,Punjab,17
+Punjab,Punjab,9
+Punjab,Punjab,5
+Punjab,Punjab,4
+Punjab,Punjab,6
+Punjab,Punjab,8
+Punjab,Punjab,7
+Punjab,Punjab,15
+Central India Agency,Central India Agency,42
+Bengal Province,Bihar,8
+Bengal Province,Bihar,7
+Bengal Province,Bengal,11
+Bengal Province,Bihar,5
+Assam Province,Assam Province,11
+Assam Province,Assam Province,12
+Assam Province,Assam Province,9
+Assam Province,Assam Province,10
+Assam Province,Assam Province,8
+Assam Province,Assam Province,7
+Assam Province,Assam Province,4
+Assam Province,Assam Province,1
+Assam Province,Assam Province,2
+Assam Province,Assam Province,5
+Assam Province,Assam Province,3
+Bengal Province,Bengal,1
+Bengal Province,Bengal,12
+Bengal Province,Bengal,13
+Bengal Province,Bihar,2
+North West Province,North West Province,28
+North West Province,North West Province,29
+North West Province,North West Province,12
+North West Province,North West Province,10
+North West Province,North West Province,13
+North West Province,North West Province,6
+North West Province,North West Province,9
+North West Province,North West Province,7
+North West Province,North West Province,1
+North West Province,North West Province,2
+Punjab,Punjab,18
+North West Province,North West Province,3
+North West Province,North West Province,4
+North West Province,North West Province,8
+North West Province,North West Province,14
+North West Province,North West Province,17
+North West Province,North West Province,36
+North West Province,North West Province,35
+North West Province,North West Province,33
+North West Province,North West Province,21
+North West Province,North West Province,20
+North West Province,North West Province,22
+North West Province,North West Province,32
+North West Province,North West Province,23
+North West Province,North West Province,27
+Bengal Province,Bihar,1
+North West Province,North West Province,24
+North West Province,North West Province,5
+North West Province,North West Province,11
+North West Province,North West Province,15
+North West Province,North West Province,19
+North West Province,North West Province,18
+North West Province,North West Province,31
+North West Province,North West Province,25
+North West Province,North West Province,26
+North West Province,North West Province,40
+North West Province,North West Province,30
+North West Province,North West Province,41
+Bengal Province,Bihar,11
+North West Province,North West Province,44
+North West Province,North West Province,45
+North West Province,North West Province,46
+North West Province,North West Province,43
+North West Province,North West Province,42
+Bengal Province,Bihar,3
+Bengal Province,Bihar,4
+Bengal Province,Bihar,9
+Bengal Province,Bihar,12
+Bengal Province,Chota Nagpore,1
+Bengal Province,Chota Nagpore,5
+Bengal Province,Chota Nagpore,7
+Bengal Province,Chota Nagpore,4
+Bengal Province,Chota Nagpore,3
+Bengal Province,Chota Nagpore,2
+North West Province,North West Province,37
+Central India Agency,Central India Agency,34
+Central India Agency,Central India Agency,30
+Central India Agency,Central India Agency,33
+Central India Agency,Central India Agency,31
+Central India Agency,Central India Agency,39
+Central India Agency,Central India Agency,41
+Central India Agency,Central India Agency,37
+Central India Agency,Central India Agency,35
+Central India Agency,Central India Agency,32
+Central India Agency,Central India Agency,36
+Central India Agency,Central India Agency,40
+North West Province,North West Province,47
+North West Province,North West Province,48
+North West Province,North West Province,38
+Central India Agency,Central India Agency,46
+Central India Agency,Central India Agency,45
+North West Province,North West Province,39
+North West Province,North West Province,34
+Bengal Province,Chota Nagpore,6
+Bengal Province,Chota Nagpore,8
+Bengal Province,Chota Nagpore,9
+Bengal Province,Bengal,2
+Bengal Province,Bengal,5
+Bengal Province,Bengal,6
+Bengal Province,Bengal,9
+Bengal Province,Bengal,10
+Bengal Province,Bengal,8
+Bengal Province,Bengal,3
+Bengal Province,Bengal,7
+Bengal Province,Tributary State Orissa,3
+Bengal Province,Tributary State Orissa,16
+Bengal Province,Tributary State Orissa,17
+Madras Presidency,Madras Presidency,2
+Bengal Province,Tributary State Orissa,2
+Central India Agency,Central India Agency,28
+Central India Agency,Central India Agency,29
+Central India Agency,Central India Agency,27
+Rajputana Agency,Rajputana Agency,14
+Bombay Presidency,Bombay Presidency,62
+Bombay Presidency,Bombay Presidency,50
+Bombay Presidency,Bombay Presidency,12
+Bombay Presidency,Bombay Presidency,56
+Bombay Presidency,Bombay Presidency,51
+Bombay Presidency,Bombay Presidency,10
+Bombay Presidency,Bombay Presidency,13
+Bombay Presidency,Bombay Presidency,53
+Bombay Presidency,Bombay Presidency,57
+Bombay Presidency,Bombay Presidency,61
+Bombay Presidency,Bombay Presidency,60
+Bombay Presidency,Bombay Presidency,59
+Bombay Presidency,Bombay Presidency,55
+Bombay Presidency,Bombay Presidency,17
+Bombay Presidency,Bombay Presidency,15
+Bombay Presidency,Bombay Presidency,54
+Hyderabad,Hyderabad,1
+Bombay Presidency,Bombay Presidency,9
+Baroda,Baroda,4
+Bombay Presidency,Bombay Presidency,4
+Baroda,Baroda,3
+Bombay Presidency,Bombay Presidency,40
+Rajputana Agency,Rajputana Agency,13
+Bombay Presidency,Bombay Presidency,6
+Baroda,Baroda,1
+Bombay Presidency,Bombay Presidency,7
+Bombay Presidency,Bombay Presidency,5
+Bombay Presidency,Bombay Presidency,8
+Bombay Presidency,Bombay Presidency,32
+Bombay Presidency,Bombay Presidency,2
+Bombay Presidency,Bombay Presidency,1
+Bombay Presidency,Bombay Presidency,11
+Bombay Presidency,Bombay Presidency,3
+Bombay Presidency,Bombay Presidency,16
+Bombay Presidency,Bombay Presidency,22
+Bombay Presidency,Bombay Presidency,27
+Bombay Presidency,Bombay Presidency,28
+Bombay Presidency,Bombay Presidency,23
+Bombay Presidency,Bombay Presidency,26
+Bombay Presidency,Bombay Presidency,29
+Bombay Presidency,Bombay Presidency,31
+Baroda,Baroda,2
+Bombay Presidency,Bombay Presidency,30
+Bombay Presidency,Bombay Presidency,24
+Bombay Presidency,Bombay Presidency,25
+Bombay Presidency,Bombay Presidency,21
+Bombay Presidency,Bombay Presidency,18
+Bombay Presidency,Bombay Presidency,14
+Bombay Presidency,Bombay Presidency,19
+Bombay Presidency,Bombay Presidency,34
+Bombay Presidency,Bombay Presidency,35
+Rajputana Agency,Rajputana Agency,19
+Rajputana Agency,Rajputana Agency,16
+Central India Agency,Central India Agency,2
+Central India Agency,Central India Agency,3
+Rajputana Agency,Rajputana Agency,3
+Rajputana Agency,Rajputana Agency,5
+Rajputana Agency,Rajputana Agency,6
+Rajputana Agency,Rajputana Agency,4
+Rajputana Agency,Rajputana Agency,9
+Ajmer Merwara,Ajmer Merwara,1
+Rajputana Agency,Rajputana Agency,12
+Rajputana Agency,Rajputana Agency,10
+Rajputana Agency,Rajputana Agency,2
+North West Province,North West Province,16
+Rajputana Agency,Rajputana Agency,1
+Rajputana Agency,Rajputana Agency,15
+Ajmer Merwara,Ajmer Merwara,2
+Rajputana Agency,Rajputana Agency,20
+Rajputana Agency,Rajputana Agency,7
+Rajputana Agency,Rajputana Agency,8
+Bombay Presidency,Bombay Presidency,36
+Rajputana Agency,Rajputana Agency,17
+Bombay Presidency,Bombay Presidency,38
+Bombay Presidency,Bombay Presidency,44
+Central India Agency,Central India Agency,12
+Central India Agency,Central India Agency,19
+Central India Agency,Central India Agency,1
+Central India Agency,Central India Agency,5
+Central India Agency,Central India Agency,4
+Central India Agency,Central India Agency,10
+Central India Agency,Central India Agency,11
+Central India Agency,Central India Agency,13
+Central India Agency,Central India Agency,14
+Central India Agency,Central India Agency,17
+Central India Agency,Central India Agency,7
+Central India Agency,Central India Agency,6
+Central India Agency,Central India Agency,15
+Central India Agency,Central India Agency,8
+Central India Agency,Central India Agency,18
+Central India Agency,Central India Agency,24
+Central India Agency,Central India Agency,26
+Central Province,Central Province,1
+Central India Agency,Central India Agency,20
+Central India Agency,Central India Agency,25
+Central India Agency,Central India Agency,21
+Bombay Presidency,Bombay Presidency,49
+Bombay Presidency,Bombay Presidency,47
+Bombay Presidency,Bombay Presidency,46
+Bombay Presidency,Bombay Presidency,45
+Bombay Presidency,Bombay Presidency,48
+Hyderabad,Hyderabad,10
+Hyderabad,Hyderabad,9
+Hyderabad,Hyderabad,2
+Central Province,Central Province,12
+Hyderabad,Hyderabad,7
+Hyderabad,Hyderabad,12
+Hyderabad,Hyderabad,14
+Hyderabad,Hyderabad,8
+Hyderabad,Hyderabad,6
+Hyderabad,Hyderabad,5
+Hyderabad,Hyderabad,13
+Hyderabad,Hyderabad,4
+Hyderabad,Hyderabad,3
+Hyderabad,Hyderabad,16
+Hyderabad,Hyderabad,17
+Hyderabad,Hyderabad,15
+Hyderabad,Hyderabad,11
+Madras Presidency,Madras Presidency,3
+Madras Presidency,Madras Presidency,1
+Madras Presidency,Madras Presidency,7
+Madras Presidency,Madras Presidency,8
+Madras Presidency,Madras Presidency,10
+Madras Presidency,Madras Presidency,6
+Madras Presidency,Madras Presidency,11
+Madras Presidency,Madras Presidency,5
+Mysore,Mysore,6
+Madras Presidency,Madras Presidency,4
+Madras Presidency,Madras Presidency,9
+Madras Presidency,Madras Presidency,13
+Madras Presidency,Madras Presidency,12
+Mysore,Mysore,3
+Mysore,Mysore,7
+Mysore,Mysore,4
+Mysore,Mysore,8
+Mysore,Mysore,5
+Mysore,Mysore,1
+Mysore,Mysore,2
+Madras Presidency,Madras Presidency,16
+Madras Presidency,Madras Presidency,15
+Madras Presidency,Madras Presidency,17
+Madras Presidency,Madras Presidency,18
+Madras Presidency,Madras Presidency,19
+Madras Presidency,Madras Presidency,14
+Madras Presidency,Madras Presidency,20
+Madras Presidency,Madras Presidency,21
+Madras Presidency,Madras Presidency,22
+Bengal Province,Tributary State Orissa,4
+Bengal Province,Tributary State Orissa,11
+Bengal Province,Tributary State Orissa,10
+Bengal Province,Tributary State Orissa,5
+Bengal Province,Tributary State Orissa,9
+Bengal Province,Tributary State Orissa,6
+Bengal Province,Tributary State Orissa,8
+Bengal Province,Tributary State Orissa,14
+Bengal Province,Tributary State Orissa,13
+Bengal Province,Tributary State Orissa,12
+Bengal Province,Tributary State Orissa,1
+Bengal Province,Tributary State Orissa,15
+Central Province,Central Province,11
+Central Province,Central Province,10
+Central Province,Central Province,9
+Central Province,Central Province,8
+Central Province,Central Province,15
+Central Province,Central Province,13
+Central Province,Central Province,14
+Central Province,Central Province,16
+Central Province,Central Province,4
+Central Province,Central Province,3
+Central Province,Central Province,2
+Central Province,Central Province,6
+Central Province,Central Province,17
+Central Province,Central Province,7
+Berar,Berar,4
+Berar,Berar,3
+Berar,Berar,1
+Berar,Berar,2
+Berar,Berar,6
+Berar,Berar,5
+Central Province,Central Province,5
+Central India Agency,Central India Agency,43
+Central India Agency,Central India Agency,44
+Central India Agency,Central India Agency,23
+Bombay Presidency,Bombay Presidency,42
+Bombay Presidency,Bombay Presidency,43
+Bombay Presidency,Bombay Presidency,39
+Rajputana Agency,Rajputana Agency,11
+Bombay Presidency,Bombay Presidency,37
+Central India Agency,Central India Agency,9
+Central India Agency,Central India Agency,16
+Assam Province,Assam Province,6
+Bengal Province,Bengal,4
+Central India Agency,Central India Agency,38
+Rajputana Agency,Rajputana Agency,18
+Bombay Presidency,Bombay Presidency,20
+Bombay Presidency,Bombay Presidency,41
+Bombay Presidency,Bombay Presidency,63
+Jammu and Kashmir,Jammu and Kashmir,0
+Unknown,Unknown,0
+Sikkim,Sikkim,0
+North East Frontier Agency,North East Frontier Agency,0
+Manipur,Manipur,0
+Bengal Province,Bihar,101
+Goa,Goa,0
+Bombay Presidency,Bombay Presidency,58
+Rann of Kutch,Rann of Kutch,0
+Bombay Presidency,Bombay Presidency,64
+Rajputana Agency,Rajputana Agency,21
+Daman,Daman,0
+Mahe,Mahe,0
+Coorg,Coorg,0
+Yanam,Yanam,0
+Naga tribes,Naga tribes,0
+Karikal,Karikal,0
+Pondicherry,Pondicherry,0
+Bengal Province,Tributary State Orissa,7
+Central India Agency,Central India Agency,22
+Bombay Presidency,Bombay Presidency,33
+Bombay Presidency,Bombay Presidency,52
