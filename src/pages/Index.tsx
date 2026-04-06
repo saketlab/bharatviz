@@ -24,6 +24,7 @@ import Credits from '@/components/Credits';
 import MCPDocs from '@/components/MCPDocs';
 import { DistrictStats } from '@/components/DistrictStats';
 import { CityStats } from '@/components/CityStats';
+import { HistoricalEvolution } from '@/components/HistoricalEvolution';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping, detectDataType, getUniqueCategories, generateDefaultCategoryColors } from '@/lib/categoricalUtils';
 import { STATES_CITATION, NSSO_CITATION, getDistrictsCitationInfo, getCityCitationInfo } from '@/lib/citations';
@@ -62,7 +63,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.slice(1);
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'city-stats', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -463,7 +464,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'help', 'credits', 'mcp'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -1425,6 +1426,12 @@ const Index = () => {
                 className={tabTriggerClass}
               >
                 City Stats
+              </TabsTrigger>
+              <TabsTrigger
+                value="evolution"
+                className={tabTriggerClass}
+              >
+                Evolution
               </TabsTrigger>
               <TabsTrigger
                 value="help"
@@ -2418,6 +2425,10 @@ POST /api/v1/districts/map
 
           <div className={`space-y-6 ${activeTab === 'city-stats' ? 'block' : 'hidden'}`}>
             <CityStats darkMode={darkMode} />
+          </div>
+
+          <div className={`space-y-6 ${activeTab === 'evolution' ? 'block' : 'hidden'}`}>
+            <HistoricalEvolution darkMode={darkMode} />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'credits' ? 'block' : 'hidden'}`}>

@@ -1,0 +1,5633 @@
+{
+  "years": [
+    1872,
+    1881,
+    1891,
+    1901,
+    1911,
+    1921,
+    1931,
+    1941
+  ],
+  "nodes": [
+    {
+      "id": "1872:Ahmedabad",
+      "year": 1872,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Ahmedabad",
+      "year": 1881,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Ahmad Nagar",
+      "year": 1872,
+      "name": "Ahmad Nagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmad Nagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Ahmednagar",
+      "year": 1881,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmednagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Akalkote",
+      "year": 1872,
+      "name": "Akalkote",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkote",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Akalkot",
+      "year": 1881,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Rewakanta",
+      "year": 1872,
+      "name": "Rewakanta",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Rewakanta",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Balasinor",
+      "year": 1881,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Surgana",
+      "year": 1872,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Bansda",
+      "year": 1881,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Bariya",
+      "year": 1881,
+      "name": "Bariya",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Bariya",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Belgaum",
+      "year": 1872,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Belgaum",
+      "year": 1881,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Bhore",
+      "year": 1872,
+      "name": "Bhore",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhore",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Bhor",
+      "year": 1881,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Kaladgi",
+      "year": 1872,
+      "name": "Kaladgi",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Kaladgi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kaladgi",
+      "year": 1881,
+      "name": "Kaladgi",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Kaladgi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Broach",
+      "year": 1872,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Broach",
+      "year": 1881,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Cambay",
+      "year": 1872,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Combay",
+      "year": 1881,
+      "name": "Combay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Combay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Mewassee",
+      "year": 1872,
+      "name": "Mewassee",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Mewassee",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Chota Udepur",
+      "year": 1881,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Dhurrumpoor",
+      "year": 1872,
+      "name": "Dhurrumpoor",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dhurrumpoor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Dharampur",
+      "year": 1881,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Dharwar",
+      "year": 1872,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Dharwar",
+      "year": 1881,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Jamkhandi",
+      "year": 1872,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Jamkhandi",
+      "year": 1881,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Nuesies",
+      "year": 1872,
+      "name": "Nuesies",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Nuesies",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Janjira",
+      "year": 1881,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Jat",
+      "year": 1872,
+      "name": "Jat",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Jat",
+      "year": 1881,
+      "name": "Jat",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Jowar",
+      "year": 1872,
+      "name": "Jowar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jowar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Jawahar",
+      "year": 1881,
+      "name": "Jawahar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawahar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kadana",
+      "year": 1881,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Kaira",
+      "year": 1872,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kaira",
+      "year": 1881,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Kanara",
+      "year": 1872,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kanara",
+      "year": 1881,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Khandesh",
+      "year": 1872,
+      "name": "Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Khandesh",
+      "year": 1881,
+      "name": "Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Kolaba",
+      "year": 1872,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kolaba",
+      "year": 1881,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Kolapoor",
+      "year": 1872,
+      "name": "Kolapoor",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolapoor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Kolhapur",
+      "year": 1881,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Lunavada",
+      "year": 1881,
+      "name": "Lunavada",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunavada",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Mewas",
+      "year": 1881,
+      "name": "Mewas",
+      "type": "Princely states",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Meeruj",
+      "year": 1872,
+      "name": "Meeruj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Meeruj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Miraj",
+      "year": 1881,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Mudhole",
+      "year": 1872,
+      "name": "Mudhole",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhole",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Mudhol",
+      "year": 1881,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Nasik",
+      "year": 1872,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Nasik",
+      "year": 1881,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Juruh",
+      "year": 1872,
+      "name": "Juruh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Juruh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Oundh",
+      "year": 1881,
+      "name": "Oundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Oundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Panch Mahals",
+      "year": 1872,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": "Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Panch Mahals",
+      "year": 1881,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": "Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Baroda",
+      "year": 1872,
+      "name": "Baroda",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Baroda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Pandu Mehwas",
+      "year": 1881,
+      "name": "Pandu Mehwas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Pandu Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Phaltan",
+      "year": 1872,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Phaltan",
+      "year": 1881,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Poona",
+      "year": 1872,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Poona",
+      "year": 1881,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Raj Peepla",
+      "year": 1872,
+      "name": "Raj Peepla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Raj Peepla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Rajpipla",
+      "year": 1881,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Ramdurg",
+      "year": 1872,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Ramdurg",
+      "year": 1881,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Ratnagiri",
+      "year": 1872,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Ratnagiri",
+      "year": 1881,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sangli",
+      "year": 1881,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sanjeli",
+      "year": 1881,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Akraunee",
+      "year": 1872,
+      "name": "Akraunee",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Akraunee",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sankheda Mehwas",
+      "year": 1881,
+      "name": "Sankheda Mehwas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Satara",
+      "year": 1872,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Satara",
+      "year": 1881,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Savanur",
+      "year": 1872,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Savanur",
+      "year": 1881,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Sawuntwarree",
+      "year": 1872,
+      "name": "Sawuntwarree",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Sawuntwarree",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sawantvadi",
+      "year": 1881,
+      "name": "Sawantvadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Sawantvadi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Sholapur",
+      "year": 1872,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sholapur",
+      "year": 1881,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Sunth",
+      "year": 1881,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sunth",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Surat",
+      "year": 1872,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Surat",
+      "year": 1881,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Surgana",
+      "year": 1881,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Tanna",
+      "year": 1872,
+      "name": "Tanna",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Tanna",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Thana",
+      "year": 1881,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1872:Dangs",
+      "year": 1872,
+      "name": "Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1881:Dangs",
+      "year": 1881,
+      "name": "Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Ahmedabad",
+      "year": 1891,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Ahmednagar",
+      "year": 1891,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmednagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Akalkot",
+      "year": 1891,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Balasinor",
+      "year": 1891,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Bansda",
+      "year": 1891,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Bariya",
+      "year": 1891,
+      "name": "Bariya",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Bariya",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Belgaum",
+      "year": 1891,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Bhor",
+      "year": 1891,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Bijapur",
+      "year": 1891,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Bijapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Broach",
+      "year": 1891,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Cambay",
+      "year": 1891,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Chota Udepur",
+      "year": 1891,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Dharampur",
+      "year": 1891,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Dharwar",
+      "year": 1891,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Jamkhandi",
+      "year": 1891,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Janjira",
+      "year": 1891,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Jath",
+      "year": 1891,
+      "name": "Jath",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jath",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Jawahar",
+      "year": 1891,
+      "name": "Jawahar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawahar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Kadana",
+      "year": 1891,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Kaira",
+      "year": 1891,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Kanara",
+      "year": 1891,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Khandesh",
+      "year": 1891,
+      "name": "Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Kolaba",
+      "year": 1891,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Kolhapur",
+      "year": 1891,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Lunwara",
+      "year": 1891,
+      "name": "Lunwara",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunwara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Mewas",
+      "year": 1891,
+      "name": "Mewas",
+      "type": "Princely states",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Miraj",
+      "year": 1891,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Mudhol",
+      "year": 1891,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Nasik",
+      "year": 1891,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Oundh",
+      "year": 1891,
+      "name": "Oundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Oundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Panch Mahals",
+      "year": 1891,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": "Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Pandu Mehwas",
+      "year": 1891,
+      "name": "Pandu Mehwas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Pandu Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Phaltan",
+      "year": 1891,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Poona",
+      "year": 1891,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Rajpipla",
+      "year": 1891,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Ramdurg",
+      "year": 1891,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Ratnagiri",
+      "year": 1891,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Sangli",
+      "year": 1891,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Sanjeli",
+      "year": 1891,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Sankheda Mehwas",
+      "year": 1891,
+      "name": "Sankheda Mehwas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Satara",
+      "year": 1891,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Savanur",
+      "year": 1891,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Palanpur",
+      "geojsonScore": 0.63
+    },
+    {
+      "id": "1891:Sawantwadi",
+      "year": 1891,
+      "name": "Sawantwadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Sawantwadi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Sholapur",
+      "year": 1891,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Sunth",
+      "year": 1891,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sunth",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Surat",
+      "year": 1891,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Surgana",
+      "year": 1891,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:Thana",
+      "year": 1891,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1891:The Dangs",
+      "year": 1891,
+      "name": "The Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "The Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1901:Ahmedabad",
+      "year": 1901,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Ahmednagar",
+      "year": 1901,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Akalkot",
+      "year": 1901,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Balasinor",
+      "year": 1901,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Bansda",
+      "year": 1901,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Bariya",
+      "year": 1901,
+      "name": "Bariya",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Belgaum",
+      "year": 1901,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Bhor",
+      "year": 1901,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Bijapur",
+      "year": 1901,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Broach",
+      "year": 1901,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Cambay",
+      "year": 1901,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Chota Udepur",
+      "year": 1901,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Dharampur",
+      "year": 1901,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Dharwar",
+      "year": 1901,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Jamkhandi",
+      "year": 1901,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Janjira",
+      "year": 1901,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Jath",
+      "year": 1901,
+      "name": "Jath",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Jawahar",
+      "year": 1901,
+      "name": "Jawahar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Kadana",
+      "year": 1901,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Kaira",
+      "year": 1901,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Kanara",
+      "year": 1901,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Khandesh",
+      "year": 1901,
+      "name": "Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Kolaba",
+      "year": 1901,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Kolhapur",
+      "year": 1901,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Lunwara",
+      "year": 1901,
+      "name": "Lunwara",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Mewas",
+      "year": 1901,
+      "name": "Mewas",
+      "type": "Princely states",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Miraj",
+      "year": 1901,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Mudhol",
+      "year": 1901,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Nasik",
+      "year": 1901,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Oundh",
+      "year": 1901,
+      "name": "Oundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Panch Mahals",
+      "year": 1901,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Pandu Mehwas",
+      "year": 1901,
+      "name": "Pandu Mehwas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Phaltan",
+      "year": 1901,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Poona",
+      "year": 1901,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Rajpipla",
+      "year": 1901,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Ramdurg",
+      "year": 1901,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Ratnagiri",
+      "year": 1901,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sangli",
+      "year": 1901,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sanjeli",
+      "year": 1901,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sankheda Mehwas",
+      "year": 1901,
+      "name": "Sankheda Mehwas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Satara",
+      "year": 1901,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Savanur",
+      "year": 1901,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sawantwadi",
+      "year": 1901,
+      "name": "Sawantwadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sholapur",
+      "year": 1901,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Sunth",
+      "year": 1901,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Surat",
+      "year": 1901,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Surgana",
+      "year": 1901,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:Thana",
+      "year": 1901,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1901:The Dangs",
+      "year": 1901,
+      "name": "The Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1911:Ahmadabad",
+      "year": 1911,
+      "name": "Ahmadabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmadabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Ahmadnagar",
+      "year": 1911,
+      "name": "Ahmadnagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmadnagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Akalkot",
+      "year": 1911,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Balasinor",
+      "year": 1911,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Bansda",
+      "year": 1911,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Bariya",
+      "year": 1911,
+      "name": "Bariya",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Bariya",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Belgaum",
+      "year": 1911,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Bhor",
+      "year": 1911,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Bijapur",
+      "year": 1911,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Bijapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Broach",
+      "year": 1911,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Cambay",
+      "year": 1911,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Chota Udepur",
+      "year": 1911,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Dharampur",
+      "year": 1911,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Dharwar",
+      "year": 1911,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Jamkhandi",
+      "year": 1911,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Janjira",
+      "year": 1911,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Jat",
+      "year": 1911,
+      "name": "Jat",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Jawahar",
+      "year": 1911,
+      "name": "Jawahar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawahar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Kadana",
+      "year": 1911,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Kaira",
+      "year": 1911,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Kanara",
+      "year": 1911,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Khandesh East",
+      "year": 1911,
+      "name": "Khandesh East",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh East",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Khandesh West",
+      "year": 1911,
+      "name": "Khandesh West",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh West",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Kolaba",
+      "year": 1911,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Kolhapur",
+      "year": 1911,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Lunwara",
+      "year": 1911,
+      "name": "Lunwara",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunwara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Mewas",
+      "year": 1911,
+      "name": "Mewas",
+      "type": "Princely states",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Miraj",
+      "year": 1911,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Mudhol",
+      "year": 1911,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Nasik",
+      "year": 1911,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Oundh",
+      "year": 1911,
+      "name": "Oundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Oundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Panch Mahals",
+      "year": 1911,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": "Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Pandu Mehwas",
+      "year": 1911,
+      "name": "Pandu Mehwas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Pandu Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Phaltan",
+      "year": 1911,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Poona",
+      "year": 1911,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Rajpipla",
+      "year": 1911,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Ramdurg",
+      "year": 1911,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Ratnagiri",
+      "year": 1911,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sangli",
+      "year": 1911,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sanjeli",
+      "year": 1911,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sankheda Mehwas",
+      "year": 1911,
+      "name": "Sankheda Mehwas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Satara",
+      "year": 1911,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 0.67
+    },
+    {
+      "id": "1911:Savanur",
+      "year": 1911,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sawantwadi",
+      "year": 1911,
+      "name": "Sawantwadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Sawantwadi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sholapur",
+      "year": 1911,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Sunth",
+      "year": 1911,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sunth",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Surat",
+      "year": 1911,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Surgana",
+      "year": 1911,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:Thana",
+      "year": 1911,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1911:The Dangs",
+      "year": 1911,
+      "name": "The Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "The Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Ahmedabad",
+      "year": 1921,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Ahmednagar",
+      "year": 1921,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmednagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Akalkot",
+      "year": 1921,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Balasinor",
+      "year": 1921,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Bansda",
+      "year": 1921,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Baria",
+      "year": 1921,
+      "name": "Baria",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Baria",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Belgaum",
+      "year": 1921,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Bhor",
+      "year": 1921,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Bijapur",
+      "year": 1921,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Bijapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Broach",
+      "year": 1921,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Cambay",
+      "year": 1921,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Chota Udepur",
+      "year": 1921,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Dharampur",
+      "year": 1921,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Dharwar",
+      "year": 1921,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Jamkhandi",
+      "year": 1921,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Janjira",
+      "year": 1921,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Jath",
+      "year": 1921,
+      "name": "Jath",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jath",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Jawhar",
+      "year": 1921,
+      "name": "Jawhar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawhar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Kadana",
+      "year": 1921,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Kaira",
+      "year": 1921,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Kanara",
+      "year": 1921,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Khandesh East",
+      "year": 1921,
+      "name": "Khandesh East",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh East",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Khandesh West",
+      "year": 1921,
+      "name": "Khandesh West",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh West",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Kolaba",
+      "year": 1921,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Kolhapur",
+      "year": 1921,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Lunawara",
+      "year": 1921,
+      "name": "Lunawara",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunawara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Sankheda Mewas",
+      "year": 1921,
+      "name": "Sankheda Mewas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Miraj",
+      "year": 1921,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Mudhol",
+      "year": 1921,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Nasik",
+      "year": 1921,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Oundh",
+      "year": 1921,
+      "name": "Oundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Oundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Panch Mahals",
+      "year": 1921,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": "Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Pandu Mewas",
+      "year": 1921,
+      "name": "Pandu Mewas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Pandu Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Phaltan",
+      "year": 1921,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Poona",
+      "year": 1921,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Rajpipla",
+      "year": 1921,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Ramdurg",
+      "year": 1921,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Ratnagiri",
+      "year": 1921,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Sangli",
+      "year": 1921,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Sanjeli",
+      "year": 1921,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Satara",
+      "year": 1921,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Savanur",
+      "year": 1921,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Savantvari",
+      "year": 1921,
+      "name": "Savantvari",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Savantvari",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Sholapur",
+      "year": 1921,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Sunth",
+      "year": 1921,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sunth",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Surat",
+      "year": 1921,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Surgana",
+      "year": 1921,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Thana",
+      "year": 1921,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Bombay Suburban",
+      "year": 1921,
+      "name": "Bombay Suburban",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Bombay Suburban",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1921:Dangs",
+      "year": 1921,
+      "name": "Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Ahmedabad",
+      "year": 1931,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Ahmednagar",
+      "year": 1931,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmednagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Akalkot",
+      "year": 1931,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Balasinor",
+      "year": 1931,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Bansda",
+      "year": 1931,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Devgad Baria",
+      "year": 1931,
+      "name": "Devgad Baria",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1931:Belgaum",
+      "year": 1931,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Bhor",
+      "year": 1931,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Bijapur",
+      "year": 1931,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Bijapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Broach",
+      "year": 1931,
+      "name": "Broach",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Cambay",
+      "year": 1931,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Chota Udepur",
+      "year": 1931,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Dharampur",
+      "year": 1931,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Dharwar",
+      "year": 1931,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Jamkhandi",
+      "year": 1931,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Janjira",
+      "year": 1931,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Jath",
+      "year": 1931,
+      "name": "Jath",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jath",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Jawhar",
+      "year": 1931,
+      "name": "Jawhar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawhar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Kadana",
+      "year": 1931,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Kaira",
+      "year": 1931,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Kanara",
+      "year": 1931,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Khandesh East",
+      "year": 1931,
+      "name": "Khandesh East",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh East",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Khandesh West",
+      "year": 1931,
+      "name": "Khandesh West",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "Khandesh West",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Kolaba",
+      "year": 1931,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Kolhapur",
+      "year": 1931,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Lunawada",
+      "year": 1931,
+      "name": "Lunawada",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunawada",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Sankheda Mewas",
+      "year": 1931,
+      "name": "Sankheda Mewas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Miraj",
+      "year": 1931,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Mudhol",
+      "year": 1931,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Nasik",
+      "year": 1931,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Aundh",
+      "year": 1931,
+      "name": "Aundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Aundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Panch Mahals",
+      "year": 1931,
+      "name": "Panch Mahals",
+      "type": "British districts",
+      "chainId": 27,
+      "color": "#3d52d6",
+      "geojsonMatch": null,
+      "geojsonScore": 0
+    },
+    {
+      "id": "1931:Pandu Mewas",
+      "year": 1931,
+      "name": "Pandu Mewas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Sankheda Mewas",
+      "geojsonScore": 0.64
+    },
+    {
+      "id": "1931:Phaltan",
+      "year": 1931,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Poona",
+      "year": 1931,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Rajpipla",
+      "year": 1931,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Ramdurg",
+      "year": 1931,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Ratnagiri",
+      "year": 1931,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Sangli",
+      "year": 1931,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Sanjeli",
+      "year": 1931,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Satara",
+      "year": 1931,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Savanur",
+      "year": 1931,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Savantvadi",
+      "year": 1931,
+      "name": "Savantvadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Savantvadi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Sholapur",
+      "year": 1931,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Santh",
+      "year": 1931,
+      "name": "Santh",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Santh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Surat",
+      "year": 1931,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Surgana",
+      "year": 1931,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Thana",
+      "year": 1931,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Bombay Suburban",
+      "year": 1931,
+      "name": "Bombay Suburban",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Bombay Suburban",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1931:Dangs",
+      "year": 1931,
+      "name": "Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "Dangs",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Ahmedabad",
+      "year": 1941,
+      "name": "Ahmedabad",
+      "type": "British districts",
+      "chainId": 1,
+      "color": "#299ec2",
+      "geojsonMatch": "Ahmedabad",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Ahmednagar",
+      "year": 1941,
+      "name": "Ahmednagar",
+      "type": "British districts",
+      "chainId": 0,
+      "color": "#228ba0",
+      "geojsonMatch": "Ahmednagar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Akalkot",
+      "year": 1941,
+      "name": "Akalkot",
+      "type": "Princely states",
+      "chainId": 2,
+      "color": "#a02222",
+      "geojsonMatch": "Akalkot",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Balasinor",
+      "year": 1941,
+      "name": "Balasinor",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Balasinor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Bansda",
+      "year": 1941,
+      "name": "Bansda",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Bansda",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Baria",
+      "year": 1941,
+      "name": "Baria",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Baria",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Belgaum",
+      "year": 1941,
+      "name": "Belgaum",
+      "type": "British districts",
+      "chainId": 5,
+      "color": "#3da8d6",
+      "geojsonMatch": "Belgaum",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Bhor",
+      "year": 1941,
+      "name": "Bhor",
+      "type": "Princely states",
+      "chainId": 6,
+      "color": "#a03122",
+      "geojsonMatch": "Bhor",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Bijapur",
+      "year": 1941,
+      "name": "Bijapur",
+      "type": "British districts",
+      "chainId": 17,
+      "color": "#225ba0",
+      "geojsonMatch": "Bijapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Broach and Panch Mahals",
+      "year": 1941,
+      "name": "Broach and Panch Mahals",
+      "type": "British districts",
+      "chainId": 7,
+      "color": "#2274a0",
+      "geojsonMatch": "Broach and Panch Mahals",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Cambay",
+      "year": 1941,
+      "name": "Cambay",
+      "type": "Princely states",
+      "chainId": 8,
+      "color": "#c24229",
+      "geojsonMatch": "Cambay",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Chota Udepur",
+      "year": 1941,
+      "name": "Chota Udepur",
+      "type": "Princely states",
+      "chainId": 23,
+      "color": "#c27d29",
+      "geojsonMatch": "Chota Udepur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Dharampur",
+      "year": 1941,
+      "name": "Dharampur",
+      "type": "Princely states",
+      "chainId": 11,
+      "color": "#a04122",
+      "geojsonMatch": "Dharampur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Dharwar",
+      "year": 1941,
+      "name": "Dharwar",
+      "type": "British districts",
+      "chainId": 10,
+      "color": "#2982c2",
+      "geojsonMatch": "Dharwar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Jamkhandi",
+      "year": 1941,
+      "name": "Jamkhandi",
+      "type": "Princely states",
+      "chainId": 12,
+      "color": "#c25729",
+      "geojsonMatch": "Jamkhandi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Janjira",
+      "year": 1941,
+      "name": "Janjira",
+      "type": "Princely states",
+      "chainId": 26,
+      "color": "#a07222",
+      "geojsonMatch": "Janjira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Jath",
+      "year": 1941,
+      "name": "Jath",
+      "type": "Princely states",
+      "chainId": 13,
+      "color": "#d6703d",
+      "geojsonMatch": "Jath",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Jawhar",
+      "year": 1941,
+      "name": "Jawhar",
+      "type": "Princely states",
+      "chainId": 14,
+      "color": "#a05222",
+      "geojsonMatch": "Jawhar",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Kadana",
+      "year": 1941,
+      "name": "Kadana",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Kadana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Kaira",
+      "year": 1941,
+      "name": "Kaira",
+      "type": "British districts",
+      "chainId": 16,
+      "color": "#3d8cd6",
+      "geojsonMatch": "Kaira",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Kanara",
+      "year": 1941,
+      "name": "Kanara",
+      "type": "British districts",
+      "chainId": 18,
+      "color": "#2964c2",
+      "geojsonMatch": "Kanara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:East Khandesh",
+      "year": 1941,
+      "name": "East Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "East Khandesh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:West Khandesh",
+      "year": 1941,
+      "name": "West Khandesh",
+      "type": "British districts",
+      "chainId": 19,
+      "color": "#3d6ed6",
+      "geojsonMatch": "West Khandesh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Kolaba",
+      "year": 1941,
+      "name": "Kolaba",
+      "type": "British districts",
+      "chainId": 20,
+      "color": "#2244a0",
+      "geojsonMatch": "Kolaba",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Kolhapur",
+      "year": 1941,
+      "name": "Kolhapur",
+      "type": "Princely states",
+      "chainId": 21,
+      "color": "#d6853d",
+      "geojsonMatch": "Kolhapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Lunawada",
+      "year": 1941,
+      "name": "Lunawada",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Lunawada",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sankheda Mewas",
+      "year": 1941,
+      "name": "Sankheda Mewas",
+      "type": "Princely states",
+      "chainId": 3,
+      "color": "#c23129",
+      "geojsonMatch": "Sankheda Mewas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Miraj",
+      "year": 1941,
+      "name": "Miraj",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Miraj",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Mudhol",
+      "year": 1941,
+      "name": "Mudhol",
+      "type": "Princely states",
+      "chainId": 24,
+      "color": "#d6963d",
+      "geojsonMatch": "Mudhol",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Nasik",
+      "year": 1941,
+      "name": "Nasik",
+      "type": "British districts",
+      "chainId": 25,
+      "color": "#2948c2",
+      "geojsonMatch": "Nasik",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Aundh",
+      "year": 1941,
+      "name": "Aundh",
+      "type": "Princely states",
+      "chainId": 15,
+      "color": "#c26929",
+      "geojsonMatch": "Aundh",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Pandu Mehwas",
+      "year": 1941,
+      "name": "Pandu Mehwas",
+      "type": "Princely states",
+      "chainId": 4,
+      "color": "#d64a3d",
+      "geojsonMatch": "Pandu Mehwas",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Phaltan",
+      "year": 1941,
+      "name": "Phaltan",
+      "type": "Princely states",
+      "chainId": 28,
+      "color": "#c28f29",
+      "geojsonMatch": "Phaltan",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Poona",
+      "year": 1941,
+      "name": "Poona",
+      "type": "British districts",
+      "chainId": 29,
+      "color": "#222aa0",
+      "geojsonMatch": "Poona",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Rajpipla",
+      "year": 1941,
+      "name": "Rajpipla",
+      "type": "Princely states",
+      "chainId": 30,
+      "color": "#d6ab3d",
+      "geojsonMatch": "Rajpipla",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Ramdurg",
+      "year": 1941,
+      "name": "Ramdurg",
+      "type": "Princely states",
+      "chainId": 31,
+      "color": "#a08022",
+      "geojsonMatch": "Ramdurg",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Ratnagiri",
+      "year": 1941,
+      "name": "Ratnagiri",
+      "type": "British districts",
+      "chainId": 32,
+      "color": "#2929c2",
+      "geojsonMatch": "Ratnagiri",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sangli",
+      "year": 1941,
+      "name": "Sangli",
+      "type": "Princely states",
+      "chainId": 22,
+      "color": "#a06122",
+      "geojsonMatch": "Sangli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sanjeli",
+      "year": 1941,
+      "name": "Sanjeli",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sanjeli",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Satara",
+      "year": 1941,
+      "name": "Satara",
+      "type": "British districts",
+      "chainId": 34,
+      "color": "#483dd6",
+      "geojsonMatch": "Satara",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Savanur",
+      "year": 1941,
+      "name": "Savanur",
+      "type": "Princely states",
+      "chainId": 35,
+      "color": "#d6bd3d",
+      "geojsonMatch": "Savanur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sawantwadi",
+      "year": 1941,
+      "name": "Sawantwadi",
+      "type": "Princely states",
+      "chainId": 36,
+      "color": "#a09122",
+      "geojsonMatch": "Sawantwadi",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sholapur",
+      "year": 1941,
+      "name": "Sholapur",
+      "type": "British districts",
+      "chainId": 37,
+      "color": "#3122a0",
+      "geojsonMatch": "Sholapur",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Sunth",
+      "year": 1941,
+      "name": "Sunth",
+      "type": "Princely states",
+      "chainId": 33,
+      "color": "#c2a329",
+      "geojsonMatch": "Sunth",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Surat",
+      "year": 1941,
+      "name": "Surat",
+      "type": "British districts",
+      "chainId": 38,
+      "color": "#4529c2",
+      "geojsonMatch": "Surat",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Surgana",
+      "year": 1941,
+      "name": "Surgana",
+      "type": "Princely states",
+      "chainId": 39,
+      "color": "#c2b529",
+      "geojsonMatch": "Surgana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Thana",
+      "year": 1941,
+      "name": "Thana",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Thana",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Bombay Suburban",
+      "year": 1941,
+      "name": "Bombay Suburban",
+      "type": "British districts",
+      "chainId": 40,
+      "color": "#643dd6",
+      "geojsonMatch": "Bombay Suburban",
+      "geojsonScore": 1
+    },
+    {
+      "id": "1941:Dangs",
+      "year": 1941,
+      "name": "Dangs",
+      "type": "Princely states",
+      "chainId": 9,
+      "color": "#d65e3d",
+      "geojsonMatch": "Dangs",
+      "geojsonScore": 1
+    }
+  ],
+  "links": [
+    {
+      "sourceId": "1872:Ahmedabad",
+      "targetId": "1881:Ahmedabad"
+    },
+    {
+      "sourceId": "1872:Ahmad Nagar",
+      "targetId": "1881:Ahmednagar"
+    },
+    {
+      "sourceId": "1872:Akalkote",
+      "targetId": "1881:Akalkot"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Balasinor"
+    },
+    {
+      "sourceId": "1872:Surgana",
+      "targetId": "1881:Bansda"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Bariya"
+    },
+    {
+      "sourceId": "1872:Belgaum",
+      "targetId": "1881:Belgaum"
+    },
+    {
+      "sourceId": "1872:Bhore",
+      "targetId": "1881:Bhor"
+    },
+    {
+      "sourceId": "1872:Kaladgi",
+      "targetId": "1881:Kaladgi"
+    },
+    {
+      "sourceId": "1872:Broach",
+      "targetId": "1881:Broach"
+    },
+    {
+      "sourceId": "1872:Cambay",
+      "targetId": "1881:Combay"
+    },
+    {
+      "sourceId": "1872:Mewassee",
+      "targetId": "1881:Chota Udepur"
+    },
+    {
+      "sourceId": "1872:Dhurrumpoor",
+      "targetId": "1881:Dharampur"
+    },
+    {
+      "sourceId": "1872:Dharwar",
+      "targetId": "1881:Dharwar"
+    },
+    {
+      "sourceId": "1872:Jamkhandi",
+      "targetId": "1881:Jamkhandi"
+    },
+    {
+      "sourceId": "1872:Nuesies",
+      "targetId": "1881:Janjira"
+    },
+    {
+      "sourceId": "1872:Jat",
+      "targetId": "1881:Jat"
+    },
+    {
+      "sourceId": "1872:Jowar",
+      "targetId": "1881:Jawahar"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Kadana"
+    },
+    {
+      "sourceId": "1872:Kaira",
+      "targetId": "1881:Kaira"
+    },
+    {
+      "sourceId": "1872:Kanara",
+      "targetId": "1881:Kanara"
+    },
+    {
+      "sourceId": "1872:Khandesh",
+      "targetId": "1881:Khandesh"
+    },
+    {
+      "sourceId": "1872:Khandesh",
+      "targetId": "1881:Khandesh"
+    },
+    {
+      "sourceId": "1872:Kolaba",
+      "targetId": "1881:Kolaba"
+    },
+    {
+      "sourceId": "1872:Kolapoor",
+      "targetId": "1881:Kolhapur"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Lunavada"
+    },
+    {
+      "sourceId": "1872:Khandesh",
+      "targetId": "1881:Mewas"
+    },
+    {
+      "sourceId": "1872:Meeruj",
+      "targetId": "1881:Miraj"
+    },
+    {
+      "sourceId": "1872:Mudhole",
+      "targetId": "1881:Mudhol"
+    },
+    {
+      "sourceId": "1872:Nasik",
+      "targetId": "1881:Nasik"
+    },
+    {
+      "sourceId": "1872:Juruh",
+      "targetId": "1881:Oundh"
+    },
+    {
+      "sourceId": "1872:Panch Mahals",
+      "targetId": "1881:Panch Mahals"
+    },
+    {
+      "sourceId": "1872:Baroda",
+      "targetId": "1881:Pandu Mehwas"
+    },
+    {
+      "sourceId": "1872:Phaltan",
+      "targetId": "1881:Phaltan"
+    },
+    {
+      "sourceId": "1872:Poona",
+      "targetId": "1881:Poona"
+    },
+    {
+      "sourceId": "1872:Raj Peepla",
+      "targetId": "1881:Rajpipla"
+    },
+    {
+      "sourceId": "1872:Ramdurg",
+      "targetId": "1881:Ramdurg"
+    },
+    {
+      "sourceId": "1872:Ramdurg",
+      "targetId": "1881:Ramdurg"
+    },
+    {
+      "sourceId": "1872:Ratnagiri",
+      "targetId": "1881:Ratnagiri"
+    },
+    {
+      "sourceId": "1872:Meeruj",
+      "targetId": "1881:Sangli"
+    },
+    {
+      "sourceId": "1872:Meeruj",
+      "targetId": "1881:Sangli"
+    },
+    {
+      "sourceId": "1872:Meeruj",
+      "targetId": "1881:Sangli"
+    },
+    {
+      "sourceId": "1872:Meeruj",
+      "targetId": "1881:Sangli"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Sanjeli"
+    },
+    {
+      "sourceId": "1872:Akraunee",
+      "targetId": "1881:Sankheda Mehwas"
+    },
+    {
+      "sourceId": "1872:Satara",
+      "targetId": "1881:Satara"
+    },
+    {
+      "sourceId": "1872:Savanur",
+      "targetId": "1881:Savanur"
+    },
+    {
+      "sourceId": "1872:Sawuntwarree",
+      "targetId": "1881:Sawantvadi"
+    },
+    {
+      "sourceId": "1872:Sholapur",
+      "targetId": "1881:Sholapur"
+    },
+    {
+      "sourceId": "1872:Rewakanta",
+      "targetId": "1881:Sunth"
+    },
+    {
+      "sourceId": "1872:Surat",
+      "targetId": "1881:Surat"
+    },
+    {
+      "sourceId": "1872:Surgana",
+      "targetId": "1881:Surgana"
+    },
+    {
+      "sourceId": "1872:Tanna",
+      "targetId": "1881:Thana"
+    },
+    {
+      "sourceId": "1872:Tanna",
+      "targetId": "1881:Thana"
+    },
+    {
+      "sourceId": "1872:Dangs",
+      "targetId": "1881:Dangs"
+    },
+    {
+      "sourceId": "1881:Ahmedabad",
+      "targetId": "1891:Ahmedabad"
+    },
+    {
+      "sourceId": "1881:Ahmednagar",
+      "targetId": "1891:Ahmednagar"
+    },
+    {
+      "sourceId": "1881:Akalkot",
+      "targetId": "1891:Akalkot"
+    },
+    {
+      "sourceId": "1881:Balasinor",
+      "targetId": "1891:Balasinor"
+    },
+    {
+      "sourceId": "1881:Bansda",
+      "targetId": "1891:Bansda"
+    },
+    {
+      "sourceId": "1881:Bariya",
+      "targetId": "1891:Bariya"
+    },
+    {
+      "sourceId": "1881:Belgaum",
+      "targetId": "1891:Belgaum"
+    },
+    {
+      "sourceId": "1881:Bhor",
+      "targetId": "1891:Bhor"
+    },
+    {
+      "sourceId": "1881:Kaladgi",
+      "targetId": "1891:Bijapur"
+    },
+    {
+      "sourceId": "1881:Broach",
+      "targetId": "1891:Broach"
+    },
+    {
+      "sourceId": "1881:Combay",
+      "targetId": "1891:Cambay"
+    },
+    {
+      "sourceId": "1881:Chota Udepur",
+      "targetId": "1891:Chota Udepur"
+    },
+    {
+      "sourceId": "1881:Dharampur",
+      "targetId": "1891:Dharampur"
+    },
+    {
+      "sourceId": "1881:Dharwar",
+      "targetId": "1891:Dharwar"
+    },
+    {
+      "sourceId": "1881:Jamkhandi",
+      "targetId": "1891:Jamkhandi"
+    },
+    {
+      "sourceId": "1881:Janjira",
+      "targetId": "1891:Janjira"
+    },
+    {
+      "sourceId": "1881:Jat",
+      "targetId": "1891:Jath"
+    },
+    {
+      "sourceId": "1881:Jawahar",
+      "targetId": "1891:Jawahar"
+    },
+    {
+      "sourceId": "1881:Kadana",
+      "targetId": "1891:Kadana"
+    },
+    {
+      "sourceId": "1881:Kaira",
+      "targetId": "1891:Kaira"
+    },
+    {
+      "sourceId": "1881:Kanara",
+      "targetId": "1891:Kanara"
+    },
+    {
+      "sourceId": "1881:Khandesh",
+      "targetId": "1891:Khandesh"
+    },
+    {
+      "sourceId": "1881:Khandesh",
+      "targetId": "1891:Khandesh"
+    },
+    {
+      "sourceId": "1881:Kolaba",
+      "targetId": "1891:Kolaba"
+    },
+    {
+      "sourceId": "1881:Kolhapur",
+      "targetId": "1891:Kolhapur"
+    },
+    {
+      "sourceId": "1881:Lunavada",
+      "targetId": "1891:Lunwara"
+    },
+    {
+      "sourceId": "1881:Mewas",
+      "targetId": "1891:Mewas"
+    },
+    {
+      "sourceId": "1881:Miraj",
+      "targetId": "1891:Miraj"
+    },
+    {
+      "sourceId": "1881:Mudhol",
+      "targetId": "1891:Mudhol"
+    },
+    {
+      "sourceId": "1881:Nasik",
+      "targetId": "1891:Nasik"
+    },
+    {
+      "sourceId": "1881:Oundh",
+      "targetId": "1891:Oundh"
+    },
+    {
+      "sourceId": "1881:Panch Mahals",
+      "targetId": "1891:Panch Mahals"
+    },
+    {
+      "sourceId": "1881:Pandu Mehwas",
+      "targetId": "1891:Pandu Mehwas"
+    },
+    {
+      "sourceId": "1881:Phaltan",
+      "targetId": "1891:Phaltan"
+    },
+    {
+      "sourceId": "1881:Poona",
+      "targetId": "1891:Poona"
+    },
+    {
+      "sourceId": "1881:Rajpipla",
+      "targetId": "1891:Rajpipla"
+    },
+    {
+      "sourceId": "1881:Ramdurg",
+      "targetId": "1891:Ramdurg"
+    },
+    {
+      "sourceId": "1881:Ramdurg",
+      "targetId": "1891:Ramdurg"
+    },
+    {
+      "sourceId": "1881:Ratnagiri",
+      "targetId": "1891:Ratnagiri"
+    },
+    {
+      "sourceId": "1881:Sangli",
+      "targetId": "1891:Sangli"
+    },
+    {
+      "sourceId": "1881:Sangli",
+      "targetId": "1891:Sangli"
+    },
+    {
+      "sourceId": "1881:Sangli",
+      "targetId": "1891:Sangli"
+    },
+    {
+      "sourceId": "1881:Sangli",
+      "targetId": "1891:Sangli"
+    },
+    {
+      "sourceId": "1881:Sanjeli",
+      "targetId": "1891:Sanjeli"
+    },
+    {
+      "sourceId": "1881:Sankheda Mehwas",
+      "targetId": "1891:Sankheda Mehwas"
+    },
+    {
+      "sourceId": "1881:Satara",
+      "targetId": "1891:Satara"
+    },
+    {
+      "sourceId": "1881:Savanur",
+      "targetId": "1891:Savanur"
+    },
+    {
+      "sourceId": "1881:Sawantvadi",
+      "targetId": "1891:Sawantwadi"
+    },
+    {
+      "sourceId": "1881:Sholapur",
+      "targetId": "1891:Sholapur"
+    },
+    {
+      "sourceId": "1881:Sunth",
+      "targetId": "1891:Sunth"
+    },
+    {
+      "sourceId": "1881:Surat",
+      "targetId": "1891:Surat"
+    },
+    {
+      "sourceId": "1881:Surgana",
+      "targetId": "1891:Surgana"
+    },
+    {
+      "sourceId": "1881:Thana",
+      "targetId": "1891:Thana"
+    },
+    {
+      "sourceId": "1881:Thana",
+      "targetId": "1891:Thana"
+    },
+    {
+      "sourceId": "1881:Dangs",
+      "targetId": "1891:The Dangs"
+    },
+    {
+      "sourceId": "1891:Ahmedabad",
+      "targetId": "1901:Ahmedabad"
+    },
+    {
+      "sourceId": "1891:Ahmednagar",
+      "targetId": "1901:Ahmednagar"
+    },
+    {
+      "sourceId": "1891:Akalkot",
+      "targetId": "1901:Akalkot"
+    },
+    {
+      "sourceId": "1891:Balasinor",
+      "targetId": "1901:Balasinor"
+    },
+    {
+      "sourceId": "1891:Bansda",
+      "targetId": "1901:Bansda"
+    },
+    {
+      "sourceId": "1891:Bariya",
+      "targetId": "1901:Bariya"
+    },
+    {
+      "sourceId": "1891:Belgaum",
+      "targetId": "1901:Belgaum"
+    },
+    {
+      "sourceId": "1891:Bhor",
+      "targetId": "1901:Bhor"
+    },
+    {
+      "sourceId": "1891:Bijapur",
+      "targetId": "1901:Bijapur"
+    },
+    {
+      "sourceId": "1891:Broach",
+      "targetId": "1901:Broach"
+    },
+    {
+      "sourceId": "1891:Cambay",
+      "targetId": "1901:Cambay"
+    },
+    {
+      "sourceId": "1891:Chota Udepur",
+      "targetId": "1901:Chota Udepur"
+    },
+    {
+      "sourceId": "1891:Dharampur",
+      "targetId": "1901:Dharampur"
+    },
+    {
+      "sourceId": "1891:Dharwar",
+      "targetId": "1901:Dharwar"
+    },
+    {
+      "sourceId": "1891:Jamkhandi",
+      "targetId": "1901:Jamkhandi"
+    },
+    {
+      "sourceId": "1891:Janjira",
+      "targetId": "1901:Janjira"
+    },
+    {
+      "sourceId": "1891:Jath",
+      "targetId": "1901:Jath"
+    },
+    {
+      "sourceId": "1891:Jawahar",
+      "targetId": "1901:Jawahar"
+    },
+    {
+      "sourceId": "1891:Kadana",
+      "targetId": "1901:Kadana"
+    },
+    {
+      "sourceId": "1891:Kaira",
+      "targetId": "1901:Kaira"
+    },
+    {
+      "sourceId": "1891:Kanara",
+      "targetId": "1901:Kanara"
+    },
+    {
+      "sourceId": "1891:Khandesh",
+      "targetId": "1901:Khandesh"
+    },
+    {
+      "sourceId": "1891:Khandesh",
+      "targetId": "1901:Khandesh"
+    },
+    {
+      "sourceId": "1891:Kolaba",
+      "targetId": "1901:Kolaba"
+    },
+    {
+      "sourceId": "1891:Kolhapur",
+      "targetId": "1901:Kolhapur"
+    },
+    {
+      "sourceId": "1891:Lunwara",
+      "targetId": "1901:Lunwara"
+    },
+    {
+      "sourceId": "1891:Mewas",
+      "targetId": "1901:Mewas"
+    },
+    {
+      "sourceId": "1891:Miraj",
+      "targetId": "1901:Miraj"
+    },
+    {
+      "sourceId": "1891:Mudhol",
+      "targetId": "1901:Mudhol"
+    },
+    {
+      "sourceId": "1891:Nasik",
+      "targetId": "1901:Nasik"
+    },
+    {
+      "sourceId": "1891:Oundh",
+      "targetId": "1901:Oundh"
+    },
+    {
+      "sourceId": "1891:Panch Mahals",
+      "targetId": "1901:Panch Mahals"
+    },
+    {
+      "sourceId": "1891:Pandu Mehwas",
+      "targetId": "1901:Pandu Mehwas"
+    },
+    {
+      "sourceId": "1891:Phaltan",
+      "targetId": "1901:Phaltan"
+    },
+    {
+      "sourceId": "1891:Poona",
+      "targetId": "1901:Poona"
+    },
+    {
+      "sourceId": "1891:Rajpipla",
+      "targetId": "1901:Rajpipla"
+    },
+    {
+      "sourceId": "1891:Ramdurg",
+      "targetId": "1901:Ramdurg"
+    },
+    {
+      "sourceId": "1891:Ramdurg",
+      "targetId": "1901:Ramdurg"
+    },
+    {
+      "sourceId": "1891:Ratnagiri",
+      "targetId": "1901:Ratnagiri"
+    },
+    {
+      "sourceId": "1891:Sangli",
+      "targetId": "1901:Sangli"
+    },
+    {
+      "sourceId": "1891:Sangli",
+      "targetId": "1901:Sangli"
+    },
+    {
+      "sourceId": "1891:Sangli",
+      "targetId": "1901:Sangli"
+    },
+    {
+      "sourceId": "1891:Sangli",
+      "targetId": "1901:Sangli"
+    },
+    {
+      "sourceId": "1891:Sanjeli",
+      "targetId": "1901:Sanjeli"
+    },
+    {
+      "sourceId": "1891:Sankheda Mehwas",
+      "targetId": "1901:Sankheda Mehwas"
+    },
+    {
+      "sourceId": "1891:Satara",
+      "targetId": "1901:Satara"
+    },
+    {
+      "sourceId": "1891:Savanur",
+      "targetId": "1901:Savanur"
+    },
+    {
+      "sourceId": "1891:Sawantwadi",
+      "targetId": "1901:Sawantwadi"
+    },
+    {
+      "sourceId": "1891:Sholapur",
+      "targetId": "1901:Sholapur"
+    },
+    {
+      "sourceId": "1891:Sunth",
+      "targetId": "1901:Sunth"
+    },
+    {
+      "sourceId": "1891:Surat",
+      "targetId": "1901:Surat"
+    },
+    {
+      "sourceId": "1891:Surgana",
+      "targetId": "1901:Surgana"
+    },
+    {
+      "sourceId": "1891:Thana",
+      "targetId": "1901:Thana"
+    },
+    {
+      "sourceId": "1891:Thana",
+      "targetId": "1901:Thana"
+    },
+    {
+      "sourceId": "1891:The Dangs",
+      "targetId": "1901:The Dangs"
+    },
+    {
+      "sourceId": "1901:Ahmedabad",
+      "targetId": "1911:Ahmadabad"
+    },
+    {
+      "sourceId": "1901:Ahmednagar",
+      "targetId": "1911:Ahmadnagar"
+    },
+    {
+      "sourceId": "1901:Akalkot",
+      "targetId": "1911:Akalkot"
+    },
+    {
+      "sourceId": "1901:Balasinor",
+      "targetId": "1911:Balasinor"
+    },
+    {
+      "sourceId": "1901:Bansda",
+      "targetId": "1911:Bansda"
+    },
+    {
+      "sourceId": "1901:Bariya",
+      "targetId": "1911:Bariya"
+    },
+    {
+      "sourceId": "1901:Belgaum",
+      "targetId": "1911:Belgaum"
+    },
+    {
+      "sourceId": "1901:Bhor",
+      "targetId": "1911:Bhor"
+    },
+    {
+      "sourceId": "1901:Bijapur",
+      "targetId": "1911:Bijapur"
+    },
+    {
+      "sourceId": "1901:Broach",
+      "targetId": "1911:Broach"
+    },
+    {
+      "sourceId": "1901:Cambay",
+      "targetId": "1911:Cambay"
+    },
+    {
+      "sourceId": "1901:Chota Udepur",
+      "targetId": "1911:Chota Udepur"
+    },
+    {
+      "sourceId": "1901:Dharampur",
+      "targetId": "1911:Dharampur"
+    },
+    {
+      "sourceId": "1901:Dharwar",
+      "targetId": "1911:Dharwar"
+    },
+    {
+      "sourceId": "1901:Jamkhandi",
+      "targetId": "1911:Jamkhandi"
+    },
+    {
+      "sourceId": "1901:Janjira",
+      "targetId": "1911:Janjira"
+    },
+    {
+      "sourceId": "1901:Jath",
+      "targetId": "1911:Jat"
+    },
+    {
+      "sourceId": "1901:Jawahar",
+      "targetId": "1911:Jawahar"
+    },
+    {
+      "sourceId": "1901:Kadana",
+      "targetId": "1911:Kadana"
+    },
+    {
+      "sourceId": "1901:Kaira",
+      "targetId": "1911:Kaira"
+    },
+    {
+      "sourceId": "1901:Kanara",
+      "targetId": "1911:Kanara"
+    },
+    {
+      "sourceId": "1901:Khandesh",
+      "targetId": "1911:Khandesh East"
+    },
+    {
+      "sourceId": "1901:Khandesh",
+      "targetId": "1911:Khandesh West"
+    },
+    {
+      "sourceId": "1901:Kolaba",
+      "targetId": "1911:Kolaba"
+    },
+    {
+      "sourceId": "1901:Kolhapur",
+      "targetId": "1911:Kolhapur"
+    },
+    {
+      "sourceId": "1901:Lunwara",
+      "targetId": "1911:Lunwara"
+    },
+    {
+      "sourceId": "1901:Mewas",
+      "targetId": "1911:Mewas"
+    },
+    {
+      "sourceId": "1901:Miraj",
+      "targetId": "1911:Miraj"
+    },
+    {
+      "sourceId": "1901:Mudhol",
+      "targetId": "1911:Mudhol"
+    },
+    {
+      "sourceId": "1901:Nasik",
+      "targetId": "1911:Nasik"
+    },
+    {
+      "sourceId": "1901:Oundh",
+      "targetId": "1911:Oundh"
+    },
+    {
+      "sourceId": "1901:Panch Mahals",
+      "targetId": "1911:Panch Mahals"
+    },
+    {
+      "sourceId": "1901:Pandu Mehwas",
+      "targetId": "1911:Pandu Mehwas"
+    },
+    {
+      "sourceId": "1901:Phaltan",
+      "targetId": "1911:Phaltan"
+    },
+    {
+      "sourceId": "1901:Poona",
+      "targetId": "1911:Poona"
+    },
+    {
+      "sourceId": "1901:Rajpipla",
+      "targetId": "1911:Rajpipla"
+    },
+    {
+      "sourceId": "1901:Ramdurg",
+      "targetId": "1911:Ramdurg"
+    },
+    {
+      "sourceId": "1901:Ramdurg",
+      "targetId": "1911:Ramdurg"
+    },
+    {
+      "sourceId": "1901:Ratnagiri",
+      "targetId": "1911:Ratnagiri"
+    },
+    {
+      "sourceId": "1901:Sangli",
+      "targetId": "1911:Sangli"
+    },
+    {
+      "sourceId": "1901:Sangli",
+      "targetId": "1911:Sangli"
+    },
+    {
+      "sourceId": "1901:Sangli",
+      "targetId": "1911:Sangli"
+    },
+    {
+      "sourceId": "1901:Sangli",
+      "targetId": "1911:Sangli"
+    },
+    {
+      "sourceId": "1901:Sanjeli",
+      "targetId": "1911:Sanjeli"
+    },
+    {
+      "sourceId": "1901:Sankheda Mehwas",
+      "targetId": "1911:Sankheda Mehwas"
+    },
+    {
+      "sourceId": "1901:Satara",
+      "targetId": "1911:Satara"
+    },
+    {
+      "sourceId": "1901:Savanur",
+      "targetId": "1911:Savanur"
+    },
+    {
+      "sourceId": "1901:Sawantwadi",
+      "targetId": "1911:Sawantwadi"
+    },
+    {
+      "sourceId": "1901:Sholapur",
+      "targetId": "1911:Sholapur"
+    },
+    {
+      "sourceId": "1901:Sunth",
+      "targetId": "1911:Sunth"
+    },
+    {
+      "sourceId": "1901:Surat",
+      "targetId": "1911:Surat"
+    },
+    {
+      "sourceId": "1901:Surgana",
+      "targetId": "1911:Surgana"
+    },
+    {
+      "sourceId": "1901:Thana",
+      "targetId": "1911:Thana"
+    },
+    {
+      "sourceId": "1901:Thana",
+      "targetId": "1911:Thana"
+    },
+    {
+      "sourceId": "1901:The Dangs",
+      "targetId": "1911:The Dangs"
+    },
+    {
+      "sourceId": "1911:Ahmadabad",
+      "targetId": "1921:Ahmedabad"
+    },
+    {
+      "sourceId": "1911:Ahmadnagar",
+      "targetId": "1921:Ahmednagar"
+    },
+    {
+      "sourceId": "1911:Akalkot",
+      "targetId": "1921:Akalkot"
+    },
+    {
+      "sourceId": "1911:Balasinor",
+      "targetId": "1921:Balasinor"
+    },
+    {
+      "sourceId": "1911:Bansda",
+      "targetId": "1921:Bansda"
+    },
+    {
+      "sourceId": "1911:Bariya",
+      "targetId": "1921:Baria"
+    },
+    {
+      "sourceId": "1911:Belgaum",
+      "targetId": "1921:Belgaum"
+    },
+    {
+      "sourceId": "1911:Bhor",
+      "targetId": "1921:Bhor"
+    },
+    {
+      "sourceId": "1911:Bijapur",
+      "targetId": "1921:Bijapur"
+    },
+    {
+      "sourceId": "1911:Broach",
+      "targetId": "1921:Broach"
+    },
+    {
+      "sourceId": "1911:Cambay",
+      "targetId": "1921:Cambay"
+    },
+    {
+      "sourceId": "1911:Chota Udepur",
+      "targetId": "1921:Chota Udepur"
+    },
+    {
+      "sourceId": "1911:Dharampur",
+      "targetId": "1921:Dharampur"
+    },
+    {
+      "sourceId": "1911:Dharwar",
+      "targetId": "1921:Dharwar"
+    },
+    {
+      "sourceId": "1911:Jamkhandi",
+      "targetId": "1921:Jamkhandi"
+    },
+    {
+      "sourceId": "1911:Janjira",
+      "targetId": "1921:Janjira"
+    },
+    {
+      "sourceId": "1911:Jat",
+      "targetId": "1921:Jath"
+    },
+    {
+      "sourceId": "1911:Jawahar",
+      "targetId": "1921:Jawhar"
+    },
+    {
+      "sourceId": "1911:Kadana",
+      "targetId": "1921:Kadana"
+    },
+    {
+      "sourceId": "1911:Kaira",
+      "targetId": "1921:Kaira"
+    },
+    {
+      "sourceId": "1911:Kanara",
+      "targetId": "1921:Kanara"
+    },
+    {
+      "sourceId": "1911:Khandesh East",
+      "targetId": "1921:Khandesh East"
+    },
+    {
+      "sourceId": "1911:Khandesh West",
+      "targetId": "1921:Khandesh West"
+    },
+    {
+      "sourceId": "1911:Kolaba",
+      "targetId": "1921:Kolaba"
+    },
+    {
+      "sourceId": "1911:Kolhapur",
+      "targetId": "1921:Kolhapur"
+    },
+    {
+      "sourceId": "1911:Lunwara",
+      "targetId": "1921:Lunawara"
+    },
+    {
+      "sourceId": "1911:Mewas",
+      "targetId": "1921:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1911:Miraj",
+      "targetId": "1921:Miraj"
+    },
+    {
+      "sourceId": "1911:Mudhol",
+      "targetId": "1921:Mudhol"
+    },
+    {
+      "sourceId": "1911:Nasik",
+      "targetId": "1921:Nasik"
+    },
+    {
+      "sourceId": "1911:Oundh",
+      "targetId": "1921:Oundh"
+    },
+    {
+      "sourceId": "1911:Panch Mahals",
+      "targetId": "1921:Panch Mahals"
+    },
+    {
+      "sourceId": "1911:Pandu Mehwas",
+      "targetId": "1921:Pandu Mewas"
+    },
+    {
+      "sourceId": "1911:Phaltan",
+      "targetId": "1921:Phaltan"
+    },
+    {
+      "sourceId": "1911:Poona",
+      "targetId": "1921:Poona"
+    },
+    {
+      "sourceId": "1911:Rajpipla",
+      "targetId": "1921:Rajpipla"
+    },
+    {
+      "sourceId": "1911:Ramdurg",
+      "targetId": "1921:Ramdurg"
+    },
+    {
+      "sourceId": "1911:Ramdurg",
+      "targetId": "1921:Ramdurg"
+    },
+    {
+      "sourceId": "1911:Ratnagiri",
+      "targetId": "1921:Ratnagiri"
+    },
+    {
+      "sourceId": "1911:Sangli",
+      "targetId": "1921:Sangli"
+    },
+    {
+      "sourceId": "1911:Sangli",
+      "targetId": "1921:Sangli"
+    },
+    {
+      "sourceId": "1911:Sangli",
+      "targetId": "1921:Sangli"
+    },
+    {
+      "sourceId": "1911:Sangli",
+      "targetId": "1921:Sangli"
+    },
+    {
+      "sourceId": "1911:Sanjeli",
+      "targetId": "1921:Sanjeli"
+    },
+    {
+      "sourceId": "1911:Sankheda Mehwas",
+      "targetId": "1921:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1911:Satara",
+      "targetId": "1921:Satara"
+    },
+    {
+      "sourceId": "1911:Savanur",
+      "targetId": "1921:Savanur"
+    },
+    {
+      "sourceId": "1911:Sawantwadi",
+      "targetId": "1921:Savantvari"
+    },
+    {
+      "sourceId": "1911:Sholapur",
+      "targetId": "1921:Sholapur"
+    },
+    {
+      "sourceId": "1911:Sunth",
+      "targetId": "1921:Sunth"
+    },
+    {
+      "sourceId": "1911:Surat",
+      "targetId": "1921:Surat"
+    },
+    {
+      "sourceId": "1911:Surgana",
+      "targetId": "1921:Surgana"
+    },
+    {
+      "sourceId": "1911:Thana",
+      "targetId": "1921:Thana"
+    },
+    {
+      "sourceId": "1911:Thana",
+      "targetId": "1921:Bombay Suburban"
+    },
+    {
+      "sourceId": "1911:The Dangs",
+      "targetId": "1921:Dangs"
+    },
+    {
+      "sourceId": "1921:Ahmedabad",
+      "targetId": "1931:Ahmedabad"
+    },
+    {
+      "sourceId": "1921:Ahmednagar",
+      "targetId": "1931:Ahmednagar"
+    },
+    {
+      "sourceId": "1921:Akalkot",
+      "targetId": "1931:Akalkot"
+    },
+    {
+      "sourceId": "1921:Balasinor",
+      "targetId": "1931:Balasinor"
+    },
+    {
+      "sourceId": "1921:Bansda",
+      "targetId": "1931:Bansda"
+    },
+    {
+      "sourceId": "1921:Baria",
+      "targetId": "1931:Devgad Baria"
+    },
+    {
+      "sourceId": "1921:Belgaum",
+      "targetId": "1931:Belgaum"
+    },
+    {
+      "sourceId": "1921:Bhor",
+      "targetId": "1931:Bhor"
+    },
+    {
+      "sourceId": "1921:Bijapur",
+      "targetId": "1931:Bijapur"
+    },
+    {
+      "sourceId": "1921:Broach",
+      "targetId": "1931:Broach"
+    },
+    {
+      "sourceId": "1921:Cambay",
+      "targetId": "1931:Cambay"
+    },
+    {
+      "sourceId": "1921:Chota Udepur",
+      "targetId": "1931:Chota Udepur"
+    },
+    {
+      "sourceId": "1921:Dharampur",
+      "targetId": "1931:Dharampur"
+    },
+    {
+      "sourceId": "1921:Dharwar",
+      "targetId": "1931:Dharwar"
+    },
+    {
+      "sourceId": "1921:Jamkhandi",
+      "targetId": "1931:Jamkhandi"
+    },
+    {
+      "sourceId": "1921:Janjira",
+      "targetId": "1931:Janjira"
+    },
+    {
+      "sourceId": "1921:Jath",
+      "targetId": "1931:Jath"
+    },
+    {
+      "sourceId": "1921:Jawhar",
+      "targetId": "1931:Jawhar"
+    },
+    {
+      "sourceId": "1921:Kadana",
+      "targetId": "1931:Kadana"
+    },
+    {
+      "sourceId": "1921:Kaira",
+      "targetId": "1931:Kaira"
+    },
+    {
+      "sourceId": "1921:Kanara",
+      "targetId": "1931:Kanara"
+    },
+    {
+      "sourceId": "1921:Khandesh East",
+      "targetId": "1931:Khandesh East"
+    },
+    {
+      "sourceId": "1921:Khandesh West",
+      "targetId": "1931:Khandesh West"
+    },
+    {
+      "sourceId": "1921:Kolaba",
+      "targetId": "1931:Kolaba"
+    },
+    {
+      "sourceId": "1921:Kolhapur",
+      "targetId": "1931:Kolhapur"
+    },
+    {
+      "sourceId": "1921:Lunawara",
+      "targetId": "1931:Lunawada"
+    },
+    {
+      "sourceId": "1921:Sankheda Mewas",
+      "targetId": "1931:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1921:Miraj",
+      "targetId": "1931:Miraj"
+    },
+    {
+      "sourceId": "1921:Mudhol",
+      "targetId": "1931:Mudhol"
+    },
+    {
+      "sourceId": "1921:Nasik",
+      "targetId": "1931:Nasik"
+    },
+    {
+      "sourceId": "1921:Oundh",
+      "targetId": "1931:Aundh"
+    },
+    {
+      "sourceId": "1921:Panch Mahals",
+      "targetId": "1931:Panch Mahals"
+    },
+    {
+      "sourceId": "1921:Pandu Mewas",
+      "targetId": "1931:Pandu Mewas"
+    },
+    {
+      "sourceId": "1921:Phaltan",
+      "targetId": "1931:Phaltan"
+    },
+    {
+      "sourceId": "1921:Poona",
+      "targetId": "1931:Poona"
+    },
+    {
+      "sourceId": "1921:Rajpipla",
+      "targetId": "1931:Rajpipla"
+    },
+    {
+      "sourceId": "1921:Ramdurg",
+      "targetId": "1931:Ramdurg"
+    },
+    {
+      "sourceId": "1921:Ramdurg",
+      "targetId": "1931:Ramdurg"
+    },
+    {
+      "sourceId": "1921:Ratnagiri",
+      "targetId": "1931:Ratnagiri"
+    },
+    {
+      "sourceId": "1921:Sangli",
+      "targetId": "1931:Sangli"
+    },
+    {
+      "sourceId": "1921:Sangli",
+      "targetId": "1931:Sangli"
+    },
+    {
+      "sourceId": "1921:Sangli",
+      "targetId": "1931:Sangli"
+    },
+    {
+      "sourceId": "1921:Sangli",
+      "targetId": "1931:Sangli"
+    },
+    {
+      "sourceId": "1921:Sanjeli",
+      "targetId": "1931:Sanjeli"
+    },
+    {
+      "sourceId": "1921:Sankheda Mewas",
+      "targetId": "1931:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1921:Satara",
+      "targetId": "1931:Satara"
+    },
+    {
+      "sourceId": "1921:Savanur",
+      "targetId": "1931:Savanur"
+    },
+    {
+      "sourceId": "1921:Savantvari",
+      "targetId": "1931:Savantvadi"
+    },
+    {
+      "sourceId": "1921:Sholapur",
+      "targetId": "1931:Sholapur"
+    },
+    {
+      "sourceId": "1921:Sunth",
+      "targetId": "1931:Santh"
+    },
+    {
+      "sourceId": "1921:Surat",
+      "targetId": "1931:Surat"
+    },
+    {
+      "sourceId": "1921:Surgana",
+      "targetId": "1931:Surgana"
+    },
+    {
+      "sourceId": "1921:Thana",
+      "targetId": "1931:Thana"
+    },
+    {
+      "sourceId": "1921:Bombay Suburban",
+      "targetId": "1931:Bombay Suburban"
+    },
+    {
+      "sourceId": "1921:Dangs",
+      "targetId": "1931:Dangs"
+    },
+    {
+      "sourceId": "1931:Ahmedabad",
+      "targetId": "1941:Ahmedabad"
+    },
+    {
+      "sourceId": "1931:Ahmednagar",
+      "targetId": "1941:Ahmednagar"
+    },
+    {
+      "sourceId": "1931:Akalkot",
+      "targetId": "1941:Akalkot"
+    },
+    {
+      "sourceId": "1931:Balasinor",
+      "targetId": "1941:Balasinor"
+    },
+    {
+      "sourceId": "1931:Bansda",
+      "targetId": "1941:Bansda"
+    },
+    {
+      "sourceId": "1931:Devgad Baria",
+      "targetId": "1941:Baria"
+    },
+    {
+      "sourceId": "1931:Belgaum",
+      "targetId": "1941:Belgaum"
+    },
+    {
+      "sourceId": "1931:Bhor",
+      "targetId": "1941:Bhor"
+    },
+    {
+      "sourceId": "1931:Bijapur",
+      "targetId": "1941:Bijapur"
+    },
+    {
+      "sourceId": "1931:Broach",
+      "targetId": "1941:Broach and Panch Mahals"
+    },
+    {
+      "sourceId": "1931:Cambay",
+      "targetId": "1941:Cambay"
+    },
+    {
+      "sourceId": "1931:Chota Udepur",
+      "targetId": "1941:Chota Udepur"
+    },
+    {
+      "sourceId": "1931:Dharampur",
+      "targetId": "1941:Dharampur"
+    },
+    {
+      "sourceId": "1931:Dharwar",
+      "targetId": "1941:Dharwar"
+    },
+    {
+      "sourceId": "1931:Jamkhandi",
+      "targetId": "1941:Jamkhandi"
+    },
+    {
+      "sourceId": "1931:Janjira",
+      "targetId": "1941:Janjira"
+    },
+    {
+      "sourceId": "1931:Jath",
+      "targetId": "1941:Jath"
+    },
+    {
+      "sourceId": "1931:Jawhar",
+      "targetId": "1941:Jawhar"
+    },
+    {
+      "sourceId": "1931:Kadana",
+      "targetId": "1941:Kadana"
+    },
+    {
+      "sourceId": "1931:Kaira",
+      "targetId": "1941:Kaira"
+    },
+    {
+      "sourceId": "1931:Kanara",
+      "targetId": "1941:Kanara"
+    },
+    {
+      "sourceId": "1931:Khandesh East",
+      "targetId": "1941:East Khandesh"
+    },
+    {
+      "sourceId": "1931:Khandesh West",
+      "targetId": "1941:West Khandesh"
+    },
+    {
+      "sourceId": "1931:Kolaba",
+      "targetId": "1941:Kolaba"
+    },
+    {
+      "sourceId": "1931:Kolhapur",
+      "targetId": "1941:Kolhapur"
+    },
+    {
+      "sourceId": "1931:Lunawada",
+      "targetId": "1941:Lunawada"
+    },
+    {
+      "sourceId": "1931:Sankheda Mewas",
+      "targetId": "1941:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1931:Miraj",
+      "targetId": "1941:Miraj"
+    },
+    {
+      "sourceId": "1931:Mudhol",
+      "targetId": "1941:Mudhol"
+    },
+    {
+      "sourceId": "1931:Nasik",
+      "targetId": "1941:Nasik"
+    },
+    {
+      "sourceId": "1931:Aundh",
+      "targetId": "1941:Aundh"
+    },
+    {
+      "sourceId": "1931:Panch Mahals",
+      "targetId": "1941:Broach and Panch Mahals"
+    },
+    {
+      "sourceId": "1931:Pandu Mewas",
+      "targetId": "1941:Pandu Mehwas"
+    },
+    {
+      "sourceId": "1931:Phaltan",
+      "targetId": "1941:Phaltan"
+    },
+    {
+      "sourceId": "1931:Poona",
+      "targetId": "1941:Poona"
+    },
+    {
+      "sourceId": "1931:Rajpipla",
+      "targetId": "1941:Rajpipla"
+    },
+    {
+      "sourceId": "1931:Ramdurg",
+      "targetId": "1941:Ramdurg"
+    },
+    {
+      "sourceId": "1931:Ramdurg",
+      "targetId": "1941:Ramdurg"
+    },
+    {
+      "sourceId": "1931:Ratnagiri",
+      "targetId": "1941:Ratnagiri"
+    },
+    {
+      "sourceId": "1931:Sangli",
+      "targetId": "1941:Sangli"
+    },
+    {
+      "sourceId": "1931:Sangli",
+      "targetId": "1941:Sangli"
+    },
+    {
+      "sourceId": "1931:Sangli",
+      "targetId": "1941:Sangli"
+    },
+    {
+      "sourceId": "1931:Sangli",
+      "targetId": "1941:Sangli"
+    },
+    {
+      "sourceId": "1931:Sanjeli",
+      "targetId": "1941:Sanjeli"
+    },
+    {
+      "sourceId": "1931:Sankheda Mewas",
+      "targetId": "1941:Sankheda Mewas"
+    },
+    {
+      "sourceId": "1931:Satara",
+      "targetId": "1941:Satara"
+    },
+    {
+      "sourceId": "1931:Savanur",
+      "targetId": "1941:Savanur"
+    },
+    {
+      "sourceId": "1931:Savantvadi",
+      "targetId": "1941:Sawantwadi"
+    },
+    {
+      "sourceId": "1931:Sholapur",
+      "targetId": "1941:Sholapur"
+    },
+    {
+      "sourceId": "1931:Santh",
+      "targetId": "1941:Sunth"
+    },
+    {
+      "sourceId": "1931:Surat",
+      "targetId": "1941:Surat"
+    },
+    {
+      "sourceId": "1931:Surgana",
+      "targetId": "1941:Surgana"
+    },
+    {
+      "sourceId": "1931:Thana",
+      "targetId": "1941:Thana"
+    },
+    {
+      "sourceId": "1931:Bombay Suburban",
+      "targetId": "1941:Bombay Suburban"
+    },
+    {
+      "sourceId": "1931:Dangs",
+      "targetId": "1941:Dangs"
+    }
+  ],
+  "chains": [
+    {
+      "chainId": 0,
+      "canonicalName": "Ahmad Nagar",
+      "color": "#228ba0"
+    },
+    {
+      "chainId": 1,
+      "canonicalName": "Ahmedabad",
+      "color": "#299ec2"
+    },
+    {
+      "chainId": 2,
+      "canonicalName": "Akalkote",
+      "color": "#a02222"
+    },
+    {
+      "chainId": 3,
+      "canonicalName": "Akraunee",
+      "color": "#c23129"
+    },
+    {
+      "chainId": 4,
+      "canonicalName": "Baroda",
+      "color": "#d64a3d"
+    },
+    {
+      "chainId": 5,
+      "canonicalName": "Belgaum",
+      "color": "#3da8d6"
+    },
+    {
+      "chainId": 6,
+      "canonicalName": "Bhore",
+      "color": "#a03122"
+    },
+    {
+      "chainId": 7,
+      "canonicalName": "Broach",
+      "color": "#2274a0"
+    },
+    {
+      "chainId": 8,
+      "canonicalName": "Cambay",
+      "color": "#c24229"
+    },
+    {
+      "chainId": 9,
+      "canonicalName": "Dangs",
+      "color": "#d65e3d"
+    },
+    {
+      "chainId": 10,
+      "canonicalName": "Dharwar",
+      "color": "#2982c2"
+    },
+    {
+      "chainId": 11,
+      "canonicalName": "Dhurrumpoor",
+      "color": "#a04122"
+    },
+    {
+      "chainId": 12,
+      "canonicalName": "Jamkhandi",
+      "color": "#c25729"
+    },
+    {
+      "chainId": 13,
+      "canonicalName": "Jat",
+      "color": "#d6703d"
+    },
+    {
+      "chainId": 14,
+      "canonicalName": "Jowar",
+      "color": "#a05222"
+    },
+    {
+      "chainId": 15,
+      "canonicalName": "Juruh",
+      "color": "#c26929"
+    },
+    {
+      "chainId": 16,
+      "canonicalName": "Kaira",
+      "color": "#3d8cd6"
+    },
+    {
+      "chainId": 17,
+      "canonicalName": "Kaladgi",
+      "color": "#225ba0"
+    },
+    {
+      "chainId": 18,
+      "canonicalName": "Kanara",
+      "color": "#2964c2"
+    },
+    {
+      "chainId": 19,
+      "canonicalName": "Khandesh",
+      "color": "#3d6ed6"
+    },
+    {
+      "chainId": 20,
+      "canonicalName": "Kolaba",
+      "color": "#2244a0"
+    },
+    {
+      "chainId": 21,
+      "canonicalName": "Kolapoor",
+      "color": "#d6853d"
+    },
+    {
+      "chainId": 22,
+      "canonicalName": "Meeruj",
+      "color": "#a06122"
+    },
+    {
+      "chainId": 23,
+      "canonicalName": "Mewassee",
+      "color": "#c27d29"
+    },
+    {
+      "chainId": 24,
+      "canonicalName": "Mudhole",
+      "color": "#d6963d"
+    },
+    {
+      "chainId": 25,
+      "canonicalName": "Nasik",
+      "color": "#2948c2"
+    },
+    {
+      "chainId": 26,
+      "canonicalName": "Nuesies",
+      "color": "#a07222"
+    },
+    {
+      "chainId": 27,
+      "canonicalName": "Panch Mahals",
+      "color": "#3d52d6"
+    },
+    {
+      "chainId": 28,
+      "canonicalName": "Phaltan",
+      "color": "#c28f29"
+    },
+    {
+      "chainId": 29,
+      "canonicalName": "Poona",
+      "color": "#222aa0"
+    },
+    {
+      "chainId": 30,
+      "canonicalName": "Raj Peepla",
+      "color": "#d6ab3d"
+    },
+    {
+      "chainId": 31,
+      "canonicalName": "Ramdurg",
+      "color": "#a08022"
+    },
+    {
+      "chainId": 32,
+      "canonicalName": "Ratnagiri",
+      "color": "#2929c2"
+    },
+    {
+      "chainId": 33,
+      "canonicalName": "Rewakanta",
+      "color": "#c2a329"
+    },
+    {
+      "chainId": 34,
+      "canonicalName": "Satara",
+      "color": "#483dd6"
+    },
+    {
+      "chainId": 35,
+      "canonicalName": "Savanur",
+      "color": "#d6bd3d"
+    },
+    {
+      "chainId": 36,
+      "canonicalName": "Sawuntwarree",
+      "color": "#a09122"
+    },
+    {
+      "chainId": 37,
+      "canonicalName": "Sholapur",
+      "color": "#3122a0"
+    },
+    {
+      "chainId": 38,
+      "canonicalName": "Surat",
+      "color": "#4529c2"
+    },
+    {
+      "chainId": 39,
+      "canonicalName": "Surgana",
+      "color": "#c2b529"
+    },
+    {
+      "chainId": 40,
+      "canonicalName": "Tanna",
+      "color": "#643dd6"
+    }
+  ]
+}
