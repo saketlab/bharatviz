@@ -27,6 +27,85 @@ export interface DistrictMapConfig {
  * 4. Add Google Sheets template link (optional)
  */
 export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
+  // Historical Census Data - 1872-1931 (Jolad, Shivakumar et al., Harvard Dataverse)
+  '1872': {
+    id: '1872',
+    name: '1872',
+    displayName: 'Census 1872',
+    geojsonPath: '/India-1872-districts.geojson',
+    states: '/India-1872-states.geojson',
+    templateCsvPath: '/bharatviz-India-1872-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1GmnCpliHd7AMatNT6x-G4p1fguceryo9hOvxpVcMkF0/edit?usp=sharing',
+    description: '1872 Census district boundaries'
+  },
+  '1881': {
+    id: '1881',
+    name: '1881',
+    displayName: 'Census 1881',
+    geojsonPath: '/India-1881-districts.geojson',
+    states: '/India-1881-states.geojson',
+    templateCsvPath: '/bharatviz-India-1881-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1pLc4qD3mQ5tcJOzeHx7TgPR2TrJDWV5TT3XPucmlRqg/edit?usp=sharing',
+    description: '1881 Census district boundaries'
+  },
+  '1891': {
+    id: '1891',
+    name: '1891',
+    displayName: 'Census 1891',
+    geojsonPath: '/India-1891-districts.geojson',
+    states: '/India-1891-states.geojson',
+    templateCsvPath: '/bharatviz-India-1891-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1T_q1d-QIPDH6S7LegGTh0oNde7DhhXdVVxzQrIndQl8/edit?usp=sharing',
+    description: '1891 Census district boundaries'
+  },
+  '1901': {
+    id: '1901',
+    name: '1901',
+    displayName: 'Census 1901',
+    geojsonPath: '/India-1901-districts.geojson',
+    states: '/India-1901-states.geojson',
+    templateCsvPath: '/bharatviz-India-1901-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/138z1KmFdAnbJ1Zw8SV9ZDTC5ZSZARF8K1f_f61H8oNU/edit?usp=sharing',
+    description: '1901 Census district boundaries'
+  },
+  '1911': {
+    id: '1911',
+    name: '1911',
+    displayName: 'Census 1911',
+    geojsonPath: '/India-1911-districts.geojson',
+    states: '/India-1911-states.geojson',
+    templateCsvPath: '/bharatviz-India-1911-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1JG7U8XYQsKp1DqWXCMBPqB9wppNflUyMutTfd1CeQbw/edit?usp=sharing',
+    description: '1911 Census district boundaries'
+  },
+  '1921': {
+    id: '1921',
+    name: '1921',
+    displayName: 'Census 1921',
+    geojsonPath: '/India-1921-districts.geojson',
+    states: '/India-1921-states.geojson',
+    templateCsvPath: '/bharatviz-India-1921-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1YvGeJfQ7QdI4DiGHxd_6h3E67Wft8WMkZpuuq4PhcyQ/edit?usp=sharing',
+    description: '1921 Census district boundaries'
+  },
+  '1931': {
+    id: '1931',
+    name: '1931',
+    displayName: 'Census 1931',
+    geojsonPath: '/India-1931-districts.geojson',
+    states: '/India-1931-states.geojson',
+    templateCsvPath: '/bharatviz-India-1931-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1rCUvEcGAuolriVvwZyHr7bxQ8WnnVcanI9GoH1HNrb4/edit?usp=sharing',
+    description: '1931 Census district boundaries'
+  },
+
   // Historical Census Data - 1941-2011
   '1941': {
     id: '1941',

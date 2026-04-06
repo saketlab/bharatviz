@@ -39,7 +39,7 @@ export function createMcpServer(): Server {
           description:
             'Lists all available India map boundary sets. Returns metadata for each map including ' +
             'the map ID (used in other tools), data source, year, administrative level (states/districts/regions), ' +
-            'and number of features. BharatViz supports 27 different boundary sets spanning Census years 1941-2011, ' +
+            'and number of features. BharatViz supports 41 different boundary sets spanning Census years 1872-2011, ' +
             'LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions.',
           inputSchema: {
             type: 'object' as const,

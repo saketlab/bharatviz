@@ -22,6 +22,20 @@ export interface MapEntry {
 
 export const MAP_REGISTRY: Record<string, MapEntry> = {
   // Census boundaries
+  'census-1872-states': { id: 'census-1872-states', file: 'India-1872-states.geojson', level: 'states', source: 'Census 1872', year: 1872, description: 'State boundaries from the 1872 Census of India' },
+  'census-1872-districts': { id: 'census-1872-districts', file: 'India-1872-districts.geojson', level: 'districts', source: 'Census 1872', year: 1872, description: 'District boundaries from the 1872 Census of India', statesFile: 'India-1872-states.geojson' },
+  'census-1881-states': { id: 'census-1881-states', file: 'India-1881-states.geojson', level: 'states', source: 'Census 1881', year: 1881, description: 'State boundaries from the 1881 Census of India' },
+  'census-1881-districts': { id: 'census-1881-districts', file: 'India-1881-districts.geojson', level: 'districts', source: 'Census 1881', year: 1881, description: 'District boundaries from the 1881 Census of India', statesFile: 'India-1881-states.geojson' },
+  'census-1891-states': { id: 'census-1891-states', file: 'India-1891-states.geojson', level: 'states', source: 'Census 1891', year: 1891, description: 'State boundaries from the 1891 Census of India' },
+  'census-1891-districts': { id: 'census-1891-districts', file: 'India-1891-districts.geojson', level: 'districts', source: 'Census 1891', year: 1891, description: 'District boundaries from the 1891 Census of India', statesFile: 'India-1891-states.geojson' },
+  'census-1901-states': { id: 'census-1901-states', file: 'India-1901-states.geojson', level: 'states', source: 'Census 1901', year: 1901, description: 'State boundaries from the 1901 Census of India' },
+  'census-1901-districts': { id: 'census-1901-districts', file: 'India-1901-districts.geojson', level: 'districts', source: 'Census 1901', year: 1901, description: 'District boundaries from the 1901 Census of India', statesFile: 'India-1901-states.geojson' },
+  'census-1911-states': { id: 'census-1911-states', file: 'India-1911-states.geojson', level: 'states', source: 'Census 1911', year: 1911, description: 'State boundaries from the 1911 Census of India' },
+  'census-1911-districts': { id: 'census-1911-districts', file: 'India-1911-districts.geojson', level: 'districts', source: 'Census 1911', year: 1911, description: 'District boundaries from the 1911 Census of India', statesFile: 'India-1911-states.geojson' },
+  'census-1921-states': { id: 'census-1921-states', file: 'India-1921-states.geojson', level: 'states', source: 'Census 1921', year: 1921, description: 'State boundaries from the 1921 Census of India' },
+  'census-1921-districts': { id: 'census-1921-districts', file: 'India-1921-districts.geojson', level: 'districts', source: 'Census 1921', year: 1921, description: 'District boundaries from the 1921 Census of India', statesFile: 'India-1921-states.geojson' },
+  'census-1931-states': { id: 'census-1931-states', file: 'India-1931-states.geojson', level: 'states', source: 'Census 1931', year: 1931, description: 'State boundaries from the 1931 Census of India' },
+  'census-1931-districts': { id: 'census-1931-districts', file: 'India-1931-districts.geojson', level: 'districts', source: 'Census 1931', year: 1931, description: 'District boundaries from the 1931 Census of India', statesFile: 'India-1931-states.geojson' },
   'census-1941-states': { id: 'census-1941-states', file: 'India-1941-states.geojson', level: 'states', source: 'Census 1941', year: 1941, description: 'State boundaries from the 1941 Census of India' },
   'census-1941-districts': { id: 'census-1941-districts', file: 'India-1941-districts.geojson', level: 'districts', source: 'Census 1941', year: 1941, description: 'District boundaries from the 1941 Census of India', statesFile: 'India-1941-states.geojson' },
   'census-1951-states': { id: 'census-1951-states', file: 'India-1951-states.geojson', level: 'states', source: 'Census 1951', year: 1951, description: 'State boundaries from the 1951 Census of India' },

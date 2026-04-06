@@ -33,6 +33,13 @@ function censusCitation(year: number): CitationOutput {
 }
 
 const SOURCE_CITATIONS: Record<string, CitationOutput> = {
+  'Census 1872': censusCitation(1872),
+  'Census 1881': censusCitation(1881),
+  'Census 1891': censusCitation(1891),
+  'Census 1901': censusCitation(1901),
+  'Census 1911': censusCitation(1911),
+  'Census 1921': censusCitation(1921),
+  'Census 1931': censusCitation(1931),
   'Census 1941': censusCitation(1941),
   'Census 1951': censusCitation(1951),
   'Census 1961': censusCitation(1961),
@@ -165,6 +172,13 @@ const BHARATVIZ_BIBTEX = `@software{bharatviz,
 const BHARATVIZ_APA = `Choudhary, S. (${currentYear}). BharatViz: Interactive Choropleth Maps of India. https://bharatviz.org`;
 
 const DISTRICT_SOURCE_KEYS: Record<string, string> = {
+  '1872': 'Census 1872',
+  '1881': 'Census 1881',
+  '1891': 'Census 1891',
+  '1901': 'Census 1901',
+  '1911': 'Census 1911',
+  '1921': 'Census 1921',
+  '1931': 'Census 1931',
   '1941': 'Census 1941',
   '1951': 'Census 1951',
   '1961': 'Census 1961',
@@ -181,25 +195,38 @@ const DISTRICT_SOURCE_KEYS: Record<string, string> = {
   NSSO: 'NSSO',
 };
 
+export interface StructuredCitation {
+  source: { apa: string; bibtex: string } | null;
+  tool: { apa: string; bibtex: string };
+}
+
+export function getCitationStructured(info: CitationInfo): StructuredCitation {
+  const sourceCitation = SOURCE_CITATIONS[info.source] ?? null;
+  return {
+    source: sourceCitation ? { apa: sourceCitation.apa, bibtex: sourceCitation.bibtex } : null,
+    tool: { apa: BHARATVIZ_APA, bibtex: BHARATVIZ_BIBTEX },
+  };
+}
+
 export function getCitation(info: CitationInfo): string {
-  const sourceCitation = SOURCE_CITATIONS[info.source];
+  const { source, tool } = getCitationStructured(info);
 
   const lines: string[] = [`=== Citation for: ${info.mapLabel} ===\n`];
 
-  if (sourceCitation) {
+  if (source) {
     lines.push('--- Boundary Data Source (APA) ---');
-    lines.push(sourceCitation.apa);
+    lines.push(source.apa);
     lines.push('');
     lines.push('--- Boundary Data Source (BibTeX) ---');
-    lines.push(sourceCitation.bibtex);
+    lines.push(source.bibtex);
   }
 
   lines.push('');
   lines.push('--- Visualization Tool (APA) ---');
-  lines.push(BHARATVIZ_APA);
+  lines.push(tool.apa);
   lines.push('');
   lines.push('--- Visualization Tool (BibTeX) ---');
-  lines.push(BHARATVIZ_BIBTEX);
+  lines.push(tool.bibtex);
 
   return lines.join('\n');
 }

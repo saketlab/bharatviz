@@ -143,6 +143,20 @@ npm run build`;
     { id: 'census-1951-districts', level: 'Districts', source: 'Census 1951', year: '1951' },
     { id: 'census-1941-states', level: 'States', source: 'Census 1941', year: '1941' },
     { id: 'census-1941-districts', level: 'Districts', source: 'Census 1941', year: '1941' },
+    { id: 'census-1931-states', level: 'States', source: 'Census 1931 (Jolad et al.)', year: '1931' },
+    { id: 'census-1931-districts', level: 'Districts', source: 'Census 1931 (Jolad et al.)', year: '1931' },
+    { id: 'census-1921-states', level: 'States', source: 'Census 1921 (Jolad et al.)', year: '1921' },
+    { id: 'census-1921-districts', level: 'Districts', source: 'Census 1921 (Jolad et al.)', year: '1921' },
+    { id: 'census-1911-states', level: 'States', source: 'Census 1911 (Jolad et al.)', year: '1911' },
+    { id: 'census-1911-districts', level: 'Districts', source: 'Census 1911 (Jolad et al.)', year: '1911' },
+    { id: 'census-1901-states', level: 'States', source: 'Census 1901 (Jolad et al.)', year: '1901' },
+    { id: 'census-1901-districts', level: 'Districts', source: 'Census 1901 (Jolad et al.)', year: '1901' },
+    { id: 'census-1891-states', level: 'States', source: 'Census 1891 (Jolad et al.)', year: '1891' },
+    { id: 'census-1891-districts', level: 'Districts', source: 'Census 1891 (Jolad et al.)', year: '1891' },
+    { id: 'census-1881-states', level: 'States', source: 'Census 1881 (Jolad et al.)', year: '1881' },
+    { id: 'census-1881-districts', level: 'Districts', source: 'Census 1881 (Jolad et al.)', year: '1881' },
+    { id: 'census-1872-states', level: 'States', source: 'Census 1872 (Jolad et al.)', year: '1872' },
+    { id: 'census-1872-districts', level: 'Districts', source: 'Census 1872 (Jolad et al.)', year: '1872' },
     { id: 'soi-states', level: 'States', source: 'Survey of India', year: '2020' },
     { id: 'soi-districts', level: 'Districts', source: 'Survey of India', year: '2020' },
     { id: 'bhuvan-states', level: 'States', source: 'ISRO Bhuvan', year: '2020' },
@@ -153,7 +167,7 @@ npm run build`;
   const tools = [
     {
       name: 'list_available_maps',
-      description: 'Lists all 27 boundary sets with metadata (id, source, year, level, feature count)',
+      description: 'Lists all 41 boundary sets with metadata (id, source, year, level, feature count)',
       input: 'None',
     },
     {
@@ -181,6 +195,16 @@ npm run build`;
       description: 'Returns a CSV template with all entity names for a boundary type',
       input: 'mapId (string)',
     },
+    {
+      name: 'list_demos',
+      description: 'Lists all showcase demo datasets (NFHS-5 health indicators, IHME AMR estimates)',
+      input: 'level? ("states" | "districts")',
+    },
+    {
+      name: 'get_demo_url',
+      description: 'Generates a shareable BharatViz URL that loads a demo dataset in the browser',
+      input: 'demoId (string), baseUrl? (string)',
+    },
   ];
 
   return (
@@ -193,9 +217,9 @@ npm run build`;
         </h2>
         <p className={`${textClass} text-lg`}>
           Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate
-          India maps through natural language. The MCP server exposes 6 tools for listing maps,
-          querying boundaries, and rendering high-quality choropleth images.
-          City ward maps for 130+ cities are available via the web UI.
+          India maps through natural language. The MCP server exposes 8 tools for listing maps,
+          querying boundaries, rendering high-quality choropleth images, and generating shareable URLs.
+          City ward maps for 2,900+ datasets across 1,000+ cities are available via the web UI.
         </p>
       </div>
 
@@ -423,7 +447,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Map className="h-5 w-5" />
-          All 27 Available Map Boundaries
+          All 41 Available Map Boundaries
         </h3>
 
         <div className="overflow-x-auto">

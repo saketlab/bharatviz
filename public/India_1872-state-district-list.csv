@@ -1,0 +1,389 @@
+"state_name","district_name","id"
+"Madras Presidency","Tinnevelly",5
+"Madras Presidency","Travancore",2
+"Madras Presidency","Cochin",1
+"Madras Presidency","Nilgiris",3
+"Madras Presidency","Poodoucotta",3
+"Madras Presidency","Tanjore",7
+"Madras Presidency","Madura",6
+"Madras Presidency","Coimbatore",4
+"Madras Presidency","Trichinopoly",8
+"Madras Presidency","South Arcot",10
+"Madras Presidency","Madras",12
+"Madras Presidency","Chingleput",11
+"Madras Presidency","North Arcot",13
+"Madras Presidency","Nellore",14
+"Madras Presidency","Salem",9
+"Madras Presidency","South Canara",1
+"Mysore","Shimoga",1
+"Mysore","Cudoor",3
+"Mysore","Chittal Droog",2
+"Mysore","Hassan",4
+"Mysore","Colar",6
+"Mysore","Toomkoor",5
+"Mysore","Bangalore",7
+"Madras Presidency","Bellary",16
+"Madras Presidency","Godavery",19
+"Madras Presidency","Kistna",18
+"Madras Presidency","Kurnool",17
+"Madras Presidency","Cuddapah",15
+"Berar","Buldana",1
+"Berar","Bassin",6
+"Berar","Yothmal",5
+"Berar","Oomrawuttee",4
+"Berar","Akola",2
+"Berar","Ellichpoor",3
+"Bombay Presidency","Nuesies",29
+"Bombay Presidency","Kolaba",11
+"Bombay Presidency","Tanna",10
+"Bombay Presidency","Bhore",30
+"Bombay Presidency","Ratnagiri",12
+"Bombay Presidency","Sawuntwarree",42
+"Bombay Presidency","Kolapoor",36
+"Bombay Presidency","Dharwar",17
+"Bombay Presidency","Kaladgi",15
+"Bombay Presidency","Nasik",7
+"Bombay Presidency","Ahmad Nagar",8
+"Bombay Presidency","Poona",9
+"Bombay Presidency","Phaltan",31
+"Bombay Presidency","Meeruj",35
+"Bombay Presidency","Juruh",32
+"Bombay Presidency","Satara",13
+"Bombay Presidency","Jat",33
+"Bombay Presidency","Jamkhandi",37
+"Bombay Presidency","Mudhole",38
+"Bombay Presidency","Mhyekanta",16
+"Bombay Presidency","Akalkote",34
+"Bombay Presidency","Sholapur",14
+"Bombay Presidency","Surat",5
+"Bombay Presidency","Dhurrumpoor",27
+"Bombay Presidency","Surgana",25
+"Bombay Presidency","Peint",26
+"Bombay Presidency","Raj Peepla",22
+"Bombay Presidency","Baunsda",23
+"Bombay Presidency","Dangs",24
+"Bombay Presidency","Baroda",19
+"Bombay Presidency","Akraunee",21
+"Hyderabad","Bamne",5
+"Hyderabad","Baythulwaddy",1
+"Hyderabad","Dowlutabad",2
+"Hyderabad","Hingolee",7
+"Hyderabad","Patree",6
+"Hyderabad","Warona",8
+"Central Province","Wurdah",17
+"Central Province","Nagpoor",16
+"Central Province","Bhundara",15
+"Central Province","Nandgaon",3
+"Central Province","Chhuikhadan",4
+"Central Province","Konkeir",14
+"Central Province","Ryepoor",13
+"Bengal Province","Runapoor",5
+"Bengal Province","Nyagurh",4
+"Bengal Province","Atgurh",11
+"Bengal Province","Hindole",8
+"Bengal Province","Denkenal",12
+"Bengal Province","Boud",1
+"Central Province","Sonpoor",11
+"Central Province","Patna",12
+"Central Province","Kalahandi",13
+"Madras Presidency","Ganjam",21
+"Madras Presidency","Vizagapatam",20
+"Central Province","Upper Godavery",19
+"Central Province","Bustar",15
+"Hyderabad","Kummunmett",21
+"Hyderabad","Nelgoondih",22
+"Hyderabad","Gudijunturgurh",37
+"Hyderabad","Pangull",34
+"Hyderabad","Raichoor",35
+"Hyderabad","Moodgul",36
+"Hyderabad","Mahoor",9
+"Hyderabad","Warungul",20
+"Hyderabad","Koilkonda",30
+"Hyderabad","Bheer",14
+"Hyderabad","Kaolburga",27
+"Hyderabad","Mulkair",29
+"Hyderabad","Suggur",28
+"Hyderabad","Kowlass",17
+"Hyderabad","Beder",25
+"Hyderabad","Raingeer",10
+"Hyderabad","Mullangoor",19
+"Hyderabad","Ghumapoorah",31
+"Hyderabad","Amrabad",33
+"Hyderabad","Daveroondala",32
+"Hyderabad","Medduck",18
+"Hyderabad","Hyderabad",24
+"Hyderabad","Bhoonageer",23
+"Hyderabad","Eilgundel",11
+"Hyderabad","Kulliantee",26
+"Hyderabad","Nandair",12
+"Hyderabad","Nuldroog",16
+"Hyderabad","Darroor",13
+"Hyderabad","Pyton",3
+"Hyderabad","Jaulnah",4
+"Madras Presidency","Banganpalle",5
+"Madras Presidency","Sandur",4
+"Bombay Presidency","Soorhutee",40
+"Bombay Presidency","Savanur",41
+"Bombay Presidency","Ramdurg",39
+"Central Province","Sumbulpoor",12
+"Central Province","Badakole",10
+"Bengal Province","Atmullick",2
+"Bengal Province","Tigiria",10
+"Bengal Province","Burumbah",9
+"Bengal Province","Duspulla",3
+"Bengal Province","Narsingpoor",7
+"Bengal Province","Kuinlpara",6
+"Bengal Province","Balasore",3
+"Bengal Province","Lahara",14
+"Central Province","Bamra",9
+"Bengal Province","Neelgurh",16
+"Bengal Province","Keonjur",15
+"Bengal Province","Pooree",1
+"Bengal Province","Talcheer",13
+"Bengal Province","Ungoor",4
+"Central India Agency","Sindhia",3
+"North West Province","Dehra",1
+"North West Province","Gurhwal",1
+"North West Province","Gurhwal",2
+"Punjab","Kupoorthulla",8
+"Punjab","Umritsir",2
+"Punjab","Kangra",15
+"Punjab","Goordaspur",1
+"Punjab","Chamba",14
+"Punjab","Hoshiyarpoor",13
+"Punjab","Furreedkot",2
+"Punjab","Ferozpoor",3
+"Punjab","Mandi",10
+"Punjab","Belaspoor",11
+"Punjab","Bisahir",13
+"Punjab","Sirmoor",9
+"Punjab","Patiala",1
+"Punjab","Malerkotla",5
+"Punjab","Loodhiana",11
+"Punjab","Nabha",4
+"Rajputana Agency","Beekaneer",2
+"North West Province","Saharunpore",4
+"North West Province","Moozuffernuggur",5
+"North West Province","Meerut",11
+"Punjab","Jheend",3
+"Punjab","Kurnal",9
+"Punjab","Patoudee",6
+"Punjab","Delhi",8
+"Punjab","Goorgaon",7
+"Punjab","Sirsa",4
+"Punjab","Hissar",5
+"Bengal Province","Julpigoree",12
+"Bengal Province","Cooch Behar",1
+"Bengal Province","Hill Tipperah",2
+"Bengal Province","Sylhet",14
+"Bengal Province","Nowgong",8
+"Bengal Province","Durrung",4
+"Bengal Province","Garo Hills",1
+"Bengal Province","Kamroop",3
+"Bengal Province","Goalpara",2
+"Bengal Province","Nuddea",4
+"Bengal Province","Moorshedabad",8
+"Bengal Province","Beerbhoom",7
+"Bengal Province","Sonthal Purgunnahs",1
+"Bengal Province","Purneah",10
+"Bengal Province","Maldah",9
+"Bengal Province","Dinagepore",10
+"Oudh","Baraich",4
+"Bengal Province","Bonai",7
+"Bengal Province","Gangpoor",6
+"Central Province","Sarungurh",8
+"Central Province","Raigurh",7
+"Bengal Province","Oodeypoor",4
+"Bengal Province","Jushpoor",5
+"Central Province","Balaghat",14
+"Central Province","Seonee",5
+"Central Province","Chindwara",4
+"Central Province","Baitool",3
+"Central Province","Hoshungabad",2
+"Central Province","Nursingpoor",6
+"Central Province","Nimar",1
+"Central India Agency","Dhar",10
+"Central India Agency","Dewas",4
+"Bengal Province","Sirgoojah",3
+"Bengal Province","Korea",2
+"Bengal Province","Bhokar",1
+"Central Province","Mandlah",10
+"Central Province","Jubbulpoor",9
+"Central India Agency","Jussoh",24
+"Central India Agency","Bhopal",12
+"Central India Agency","Rajgurh",13
+"Central India Agency","Rutlam",6
+"Rajputana Agency","Kotah",11
+"Central Province","Saugor",7
+"North West Province","Lullutpore",24
+"Central India Agency","Tehree",16
+"Central India Agency","Punnah",17
+"Central India Agency","Bijawur",18
+"Central India Agency","Churkharee",20
+"Central India Agency","Chuttorpoor",19
+"Central India Agency","Adjygur",22
+"Central India Agency","Nagode",25
+"Central India Agency","Myhere",23
+"Central India Agency","Kotee",27
+"Central India Agency","Birsingpoor (Punnah)",28
+"Rajputana Agency","Balmeer",19
+"Rajputana Agency","Jessulmeer",1
+"Bombay Presidency","Okhamundul",2
+"Bombay Presidency","Burda",4
+"Bombay Presidency","Umreylee",6
+"Bombay Presidency","Soruth",5
+"Bombay Presidency","Babriawar",7
+"Bombay Presidency","Ahmedabad",1
+"Bombay Presidency","Oondsurwsya",9
+"Bombay Presidency","Gohelwar",8
+"Bombay Presidency","Hallar",3
+"Bombay Presidency","South Kattiawar",10
+"Bombay Presidency","North Kattiawar",11
+"Bombay Presidency","Jhalawar",13
+"Bombay Presidency","Cambay",18
+"Bombay Presidency","Broach",4
+"Bombay Presidency","Mewassee",20
+"Bombay Presidency","Kaira",2
+"Bombay Presidency","Panch Mahals",3
+"Bombay Presidency","Cutch",1
+"Rajputana Agency","Sirrohee",18
+"Rajputana Agency","Purtabgurh",15
+"Rajputana Agency","Banswarra",16
+"Rajputana Agency","Dongurpoor",17
+"Rajputana Agency","Neembharah (Tonk)",14
+"Rajputana Agency","Oodeypoor",13
+"Central India Agency","Amjherah",9
+"Central India Agency","Holkar",2
+"Rajputana Agency","Ulwar",4
+"Rajputana Agency","Boondee",10
+"Rajputana Agency","Tonk",9
+"Ajmer Merwara","Merwara",2
+"Ajmer Merwara","Ajmer",1
+"Rajputana Agency","Jodhpoor",20
+"Rajputana Agency","Dholpoor",6
+"Rajputana Agency","Kerowly",7
+"Central India Agency","Dutteah",14
+"Central India Agency","Sumpte",15
+"Bengal Province","24 - Pergunnahs",2
+"Bengal Province","Hooghly with Howrah",3
+"Bengal Province","Bancoorah",6
+"Bengal Province","Burdwan",5
+"Bengal Province","Singbhoom",4
+"Bengal Province","Seraikela",8
+"Bengal Province","Maunbhoom",3
+"Bengal Province","Shahabad",4
+"Bengal Province","Patna",5
+"Bengal Province","Monghyr",2
+"Bengal Province","Bhaugulpore",9
+"North West Province","Mirzapore",29
+"North West Province","Benares",30
+"North West Province","Jounpore",32
+"North West Province","Ghazeepore",31
+"North West Province","Azimgurh",33
+"North West Province","Bustee",35
+"Bengal Province","Sarun",6
+"Bengal Province","Tirhoot",8
+"North West Province","Goruckpore",34
+"Bengal Province","Gya",3
+"Bengal Province","Lohardugga",1
+"North West Province","Jhansie",23
+"North West Province","Humeerpore",25
+"North West Province","Banda",26
+"North West Province","Allahabad",28
+"North West Province","Jaloun",22
+"Central India Agency","Baoni",30
+"North West Province","Agra",15
+"North West Province","Etawah",20
+"North West Province","Cawnpore",21
+"Oudh","Oonao",9
+"Oudh","Roy Bareilly",10
+"Oudh","Pertabgurh",11
+"Oudh","Sultanpoor",12
+"Oudh","Fyzabad",6
+"Oudh","Lucknow",8
+"Oudh","Hurdui",2
+"North West Province","Furruckabad",19
+"North West Province","Shahjehanpore",18
+"North West Province","Budaon",9
+"North West Province","Etah",17
+"North West Province","Mynpoory",16
+"North West Province","Muttra",14
+"North West Province","Allygurh",13
+"North West Province","Boolundshuhur",12
+"North West Province","Bijnour",6
+"North West Province","Moradabad",10
+"North West Province","Turrai",7
+"Oudh","Seetapoor",3
+"Oudh","Barabunkee",7
+"Oudh","Gondah",5
+"North West Province","Bareilly",8
+"Oudh","Kheree",1
+"Bengal Province","Khasia and Jynteah Hills",9
+"North West Province","Futtehpore",27
+"Central India Agency","Sohawul",26
+"North West Province","Rampur",2
+"Bengal Province","Chumparun",7
+"Central Province","Makrai",1
+"Central Province","Kawarda",2
+"Bengal Province","Moharbunj",17
+"Madras Presidency","Malabar",2
+"Mysore","Mysore",8
+"Bombay Presidency","Khandesh",6
+"Bombay Presidency","Kanara",18
+"Bombay Presidency","Belgaum",16
+"Bombay Presidency","Jowar",28
+"Central Province","Khairagarh",5
+"Central Province","Chanda",18
+"Hyderabad","Purrainad",15
+"Bengal Province","Cuttack",2
+"North West Province","Kumaon",3
+"Punjab","Jullunder",12
+"Punjab","Simla",14
+"Punjab","Umbala",10
+"Punjab","Rohtak",6
+"Bengal Province","Darjeeling",11
+"Bengal Province","Naga Hills",7
+"Bengal Province","Seebsaugor",6
+"Bengal Province","Luckimpore",5
+"Bengal Province","Cachar",13
+"Central Province","Belaspoor",11
+"Central India Agency","Jabboah",7
+"Central Province","Dumoh",8
+"Central India Agency","Rewah",29
+"Central India Agency","Baraundha",21
+"Bombay Presidency","Guikwar",15
+"Bombay Presidency","Rewakanta",17
+"Bombay Presidency","Palhanpoor",14
+"Central India Agency","Burwanee",11
+"Central India Agency","Rajpoor",8
+"Central India Agency","Jowra",5
+"Rajputana Agency","Jeypoor",8
+"Rajputana Agency","Kishangarh",21
+"Bengal Province","Midnapore",1
+"Bengal Province","Hazareebagh",2
+"Rajputana Agency","Bhurtpoor",5
+"Punjab","Suket",12
+"Central Province","Sakti",6
+"Rajputana Agency","Jhoonjhunao",3
+"Punjab","Loharoo",7
+"Coorg","Coorg",0
+"Daman","Daman",0
+"Goa","Goa",0
+"Pondicherry","Pondicherry",0
+"Jammu and Kashmir","Jammu and Kashmir",0
+"Punjab","Punjab",0
+"Nepal","Nepal",0
+"Looshai Hills","Looshai Hills",0
+"North East Frontier Agency","North East Frontier Agency",0
+"Naga Tribes","Naga Tribes",0
+"Karikai","Karikai",0
+"Mahe","Mahe",0
+"Yanam","Yanam",0
+"Sikkim","Sikkim",0
+"Bhutan","Bhutan",0
+"Muneepoor","Muneepoor",0
+"Central India Agency","Jussoh",0
+"Rajputana Agency","Ulwar",0
+"Central India Agency","Jawudneemach",0
+"Central India Agency","Jawudneemach",1
+"Unknown","Unknown",0

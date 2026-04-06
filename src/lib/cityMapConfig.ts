@@ -31,7 +31,7 @@ export interface CityEntry {
   datasets: CityDataset[];
 }
 
-const CITY_DATASETS: CityDataset[] = [
+export const CITY_DATASETS: CityDataset[] = [
   // --- DataMeet / pre-existing cities ---
   { id: 'ahmedabad', displayName: 'Ahmedabad', state: 'Gujarat', type: 'wards', source: 'DataMeet', label: 'Wards', featureCount: 48, geojsonPath: '/cities/ahmedabad.geojson' },
   { id: 'bangalore', displayName: 'Bangalore', state: 'Karnataka', type: 'wards', source: 'DataMeet', label: 'BBMP Wards (2022)', featureCount: 243, geojsonPath: '/cities/bangalore.geojson' },

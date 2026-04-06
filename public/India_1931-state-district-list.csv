@@ -1,0 +1,434 @@
+"state_name","district_name","id"
+"Assam","Sibsagar",8
+"Punjab","Chamba",10
+"Punjab","Kangra",12
+"Punjab","Mandi",11
+"Punjab","Suket",13
+"Punjab","Bilaspur (Punjab)",12
+"Punjab","Hoshiarpur",11
+"Punjab","Gurdaspur",1
+"Punjab","Amritsar",2
+"Punjab","Kapurthala",1
+"Punjab","Ludhiana",9
+"Punjab","Malerkotla",4
+"Punjab","Ferozepur",3
+"Punjab","Faridkot",2
+"United Province of Agra and Oudh","Dehra Dun",1
+"United Province of Agra and Oudh","Tehri Garhwal",1
+"Punjab","Bashahr",18
+"Punjab","Nalagarh",14
+"Punjab","Sirmoor",16
+"Punjab","Jubbal",17
+"Punjab","Simla",13
+"Punjab","Kalsia",15
+"Punjab","Ambala",8
+"Punjab","Jind",6
+"Punjab","Hissar",4
+"Punjab","Loharu",7
+"Punjab","Dujana",8
+"Punjab","Rohtak",5
+"Punjab","Pataudi",9
+"Punjab","Patiala",5
+"Punjab","Gurgaon",6
+"Rajputana Agency","Jaisalmer",14
+"Rajputana Agency","Bikaner",1
+"Rajputana Agency","Bharatpur",4
+"Rajputana Agency","Dholpur",5
+"Rajputana Agency","Karauli",6
+"Rajputana Agency","Jaipur",2
+"Rajputana Agency","Alwar",3
+"Rajputana Agency","Sirohi",15
+"Rajputana Agency","Jhalawar",7
+"Rajputana Agency","Tonk",10
+"Rajputana Agency","Kotah",8
+"United Province of Agra and Oudh","Garhwal",3
+"Ajmer Merwara","Ajmer Merwara",1
+"Rajputana Agency","Marwar",13
+"Rajputana Agency","Bundi",9
+"Rajputana Agency","Kishangarh",12
+"Rajputana Agency","Shahpura",22
+"Rajputana Agency","Lawa (estate)",11
+"Rajputana Agency","Partabgarh (Rajputana Agency)",20
+"Rajputana Agency","Dungarpur",17
+"Rajputana Agency","Mewar",21
+"Rajputana Agency","Kushalgarh (chiefship)",19
+"Rajputana Agency","Banswara",18
+"Western India State Agency","Wao",27
+"Western India State Agency","Tharad",28
+"Western India State Agency","Palanpur",31
+"Western India State Agency","Kankarej",30
+"Western India State Agency","Deodar",29
+"Western India State Agency","Suigam",26
+"Western India State Agency","Santalpur",23
+"Western India State Agency","Wardhi",24
+"Western India State Agency","Radhanpur",25
+"Western India State Agency","Morvi",18
+"Western India State Agency","Khairasra",16
+"Western India State Agency","Rajkot",17
+"Western India State Agency","Gondal",13
+"Western India State Agency","Dhrol",15
+"Western India State Agency","Virpur",12
+"Western India State Agency","Jetpur",11
+"Western India State Agency","Porbandar",1
+"Baroda","Okhamandal",1
+"Western India State Agency","Nawanagar",14
+"Western India State Agency","Jasdan",8
+"Western India State Agency","Eastern Kathiawar Agency",32
+"Western India State Agency","Wankaner",19
+"Western India State Agency","Kotda Sanghani",9
+"Western India State Agency","Palitana",6
+"Western India State Agency","Bhavnagar",5
+"Baroda","Amreli",2
+"Western India State Agency","Lathi",7
+"Western India State Agency","Bagasra",10
+"Western India State Agency","Bantva",2
+"Western India State Agency","Jafrabad",4
+"Western India State Agency","Junagadh",3
+"Bombay Presidency","Cambay",10
+"Bombay Presidency","Kaira",2
+"Bombay Presidency","Balasinor",2
+"Bombay Presidency","Kadana",4
+"Bombay Presidency","Lunawada",3
+"Baroda","Mehsana",3
+"Bombay Presidency","Ahmedabad",1
+"Bombay Presidency","Mahikantha Agency",1
+"Bombay Presidency","Dharwar",18
+"Bombay Presidency","Jamkhandi",27
+"Bombay Presidency","Sangli",25
+"Bombay Presidency","Savantvadi",30
+"Bombay Presidency","Ratnagiri",14
+"Bombay Presidency","Janjira",18
+"Bombay Presidency","Bhor",19
+"Bombay Presidency","Poona",12
+"Bombay Presidency","Kolaba",13
+"Bombay Presidency","Ahmednagar",11
+"Bombay Presidency","Jawhar",17
+"Bombay Presidency","Nasik",8
+"Bombay Presidency","Bombay Suburban",7
+"Bombay Presidency","Thana",6
+"Bombay Presidency","Dharampur",16
+"Bombay Presidency","Surgana",15
+"Bombay Presidency","Dangs",13
+"Bombay Presidency","Khandesh East",10
+"Bombay Presidency","Khandesh West",9
+"Baroda","Navsari",5
+"Bombay Presidency","Surat",5
+"Bombay Presidency","Santh",5
+"Bombay Presidency","Sanjeli",6
+"Baroda","Baroda",4
+"Bombay Presidency","Chota Udepur",8
+"Bombay Presidency","Sankheda Mewas",11
+"Bombay Presidency","Rajpipla",12
+"Bombay Presidency","Broach",4
+"Bombay Presidency","Sholapur",16
+"Bombay Presidency","Satara",15
+"Bombay Presidency","Belgaum",19
+"Bombay Presidency","Aundh",21
+"Bombay Presidency","Miraj",26
+"Bombay Presidency","Kolhapur",24
+"Bombay Presidency","Ramdurg",29
+"Bombay Presidency","Mudhol",28
+"Bombay Presidency","Jath",23
+"Bombay Presidency","Kanara",20
+"Madras Presidency","South Arcot",11
+"Madras Presidency","Tanjore",8
+"Madras Presidency","Travancore",2
+"Madras Presidency","Madura",5
+"Madras Presidency","Tinnevelly",6
+"Madras Presidency","Pudukkottai",3
+"Madras Presidency","Trichinopoly",9
+"Mysore","Tumkur",3
+"Mysore","Chitaldrug",2
+"Mysore","Shimoga",1
+"Mysore","Kolar",4
+"Mysore","Bangalore",5
+"Madras Presidency","Salem",10
+"Madras Presidency","South Kanara",1
+"Madras Presidency","Nilgiris",3
+"Madras Presidency","Coimbatore",4
+"Madras Presidency","Cochin",1
+"Madras Presidency","Malabar",2
+"Mysore","Mysore",6
+"Mysore","Hassan",7
+"Mysore","Kadur",8
+"Madras Presidency","Chingleput",13
+"Madras Presidency","Anantapur",17
+"Madras Presidency","Madras",14
+"Madras Presidency","North Arcot",12
+"Madras Presidency","Chittoor",15
+"Madras Presidency","Cuddapah",16
+"Madras Presidency","Vizagapatam",25
+"Madras Presidency","Godavari East",24
+"Madras Presidency","Godavari West",23
+"Madras Presidency","Kistna",22
+"Madras Presidency","Guntur",21
+"Madras Presidency","Nellore",20
+"Madras Presidency","Banganapalle",4
+"Madras Presidency","Kurnool",19
+"Madras Presidency","Sandur",5
+"Madras Presidency","Bellary",18
+"Hyderabad","Raichur",16
+"Hyderabad","Mahbubnagar",15
+"Hyderabad","Gulbarga",13
+"Hyderabad","Medak",9
+"Hyderabad","Atraf-i-Balda",14
+"Hyderabad","Aurangabad",1
+"Hyderabad","Bir",11
+"Hyderabad","Osmanabad",12
+"Central India Agency","Datia",23
+"Gwalior","Bhind",1
+"Gwalior","Tonwarghar",3
+"Gwalior","Sheopur",4
+"Gwalior","Gird",2
+"Gwalior","Narwar",5
+"Central India Agency","Khaniadhana",22
+"Gwalior","Isagarh",6
+"Gwalior","Bhilsa",7
+"Central India Agency","Nemawar (Indore)",17
+"Central India Agency","Bhopal",21
+"Central India Agency","Narsinghgarh",18
+"Central India Agency","Rajgarh",20
+"Gwalior","Ujjain",9
+"Gwalior","Shajapur",8
+"Central India Agency","Indore",14
+"Central India Agency","Khilchipur",19
+"Central India Agency","Samthar",24
+"Central India Agency","Jaora",1
+"Central India Agency","Rampura (Indore)",2
+"Gwalior","Mandsaur",11
+"Central India Agency","Sitamau",4
+"Central India Agency","Dewas",3
+"Central India Agency","Dhar",15
+"Central India Agency","Ratlam",5
+"Central India Agency","Mehidpur (Indore)",16
+"United Province of Agra and Oudh","Muttra",16
+"United Province of Agra and Oudh","Aligarh",15
+"United Province of Agra and Oudh","Bulandshahr",14
+"United Province of Agra and Oudh","Saharanpur",2
+"United Province of Agra and Oudh","Muzaffarnagar",7
+"United Province of Agra and Oudh","Meerut",8
+"United Province of Agra and Oudh","Bijnor",6
+"United Province of Agra and Oudh","Almora",4
+"United Province of Agra and Oudh","Rampur",2
+"United Province of Agra and Oudh","Nainital",5
+"United Province of Agra and Oudh","Moradabad",9
+"United Province of Agra and Oudh","Pilibhit",11
+"United Province of Agra and Oudh","Bareilly",10
+"United Province of Agra and Oudh","Shahajahanpur",12
+"Hyderabad","Bidar",10
+"Hyderabad","Parbhani",2
+"Central Province and Berar","Buldana",13
+"Central Province and Berar","Nimar",1
+"Central Province and Berar","Makrai",1
+"Central Province and Berar","Narsinghpur (Central Provinces and Berar)",5
+"Central Province and Berar","Chhindwara",4
+"Central Province and Berar","Betul",3
+"Central Province and Berar","Hoshangabad",2
+"Central Province and Berar","Akola",14
+"Central Province and Berar","Yeotmal",15
+"Central Province and Berar","Amraoti",12
+"Central Province and Berar","Wardha",11
+"Central Province and Berar","Nagpur",10
+"Central Province and Berar","Seoni",9
+"United Province of Agra and Oudh","Kheri",22
+"United Province of Agra and Oudh","Budaun",13
+"United Province of Agra and Oudh","Etah",18
+"United Province of Agra and Oudh","Mainpuri",19
+"United Province of Agra and Oudh","Agra",17
+"United Province of Agra and Oudh","Etawah",35
+"United Province of Agra and Oudh","Jalaun",36
+"Central India Agency","Jigni",39
+"Central India Agency","Sarila",38
+"Central India Agency","Beri",40
+"Central India Agency","Baoni",41
+"Central India Agency","Orchha",25
+"United Province of Agra and Oudh","Hamirpur",38
+"Central India Agency","Bijawar",26
+"Central India Agency","Chhatarpur",27
+"Central India Agency","Charkhari",29
+"United Province of Agra and Oudh","Gorakhpur",27
+"Central Province and Berar","Saugor",6
+"Central India Agency","Kothi",31
+"Central India Agency","Panna",28
+"Central India Agency","Baraundha",30
+"Central India Agency","Sohawal",32
+"Central India Agency","Jaso",35
+"Central India Agency","Nagod",33
+"Central India Agency","Ajaigarh",34
+"Central India Agency","Maihar",36
+"Central India Agency","Rewa",37
+"United Province of Agra and Oudh","Farrukhabad",20
+"United Province of Agra and Oudh","Hardoi",21
+"Central India Agency","Sailana",6
+"United Province of Agra and Oudh","Jhansi",37
+"United Province of Agra and Oudh","Cawnpore",34
+"United Province of Agra and Oudh","Benares (UP -Princely State)",3
+"United Province of Agra and Oudh","Lucknow",32
+"United Province of Agra and Oudh","Ghazipur",44
+"United Province of Agra and Oudh","Fyzabad",30
+"United Province of Agra and Oudh","Benares (UP -British District)",45
+"United Province of Agra and Oudh","Ballia",28
+"United Province of Agra and Oudh","Jaunpur",43
+"United Province of Agra and Oudh","Partabgarh (United Province)",42
+"United Province of Agra and Oudh","Bara Banki",31
+"United Province of Agra and Oudh","Unao",33
+"United Province of Agra and Oudh","Rae Bareli",40
+"United Province of Agra and Oudh","Sultanpur",41
+"United Province of Agra and Oudh","Azamgarh",29
+"United Province of Agra and Oudh","Fatehpur",39
+"United Province of Agra and Oudh","Banda",48
+"United Province of Agra and Oudh","Allahabad",47
+"United Province of Agra and Oudh","Gonda",25
+"United Province of Agra and Oudh","Bahraich",24
+"United Province of Agra and Oudh","Basti",26
+"United Province of Agra and Oudh","Mirzapur",46
+"Hyderabad","Adilabad",5
+"Central Province and Berar","Raipur",20
+"Central Province and Berar","Nandgaon",4
+"Central Province and Berar","Chhuikhadan",5
+"Central Province and Berar","Khairagarh",3
+"Central Province and Berar","Bhandara",17
+"Hyderabad","Nander",3
+"Hyderabad","Nizamabad",4
+"Hyderabad","Karimnagar",6
+"Hyderabad","Nalgonda",8
+"Hyderabad","Warangal",7
+"Central Province and Berar","Kanker",6
+"Central Province and Berar","Bastar",7
+"Central Province and Berar","Kawardha",2
+"Central Province and Berar","Drug",19
+"Central Province and Berar","Chanda",16
+"Central Province and Berar","Bilaspur (Central Province and Berar)",21
+"Central Province and Berar","Balaghat",18
+"Central Province and Berar","Mandla",22
+"Bihar and Orissa","Sambalpur",21
+"Central Province and Berar","Sakti",9
+"Central Province and Berar","Udaipur",11
+"Central Province and Berar","Sarangarh",8
+"Central Province and Berar","Chang Bhakar",15
+"Central Province and Berar","Raigarh",10
+"Central Province and Berar","Korea",14
+"Central Province and Berar","Jashpur",12
+"Bihar and Orissa","Patna (Princely State-Bihar and Orissa)",2
+"Central Province and Berar","Surguja",13
+"Bihar and Orissa","Talcher",16
+"Bihar and Orissa","Angul",20
+"Bihar and Orissa","Daspalla",6
+"Bihar and Orissa","Rairakhol",18
+"Bihar and Orissa","Athmallik",5
+"Bihar and Orissa","Sonpur",3
+"Bihar and Orissa","Baud",4
+"Bihar and Orissa","Bonai",20
+"Bihar and Orissa","Bamra",19
+"Bihar and Orissa","Gangpur",21
+"Bihar and Orissa","Kalahandi",1
+"Bihar and Orissa","Athgarh",13
+"Bihar and Orissa","Tigiria",12
+"Bihar and Orissa","Narsinghpur (Bihar and Orissa)",10
+"Bihar and Orissa","Ranpur",8
+"Bihar and Orissa","Baramba",11
+"Bihar and Orissa","Khandpara",9
+"Bihar and Orissa","Hindol",15
+"Bihar and Orissa","Nilgiri",25
+"Bihar and Orissa","Nayagarh",7
+"Bihar and Orissa","Pal Lahara",17
+"Bihar and Orissa","Dhenkanal",14
+"Bihar and Orissa","Keonjhar",26
+"Bihar and Orissa","Mayurbhanj",24
+"Bengal","Calcutta",4
+"Bengal","Howrah",2
+"Bengal","Malda",11
+"Bengal","Dinajpur",12
+"Bengal","Nadia",6
+"Bengal","Hooghly",3
+"Bihar and Orissa","Puri",19
+"Bengal","Birbhum",9
+"Bengal","Burdwan",7
+"Bengal","Murshidabad",10
+"Bihar and Orissa","Balasore",17
+"Bengal","Bankura",8
+"Bengal","24 - Parganas",5
+"Bihar and Orissa","Cuttack",18
+"Bengal","Midnapore",1
+"Bihar and Orissa","Kharsawan",23
+"Bihar and Orissa","Saraikela",22
+"Bihar and Orissa","Saran",2
+"Bihar and Orissa","Muzaffarpur",3
+"Bihar and Orissa","Champaran",1
+"Bihar and Orissa","Darbhanga",4
+"Bihar and Orissa","Singhbhum",16
+"Bihar and Orissa","Manbhum",15
+"Bihar and Orissa","Shahabad",10
+"Bihar and Orissa","Bhagalpur",5
+"Bihar and Orissa","Santal Parganas",7
+"Bihar and Orissa","Patna (British district- Bihar and Orissa)",9
+"Bihar and Orissa","Monghyr",8
+"Bihar and Orissa","Gaya",11
+"Bihar and Orissa","Palamau",13
+"Bihar and Orissa","Ranchi",14
+"Bihar and Orissa","Hazaribagh",12
+"Bengal","Cooch Behar",1
+"Bengal","Darjeeling",13
+"Bengal","Jalpaiguri",14
+"Bihar and Orissa","Purnea",6
+"Assam","Garo Hills",2
+"Bengal","Tripura",2
+"Assam","Kamrup",3
+"Assam","Goalpara",1
+"Assam","Lakhimpur",7
+"Assam","Khasi States",1
+"Assam","Lushai Hills",14
+"Assam","Manipur",2
+"Assam","Sadiya Frontier Tract (N.E.F.A.)",6
+"Assam","Balipara Frontier Tract (N.E.F.A.)",5
+"Assam","Sylhet",13
+"Assam","Khasi and Jaintia Hills",10
+"Assam","Cachar",11
+"Assam","Darrang",4
+"Assam","Nowgong",9
+"Assam","Naga Hills",12
+"United Province of Agra and Oudh","Sitapur",23
+"Central India Agency","Bori",8
+"Central India Agency","Jobat",9
+"Gwalior","Amjhera",10
+"Central India Agency","Mathwar",11
+"Central India Agency","Kukshi (Indore)",12
+"Central India Agency","Ali Rajpur",10
+"Central India Agency","Jhabua",7
+"Central India Agency","Barwani",13
+"Central Province and Berar","Damoh",7
+"Central Province and Berar","Jubbulpore",8
+"Bombay Presidency","Savanur",31
+"Punjab","Nabha",3
+"Bombay Presidency","Bansda",14
+"Bombay Presidency","Phaltan",20
+"Rajputana Agency","Abu",16
+"Western India State Agency","Cutch",22
+"Western India State Agency","Malia",20
+"Western India State Agency","Dhrangadhra",21
+"Jammu and Kashmir","Jammu and Kashmir",0
+"Punjab","Patiala-Nabha",1
+"Punjab","Simla Eastern Hill States",1
+"Delhi","Delhi",0
+"Rann of Kutch","Cutch",0
+"Goa","Goa",0
+"Bombay Presidency","Sanjeli",7
+"Bombay Presidency","Akalkot",22
+"Bombay Presidency","Bijapur",17
+"Madras Presidency","Ramnad",7
+"Coorg","Coorg",0
+"Madras Presidency","Ganjam",26
+"Chandernagore","Chandernagore",0
+"Sikkim","Sikkim",0
+"Singhpos","Singhpos",0
+"Naga tribes","Naga tribes",0
+"Andaman and Nicobar Islands","Andaman and Nicobar Islands",0
+"Madras","Ramnad",0
+"Bengal","Gangetic Delta",0
+"Pondicherry","Pondicherry",0
+"Karikal","Karikal",0
+"Mahe","Mahe",0
+"Dadra and Nagar Haveli","Dadra and Nagar Haveli",0
+"Daman","Daman",0
+"Rann of Kutch","Rann of Kutch",0
+"Yanam","Yanam",0

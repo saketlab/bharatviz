@@ -23,6 +23,7 @@ import showcaseDemoUrls from '@/lib/showcase-demo-urls.json';
 import Credits from '@/components/Credits';
 import MCPDocs from '@/components/MCPDocs';
 import { DistrictStats } from '@/components/DistrictStats';
+import { CityStats } from '@/components/CityStats';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping, detectDataType, getUniqueCategories, generateDefaultCategoryColors } from '@/lib/categoricalUtils';
 import { STATES_CITATION, NSSO_CITATION, getDistrictsCitationInfo, getCityCitationInfo } from '@/lib/citations';
@@ -61,7 +62,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.slice(1);
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'city-stats', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -462,7 +463,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'help', 'credits', 'mcp'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'help', 'credits', 'mcp'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -1254,6 +1255,14 @@ const Index = () => {
         ogTitle: 'District Statistics & Boundary Comparison | BharatViz',
         ogDescription: 'Compare district counts and boundaries across LGD, NFHS, Census, and other sources. Explore India\'s 750+ districts.'
       },
+      'city-stats': {
+        title: 'City Ward Statistics | BharatViz India Maps',
+        description: 'Browse all city ward boundary datasets available in BharatViz. Covers 2,900+ datasets across 1,000+ Indian cities from DataMeet, SBM, AMRUT, and other sources.',
+        keywords: 'India city statistics, city wards, ward boundaries, Indian cities, DataMeet, SBM, AMRUT, urban India data',
+        canonical: `${baseUrl}/city-stats`,
+        ogTitle: 'City Ward Statistics | BharatViz',
+        ogDescription: 'Browse 2,900+ city ward boundary datasets across Indian cities from DataMeet, SBM, AMRUT, and other sources.'
+      },
       help: {
         title: 'Help & API Documentation | BharatViz India Maps',
         description: 'Complete guide to using BharatViz: web interface, Python/R API, embedding maps, and programmatic access. Learn how to create choropleth maps of India with our comprehensive documentation.',
@@ -1285,7 +1294,7 @@ const Index = () => {
 
   const seoContent = getSEOContent();
 
-  const tabTriggerClass = `rounded-lg border px-1.5 py-1 sm:border-2 sm:px-4 sm:py-3 font-semibold text-xs sm:text-base transition-all duration-200 ${
+  const tabTriggerClass = `flex-1 min-w-[4.5rem] rounded-lg border px-1.5 py-1 sm:border-2 sm:px-4 sm:py-3 font-semibold text-xs sm:text-base transition-all duration-200 ${
     darkMode
       ? 'border-gray-600 bg-gray-800 text-gray-300 hover:border-blue-500 hover:text-blue-400 data-[state=active]:border-blue-500 data-[state=active]:text-blue-300 data-[state=active]:bg-blue-900'
       : 'border-gray-300 bg-white text-gray-600 hover:border-blue-400 hover:text-blue-700 data-[state=active]:border-blue-600 data-[state=active]:text-blue-900 data-[state=active]:bg-blue-50'
@@ -1374,7 +1383,7 @@ const Index = () => {
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <div className="mb-4 sm:mb-8">
-            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-1 sm:gap-2 bg-transparent p-0 h-auto">
+            <TabsList className="flex flex-wrap w-full gap-1 sm:gap-2 bg-transparent p-0 h-auto">
               <TabsTrigger
                 value="states"
                 className={tabTriggerClass}
@@ -1410,6 +1419,12 @@ const Index = () => {
                 className={tabTriggerClass}
               >
                 District Stats
+              </TabsTrigger>
+              <TabsTrigger
+                value="city-stats"
+                className={tabTriggerClass}
+              >
+                City Stats
               </TabsTrigger>
               <TabsTrigger
                 value="help"
@@ -2399,6 +2414,10 @@ POST /api/v1/districts/map
 
           <div className={`space-y-6 ${activeTab === 'district-stats' ? 'block' : 'hidden'}`}>
             <DistrictStats darkMode={darkMode} />
+          </div>
+
+          <div className={`space-y-6 ${activeTab === 'city-stats' ? 'block' : 'hidden'}`}>
+            <CityStats darkMode={darkMode} />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'credits' ? 'block' : 'hidden'}`}>
