@@ -201,7 +201,7 @@ const Index = () => {
   const buildUrl = (params: URLSearchParams) => {
     if (darkMode) params.set('darkMode', 'true'); else params.delete('darkMode');
     const search = params.toString();
-    const currentPath = location.pathname === '/' ? '' : location.pathname;
+    const currentPath = location.pathname === '/' ? '/' : location.pathname;
     return `${currentPath}${search ? '?' + search : ''}`;
   };
 
