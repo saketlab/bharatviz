@@ -23,6 +23,9 @@ interface EvolutionData {
 
 interface IndiaEvolutionMapProps {
   darkMode?: boolean;
+  evolutionFile?: string;
+  geojsonYearMap?: Record<number, number>;
+  originYear?: number;
 }
 
 interface PanelState {
@@ -33,53 +36,77 @@ interface PanelState {
   darkMode: boolean;
 }
 
-const YEARS = [1951, 1961, 1971, 1981, 1991, 2001, 2011, 2024];
-const GEOJSON_YEAR: Record<number, number> = {
+const YEARS_DEFAULT = [1951, 1961, 1971, 1981, 1991, 2001, 2011, 2024];
+const GEOJSON_YEAR_DEFAULT: Record<number, number> = {
   1951: 1951, 1961: 1961, 1971: 1971, 1981: 1981,
   1991: 1991, 2001: 2001, 2011: 2011, 2024: 2011,
 };
 const HOVER_COLOR   = '#f59e0b';
 const CLICKED_COLOR = '#ef4444';
 
-const geojsonCache = new Map<number, any>();
-let evoCache: EvolutionData | null = null;
-let referenceFC: any = null;
+const geojsonCache = new Map<string, any>();
+const evoCaches = new Map<string, EvolutionData>();
+
+function isSriLanka(f: Feature): boolean {
+  if (!f.geometry) return false;
+  const geom = f.geometry as any;
+  const rings: number[][][] = geom.type === 'Polygon'
+    ? geom.coordinates
+    : geom.type === 'MultiPolygon'
+    ? geom.coordinates.flat(1)
+    : [];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const ring of rings) {
+    for (const [x, y] of ring) {
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+      if (y < minY) minY = y; if (y > maxY) maxY = y;
+    }
+  }
+  return maxX < 82.1 && minX > 79.4 && maxY < 10.0;
+}
 
 function prepareGeoJSON(gj: any): any {
   return {
     type: 'FeatureCollection',
-    features: gj.features.map((f: Feature) => {
-      const d = (f.properties?.district_name || '').toLowerCase();
-      const s = (f.properties?.state_name || '').toLowerCase();
-      return {
-        ...f,
-        properties: { ...f.properties, _dname: d, _sname: s, _key: `${s}:${d}` },
-      };
-    }),
+    features: gj.features
+      .filter((f: Feature) => !isSriLanka(f))
+      .map((f: Feature) => {
+        const d = (f.properties?.district_name || '').toLowerCase();
+        const s = (f.properties?.state_name || '').toLowerCase();
+        return {
+          ...f,
+          properties: { ...f.properties, _dname: d, _sname: s, _key: `${s}:${d}` },
+        };
+      }),
   };
 }
 
-function fetchGeoJSON(year: number): Promise<any> {
-  const gjYear = GEOJSON_YEAR[year];
-  if (geojsonCache.has(year)) return Promise.resolve(geojsonCache.get(year)!);
-  const alreadyParsed = gjYear !== year && geojsonCache.has(gjYear);
-  const base = alreadyParsed
-    ? Promise.resolve(geojsonCache.get(gjYear)!)
-    : fetch(`/India-${gjYear}-districts.geojson`)
-        .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
-        .then(gj => { const fc = prepareGeoJSON(gj); geojsonCache.set(gjYear, fc); return fc; });
-  return base.then(fc => {
-    geojsonCache.set(year, fc);
-    if (year === 1951) referenceFC = fc;
-    return fc;
-  });
+function makeGeoJSONFetcher(gjYearMap: Record<number, number>, firstYear: number) {
+  return function fetchGeoJSON(year: number): Promise<any> {
+    const gjYear = gjYearMap[year] ?? year;
+    const cacheKey = String(gjYear);
+    const yearKey = String(year);
+    if (geojsonCache.has(yearKey)) return Promise.resolve(geojsonCache.get(yearKey)!);
+    const alreadyParsed = gjYear !== year && geojsonCache.has(cacheKey);
+    const base = alreadyParsed
+      ? Promise.resolve(geojsonCache.get(cacheKey)!)
+      : fetch(`/India-${gjYear}-districts.geojson`)
+          .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+          .then(gj => { const fc = prepareGeoJSON(gj); geojsonCache.set(cacheKey, fc); return fc; });
+    return base.then(fc => {
+      geojsonCache.set(yearKey, fc);
+      return fc;
+    });
+  };
 }
 
-function fetchEvoData(): Promise<EvolutionData> {
-  if (evoCache) return Promise.resolve(evoCache);
-  return fetch('/evolution-data/india_evolution.json')
-    .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
-    .then(d => { evoCache = d; return d; });
+function makeEvoFetcher(evolutionFile: string) {
+  return function fetchEvoData(): Promise<EvolutionData> {
+    if (evoCaches.has(evolutionFile)) return Promise.resolve(evoCaches.get(evolutionFile)!);
+    return fetch(evolutionFile)
+      .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+      .then(d => { evoCaches.set(evolutionFile, d); return d; });
+  };
 }
 
 function nodeKey(n: EvoNode): string {
@@ -93,6 +120,7 @@ function initPanel(
   year: number,
   state: PanelState,
   showLabel: boolean,
+  refFC: any,
   onEnter: (dname: string, node: EvoNode | null, event: MouseEvent) => void,
   onLeave: () => void,
   onClick: (chainId: number | null) => void,
@@ -108,7 +136,7 @@ function initPanel(
   svg.attr('width', W).attr('height', H);
   svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
-  const fitTarget = referenceFC ?? fc;
+  const fitTarget = refFC ?? fc;
   const pad = showLabel ? 16 : 8;
   const projection = d3.geoMercator()
     .fitExtent([[pad, pad], [W - pad, H - pad - (showLabel ? 18 : 0)]], fitTarget);
@@ -155,9 +183,14 @@ function initPanel(
       .attr('stroke-width', (f: any) => f.properties._key === hovered ? 1.2 : 0.3);
 
     labelG.selectAll('*').remove();
-    if (hovered) {
+    const labelFeatures = hovered
+      ? fc.features.filter((f: any) => f.properties._key === hovered)
+      : clickedKeys
+      ? fc.features.filter((f: any) => clickedKeys.has(f.properties._key))
+      : [];
+    if (labelFeatures.length) {
       labelG.selectAll('text')
-        .data(fc.features.filter((f: any) => f.properties._key === hovered))
+        .data(labelFeatures)
         .join('text')
         .attr('x', (f: any) => path.centroid(f)[0])
         .attr('y', (f: any) => path.centroid(f)[1] + 4)
@@ -186,12 +219,28 @@ function initPanel(
   };
 }
 
+function SegBtn({ label, active, darkMode, onClick }: { label: string; active: boolean; darkMode: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+        active
+          ? darkMode ? 'bg-gray-700 text-amber-400' : 'bg-white text-amber-700 shadow-sm'
+          : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 function Panel({
-  year, fc, colorLookup, chainSets, darkMode, showLabel,
+  year, fc, refFC, colorLookup, chainSets, darkMode, showLabel,
   hovered, clickedChainId, onHover, onLeave, onClick,
 }: {
   year: number;
   fc: any;
+  refFC: any;
   colorLookup: Map<string, EvoNode>;
   chainSets: Map<number, Set<string>>;
   darkMode: boolean;
@@ -212,10 +261,10 @@ function Panel({
     stateRef.current = { hovered, clickedChainId, chainSets, colorLookup, darkMode };
     updaterRef.current = initPanel(
       svgRef.current, wrapRef.current, fc, year,
-      stateRef.current, showLabel, onHover, onLeave, onClick,
+      stateRef.current, showLabel, refFC, onHover, onLeave, onClick,
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fc, year, colorLookup, chainSets, darkMode, showLabel]);
+  }, [fc, year, colorLookup, chainSets, darkMode, showLabel, refFC]);
 
   useEffect(() => {
     updaterRef.current?.({ hovered, clickedChainId, chainSets, colorLookup, darkMode });
@@ -227,25 +276,62 @@ function Panel({
       stateRef.current = { ...stateRef.current, colorLookup, darkMode };
       updaterRef.current = initPanel(
         svgRef.current, wrapRef.current, fc, year,
-        stateRef.current, showLabel, onHover, onLeave, onClick,
+        stateRef.current, showLabel, refFC, onHover, onLeave, onClick,
       );
     });
     if (wrapRef.current) ro.observe(wrapRef.current);
     return () => ro.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fc, year, colorLookup, chainSets, darkMode, showLabel]);
+  }, [fc, year, colorLookup, chainSets, darkMode, showLabel, refFC]);
+
+  const selectedNames = useMemo(() => {
+    if (clickedChainId == null) return null;
+    const keys = chainSets.get(clickedChainId);
+    if (!keys) return null;
+    const names: string[] = [];
+    for (const [key, node] of colorLookup) {
+      if (keys.has(key)) names.push(node.name);
+    }
+    return names.length ? names : null;
+  }, [clickedChainId, chainSets, colorLookup]);
 
   return (
     <div
       ref={wrapRef}
       className={`rounded border overflow-hidden ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}
     >
+      {showLabel && selectedNames && (
+        <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
+          darkMode ? 'bg-red-950 text-red-300' : 'bg-red-50 text-red-700'
+        }`}>
+          {selectedNames.join(' · ')}
+        </div>
+      )}
       <svg ref={svgRef} className="block w-full" />
     </div>
   );
 }
 
-export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) {
+export function IndiaEvolutionMap({
+  darkMode = false,
+  evolutionFile = '/evolution-data/india_evolution.json',
+  geojsonYearMap = GEOJSON_YEAR_DEFAULT,
+  originYear = 1951,
+}: IndiaEvolutionMapProps) {
+  const YEARS = useMemo(() => {
+    const allYears = new Set([...Object.keys(geojsonYearMap).map(Number)]);
+    return [...allYears].sort((a, b) => a - b);
+  }, [geojsonYearMap]);
+
+  const fetchGeoJSON = useMemo(
+    () => makeGeoJSONFetcher(geojsonYearMap, YEARS[0]),
+    [geojsonYearMap, YEARS],
+  );
+  const fetchEvoData = useMemo(
+    () => makeEvoFetcher(evolutionFile),
+    [evolutionFile],
+  );
+
   const [mode, setMode]               = useState<'single' | 'grid'>('grid');
   const [yearIdx, setYearIdx]         = useState(0);
   const [allFCs, setAllFCs]           = useState<Map<number, any>>(new Map());
@@ -264,17 +350,22 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
   useEffect(() => {
     setLoading(true);
     const toLoad = mode === 'grid' ? YEARS : [YEARS[0], year];
-    const needed = toLoad.filter(y => !geojsonCache.has(y));
-    const cached  = toLoad.filter(y => geojsonCache.has(y)).map(y => [y, geojsonCache.get(y)] as [number, any]);
+    const needed: number[] = [], cached: [number, any][] = [];
+    for (const y of toLoad) {
+      const fc = geojsonCache.get(String(y));
+      if (fc) cached.push([y, fc]); else needed.push(y);
+    }
     Promise.all(needed.map(y => fetchGeoJSON(y).then(fc => [y, fc] as [number, any])))
       .then(fetched => {
         setAllFCs(new Map([...cached, ...fetched]));
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [mode, year]);
+  }, [mode, year, YEARS, fetchGeoJSON]);
 
-  useEffect(() => { fetchEvoData().then(setEvoData).catch(() => {}); }, []);
+  const refFC = allFCs.get(YEARS[0]) ?? null;
+
+  useEffect(() => { fetchEvoData().then(setEvoData).catch(() => {}); }, [fetchEvoData]);
 
   const derived = useMemo(() => {
     const emptyColorLookups = new Map<number, Map<string, EvoNode>>();
@@ -317,7 +408,7 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
     const chainMeta = new Map(evoData.chains.map(c => [c.chainId, { name: c.canonicalName, state: c.originState }]));
 
     return { colorLookups, chainSets, prevNextLookup, chainMeta };
-  }, [evoData]);
+  }, [evoData, YEARS]);
 
   const { colorLookups, chainSets, prevNextLookup, chainMeta } = derived;
 
@@ -355,46 +446,7 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
     setTooltip(null);
   };
 
-  const modeToggle = (
-    <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-      {(['single', 'grid'] as const).map(m => (
-        <button
-          key={m}
-          onClick={() => resetMode(m)}
-          className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-            mode === m
-              ? darkMode ? 'bg-gray-700 text-amber-400' : 'bg-white text-amber-700 shadow-sm'
-              : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          {m === 'single' ? 'Single year' : 'All years'}
-        </button>
-      ))}
-    </div>
-  );
-
-  const scrubber = mode === 'single' && (
-    <div className="flex items-center gap-3 px-4 py-2">
-      <span className={`text-xs font-mono w-12 text-right ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>
-        {year}
-      </span>
-      <div className="flex-1 flex items-center gap-1">
-        {YEARS.map((y, i) => (
-          <button key={y} onClick={() => setYearIdx(i)} className="flex-1 flex flex-col items-center gap-0.5">
-            <div className={`h-3 w-full rounded-sm transition-all ${
-              i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-            }`} />
-            <span className={`text-[9px] font-mono ${
-              i === yearIdx ? darkMode ? 'text-amber-400' : 'text-amber-700' : darkMode ? 'text-gray-600' : 'text-gray-400'
-            }`}>{y === 2024 ? "'24" : `'${String(y).slice(2)}`}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  const districtCount = allFCs.get(year)?.features.length;
-
+  const selectedMeta = clickedChainId != null ? chainMeta.get(clickedChainId) : null;
   const panelProps = { chainSets, darkMode, hovered, clickedChainId, onHover: handleHover, onLeave: handleLeave, onClick: handleClick };
 
   const tooltipEl = tooltip && (
@@ -414,46 +466,51 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
       )}
       {tooltip.prevName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Carved from: </span>{tooltip.prevName}</div>}
       {tooltip.nextName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Split into: </span>{tooltip.nextName}</div>}
-      <div className={`mt-1.5 text-[10px] italic ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-        Click to highlight across all years
-      </div>
     </div>
   );
 
   return (
     <div className="relative">
-      <div className={`flex items-center justify-between px-4 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
-        {modeToggle}
-        <div className="flex items-center gap-3">
-          {mode === 'single' && districtCount && (
-            <span className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-              {districtCount} districts
+      <div className={`flex items-center justify-between px-3 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+        <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <SegBtn label="All years" active={mode === 'grid'} darkMode={darkMode} onClick={() => resetMode('grid')} />
+          <SegBtn label="Single year" active={mode === 'single'} darkMode={darkMode} onClick={() => resetMode('single')} />
+        </div>
+
+        <div className="flex items-center gap-2">
+          {selectedMeta ? (
+            <span className={`flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-amber-50 text-amber-800 border border-amber-200'}`}>
+              <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0" />
+              {selectedMeta.name}
+              {selectedMeta.state && <span className={darkMode ? 'text-gray-500' : 'text-amber-600'}> · {selectedMeta.state}</span>}
+              <button onClick={() => setClickedChainId(null)} className={`ml-1 ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
+            </span>
+          ) : (
+            <span className={`text-xs italic ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+              Click a district to trace its lineage
             </span>
           )}
-          {loading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500" />}
+          {loading && <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-amber-500 shrink-0" />}
         </div>
       </div>
 
-      {scrubber}
-
-      {!clickedChainId && (
-        <div className={`px-4 py-1.5 text-xs text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-          Colours trace each district back to its 1951 origin. Click a district to highlight its lineage across all years.
-        </div>
-      )}
-
-      {clickedChainId != null && (
-        <div className={`px-4 py-1.5 flex items-center justify-between text-xs ${darkMode ? 'text-gray-400 bg-gray-900' : 'text-gray-600 bg-amber-50'}`}>
-          <span>
-            Showing lineage of <strong>{chainMeta.get(clickedChainId)?.name}</strong>
-            {chainMeta.get(clickedChainId)?.state && ` (orig. ${chainMeta.get(clickedChainId)?.state})`}
-          </span>
-          <button
-            onClick={() => setClickedChainId(null)}
-            className={`underline ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-          >
-            Clear
-          </button>
+      {mode === 'single' && (
+        <div className={`flex items-center gap-3 px-4 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+          <span className={`text-sm font-semibold w-10 shrink-0 ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>{year}</span>
+          <div className="flex-1 flex items-center gap-1">
+            {YEARS.map((y, i) => (
+              <button key={y} onClick={() => setYearIdx(i)} className="flex-1 flex flex-col items-center gap-1 group">
+                <div className={`h-2 w-full rounded-full transition-all ${
+                  i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-gray-700 group-hover:bg-gray-600' : 'bg-gray-200 group-hover:bg-gray-300'
+                }`} />
+                <span className={`text-[9px] font-mono leading-none ${
+                  i === yearIdx
+                    ? darkMode ? 'text-amber-400' : 'text-amber-700'
+                    : darkMode ? 'text-gray-600' : 'text-gray-400'
+                }`}>{String(y)}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -461,6 +518,7 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
         <Panel
           year={year}
           fc={allFCs.get(year)}
+          refFC={refFC}
           colorLookup={colorLookups.get(year) ?? new Map()}
           showLabel={false}
           {...panelProps}
@@ -474,6 +532,7 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
               key={y}
               year={y}
               fc={allFCs.get(y)}
+              refFC={refFC}
               colorLookup={colorLookups.get(y) ?? new Map()}
               showLabel
               {...panelProps}
@@ -482,22 +541,20 @@ export function IndiaEvolutionMap({ darkMode = false }: IndiaEvolutionMapProps) 
         </div>
       )}
 
-      <div className={`px-4 pb-3 flex flex-wrap gap-4 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-3 rounded-sm bg-amber-400" />
-          Hovered
+      <div className={`px-4 py-2 flex items-center gap-4 text-[10px] border-t ${darkMode ? 'border-gray-800 text-gray-600' : 'border-gray-100 text-gray-400'}`}>
+        {clickedChainId != null && (
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-500" />
+            Selected lineage
+          </span>
+        )}
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: darkMode ? '#3d3d3d' : '#d1d5db' }} />
+          No {originYear} origin
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-3 rounded-sm bg-red-500" />
-          Selected lineage
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-3 rounded-sm" style={{ background: '#d1d5db' }} />
-          No 1951 match
-        </span>
-        <span className={`ml-auto ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-          {evoData ? `${evoData.chains.length} origin districts (1951)` : ''}
-        </span>
+        {evoData && (
+          <span className="ml-auto">{evoData.chains.length} origin districts</span>
+        )}
       </div>
 
       {tooltipEl}
