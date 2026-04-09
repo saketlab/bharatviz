@@ -573,7 +573,8 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
         
         const geoData = await response.json();
         setMapData(geoData);
-      } catch (error) {
+      } catch (_) {
+        // ignore fetch errors
       }
     };
 
@@ -916,7 +917,8 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
         }
       });
 
-    } catch (error) {
+    } catch (_) {
+      // ignore render errors
     } finally {
       setTimeout(() => {
         setRenderingData(false);
