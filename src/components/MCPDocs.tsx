@@ -5,7 +5,7 @@ interface MCPDocsProps {
   darkMode?: boolean;
 }
 
-const CopyButton: React.FC<{ text: string; darkMode?: boolean }> = ({ text, darkMode }) => {
+const CopyButton: React.FC<{ text: string }> = ({ text }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -17,42 +17,30 @@ const CopyButton: React.FC<{ text: string; darkMode?: boolean }> = ({ text, dark
   return (
     <button
       onClick={handleCopy}
-      className={`absolute top-2 right-2 p-1.5 rounded-md transition-colors ${
-        darkMode
-          ? 'hover:bg-gray-600 text-gray-400'
-          : 'hover:bg-gray-200 text-gray-500'
-      }`}
-      title="Copy to clipboard"
+      className="absolute top-2 right-2 p-1.5 rounded-md transition-colors text-[hsl(28,8%,44%)] hover:bg-[hsl(35,14%,90%)] dark:text-[hsl(30,8%,52%)] dark:hover:bg-[hsl(25,8%,18%)]"
+      aria-label={copied ? 'Copied' : 'Copy to clipboard'}
     >
       {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
     </button>
   );
 };
 
-const CodeBlock: React.FC<{ code: string; language?: string; darkMode?: boolean }> = ({ code, language, darkMode }) => (
+const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code }) => (
   <div className="relative">
-    <pre className={`p-4 rounded-lg overflow-x-auto text-sm font-mono ${
-      darkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-900 text-gray-100'
-    }`}>
+    <pre className="p-4 rounded-lg overflow-x-auto text-sm font-mono bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)]">
       <code>{code}</code>
     </pre>
-    <CopyButton text={code} darkMode={darkMode} />
+    <CopyButton text={code} />
   </div>
 );
 
-const MCPDocs: React.FC<MCPDocsProps> = ({ darkMode = false }) => {
-  const cardClass = `p-5 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`;
-  const headingClass = `font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`;
-  const textClass = darkMode ? 'text-gray-300' : 'text-gray-600';
-  const badgeClass = `inline-block px-2 py-0.5 rounded text-xs font-mono ${
-    darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
-  }`;
-  const tableHeaderClass = `text-left p-3 font-semibold text-sm ${
-    darkMode ? 'bg-gray-800 text-gray-200 border-gray-700' : 'bg-gray-50 text-gray-700 border-gray-200'
-  }`;
-  const tableCellClass = `p-3 text-sm ${
-    darkMode ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-600'
-  }`;
+const MCPDocs: React.FC<MCPDocsProps> = () => {
+  const cardClass = 'p-5 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]';
+  const headingClass = 'font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]';
+  const textClass = 'text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,60%)]';
+  const badgeClass = 'inline-block px-2 py-0.5 rounded text-xs font-mono bg-[hsl(28,42%,94%)] text-[hsl(28,48%,30%)] dark:bg-[hsl(28,20%,14%)] dark:text-[hsl(28,55%,62%)]';
+  const tableHeaderClass = 'text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]';
+  const tableCellClass = 'p-3 text-sm border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,58%)]';
 
   const remoteConfig = `{
   "mcpServers": {
@@ -209,7 +197,6 @@ npm run build`;
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      {/* Header */}
       <div>
         <h2 className={`text-2xl ${headingClass} mb-2 flex items-center gap-3`}>
           <Plug className="h-7 w-7" />
@@ -223,7 +210,6 @@ npm run build`;
         </p>
       </div>
 
-      {/* Quick Start */}
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Terminal className="h-5 w-5" />
@@ -231,51 +217,51 @@ npm run build`;
         </h3>
 
         <div className={cardClass}>
-          <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : ''}`}>
+          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             1. Add to your AI assistant (Recommended - no install needed)
           </h4>
           <p className={`${textClass} mb-3`}>
-            Use the hosted MCP server at <code className={`font-mono text-sm ${darkMode ? 'text-green-300' : 'text-green-700'}`}>https://bharatviz.saketlab.org/api/mcp</code>. No cloning or building required.
+            Use the hosted MCP server at <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.saketlab.org/api/mcp</code>. No cloning or building required.
           </p>
 
           <div className="space-y-4">
             <div>
-              <p className={`font-medium mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Claude Code / Claude Desktop / any MCP client (<code className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>.mcp.json</code>):
+              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
+                Claude Code / Claude Desktop / any MCP client (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
               </p>
-              <CodeBlock code={remoteConfig} darkMode={darkMode} />
+              <CodeBlock code={remoteConfig} />
             </div>
           </div>
         </div>
 
         <div className={`${cardClass} opacity-80`}>
-          <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : ''}`}>
+          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             Alternative: Local install (stdio transport)
           </h4>
           <p className={`${textClass} mb-3`}>
             If you prefer to run the MCP server locally:
           </p>
-          <CodeBlock code={installFromSource} darkMode={darkMode} />
+          <CodeBlock code={installFromSource} />
 
           <div className="space-y-4 mt-4">
             <div>
-              <p className={`font-medium mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Claude Code (<code className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>.mcp.json</code>):
+              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
+                Claude Code (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
               </p>
-              <CodeBlock code={localClaudeCodeConfig} darkMode={darkMode} />
+              <CodeBlock code={localClaudeCodeConfig} />
             </div>
 
             <div>
-              <p className={`font-medium mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Claude Desktop (<code className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>claude_desktop_config.json</code>):
+              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
+                Claude Desktop (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">claude_desktop_config.json</code>):
               </p>
-              <CodeBlock code={localClaudeDesktopConfig} darkMode={darkMode} />
+              <CodeBlock code={localClaudeDesktopConfig} />
             </div>
           </div>
         </div>
 
         <div className={cardClass}>
-          <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : ''}`}>
+          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             2. Start asking for maps
           </h4>
           <p className={`${textClass} mb-2`}>
@@ -292,7 +278,6 @@ npm run build`;
         </div>
       </div>
 
-      {/* Available Tools */}
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Server className="h-5 w-5" />
@@ -300,7 +285,7 @@ npm run build`;
         </h3>
 
         <div className="overflow-x-auto">
-          <table className={`w-full border-collapse border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
             <thead>
               <tr>
                 <th className={`${tableHeaderClass} border`}>Tool</th>
@@ -323,7 +308,7 @@ npm run build`;
         </div>
       </div>
 
-      {/* Examples */}
+
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Code2 className="h-5 w-5" />
@@ -331,21 +316,21 @@ npm run build`;
         </h3>
 
         <div className={cardClass}>
-          <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : ''}`}>
+          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             State-level map
           </h4>
-          <CodeBlock code={exampleStatesCall} darkMode={darkMode} />
+          <CodeBlock code={exampleStatesCall} />
         </div>
 
         <div className={cardClass}>
-          <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : ''}`}>
+          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             Single-state district map
           </h4>
-          <CodeBlock code={exampleDistrictsCall} darkMode={darkMode} />
+          <CodeBlock code={exampleDistrictsCall} />
         </div>
       </div>
 
-      {/* Shareable URLs */}
+
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Link2 className="h-5 w-5" />
@@ -358,7 +343,7 @@ npm run build`;
           </p>
 
           <div className="overflow-x-auto">
-            <table className={`w-full border-collapse border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
               <thead>
                 <tr>
                   <th className={`${tableHeaderClass} border`}>Parameter</th>
@@ -393,7 +378,7 @@ npm run build`;
           </div>
 
           <div className="mt-4 space-y-2">
-            <p className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Examples:</p>
+            <p className="font-medium text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Examples:</p>
             <CodeBlock code={`# Mumbai wards with viridis color scale in dark mode
 https://bharatviz.saketlab.org/cities?city=Mumbai&dataset=mumbai&colorScale=viridis&darkMode=true
 
@@ -401,12 +386,12 @@ https://bharatviz.saketlab.org/cities?city=Mumbai&dataset=mumbai&colorScale=viri
 https://bharatviz.saketlab.org/state-districts?selectedState=Maharashtra&mapType=census-2011-districts
 
 # Load external CSV data into district view
-https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&colorScale=blues`} darkMode={darkMode} />
+https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&colorScale=blues`} />
           </div>
         </div>
       </div>
 
-      {/* Color Scales */}
+
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Palette className="h-5 w-5" />
@@ -416,7 +401,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
         <div className={cardClass}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <h4 className={`font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Sequential</h4>
+              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Sequential</h4>
               <div className="space-y-1">
                 {['blues', 'greens', 'reds', 'oranges', 'purples', 'pinks'].map(s => (
                   <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
@@ -424,7 +409,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
               </div>
             </div>
             <div>
-              <h4 className={`font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Perceptually Uniform</h4>
+              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Perceptually Uniform</h4>
               <div className="space-y-1">
                 {['viridis', 'plasma', 'inferno', 'magma'].map(s => (
                   <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
@@ -432,7 +417,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
               </div>
             </div>
             <div>
-              <h4 className={`font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Diverging</h4>
+              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Diverging</h4>
               <div className="space-y-1">
                 {['spectral', 'rdylbu', 'rdylgn', 'brbg', 'piyg', 'puor', 'aqi'].map(s => (
                   <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
@@ -443,7 +428,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
         </div>
       </div>
 
-      {/* All Map IDs */}
+
       <div className="space-y-4">
         <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
           <Map className="h-5 w-5" />
@@ -451,7 +436,7 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
         </h3>
 
         <div className="overflow-x-auto">
-          <table className={`w-full border-collapse border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
             <thead>
               <tr>
                 <th className={`${tableHeaderClass} border`}>Map ID</th>

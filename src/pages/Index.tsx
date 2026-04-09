@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { Helmet } from 'react-helmet-async';
 import Papa from 'papaparse';
 import { FileUpload } from '@/components/FileUpload';
@@ -28,8 +29,9 @@ import { HistoricalEvolution } from '@/components/HistoricalEvolution';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping, detectDataType, getUniqueCategories, generateDefaultCategoryColors } from '@/lib/categoricalUtils';
 import { STATES_CITATION, NSSO_CITATION, getDistrictsCitationInfo, getCityCitationInfo } from '@/lib/citations';
-import { ChatPanel } from '@/components/chat/ChatPanel';
-import { buildDynamicContext } from '@/lib/chat/contextBuilder';
+const ChatPanel = lazy(() => import('@/components/chat/ChatPanel').then(m => ({ default: m.ChatPanel })));
+const buildDynamicContext = (...args: Parameters<typeof import('@/lib/chat/contextBuilder').buildDynamicContext>) =>
+  import('@/lib/chat/contextBuilder').then(m => m.buildDynamicContext(...args));
 import { DATA_FILES, MAP_DIMENSIONS } from '@/lib/constants';
 import type { DynamicChatContext, DataPoint } from '@/lib/chat/types';
 
@@ -102,6 +104,7 @@ const Index = () => {
   const [districtDataType, setDistrictDataType] = useState<DataType>('numerical');
   const [districtCategoryColors, setDistrictCategoryColors] = useState<CategoryColorMapping>({});
   const [selectedDistrictMapType, setSelectedDistrictMapType] = useState<string>(DEFAULT_DISTRICT_MAP_TYPE);
+  const [districtMapTypeOpen, setDistrictMapTypeOpen] = useState(false);
   const [districtNAInfo, setDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
   const [stateDistrictMapData, setStateDistrictMapData] = useState<DistrictMapData[]>([]);
@@ -117,6 +120,7 @@ const Index = () => {
   const [stateDistrictDataType, setStateDistrictDataType] = useState<DataType>('numerical');
   const [stateDistrictCategoryColors, setStateDistrictCategoryColors] = useState<CategoryColorMapping>({});
   const [selectedStateMapType, setSelectedStateMapType] = useState<string>(DEFAULT_DISTRICT_MAP_TYPE);
+  const [stateMapTypeOpen, setStateMapTypeOpen] = useState(false);
   const [selectedStateForMap, setSelectedStateForMap] = useState<string>('Maharashtra');
   const [stateDistrictHideNames, setStateDistrictHideNames] = useState(false);
   const [stateDistrictHideValues, setStateDistrictHideValues] = useState(false);
@@ -144,7 +148,7 @@ const Index = () => {
   const [cityHideNames, setCityHideNames] = useState(false);
   const [cityHideValues, setCityHideValues] = useState(false);
 
-  const [darkMode, setDarkMode] = useState(() => new URLSearchParams(window.location.search).get('darkMode') === 'true');
+  const { dark: darkMode, toggle: toggleDarkMode, setDark: setDarkMode } = useDarkMode();
 
   const [chatContext, setChatContext] = useState<DynamicChatContext | null>(null);
   const prevContextRef = useRef<{
@@ -529,8 +533,6 @@ const Index = () => {
               const showStateBoundaries = searchParams.get('showStateBoundaries') === 'true';
               const invertColors = searchParams.get('invertColors') === 'true';
 
-              // Use last column as value (matches processUploadedData behavior),
-              // but fall back to explicit 'value' column if present
               const valueColumns = hasDistrict ? headers.slice(2) : headers.slice(1);
               const valueCol = valueColumns.includes('value') ? 'value' : valueColumns[valueColumns.length - 1];
               const legendTitle = searchParams.get('legendTitle') || valueCol || 'Values';
@@ -543,7 +545,6 @@ const Index = () => {
               };
 
               if (hasDistrict) {
-                // Multi-column support for districts
                 if (valueColumns.length > 1) {
                   const allSeries = valueColumns.map(col => ({
                     key: col,
@@ -554,7 +555,6 @@ const Index = () => {
                       value: parseVal(row[col]),
                     })),
                   }));
-                  // Use the first series for initial display
                   setDistrictMapData(allSeries[0].data);
                   setDistrictDataTitle(allSeries[0].title);
                 } else {
@@ -586,7 +586,6 @@ const Index = () => {
                 if (title) setDistrictMapTitle(title);
                 setActiveTab('districts');
               } else {
-                // Multi-column support for states
                 if (valueColumns.length > 1) {
                   const allSeries = valueColumns.map(col => ({
                     key: col,
@@ -702,7 +701,6 @@ const Index = () => {
         if (activeTab === 'states') {
           geoJsonPath = DATA_FILES.STATES_GEOJSON;
           currentMapType = 'states';
-          // Use multi-year data if available, otherwise single-year
           if (stateMultiYearSeries.length > 0) {
             metricName = stateMultiYearSeries[0].title || undefined;
             data = stateMultiYearSeries[0].data.map(d => ({
@@ -823,7 +821,6 @@ const Index = () => {
   ]);
 
   const handleStateDataLoad = (data: StateMapData[], title?: string, naInfo?: NAInfo) => {
-    // Clear multi-year data when single-year data is loaded
     setStateMultiYearSeries([]);
     setStateMapData(data);
     setStateDataTitle(title || '');
@@ -850,14 +847,12 @@ const Index = () => {
   };
 
   const handleStateMultiYearDataLoad = (series: MultiYearSeries[]) => {
-    // Clear single-year data when multi-year data is loaded
     setStateMapData([]);
     setStateDataTitle('');
     setStateNAInfo(undefined);
-    
+
     setStateMultiYearSeries(series);
-    
-    // Determine data type from all series
+
     const allValues = series.flatMap(s => s.data.map(d => d.value));
     const dataType = detectDataType(allValues);
     setStateDataType(dataType);
@@ -975,13 +970,6 @@ const Index = () => {
   const handleDownloadCSVTemplate = () => {
     getActiveMapRef()?.downloadCSVTemplate();
   };
-
-  /**
-   * Multi-year states export helpers
-   *
-   * For multi-year state maps we want a single combined image/PDF/SVG
-   * instead of one file per map.
-   */
 
   const getOrderedMultiYearMapRefs = () => {
     return stateMultiYearSeries
@@ -1215,84 +1203,92 @@ const Index = () => {
 
     const seoConfigs = {
       states: {
-        title: 'BharatViz - Fast Choropleth Maps for India | 36 States & UTs',
-        description: 'Create publication-ready choropleth maps of India\'s 36 states and union territories. 27 boundary sets spanning Census 1941-2011, LGD, NFHS. 17 color scales, dark mode, export to PNG/SVG/PDF. Free and open source.',
+        title: 'BharatViz: Mapping India | State Choropleth Maps',
+        description: 'Mapping India\'s 36 states and union territories with publication-ready choropleth maps. 27 boundary sets spanning Census 1941-2011, LGD, NFHS. 17 color scales, dark mode, export to PNG/SVG/PDF. Free and open source.',
         keywords: 'India maps, choropleth, state maps, data visualization, India states, Census India maps, LGD boundaries, research visualization, map maker',
         canonical: baseUrl,
-        ogTitle: 'BharatViz - Fast Choropleth Maps for India',
-        ogDescription: 'Create publication-ready choropleth maps of India\'s 36 states. 27 boundary sets, 17 color scales, export to PNG/SVG/PDF. Free and open source.'
+        ogTitle: 'BharatViz: Mapping India',
+        ogDescription: 'Mapping India\'s 36 states with publication-ready choropleth maps. 27 boundary sets, 17 color scales, export to PNG/SVG/PDF. Free and open source.'
       },
       districts: {
-        title: 'Explore India\'s 750+ Districts | BharatViz District Choropleth Maps',
-        description: 'Explore India\'s 750+ districts with choropleth maps. Support for LGD, NFHS-5, NFHS-4, Census 2011-1941, Survey of India, and ISRO Bhuvan boundaries. Export to PNG, SVG, PDF. Free tool for district-level data analysis.',
+        title: 'Mapping India\'s 750+ Districts | BharatViz',
+        description: 'Mapping India\'s 750+ districts with choropleth maps. Support for LGD, NFHS-5, NFHS-4, Census 2011-1941, Survey of India, and ISRO Bhuvan boundaries. Export to PNG, SVG, PDF. Free tool for district-level data analysis.',
         keywords: 'India district maps, district choropleth, LGD districts, NFHS-5, NFHS-4, Census 2011, district data visualization, India geography, district boundaries',
         canonical: `${baseUrl}/districts`,
-        ogTitle: 'Explore India\'s 750+ Districts | BharatViz',
-        ogDescription: 'Explore India\'s 750+ districts with customizable choropleth maps. LGD, NFHS-5, NFHS-4, Census, and more boundary sets.'
+        ogTitle: 'Mapping India\'s 750+ Districts | BharatViz',
+        ogDescription: 'Mapping India\'s 750+ districts with customizable choropleth maps. LGD, NFHS-5, NFHS-4, Census, and more boundary sets.'
       },
       regions: {
-        title: 'NSSO Regions Maps | BharatViz India Regional Visualization',
-        description: 'Create choropleth maps of NSSO (National Sample Survey Organization) regions in India. Ideal for survey analysis and regional statistical visualization. Free online mapping tool.',
+        title: 'Mapping India by NSSO Regions | BharatViz',
+        description: 'Mapping India by NSSO (National Sample Survey Organization) regions. Ideal for survey analysis and regional statistical visualization. Free online mapping tool.',
         keywords: 'NSSO regions, India regions, survey regions, NSSO maps, regional analysis, statistical regions, sample survey, India geography',
         canonical: `${baseUrl}/regions`,
-        ogTitle: 'NSSO Regions Maps | BharatViz',
+        ogTitle: 'Mapping India by NSSO Regions | BharatViz',
         ogDescription: 'Visualize NSSO (National Sample Survey Organization) regions with customizable choropleth maps. Perfect for survey and statistical analysis.'
       },
       'state-districts': {
-        title: 'Individual State District Maps | BharatViz State-Wise Visualization',
-        description: 'Create detailed district-level maps for individual Indian states. High-resolution visualization with support for all major states. Export to PNG, SVG, PDF for presentations and publications.',
+        title: 'State Detail Maps | BharatViz District Maps by State',
+        description: 'Zoom into any Indian state with district-level choropleth maps. All 36 states and UTs supported across LGD, NFHS, Census, and colonial boundary sets. Export to PNG, SVG, PDF.',
         keywords: 'state district maps, Maharashtra districts, Karnataka districts, Tamil Nadu districts, state-wise maps, detailed district maps, India state geography',
         canonical: `${baseUrl}/state-districts`,
-        ogTitle: 'Individual State District Maps | BharatViz',
-        ogDescription: 'Create detailed district-level maps for individual Indian states with customizable visualization options.'
+        ogTitle: 'State Detail Maps | BharatViz',
+        ogDescription: 'District-level choropleth maps for any Indian state. 36 states and UTs, multiple boundary sets, export to PNG/SVG/PDF.'
       },
       cities: {
-        title: 'City Ward Maps | BharatViz - 130+ Indian Cities',
-        description: 'Explore ward-level choropleth maps for 130+ Indian cities including Mumbai, Delhi, Bangalore, Chennai, and more. Data from DataMeet, SBM, and AMRUT sources. Free and open source.',
+        title: 'Mapping India\'s Cities | BharatViz Ward Maps for 130+ Cities',
+        description: 'Mapping India\'s cities at ward level. 130+ cities including Mumbai, Delhi, Bangalore, Chennai, and more. Data from DataMeet, SBM, and AMRUT sources. Free and open source.',
         keywords: 'India city ward maps, municipal ward boundaries, city choropleth, Mumbai wards, Delhi wards, Bangalore wards, SBM ward data, AMRUT boundaries',
         canonical: `${baseUrl}/cities`,
-        ogTitle: 'City Ward Maps | BharatViz - 130+ Indian Cities',
-        ogDescription: 'Explore ward-level choropleth maps for 130+ Indian cities. Data from DataMeet, SBM, and AMRUT sources.'
+        ogTitle: 'Mapping India\'s Cities | BharatViz',
+        ogDescription: 'Ward-level choropleth maps for 130+ Indian cities. Data from DataMeet, SBM, and AMRUT sources.'
+      },
+      evolution: {
+        title: 'Administrative Evolution of India | BharatViz',
+        description: 'Trace how India\'s district boundaries changed across eight census decades from 1872 to 2024. Explore splits, merges, and renames across all-India and Bombay Presidency maps with colour-coded lineage chains.',
+        keywords: 'India district evolution, administrative history, district boundaries history, census decades, Bombay Presidency, India 1872, British India districts, colonial boundaries',
+        canonical: `${baseUrl}/evolution`,
+        ogTitle: 'Administrative Evolution of India | BharatViz',
+        ogDescription: 'Trace India\'s district boundary changes from 1872 to 2024 across eight census decades. Colour-coded lineage chains show splits, merges, and renames.'
       },
       'district-stats': {
-        title: 'District Statistics & Boundary Comparison | BharatViz India Maps',
+        title: 'India District Statistics | BharatViz',
         description: 'Compare district counts and boundary definitions across LGD, NFHS-5, NFHS-4, Census 2011, and more. Explore how India\'s 750+ districts are defined across 27 administrative boundary sets spanning 1941 to present.',
         keywords: 'India district statistics, district count, LGD districts, NFHS districts, Census districts, boundary comparison, administrative divisions, India geography data',
         canonical: `${baseUrl}/district-stats`,
-        ogTitle: 'District Statistics & Boundary Comparison | BharatViz',
+        ogTitle: 'India District Statistics | BharatViz',
         ogDescription: 'Compare district counts and boundaries across LGD, NFHS, Census, and other sources. Explore India\'s 750+ districts.'
       },
       'city-stats': {
-        title: 'City Ward Statistics | BharatViz India Maps',
+        title: 'India City Ward Statistics | BharatViz',
         description: 'Browse all city ward boundary datasets available in BharatViz. Covers 2,900+ datasets across 1,000+ Indian cities from DataMeet, SBM, AMRUT, and other sources.',
         keywords: 'India city statistics, city wards, ward boundaries, Indian cities, DataMeet, SBM, AMRUT, urban India data',
         canonical: `${baseUrl}/city-stats`,
-        ogTitle: 'City Ward Statistics | BharatViz',
+        ogTitle: 'India City Ward Statistics | BharatViz',
         ogDescription: 'Browse 2,900+ city ward boundary datasets across Indian cities from DataMeet, SBM, AMRUT, and other sources.'
       },
       help: {
-        title: 'Help & API Documentation | BharatViz India Maps',
-        description: 'Complete guide to using BharatViz: web interface, Python/R API, embedding maps, and programmatic access. Learn how to create choropleth maps of India with our comprehensive documentation.',
+        title: 'Help and API Documentation | BharatViz',
+        description: 'Complete guide to using BharatViz: web interface, Python/R API, embedding maps, and programmatic access. Learn how to map India with our comprehensive documentation.',
         keywords: 'BharatViz help, map API, Python India maps, R India maps, API documentation, embed maps, India map tutorial, choropleth API',
         canonical: `${baseUrl}/help`,
-        ogTitle: 'BharatViz Help & API Documentation',
+        ogTitle: 'BharatViz Help and API Documentation',
         ogDescription: 'Complete guide to using BharatViz for web, Python, R, and embedding maps. API documentation and examples included.'
       },
       credits: {
-        title: 'Credits & Acknowledgments | BharatViz',
-        description: 'Acknowledgments and credits for BharatViz - data sources, open source libraries, and contributors. Built with open data from Government of India sources.',
+        title: 'Credits and Acknowledgments | BharatViz',
+        description: 'Acknowledgments and credits for BharatViz. Data sources, open source libraries, and contributors. Built with open data from Government of India sources.',
         keywords: 'BharatViz credits, data sources, acknowledgments, open source, India government data, LGD, NFHS',
         canonical: `${baseUrl}/credits`,
-        ogTitle: 'Credits & Acknowledgments | BharatViz',
-        ogDescription: 'Acknowledgments for BharatViz - data sources, libraries, and contributors.'
+        ogTitle: 'Credits and Acknowledgments | BharatViz',
+        ogDescription: 'Acknowledgments for BharatViz. Data sources, libraries, and contributors.'
       },
       mcp: {
-        title: 'MCP Server for AI Assistants | BharatViz India Maps',
-        description: 'Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant. Generate India choropleth maps through natural language with 27 boundary sets, 17 color scales, and 300 DPI PNG output.',
-        keywords: 'MCP server, Model Context Protocol, Claude AI maps, AI map generation, India maps API, LLM tools, bharatviz MCP, choropleth AI',
+        title: 'BharatViz API & MCP Server',
+        description: 'Programmatic access to BharatViz via REST API, Python, R, and MCP server. Connect to Claude or any MCP-compatible AI assistant. 27 boundary sets, 17 color scales, 300 DPI PNG export.',
+        keywords: 'BharatViz API, MCP server, Model Context Protocol, Claude AI maps, AI map generation, India maps API, Python India maps, R India maps, LLM tools, bharatviz MCP',
         canonical: `${baseUrl}/mcp`,
-        ogTitle: 'BharatViz MCP Server for AI Assistants',
-        ogDescription: 'Generate India choropleth maps through AI assistants. MCP server with 27 boundary sets and 17 color scales.'
+        ogTitle: 'BharatViz API & MCP Server',
+        ogDescription: 'REST API, Python, R, and MCP server access to BharatViz. 27 boundary sets, 17 color scales, 300 DPI PNG. Works with Claude and other AI assistants.'
       }
     };
 
@@ -1301,14 +1297,11 @@ const Index = () => {
 
   const seoContent = getSEOContent();
 
-  const tabTriggerClass = `flex-1 min-w-[4.5rem] rounded-lg border px-1.5 py-1 sm:border-2 sm:px-4 sm:py-3 font-semibold text-xs sm:text-base transition-all duration-200 ${
-    darkMode
-      ? 'border-gray-600 bg-gray-800 text-gray-300 hover:border-blue-500 hover:text-blue-400 data-[state=active]:border-blue-500 data-[state=active]:text-blue-300 data-[state=active]:bg-blue-900'
-      : 'border-gray-300 bg-white text-gray-600 hover:border-blue-400 hover:text-blue-700 data-[state=active]:border-blue-600 data-[state=active]:text-blue-900 data-[state=active]:bg-blue-50'
-  }`;
+  const primaryTabClass = 'flex-1 rounded-md px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
+  const secondaryTabClass = 'rounded px-2.5 py-1.5 sm:px-4 sm:py-2 font-medium text-xs sm:text-sm transition-all duration-150 border border-[hsl(35,16%,87%)] bg-transparent text-[hsl(28,8%,50%)] hover:border-[hsl(28,25%,72%)] hover:text-[hsl(28,18%,30%)] data-[state=active]:border-[hsl(28,42%,52%)] data-[state=active]:text-[hsl(28,38%,24%)] data-[state=active]:bg-[hsl(35,28%,92%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)] dark:text-[hsl(30,8%,50%)] dark:hover:border-[hsl(28,30%,40%)] dark:hover:text-[hsl(30,8%,68%)] dark:data-[state=active]:border-[hsl(28,45%,42%)] dark:data-[state=active]:text-[hsl(35,10%,82%)] dark:data-[state=active]:bg-[hsl(28,14%,20%)]';
 
   return (
-    <div className="min-h-screen p-3 sm:p-6" style={{ backgroundColor: darkMode ? '#000000' : undefined }}>
+    <div className="min-h-screen p-3 sm:p-6 bg-[hsl(38,30%,97%)] dark:bg-[hsl(25,8%,6%)]">
       <Helmet>
         <title>{seoContent.title}</title>
         <meta name="title" content={seoContent.title} />
@@ -1324,7 +1317,7 @@ const Index = () => {
         <meta property="og:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="BharatViz - Interactive India Maps" />
+        <meta property="og:image:alt" content="BharatViz: Mapping India" />
         <meta property="og:site_name" content="BharatViz" />
         <meta property="og:locale" content="en_US" />
 
@@ -1333,7 +1326,7 @@ const Index = () => {
         <meta name="twitter:title" content={seoContent.ogTitle} />
         <meta name="twitter:description" content={seoContent.ogDescription} />
         <meta name="twitter:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
-        <meta name="twitter:image:alt" content="BharatViz - Interactive India Maps" />
+        <meta name="twitter:image:alt" content="BharatViz: Mapping India" />
         <meta name="twitter:site" content="@saketkc" />
         <meta name="twitter:creator" content="@saketkc" />
 
@@ -1370,107 +1363,64 @@ const Index = () => {
         </script>
       </Helmet>
 
-      {/* Dark Mode Toggle Button */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-background border-2 border-primary hover:bg-accent transition-colors"
-        title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-      >
-        {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      </button>
-
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-3 sm:mb-8">
-          <h1 className={`text-lg sm:text-4xl font-bold mb-1 sm:mb-4 flex items-center justify-center gap-2 sm:gap-3 ${darkMode ? 'text-white' : ''}`}>
-            <img src="/bharatviz_favicon.png" alt="BharatViz Logo" className="h-6 sm:h-12 w-auto" />
-            <span>BharatViz</span>
-            <span className="hidden sm:inline">- Fast choropleths for India</span>
-          </h1>
+        <div className="flex items-center justify-between mb-5 sm:mb-7">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <img src="/bharatviz_favicon.png" alt="BharatViz Logo" className="h-8 sm:h-11 w-auto" />
+            <div>
+              <h1 className="font-sans font-bold tracking-tight leading-none text-xl sm:text-3xl text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
+                BharatViz
+              </h1>
+              <p className="font-sans font-normal text-xs sm:text-sm mt-0.5 text-[hsl(28,38%,46%)] dark:text-[hsl(28,40%,52%)] tracking-wide">
+                Mapping India
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full text-[hsl(28,20%,40%)] hover:text-[hsl(28,20%,14%)] hover:bg-[hsl(35,20%,92%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,12%,90%)] dark:hover:bg-[hsl(25,8%,12%)] transition-colors"
+            title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {darkMode ? <Sun className="h-4 w-4 sm:h-5 sm:w-5" /> : <Moon className="h-4 w-4 sm:h-5 sm:w-5" />}
+          </button>
         </div>
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <div className="mb-4 sm:mb-8">
-            <TabsList className="flex flex-wrap w-full gap-1 sm:gap-2 bg-transparent p-0 h-auto">
-              <TabsTrigger
-                value="states"
-                className={tabTriggerClass}
-              >
-                States
-              </TabsTrigger>
-              <TabsTrigger
-                value="districts"
-                className={tabTriggerClass}
-              >
-                Districts
-              </TabsTrigger>
-              <TabsTrigger
-                value="regions"
-                className={tabTriggerClass}
-              >
-                Regions
-              </TabsTrigger>
-              <TabsTrigger
-                value="state-districts"
-                className={tabTriggerClass}
-              >
-                State-District
-              </TabsTrigger>
-              <TabsTrigger
-                value="cities"
-                className={tabTriggerClass}
-              >
-                Cities
-              </TabsTrigger>
-              <TabsTrigger
-                value="district-stats"
-                className={tabTriggerClass}
-              >
-                District Stats
-              </TabsTrigger>
-              <TabsTrigger
-                value="city-stats"
-                className={tabTriggerClass}
-              >
-                City Stats
-              </TabsTrigger>
-              <TabsTrigger
-                value="evolution"
-                className={tabTriggerClass}
-              >
-                Evolution
-              </TabsTrigger>
-              <TabsTrigger
-                value="help"
-                className={tabTriggerClass}
-              >
-                Help
-              </TabsTrigger>
-              <TabsTrigger
-                value="credits"
-                className={tabTriggerClass}
-              >
-                Credits
-              </TabsTrigger>
-              <TabsTrigger
-                value="mcp"
-                className={tabTriggerClass}
-              >
-                MCP
-              </TabsTrigger>
+          <div className="mb-6 sm:mb-10">
+            <div className="mb-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Maps</span>
+            </div>
+            <TabsList className="flex w-full gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+              <TabsTrigger value="states" className={primaryTabClass}>States</TabsTrigger>
+              <TabsTrigger value="districts" className={primaryTabClass}>Districts</TabsTrigger>
+              <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
+              <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
+              <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
+            </TabsList>
+            <div className="mt-5 mb-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
+            </div>
+            <TabsList className="flex flex-wrap gap-1 sm:gap-1.5 bg-transparent p-0 h-auto">
+              <TabsTrigger value="district-stats" className={secondaryTabClass}>District Stats</TabsTrigger>
+              <TabsTrigger value="city-stats" className={secondaryTabClass}>City Stats</TabsTrigger>
+              <TabsTrigger value="evolution" className={secondaryTabClass}>Evolution</TabsTrigger>
+              <TabsTrigger value="help" className={secondaryTabClass}>Help</TabsTrigger>
+              <TabsTrigger value="credits" className={secondaryTabClass}>Credits</TabsTrigger>
+              <TabsTrigger value="mcp" className={secondaryTabClass}>API</TabsTrigger>
             </TabsList>
           </div>
 
           <div className={`space-y-6 ${activeTab === 'states' ? 'block' : 'hidden'}`}>
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 {stateMultiYearSeries.length > 0 ? (
                   <div className="space-y-4">
-                    {/* Multi-year grid layout */}
                     {stateMultiYearSeries.length === 2 ? (
                       <div className="grid grid-cols-2 gap-4">
                         {stateMultiYearSeries.map((series) => (
                           <div key={series.key} className="flex flex-col items-center">
-                            <div className={`text-sm font-semibold mb-2 text-center ${darkMode ? 'text-white' : 'text-gray-700'}`}>{series.title}</div>
+                            <div className="text-sm font-semibold mb-2 text-center text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">{series.title}</div>
                             <div className="w-full overflow-hidden" style={{ height: '85%' }}>
                               <div style={{ transform: 'scale(0.85)', transformOrigin: 'top left', width: '100%' }}>
                                 <IndiaMap
@@ -1502,7 +1452,7 @@ const Index = () => {
                       <div className="grid grid-cols-2 gap-4">
                         {stateMultiYearSeries.map((series, idx) => (
                           <div key={series.key} className={`flex flex-col items-center ${idx === 2 ? 'col-span-2' : ''}`}>
-                            <div className={`text-sm font-semibold mb-2 text-center ${darkMode ? 'text-white' : 'text-gray-700'}`}>{series.title}</div>
+                            <div className="text-sm font-semibold mb-2 text-center text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">{series.title}</div>
                             <div className="w-full overflow-hidden" style={{ height: idx === 2 ? '70%' : '85%' }}>
                               <div
                                 style={{
@@ -1540,7 +1490,7 @@ const Index = () => {
                       <div className="grid grid-cols-2 gap-2">
                         {stateMultiYearSeries.slice(0, 4).map((series) => (
                             <div key={series.key} className="flex flex-col items-center gap-2">
-                              <div className={`text-sm font-semibold mb-2 text-center ${darkMode ? 'text-white' : 'text-gray-700'}`}>{series.title}</div>
+                              <div className="text-sm font-semibold mb-2 text-center text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">{series.title}</div>
                               <div className="w-full overflow-hidden" style={{ height: '90%' }}>
                                 <div
                                   style={{
@@ -1590,13 +1540,13 @@ const Index = () => {
                     darkMode={darkMode}
                   />
                 )}
-                <div className="mt-6 flex justify-center">
+                <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
                     onExportSVG={handleExportSVG}
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
-                    darkMode={darkMode}
+                    disabled={stateMapData.length === 0 && stateMultiYearSeries.length === 0}
                     geojsonDownloadUrl="/India_LGD_states.geojson"
                     geojsonDownloadName="India_LGD_states.geojson"
                     citationInfo={STATES_CITATION}
@@ -1604,7 +1554,7 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-1 order-2 lg:order-1">
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
                 <FileUpload
                   onDataLoad={handleStateDataLoad}
                   onMultiDataLoad={(payload) => {
@@ -1616,9 +1566,8 @@ const Index = () => {
                   geojsonPath="/India_LGD_states.geojson"
                   onMapTitleChange={setStateMapTitle}
                   onDemoUrlChange={handleDemoUrlChange}
-                  darkMode={darkMode}
                 />
-                <div className="space-y-4 mt-6">
+                <div className="mt-6">
                   <ColorMapChooser
                     selectedScale={stateColorScale}
                     onScaleChange={setStateColorScale}
@@ -1630,7 +1579,6 @@ const Index = () => {
                     onHideValuesChange={setStateHideValues}
                     colorBarSettings={stateColorBarSettings}
                     onColorBarSettingsChange={setStateColorBarSettings}
-                    darkMode={darkMode}
                     dataType={stateDataType}
                     categories={getUniqueCategories(stateMapData.map(d => d.value))}
                     categoryColors={stateCategoryColors}
@@ -1644,7 +1592,7 @@ const Index = () => {
           </div>
 
           <div className={`space-y-6 ${activeTab === 'districts' ? 'block' : 'hidden'}`}>
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
                   ref={districtMapRef}
@@ -1662,13 +1610,13 @@ const Index = () => {
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
                 />
-                <div className="mt-6 flex justify-center">
+                <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
                     onExportSVG={handleExportSVG}
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
-                    darkMode={darkMode}
+                    disabled={districtMapData.length === 0}
                     geojsonDownloadUrl={getDistrictMapConfig(selectedDistrictMapType)?.geojsonPath}
                     geojsonDownloadName={`India_${selectedDistrictMapType}_districts.geojson`}
                     citationInfo={getDistrictsCitationInfo(selectedDistrictMapType, getDistrictMapConfig(selectedDistrictMapType)?.displayName)}
@@ -1676,28 +1624,54 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-1 order-2 lg:order-1">
-                <div className={`mb-4 p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-card'}`}>
-                  <Label htmlFor="district-map-type" className="text-sm font-medium mb-2 block">
-                    District Map Type
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Boundary Type
                   </Label>
-                  <Select value={selectedDistrictMapType} onValueChange={setSelectedDistrictMapType}>
-                    <SelectTrigger id="district-map-type" className="w-full">
-                      <SelectValue placeholder="Select district map type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getDistrictMapTypesList().map((mapType) => (
-                        <SelectItem key={mapType.id} value={mapType.id}>
-                          <div className="flex flex-col">
-                            <span>{mapType.displayName}</span>
-                            {mapType.description && (
-                              <span className="text-xs text-muted-foreground">{mapType.description}</span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Popover open={districtMapTypeOpen} onOpenChange={setDistrictMapTypeOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={districtMapTypeOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getDistrictMapConfig(selectedDistrictMapType)?.displayName ?? 'Select boundary type'}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search boundary type…" className="h-9" />
+                        <CommandList className="max-h-60">
+                          <CommandEmpty>No boundary type found.</CommandEmpty>
+                          <CommandGroup>
+                            {getDistrictMapTypesList().map((mapType) => (
+                              <CommandItem
+                                key={mapType.id}
+                                value={`${mapType.displayName} ${mapType.description ?? ''}`}
+                                onSelect={() => {
+                                  setSelectedDistrictMapType(mapType.id);
+                                  setDistrictMapTypeOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', selectedDistrictMapType === mapType.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{mapType.displayName}</span>
+                                  {mapType.description && (
+                                    <span className="text-xs text-muted-foreground truncate">{mapType.description}</span>
+                                  )}
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <FileUpload
@@ -1708,12 +1682,10 @@ const Index = () => {
                   geojsonPath={getDistrictMapConfig(selectedDistrictMapType).geojsonPath}
                   onMapTitleChange={setDistrictMapTitle}
                   onDemoUrlChange={handleDemoUrlChange}
-                  darkMode={darkMode}
                 />
-                <div className="space-y-4 mt-6">
+                <div className="mt-6">
                   <ColorMapChooser
                     selectedScale={districtColorScale}
-                    darkMode={darkMode}
                     onScaleChange={setDistrictColorScale}
                     invertColors={districtInvertColors}
                     onInvertColorsChange={setDistrictInvertColors}
@@ -1734,7 +1706,7 @@ const Index = () => {
           </div>
 
           <div className={`space-y-6 ${activeTab === 'regions' ? 'block' : 'hidden'}`}>
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
                   ref={districtMapRef}
@@ -1752,13 +1724,13 @@ const Index = () => {
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
                 />
-                <div className="mt-6 flex justify-center">
+                <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
                     onExportSVG={handleExportSVG}
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
-                    darkMode={darkMode}
+                    disabled={districtMapData.length === 0}
                     geojsonDownloadUrl={getDistrictMapConfig('NSSO')?.geojsonPath}
                     geojsonDownloadName="India_NSSO_regions.geojson"
                     citationInfo={NSSO_CITATION}
@@ -1766,11 +1738,11 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-1 order-2 lg:order-1">
-                <div className={`mb-4 p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'}`}>
-                  <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>NSSO Regions</h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-black'}`}>
-                    National Sample Survey Organization (NSSO) regions are geographical divisions used for survey sampling and statistical analysis across India.
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">NSSO Regions</h3>
+                  <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    National Sample Survey Organization regions used for survey sampling and statistical analysis across India.
                   </p>
                 </div>
 
@@ -1781,9 +1753,8 @@ const Index = () => {
                   demoDataPath={getDistrictMapConfig('NSSO').demoDataPath}
                   googleSheetLink={getDistrictMapConfig('NSSO').googleSheetLink}
                   geojsonPath={getDistrictMapConfig('NSSO').geojsonPath}
-                  darkMode={darkMode}
                 />
-                <div className="space-y-4 mt-6">
+                <div className="mt-6">
                   <ColorMapChooser
                     selectedScale={districtColorScale}
                     onScaleChange={setDistrictColorScale}
@@ -1807,7 +1778,7 @@ const Index = () => {
           </div>
 
           <div className={`space-y-6 ${activeTab === 'state-districts' ? 'block' : 'hidden'}`}>
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
                   ref={stateDistrictMapRef}
@@ -1830,13 +1801,13 @@ const Index = () => {
                   naInfo={stateDistrictNAInfo}
                   darkMode={darkMode}
                 />
-                <div className="mt-6 flex justify-center">
+                <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
                     onExportSVG={handleExportSVG}
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
-                    darkMode={darkMode}
+                    disabled={stateDistrictMapData.length === 0}
                     geojsonDownloadUrl={getStateGeoJSONUrl(stateGistMapping, selectedStateMapType, selectedStateForMap)}
                     geojsonDownloadName={`${selectedStateForMap}-${selectedStateMapType}-districts.geojson`}
                     citationInfo={getDistrictsCitationInfo(selectedStateMapType, `${selectedStateForMap} Districts (${getDistrictMapConfig(selectedStateMapType)?.displayName})`)}
@@ -1844,40 +1815,66 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-1 order-2 lg:order-1">
-                <div className={`mb-4 p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-card'}`}>
-                  <Label htmlFor="state-district-map-type" className="text-sm font-medium mb-2 block">
-                    District Map Type
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Boundary Type
                   </Label>
-                  <Select value={selectedStateMapType} onValueChange={setSelectedStateMapType}>
-                    <SelectTrigger id="state-district-map-type" className="w-full">
-                      <SelectValue placeholder="Select district map type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getDistrictMapTypesList().map((mapType) => (
-                        <SelectItem key={mapType.id} value={mapType.id}>
-                          <div className="flex flex-col">
-                            <span>{mapType.displayName}</span>
-                            {mapType.description && (
-                              <span className="text-xs text-muted-foreground">{mapType.description}</span>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Popover open={stateMapTypeOpen} onOpenChange={setStateMapTypeOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={stateMapTypeOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getDistrictMapConfig(selectedStateMapType)?.displayName ?? 'Select boundary type'}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search boundary type…" className="h-9" />
+                        <CommandList className="max-h-60">
+                          <CommandEmpty>No boundary type found.</CommandEmpty>
+                          <CommandGroup>
+                            {getDistrictMapTypesList().map((mapType) => (
+                              <CommandItem
+                                key={mapType.id}
+                                value={`${mapType.displayName} ${mapType.description ?? ''}`}
+                                onSelect={() => {
+                                  setSelectedStateMapType(mapType.id);
+                                  setStateMapTypeOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', selectedStateMapType === mapType.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{mapType.displayName}</span>
+                                  {mapType.description && (
+                                    <span className="text-xs text-muted-foreground truncate">{mapType.description}</span>
+                                  )}
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
-                <div className={`mb-4 p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-card'}`}>
-                  <Label htmlFor="state-selector" className="text-sm font-medium mb-2 block">
-                    Select State
+                <div className="mb-5">
+                  <Label htmlFor="state-selector" className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    State
                   </Label>
                   <input
                     type="text"
                     placeholder="Search state..."
                     value={stateSearchQuery}
                     onChange={(e) => setStateSearchQuery(e.target.value)}
-                    className={`w-full mb-2 px-3 py-2 border rounded-md text-sm ${darkMode ? 'bg-[#222] border-[#444] text-white placeholder-gray-500' : 'border-input bg-background'}`}
+                    className="w-full mb-2 px-3 py-2 border rounded-md text-sm border-input bg-background dark:bg-[hsl(25,10%,16%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,12%,90%)]"
                   />
                   <Select value={selectedStateForMap} onValueChange={(value) => {
                     setSelectedStateForMap(value);
@@ -1901,7 +1898,7 @@ const Index = () => {
                       {stateSearchQuery.length > 0 && availableStates.filter((state) =>
                         state.toLowerCase().includes(stateSearchQuery.toLowerCase())
                       ).length === 0 && (
-                        <div className={`px-2 py-1.5 text-sm ${darkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground dark:text-[hsl(30,8%,55%)]">
                           No states found
                         </div>
                       )}
@@ -1917,9 +1914,8 @@ const Index = () => {
                   googleSheetLink={getDistrictMapConfig(selectedStateMapType).googleSheetLink}
                   geojsonPath={getDistrictMapConfig(selectedStateMapType).geojsonPath}
                   selectedState={selectedStateForMap}
-                  darkMode={darkMode}
                 />
-                <div className="space-y-4 mt-6">
+                <div className="mt-6">
                   <ColorMapChooser
                     selectedScale={stateDistrictColorScale}
                     onScaleChange={setStateDistrictColorScale}
@@ -1927,7 +1923,6 @@ const Index = () => {
                     onInvertColorsChange={setStateDistrictInvertColors}
                     showStateBoundaries={true}
                     hideDistrictNames={stateDistrictHideNames}
-                    darkMode={darkMode}
                     hideValues={stateDistrictHideValues}
                     onHideDistrictNamesChange={setStateDistrictHideNames}
                     onHideDistrictValuesChange={setStateDistrictHideValues}
@@ -1946,72 +1941,80 @@ const Index = () => {
           </div>
 
           <div className={`space-y-6 ${activeTab === 'help' ? 'block' : 'hidden'}`}>
-            <div className="max-w-4xl mx-auto p-6 space-y-8">
-              <div className="p-4 border-2 border-green-500 rounded-lg bg-green-50 dark:bg-green-950">
-                <h2 className="text-xl font-bold mb-2 text-green-800 dark:text-green-200">Privacy & data security</h2>
-                <p className="text-green-700 dark:text-green-300">
-                  <strong>Your data is never stored.</strong> All processing happens in your browser or transiently on our servers.
-                  We do not collect, store, or share any of your uploaded data.
+            <div className="max-w-4xl mx-auto p-6 space-y-10">
+              <div className="pl-4 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)] py-1">
+                <h2 className="text-sm font-semibold text-[hsl(28,20%,30%)] dark:text-[hsl(35,10%,80%)] mb-1">Privacy & data security</h2>
+                <p className="text-sm text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,58%)]">
+                  <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,88%)]">Your data is never stored.</strong> All processing happens in your browser or transiently on our servers. We do not collect, store, or share any of your uploaded data.
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>Web interface</h2>
-                  <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'} mb-4`}>
-                    BharatViz helps you create publication-ready choropleth maps of India at state and district levels with just a few clicks.
+                  <h2 className="text-2xl font-bold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Web interface</h2>
+                  <p className="text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-6">
+                    BharatViz is a free tool for mapping India. Create publication-ready choropleth maps at state, district, and city levels with just a few clicks.
                   </p>
-                  <div className="space-y-4">
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>1. Upload your data</h3>
-                      <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'} mb-2`}>Upload a CSV file with your data. Required columns:</p>
-                      <ul className={`list-disc list-inside space-y-1 text-sm ${darkMode ? 'text-gray-300' : ''}`}>
-                        <li><strong>States:</strong> <code>state</code> and <code>value</code></li>
-                        <li><strong>Districts:</strong> <code>state_name</code>, <code>district_name</code>, and <code>value</code></li>
-                      </ul>
-                      <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
-                        Download the CSV template or load demo data to get started quickly.
-                      </p>
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">1</div>
+                      <div className="flex-1 pt-0.5">
+                        <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Upload your data</h3>
+                        <p className="text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-2">Upload a CSV file with your data. Required columns:</p>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)]">
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">States:</strong> <code>state</code> and <code>value</code></li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">Districts:</strong> <code>state_name</code>, <code>district_name</code>, and <code>value</code></li>
+                        </ul>
+                        <p className="text-sm mt-2 text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,55%)]">
+                          Download the CSV template or load demo data to get started quickly.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>2. Customize your map</h3>
-                      <ul className={`list-disc list-inside space-y-1 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
-                        <li><strong>Color Scale:</strong> Choose from sequential (blues, greens, viridis) or diverging (spectral, rdylbu) scales</li>
-                        <li><strong>Invert Colors:</strong> Flip the color mapping (useful when lower values are better)</li>
-                        <li><strong>Discrete vs Continuous:</strong> Use discrete bins or smooth gradients</li>
-                        <li><strong>Labels:</strong> Toggle state names and values on/off</li>
-                        <li><strong>District Maps:</strong> Choose between LGD, NFHS-5, or NFHS-4 boundaries</li>
-                      </ul>
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">2</div>
+                      <div className="flex-1 pt-0.5">
+                        <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Customize your map</h3>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)]">
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">Color Scale:</strong> Choose from sequential (blues, greens, viridis) or diverging (spectral, rdylbu) scales</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">Invert Colors:</strong> Flip the color mapping (useful when lower values are better)</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">Discrete vs Continuous:</strong> Use discrete bins or smooth gradients</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">Labels:</strong> Toggle state names and values on/off</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">District Maps:</strong> Choose between LGD, NFHS-5, or NFHS-4 boundaries</li>
+                        </ul>
+                      </div>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>3. Export your map</h3>
-                      <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Export in multiple formats:</p>
-                      <ul className={`list-disc list-inside space-y-1 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
-                        <li><strong>PNG:</strong> High-resolution raster image (300 DPI)</li>
-                        <li><strong>SVG:</strong> Vector format for editing in Adobe Illustrator, Inkscape, etc.</li>
-                        <li><strong>PDF:</strong> Publication-ready format</li>
-                      </ul>
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">3</div>
+                      <div className="flex-1 pt-0.5">
+                        <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Export your map</h3>
+                        <p className="text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-2">Export in multiple formats:</p>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)]">
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">PNG:</strong> High-resolution raster image (300 DPI)</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">SVG:</strong> Vector format for editing in Adobe Illustrator, Inkscape, etc.</li>
+                          <li><strong className="text-[hsl(28,15%,28%)] dark:text-[hsl(35,10%,80%)]">PDF:</strong> Publication-ready format</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t">
-                  <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>Programmatic access (API)</h2>
-                  <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'} mb-4`}>
+                <div className="pt-8 border-t border-[hsl(35,16%,88%)] dark:border-[hsl(25,8%,14%)]">
+                  <h2 className="text-2xl font-bold mb-4 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Programmatic access (API)</h2>
+                  <p className="text-muted-foreground dark:text-[hsl(30,8%,65%)] mb-4">
                     The API supports state and district-level maps (LGD, NFHS-5, NFHS-4), all color scales, and exports to PNG, SVG, and PDF formats from Python or R.
                   </p>
                   <div className="space-y-4">
-                    <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
-                      <h3 className="text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">Documentation & examples</h3>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-blue-700 dark:text-blue-300">
+                    <div className="p-4 border rounded-lg bg-[hsl(38,30%,97%)] border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-lg font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,93%)]">Documentation & examples</h3>
+                      <ul className="list-disc list-inside space-y-1 text-sm text-[hsl(28,10%,42%)] dark:text-[hsl(30,8%,65%)]">
                         <li>
                           <a
                             href="https://colab.research.google.com/github/saketlab/bharatviz/blob/main/server/examples/BharatViz_demo.ipynb"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline hover:text-blue-900 dark:hover:text-blue-100"
+                            className="underline text-[hsl(28,45%,38%)] hover:text-[hsl(28,50%,28%)] dark:text-[hsl(28,55%,52%)] dark:hover:text-[hsl(28,48%,62%)]"
                           >
                             Try Python notebook in Google Colab
                           </a>
@@ -2021,7 +2024,7 @@ const Index = () => {
                             href="https://rpubs.com/saketkc/bharatviz"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline hover:text-blue-900 dark:hover:text-blue-100"
+                            className="underline text-[hsl(28,45%,38%)] hover:text-[hsl(28,50%,28%)] dark:text-[hsl(28,55%,52%)] dark:hover:text-[hsl(28,48%,62%)]"
                           >
                             View R notebook on RPubs
                           </a>
@@ -2029,8 +2032,8 @@ const Index = () => {
                       </ul>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>Python</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Python</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`# Install dependencies
 pip install requests pillow pandas
@@ -2055,8 +2058,8 @@ bv.generate_districts_map(dist_data, map_type="NFHS5", show=True)`}
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>R</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">R</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`# Install dependencies
 install.packages(c("R6", "httr", "jsonlite", "base64enc", "png"))
@@ -2083,8 +2086,8 @@ bv$show_map(result_nfhs5)`}
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>R: Side-by-side maps (high resolution)</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">R: Side-by-side maps (high resolution)</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`library(R6)
 library(grid)
@@ -2120,9 +2123,9 @@ dev.off()`}
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>Direct API reference</h3>
-                      <p className={`text-sm mb-3 ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Direct API reference</h3>
+                      <p className="text-sm mb-3 text-muted-foreground dark:text-[hsl(30,8%,65%)]">
                         For custom implementations without the client libraries:
                       </p>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
@@ -2155,27 +2158,27 @@ POST /api/v1/districts/map
                   </div>
                 </div>
 
-                <div className="pt-6 border-t">
-                  <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>Embedding maps</h2>
-                  <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'} mb-4`}>
+                <div className="pt-8 border-t border-[hsl(35,16%,88%)] dark:border-[hsl(25,8%,14%)]">
+                  <h2 className="text-2xl font-bold mb-4 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Embedding maps</h2>
+                  <p className="text-muted-foreground dark:text-[hsl(30,8%,65%)] mb-4">
                     Embed interactive BharatViz maps directly into your website, blog, or GitHub Pages without downloading files.
                   </p>
                   <div className="space-y-4">
-                    <div className="p-4 border-2 border-blue-500 rounded-lg bg-blue-50 dark:bg-blue-950">
-                      <h3 className="text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">Live demo & interactive examples</h3>
-                      <p className="text-blue-700 dark:text-blue-300 mb-3">
+                    <div className="p-4 border-2 border-[hsl(28,42%,52%)] rounded-lg bg-[hsl(38,30%,97%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(28,35%,38%)]">
+                      <h3 className="text-lg font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,93%)]">Live demo & interactive examples</h3>
+                      <p className="text-[hsl(28,10%,42%)] dark:text-[hsl(30,8%,65%)] mb-3">
                         See both embedding methods in action with live, working examples.
                       </p>
                       <a
                         href="/embed-demo"
-                        className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                        className="inline-block px-4 py-2 bg-[hsl(28,62%,48%)] hover:bg-[hsl(28,55%,42%)] text-white font-semibold rounded-lg transition-colors"
                       >
                         View Embed Demo →
                       </a>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>iframe embed</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">iframe embed</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`<iframe
   src="https://bharatviz.saketlab.org/api/v1/embed?dataUrl=https://yoursite.com/data.csv&colorScale=viridis&title=My%20Map"
@@ -2186,8 +2189,8 @@ POST /api/v1/districts/map
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>JavaScript widget</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">JavaScript widget</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`<div id="my-map"></div>
 <script src="https://bharatviz.saketlab.org/api/embed.js"></script>
@@ -2202,15 +2205,15 @@ POST /api/v1/districts/map
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>Direct SVG</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Direct SVG</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`<img src="https://bharatviz.saketlab.org/api/v1/embed/svg?dataUrl=https://yoursite.com/data.csv&colorScale=viridis" />`}
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>GitHub Pages example</h3>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">GitHub Pages example</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`# 1. Create data.csv in your GitHub repo
 # 2. Enable GitHub Pages in repo settings
@@ -2219,29 +2222,29 @@ POST /api/v1/districts/map
                       </pre>
                     </div>
 
-                    <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : ''}`}>
-                      <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>Available parameters</h3>
-                      <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>dataUrl</code> - URL to your CSV file (required)</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>mapType</code> - 'states', 'districts', or 'state-districts' (default: 'states')</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>colorScale</code> - 'viridis', 'spectral', 'blues', 'greens', etc. (default: 'spectral')</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>mainTitle</code> - Map title (default: 'BharatViz')</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>legendTitle</code> - Legend label (default: 'Values')</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>invertColors</code> - true/false to reverse color scale</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>darkMode</code> - true/false for dark background with white boundaries and text</p>
-                        <p><code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-[#333] text-gray-200' : 'bg-muted'}`}>districtBoundary</code> - 'LGD', 'NFHS4', 'NFHS5', 'SOI2011', or 'SOI2001' for district maps</p>
+                    <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                      <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Available parameters</h3>
+                      <div className="text-sm space-y-1 text-muted-foreground dark:text-[hsl(30,8%,65%)]">
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">dataUrl</code> - URL to your CSV file (required)</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">mapType</code> - 'states', 'districts', or 'state-districts' (default: 'states')</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">colorScale</code> - 'viridis', 'spectral', 'blues', 'greens', etc. (default: 'spectral')</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">mainTitle</code> - Map title (default: 'BharatViz')</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">legendTitle</code> - Legend label (default: 'Values')</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">invertColors</code> - true/false to reverse color scale</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">darkMode</code> - true/false for dark background with white boundaries and text</p>
+                        <p><code className="px-1 py-0.5 rounded bg-muted dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(35,10%,80%)]">districtBoundary</code> - 'LGD', 'NFHS4', 'NFHS5', 'SOI2011', or 'SOI2001' for district maps</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t">
-                  <div className={`p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-muted/50'}`}>
-                    <h2 className={`text-xl font-bold mb-2 flex items-center gap-2 ${darkMode ? 'text-white' : ''}`}>
+                <div className="pt-8 border-t border-[hsl(35,16%,88%)] dark:border-[hsl(25,8%,14%)]">
+                  <div className="p-4 border rounded-lg bg-muted/50 dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+                    <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
                       <Github className="h-5 w-5" />
                       Open source
                     </h2>
-                    <p className={`${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
+                    <p className="text-muted-foreground dark:text-[hsl(30,8%,65%)]">
                       BharatViz is open source and available on GitHub. Contributions, issues, and feedback are welcome!
                     </p>
                     <a
@@ -2259,7 +2262,7 @@ POST /api/v1/districts/map
           </div>
 
           <div className={`space-y-6 ${activeTab === 'cities' ? 'block' : 'hidden'}`}>
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaCityMap
                   ref={cityMapRef}
@@ -2279,13 +2282,13 @@ POST /api/v1/districts/map
                   darkMode={darkMode}
                   cityName={currentCityDataset?.displayName || selectedCity}
                 />
-                <div className="mt-6 flex justify-center">
+                <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
                     onExportSVG={handleExportSVG}
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
-                    darkMode={darkMode}
+                    disabled={cityMapData.length === 0}
                     geojsonDownloadUrl={currentCityDataset?.geojsonPath}
                     geojsonDownloadName={`${selectedCityDataset}.geojson`}
                     citationInfo={currentCityDataset ? getCityCitationInfo(currentCityDataset) : undefined}
@@ -2293,9 +2296,9 @@ POST /api/v1/districts/map
                 </div>
               </div>
 
-              <div className="lg:col-span-1 order-2 lg:order-1">
-                <div className={`mb-4 p-4 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-card'}`}>
-                  <Label htmlFor="city-select" className="text-sm font-medium mb-2 block">
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5">
+                  <Label htmlFor="city-select" className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
                     City
                   </Label>
                   <Popover open={cityPickerOpen} onOpenChange={setCityPickerOpen}>
@@ -2347,49 +2350,43 @@ POST /api/v1/districts/map
                       </Command>
                     </PopoverContent>
                   </Popover>
-
-                  {currentCityDatasets.length > 1 && (
-                    <div className="mt-3">
-                      <Label htmlFor="city-dataset-select" className="text-sm font-medium mb-2 block">
-                        Dataset
-                      </Label>
-                      <Select
-                        value={selectedCityDataset}
-                        onValueChange={(datasetId) => {
-                          setSelectedCityDataset(datasetId);
-                          setCityMapData([]);
-                          setCityDataTitle('');
-                        }}
-                      >
-                        <SelectTrigger id="city-dataset-select" className="w-full">
-                          <SelectValue placeholder="Select a dataset" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currentCityDatasets.map((ds) => (
-                            <SelectItem key={ds.id} value={ds.id}>
-                              <div className="flex flex-col">
-                                <span>{ds.label || ds.type}</span>
-                                <span className="text-xs text-muted-foreground">{ds.featureCount} features &middot; {ds.source}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {currentCityDataset && (
+                    <p className="mt-1.5 text-xs text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,45%)]">
+                      <span className="font-medium">{currentCityDataset.featureCount}</span> {currentCityDataset.type === 'wards' ? 'wards' : 'features'} &middot; {currentCityDataset.source}
+                      {currentCityDataset.label && currentCityDataset.label !== 'Wards' && <> &middot; {currentCityDataset.label}</>}
+                    </p>
                   )}
-
-                  <div className={`mt-3 text-xs ${darkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
-                    {(() => {
-                      if (!currentCityDataset) return null;
-                      return (
-                        <>
-                          <span className="font-medium">{currentCityDataset.featureCount}</span> {currentCityDataset.type === 'wards' ? 'wards' : 'features'} &middot; Source: {currentCityDataset.source}
-                          {currentCityDataset.label && currentCityDataset.label !== 'Wards' && <> &middot; {currentCityDataset.label}</>}
-                        </>
-                      );
-                    })()}
-                  </div>
                 </div>
+
+                {currentCityDatasets.length > 1 && (
+                  <div className="mb-5">
+                    <Label htmlFor="city-dataset-select" className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                      Dataset
+                    </Label>
+                    <Select
+                      value={selectedCityDataset}
+                      onValueChange={(datasetId) => {
+                        setSelectedCityDataset(datasetId);
+                        setCityMapData([]);
+                        setCityDataTitle('');
+                      }}
+                    >
+                      <SelectTrigger id="city-dataset-select" className="w-full">
+                        <SelectValue placeholder="Select a dataset" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currentCityDatasets.map((ds) => (
+                          <SelectItem key={ds.id} value={ds.id}>
+                            <div className="flex flex-col">
+                              <span>{ds.label || ds.type}</span>
+                              <span className="text-xs text-muted-foreground">{ds.featureCount} features &middot; {ds.source}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <FileUpload
                   onDataLoad={handleCityDataLoad}
@@ -2397,9 +2394,8 @@ POST /api/v1/districts/map
                   demoDataPath={getCityCsvUrls(selectedCityDataset).demo}
                   templateCsvPath={getCityCsvUrls(selectedCityDataset).template}
                   googleSheetLink={getCityCsvUrls(selectedCityDataset).template}
-                  darkMode={darkMode}
                 />
-                <div className="space-y-4 mt-6">
+                <div className="mt-6">
                   <ColorMapChooser
                     selectedScale={cityColorScale}
                     onScaleChange={setCityColorScale}
@@ -2412,7 +2408,6 @@ POST /api/v1/districts/map
                     namesLabel="Hide ward names"
                     colorBarSettings={cityColorBarSettings}
                     onColorBarSettingsChange={setCityColorBarSettings}
-                    darkMode={darkMode}
                     dataType={cityDataType}
                     categories={getUniqueCategories(cityMapData.map(d => d.value))}
                     categoryColors={cityCategoryColors}
@@ -2426,27 +2421,27 @@ POST /api/v1/districts/map
           </div>
 
           <div className={`space-y-6 ${activeTab === 'district-stats' ? 'block' : 'hidden'}`}>
-            <DistrictStats darkMode={darkMode} />
+            <DistrictStats />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'city-stats' ? 'block' : 'hidden'}`}>
-            <CityStats darkMode={darkMode} />
+            <CityStats />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'evolution' ? 'block' : 'hidden'}`}>
-            <HistoricalEvolution darkMode={darkMode} />
+            <HistoricalEvolution />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'credits' ? 'block' : 'hidden'}`}>
-            <Credits darkMode={darkMode} />
+            <Credits />
           </div>
 
           <div className={`space-y-6 ${activeTab === 'mcp' ? 'block' : 'hidden'}`}>
-            <MCPDocs darkMode={darkMode} />
+            <MCPDocs />
           </div>
         </Tabs>
       </div>
-      <footer className={`w-full text-center text-xs mt-8 mb-2 ${darkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
+      <footer className="w-full text-center text-xs mt-8 mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">
         <div className="flex flex-col items-center gap-2">
           <div>
             © 2025 Saket Choudhary | <a href="http://saketlab.in/" target="_blank" rel="noopener noreferrer" className="underline">Saket Lab</a>
@@ -2465,10 +2460,12 @@ POST /api/v1/districts/map
         </div>
       </footer>
 
-      <ChatPanel
-        key={`${activeTab}-${activeTab === 'districts' ? selectedDistrictMapType : selectedStateMapType}-${selectedStateForMap || ''}`}
-        context={chatContext}
-      />
+      <Suspense fallback={null}>
+        <ChatPanel
+          key={`${activeTab}-${activeTab === 'districts' ? selectedDistrictMapType : selectedStateMapType}-${selectedStateForMap || ''}`}
+          context={chatContext}
+        />
+      </Suspense>
     </div>
   );
 };

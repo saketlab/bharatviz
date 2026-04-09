@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import * as d3 from 'd3';
 import { scaleSequential } from 'd3-scale';
 import { interpolateSpectral, interpolateViridis, interpolatePlasma, interpolateInferno, interpolateMagma, interpolateRdYlBu, interpolateRdYlGn, interpolateBrBG, interpolatePiYG, interpolatePuOr, interpolateBlues, interpolateGreens, interpolateReds, interpolateOranges, interpolatePurples, interpolatePuRd } from 'd3-scale-chromatic';
@@ -138,9 +139,12 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
   dataType = 'numerical',
   categoryColors = {},
   naInfo,
-  darkMode = false,
+  darkMode: darkModeProp,
   cityName = 'City'
 }, ref) => {
+  const { dark: darkModeHook } = useDarkMode();
+  const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
+  const mapBg = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
   const [geojsonData, setGeojsonData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [renderingData, setRenderingData] = useState(false);
@@ -171,6 +175,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dragRafRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -435,7 +440,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     setHoveredWard(null);
   };
 
-  // Legend drag handlers
   const handleLegendMouseDown = (e: React.MouseEvent) => {
     setDragging(true);
     const svgRect = svgRef.current?.getBoundingClientRect();
@@ -449,10 +453,13 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const handleLegendMouseMove = useCallback((e: MouseEvent) => {
     if (!dragging || !svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    setLegendPosition({
-      x: e.clientX - svgRect.left - dragOffset.x,
-      y: e.clientY - svgRect.top - dragOffset.y
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      setLegendPosition({ x: cx - svgRect.left - dragOffset.x, y: cy - svgRect.top - dragOffset.y });
     });
   }, [dragging, dragOffset]);
 
@@ -471,7 +478,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     }
   }, [dragging, dragOffset, handleLegendMouseMove]);
 
-  // Title drag handlers
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDraggingTitle(true);
@@ -488,12 +494,15 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const handleTitleMouseMove = useCallback((e: MouseEvent) => {
     if (!draggingTitle || !svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const currentX = isMobile ? 175 : 400;
-    const currentY = isMobile ? 35 : 30;
-    setTitlePosition({
-      x: e.clientX - svgRect.left - currentX - titleDragOffset.x,
-      y: e.clientY - svgRect.top - currentY - titleDragOffset.y
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const currentX = isMobile ? 175 : 400;
+      const currentY = isMobile ? 35 : 30;
+      setTitlePosition({ x: cx - svgRect.left - currentX - titleDragOffset.x, y: cy - svgRect.top - currentY - titleDragOffset.y });
     });
   }, [draggingTitle, titleDragOffset, isMobile]);
 
@@ -518,13 +527,15 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const handleTitleTouchMove = useCallback((e: TouchEvent) => {
     if (!draggingTitle || !svgRef.current || e.touches.length === 0) return;
-    const touch = e.touches[0];
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const currentX = isMobile ? 175 : 400;
-    const currentY = isMobile ? 35 : 30;
-    setTitlePosition({
-      x: touch.clientX - svgRect.left - currentX - titleDragOffset.x,
-      y: touch.clientY - svgRect.top - currentY - titleDragOffset.y
+    if (dragRafRef.current) return;
+    const tx = e.touches[0].clientX, ty = e.touches[0].clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const currentX = isMobile ? 175 : 400;
+      const currentY = isMobile ? 35 : 30;
+      setTitlePosition({ x: tx - svgRect.left - currentX - titleDragOffset.x, y: ty - svgRect.top - currentY - titleDragOffset.y });
     });
   }, [draggingTitle, titleDragOffset, isMobile]);
 
@@ -547,7 +558,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     }
   }, [draggingTitle, titleDragOffset, handleTitleMouseMove, handleTitleTouchMove]);
 
-  // Label drag handlers
   const handleLabelMouseDown = (e: React.MouseEvent, wardKey: string, currentX: number, currentY: number) => {
     e.stopPropagation();
     const svgRect = svgRef.current?.getBoundingClientRect();
@@ -564,14 +574,16 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const handleLabelMouseMove = useCallback((e: MouseEvent) => {
     if (!draggingLabel || !svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const newPosition = {
-      x: e.clientX - svgRect.left - draggingLabel.offset.x,
-      y: e.clientY - svgRect.top - draggingLabel.offset.y
-    };
-    const newPositions = new Map(labelPositions);
-    newPositions.set(draggingLabel.wardKey, newPosition);
-    setLabelPositions(newPositions);
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const newPositions = new Map(labelPositions);
+      newPositions.set(draggingLabel.wardKey, { x: cx - svgRect.left - draggingLabel.offset.x, y: cy - svgRect.top - draggingLabel.offset.y });
+      setLabelPositions(newPositions);
+    });
   }, [draggingLabel, labelPositions]);
 
   const handleLabelMouseUp = () => {
@@ -595,15 +607,16 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
 
   const handleLabelTouchMove = useCallback((e: TouchEvent) => {
     if (!draggingLabel || !svgRef.current || e.touches.length === 0) return;
-    const touch = e.touches[0];
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const newPosition = {
-      x: touch.clientX - svgRect.left - draggingLabel.offset.x,
-      y: touch.clientY - svgRect.top - draggingLabel.offset.y
-    };
-    const newPositions = new Map(labelPositions);
-    newPositions.set(draggingLabel.wardKey, newPosition);
-    setLabelPositions(newPositions);
+    if (dragRafRef.current) return;
+    const tx = e.touches[0].clientX, ty = e.touches[0].clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const newPositions = new Map(labelPositions);
+      newPositions.set(draggingLabel.wardKey, { x: tx - svgRect.left - draggingLabel.offset.x, y: ty - svgRect.top - draggingLabel.offset.y });
+      setLabelPositions(newPositions);
+    });
   }, [draggingLabel, labelPositions]);
 
   const handleLabelTouchEnd = () => {
@@ -625,7 +638,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     }
   }, [draggingLabel, handleLabelMouseMove, handleLabelTouchMove]);
 
-  // Legend gradient effect
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
@@ -759,7 +771,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
       allElements.forEach(el => {
         const element = el as SVGElement;
         if (element.tagName === 'text') {
-          element.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+          element.setAttribute('font-family', "'DM Sans', Arial, sans-serif");
         }
       });
       const svgString = new XMLSerializer().serializeToString(svgElement);
@@ -794,7 +806,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           element.style.visibility = 'visible';
           element.style.display = 'block';
           if (element.tagName === 'text') {
-            element.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+            element.setAttribute('font-family', "'DM Sans', Arial, sans-serif");
           }
         });
 
@@ -816,7 +828,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
         await svg2pdf(svgClone, pdf, { x, y, width: finalWidth, height: finalHeight });
         pdf.save(`bharatviz-city-${cityName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.pdf`);
       } catch (error) {
-        // Fallback to raster PDF
         try {
           if (!svgRef.current) return;
           const svg = svgRef.current;
@@ -875,7 +886,6 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     }
   }));
 
-  // Memoize ward label data
   const { wardLabelData, maxArea, minArea, wardDataMap } = useMemo(() => {
     if (!geojsonData) return { wardLabelData: [], maxArea: 0, minArea: 0, wardDataMap: new Map() };
 
@@ -935,12 +945,12 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
         viewBox={isMobile ? "0 0 350 440" : "0 0 800 850"}
         className="max-w-full h-auto"
         style={{
-          backgroundColor: darkMode ? '#000000' : '#ffffff',
+          backgroundColor: mapBg,
           willChange: renderingData ? 'contents' : 'auto',
           transform: 'translateZ(0)',
         }}
       >
-        {/* Ward polygons */}
+
         {geojsonData.features.map((feature, index) => {
           const mapWidth = isMobile ? 320 : 760;
           const mapHeight = isMobile ? 400 : 760;
@@ -972,7 +982,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           );
         })}
 
-        {/* Ward labels */}
+
         {((!hideWardNames) || (!hideWardValues)) && wardLabelData.length > 0 && (
           <g className="ward-labels">
             {wardLabelData.map(({ feature, area }, index) => {
@@ -1050,7 +1060,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           </g>
         )}
 
-        {/* Main title */}
+
         <text
           x={(isMobile ? 175 : 400) + titlePosition.x}
           y={(isMobile ? 35 : 30) + titlePosition.y}
@@ -1067,7 +1077,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           {mainTitle}
         </text>
 
-        {/* Hover tooltip */}
+
         {hoveredWard && (
           <g>
             <rect
@@ -1075,9 +1085,9 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               y={isMobile ? 430 : 810}
               width={isMobile ? 330 : 760}
               height="30"
-              fill={darkMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)'}
+              fill={darkMode ? 'hsl(25, 8%, 11%)' : 'hsl(38, 30%, 99%)'}
               rx="4"
-              stroke={darkMode ? '#555' : '#ddd'}
+              stroke={darkMode ? 'hsl(25, 8%, 18%)' : 'hsl(35, 18%, 84%)'}
               strokeWidth="0.5"
             />
             <text
@@ -1087,7 +1097,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               dominantBaseline="middle"
               fontSize="13"
               fontWeight="600"
-              fill={darkMode ? '#ffffff' : '#1e293b'}
+              fill={darkMode ? 'hsl(35, 12%, 90%)' : 'hsl(28, 20%, 14%)'}
             >
               {hoveredWard.ward}
               {hoveredWard.value !== undefined ? `: ${typeof hoveredWard.value === 'number' ? roundToSignificantDigits(hoveredWard.value) : String(hoveredWard.value)}` : ''}
@@ -1095,7 +1105,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           </g>
         )}
 
-        {/* Legend */}
+
         {data.length > 0 && dataType === 'numerical' && !colorBarSettings?.isDiscrete && (
           <g
             transform={`translate(${legendPosition.x}, ${legendPosition.y})`}
@@ -1108,7 +1118,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               width={isMobile ? 150 : 200}
               height={isMobile ? 60 : 70}
               fill={darkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)'}
-              stroke={darkMode ? '#555' : '#ddd'}
+              stroke={darkMode ? 'hsl(25,8%,20%)' : 'hsl(35,18%,84%)'}
               strokeWidth="0.5"
               rx="4"
             />
@@ -1121,7 +1131,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                   onBlur={() => setEditingTitle(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setEditingTitle(false)}
                   autoFocus
-                  style={{ width: '100%', fontSize: '11px', fontWeight: 600, border: '1px solid #ccc', borderRadius: '2px', padding: '0 4px', background: darkMode ? '#333' : 'white', color: darkMode ? '#fff' : '#000' }}
+                  style={{ width: '100%', fontSize: '11px', fontWeight: 600, border: '1px solid #ccc', borderRadius: '2px', padding: '0 4px', background: darkMode ? 'hsl(25,8%,14%)' : 'white', color: darkMode ? '#fff' : '#000' }}
                 />
               </foreignObject>
             ) : (
@@ -1143,7 +1153,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               width={isMobile ? 130 : 180}
               height="15"
               fill="url(#city-legend-gradient)"
-              stroke={darkMode ? '#555' : '#ccc'}
+              stroke={darkMode ? 'hsl(25,8%,20%)' : 'hsl(35,18%,80%)'}
               strokeWidth="0.5"
               rx="2"
             />
@@ -1156,7 +1166,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                   onBlur={() => setEditingMin(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setEditingMin(false)}
                   autoFocus
-                  style={{ width: '100%', fontSize: '9px', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? '#333' : 'white', color: darkMode ? '#fff' : '#000' }}
+                  style={{ width: '100%', fontSize: '9px', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? 'hsl(25,8%,14%)' : 'white', color: darkMode ? '#fff' : '#000' }}
                 />
               </foreignObject>
             ) : (
@@ -1164,7 +1174,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                 x={10}
                 y={isMobile ? 55 : 57}
                 fontSize="9"
-                fill={darkMode ? '#d1d5db' : '#64748b'}
+                fill={darkMode ? 'hsl(35,10%,80%)' : 'hsl(28,8%,44%)'}
                 style={{ cursor: 'pointer' }}
                 onDoubleClick={(e) => { e.stopPropagation(); setEditingMin(true); }}
               >
@@ -1180,7 +1190,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                   onBlur={() => setEditingMean(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setEditingMean(false)}
                   autoFocus
-                  style={{ width: '100%', fontSize: '9px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? '#333' : 'white', color: darkMode ? '#fff' : '#000' }}
+                  style={{ width: '100%', fontSize: '9px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? 'hsl(25,8%,14%)' : 'white', color: darkMode ? '#fff' : '#000' }}
                 />
               </foreignObject>
             ) : (
@@ -1189,7 +1199,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                 y={isMobile ? 55 : 57}
                 textAnchor="middle"
                 fontSize="9"
-                fill={darkMode ? '#d1d5db' : '#64748b'}
+                fill={darkMode ? 'hsl(35,10%,80%)' : 'hsl(28,8%,44%)'}
                 style={{ cursor: 'pointer' }}
                 onDoubleClick={(e) => { e.stopPropagation(); setEditingMean(true); }}
               >
@@ -1205,7 +1215,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                   onBlur={() => setEditingMax(false)}
                   onKeyDown={(e) => e.key === 'Enter' && setEditingMax(false)}
                   autoFocus
-                  style={{ width: '100%', fontSize: '9px', textAlign: 'right', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? '#333' : 'white', color: darkMode ? '#fff' : '#000' }}
+                  style={{ width: '100%', fontSize: '9px', textAlign: 'right', border: '1px solid #ccc', borderRadius: '2px', padding: '0 2px', background: darkMode ? 'hsl(25,8%,14%)' : 'white', color: darkMode ? '#fff' : '#000' }}
                 />
               </foreignObject>
             ) : (
@@ -1214,7 +1224,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                 y={isMobile ? 55 : 57}
                 textAnchor="end"
                 fontSize="9"
-                fill={darkMode ? '#d1d5db' : '#64748b'}
+                fill={darkMode ? 'hsl(35,10%,80%)' : 'hsl(28,8%,44%)'}
                 style={{ cursor: 'pointer' }}
                 onDoubleClick={(e) => { e.stopPropagation(); setEditingMax(true); }}
               >
@@ -1224,7 +1234,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           </g>
         )}
 
-        {/* Discrete legend */}
+
         {data.length > 0 && dataType === 'numerical' && colorBarSettings?.isDiscrete && (
           <DiscreteLegend
             legendPosition={legendPosition}
@@ -1243,7 +1253,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           />
         )}
 
-        {/* Categorical legend */}
+
         {data.length > 0 && dataType === 'categorical' && (
           <CategoricalLegend
             legendPosition={legendPosition}
@@ -1260,22 +1270,22 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           />
         )}
 
-        {/* NA Legend */}
+
         {naInfo && naInfo.count > 0 && showNALegend && (
           <g transform={`translate(${isMobile ? 10 : 20}, ${isMobile ? 410 : 790})`}>
             <rect
               x={0} y={0}
               width={isMobile ? 120 : 150} height={20}
               fill={darkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)'}
-              stroke={darkMode ? '#555' : '#ddd'} strokeWidth="0.5" rx="4"
+              stroke={darkMode ? 'hsl(25,8%,20%)' : 'hsl(35,18%,84%)'} strokeWidth="0.5" rx="4"
             />
-            <rect x={5} y={4} width={12} height={12} fill={darkMode ? '#1a1a1a' : 'white'} stroke={darkMode ? '#555' : '#ccc'} strokeWidth="0.5" />
-            <text x={22} y={13} fontSize="10" fill={darkMode ? '#d1d5db' : '#64748b'}>
+            <rect x={5} y={4} width={12} height={12} fill={darkMode ? 'hsl(25,8%,9%)' : 'white'} stroke={darkMode ? 'hsl(25,8%,20%)' : 'hsl(35,18%,80%)'} strokeWidth="0.5" />
+            <text x={22} y={13} fontSize="10" fill={darkMode ? 'hsl(35,10%,80%)' : 'hsl(28,8%,44%)'}>
               NA ({naInfo.count} ward{naInfo.count !== 1 ? 's' : ''})
             </text>
             <text
               x={isMobile ? 110 : 140} y={13} fontSize="10"
-              fill={darkMode ? '#888' : '#94a3b8'} textAnchor="end"
+              fill={darkMode ? 'hsl(30,8%,48%)' : 'hsl(28,8%,54%)'} textAnchor="end"
               style={{ cursor: 'pointer' }}
               onClick={() => setShowNALegend(false)}
             >

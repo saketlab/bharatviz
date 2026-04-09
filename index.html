@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
     <!-- Primary Meta Tags -->
-    <title>BharatViz - Create Interactive Choropleth Maps of India</title>
-    <meta name="title" content="BharatViz - Create Interactive Choropleth Maps of India" />
-    <meta name="description" content="BharatViz: Create publication-ready choropleth maps of India with 750+ districts and 36 states. 27 boundary sets from Census 1941-2011, LGD, NFHS, Survey of India. Free tool with 17 color scales, REST API, MCP server for AI assistants, and export to PNG/SVG/PDF." />
+    <title>BharatViz: Mapping India</title>
+    <meta name="title" content="BharatViz: Mapping India" />
+    <meta name="description" content="BharatViz: Mapping India with interactive choropleth maps. 750+ districts, 36 states, 27 boundary sets from Census 1941-2011, LGD, NFHS, Survey of India. Free tool with 17 color scales, REST API, MCP server for AI assistants, and export to PNG/SVG/PDF." />
     <meta name="keywords" content="India maps, choropleth, data visualization, district maps, state maps, Census India, LGD, NFHS-5, NFHS-4, map maker, REST API, MCP server, AI maps, D3.js, data journalism, geospatial analysis, India geography" />
     <meta name="author" content="Saket Choudhary" />
     <meta name="creator" content="Saket Choudhary" />
@@ -26,16 +26,16 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@saketkc" />
     <meta name="twitter:creator" content="@saketkc" />
-    <meta name="twitter:title" content="BharatViz - Interactive Choropleth Maps for India" />
-    <meta name="twitter:description" content="Create publication-ready choropleth maps of India. 750+ districts, 27 boundary sets (Census 1941-2011, LGD, NFHS), 17 color scales. Free REST API and MCP server for AI." />
+    <meta name="twitter:title" content="BharatViz: Mapping India" />
+    <meta name="twitter:description" content="Mapping India with interactive choropleth maps. 750+ districts, 27 boundary sets (Census 1941-2011, LGD, NFHS), 17 color scales. Free REST API and MCP server for AI." />
     <meta name="twitter:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
     <meta name="twitter:image:alt" content="BharatViz logo" />
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://bharatviz.saketlab.org/" />
-    <meta property="og:title" content="BharatViz - Interactive Choropleth Maps for India" />
-    <meta property="og:description" content="Create publication-ready choropleth maps of India. 750+ districts, 27 boundary sets (Census 1941-2011, LGD, NFHS), 17 color scales. Free REST API and MCP server for AI assistants." />
+    <meta property="og:title" content="BharatViz: Mapping India" />
+    <meta property="og:description" content="Mapping India with interactive choropleth maps. 750+ districts, 27 boundary sets (Census 1941-2011, LGD, NFHS), 17 color scales. Free REST API and MCP server for AI assistants." />
     <meta property="og:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
     <meta property="og:image:alt" content="BharatViz - Create India Maps" />
     <meta property="og:site_name" content="BharatViz" />
@@ -54,6 +54,9 @@
 
     <!-- Preconnect to External Resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- DM Sans: all UI text — humanist sans, warm, clear at all sizes -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="preconnect" href="https://www.google-analytics.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -87,7 +90,7 @@
       "@type": "WebApplication",
       "name": "BharatViz",
       "alternateName": "Bharat Viz",
-      "description": "Create publication-ready choropleth maps of India with 750+ districts and 36 states. 27 boundary sets from Census 1941-2011, LGD, NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan. 17 color scales, REST API, MCP server for AI assistants, export to PNG/SVG/PDF.",
+      "description": "Mapping India with interactive choropleth maps. 750+ districts, 36 states, 27 boundary sets from Census 1941-2011, LGD, NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan. 17 color scales, REST API, MCP server for AI assistants, export to PNG/SVG/PDF.",
       "url": "https://bharatviz.saketlab.org",
       "applicationCategory": ["Multimedia", "Productivity"],
       "operatingSystem": "All",
@@ -142,6 +145,18 @@
     }
     </script>
     
+    <!-- Dark mode: apply stored preference before React boots to prevent flash -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('bharatviz-dark-mode');
+          if (stored === 'true') document.documentElement.classList.add('dark');
+          else if (stored === 'false') document.documentElement.classList.remove('dark');
+          else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark');
+        } catch(e) {}
+      })();
+    </script>
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VF7K3MEZH"></script>
     <script>

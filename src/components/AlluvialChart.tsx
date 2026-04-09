@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 interface EvoNode {
   id: string;
@@ -37,8 +36,6 @@ interface AlluvialChartProps {
   onNodeClick?: (node: EvoNode) => void;
 }
 
-// ── Layout constants ──────────────────────────────────────────────────────────
-
 const BAND_H   = 14;   // px height of each district band
 const BAND_GAP = 3;    // px gap between bands
 const LANE_GAP = 28;   // px gap between British and Princely lanes
@@ -46,12 +43,9 @@ const COL_W    = 110;  // px width of each year column
 const LABEL_W  = 130;  // px for left/right labels
 const YEAR_H   = 32;   // px header height for year labels
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 function buildLayout(data: EvolutionData) {
   const YEARS = data.years;
 
-  // Separate British vs Princely at 1872 to set lane order
   const origins1872 = data.nodes.filter(n => n.year === 1872);
   const britishChainIds = new Set(
     origins1872.filter(n => n.type === 'British districts').map(n => n.chainId)
@@ -60,7 +54,6 @@ function buildLayout(data: EvolutionData) {
     origins1872.filter(n => n.type !== 'British districts').map(n => n.chainId)
   );
 
-  // Build forward+backward adjacency
   const fwd = new Map<string, string[]>();
   const bwd = new Map<string, string[]>();
   for (const lk of data.links) {
@@ -70,23 +63,16 @@ function buildLayout(data: EvolutionData) {
     bwd.get(lk.targetId)!.push(lk.sourceId);
   }
 
-  // Determine lane membership for each node by chain
   function getLane(node: EvoNode): 'british' | 'princely' {
     if (britishChainIds.has(node.chainId)) return 'british';
     if (princlyChainIds.has(node.chainId)) return 'princely';
-    // New districts (no 1872 origin) — assign by type
     return node.type === 'British districts' ? 'british' : 'princely';
   }
 
-  // ── Sort nodes within each year+lane ─────────────────────────────────────
-  // Strategy: propagate 1872 order forward. For nodes added after 1872,
-  // insert after their source node in the previous year.
   const nodeMap = new Map(data.nodes.map(n => [n.id, n]));
 
-  // Build sorted order per year-lane
   const sortOrder = new Map<string, number>(); // nodeId → sort index
 
-  // 1872 base order: alpha within each lane
   const brit72 = origins1872.filter(n => n.type === 'British districts')
     .sort((a, b) => a.name.localeCompare(b.name));
   const princ72 = origins1872.filter(n => n.type !== 'British districts')
@@ -95,14 +81,12 @@ function buildLayout(data: EvolutionData) {
   brit72.forEach((n, i) => sortOrder.set(n.id, i));
   princ72.forEach((n, i) => sortOrder.set(n.id, i));
 
-  // Propagate order forward year by year
   for (let yi = 1; yi < YEARS.length; yi++) {
     const year = YEARS[yi];
     const nodesThisYear = data.nodes.filter(n => n.year === year);
 
     for (const lane of ['british', 'princely'] as const) {
       const laneNodes = nodesThisYear.filter(n => getLane(n) === lane);
-      // Each node gets order = min order of its sources in prev year
       for (const n of laneNodes) {
         const sources = bwd.get(n.id) || [];
         const srcOrders = sources
@@ -113,10 +97,8 @@ function buildLayout(data: EvolutionData) {
     }
   }
 
-  // ── Compute pixel positions ───────────────────────────────────────────────
   const nodePos = new Map<string, { x: number; y: number; lane: 'british' | 'princely' }>();
 
-  // Count max nodes per lane across all years to set lane heights
   let maxBrit = 0, maxPrinc = 0;
   for (const y of YEARS) {
     const yn = data.nodes.filter(n => n.year === y);
@@ -156,9 +138,9 @@ function buildLayout(data: EvolutionData) {
   return { nodePos, nodeMap, fwd, bwd, britLaneH, princLaneH, xForYear, svgH, svgW, getLane };
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
-
-export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartProps) {
+export function AlluvialChart({ darkMode: darkModeProp, onNodeClick }: AlluvialChartProps) {
+  const { dark: darkModeHook } = useDarkMode();
+  const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<EvolutionData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -175,7 +157,6 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
 
   const layout = useMemo(() => data ? buildLayout(data) : null, [data]);
 
-  // ── D3 render ─────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!data || !layout || !svgRef.current) return;
 
@@ -186,23 +167,20 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
     svg.selectAll('*').remove();
     svg.attr('width', svgW).attr('height', svgH);
 
-    const textColor    = darkMode ? '#d1d5db' : '#374151';
-    const mutedColor   = darkMode ? '#6b7280' : '#9ca3af';
-    const bgColor      = darkMode ? '#111827' : '#ffffff';
-    const laneLineCol  = darkMode ? '#374151' : '#e5e7eb';
-    const labelBg      = darkMode ? '#1f2937' : '#f9fafb';
+    const textColor    = darkMode ? 'hsl(35, 12%, 82%)' : 'hsl(28, 20%, 22%)';
+    const mutedColor   = darkMode ? 'hsl(30, 8%, 55%)' : 'hsl(28, 10%, 55%)';
+    const bgColor      = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
+    const laneLineCol  = darkMode ? 'hsl(25, 8%, 16%)' : 'hsl(35, 18%, 88%)';
+    const labelBg      = darkMode ? 'hsl(25, 8%, 11%)' : 'hsl(38, 25%, 96%)';
 
-    // Background
     svg.append('rect').attr('width', svgW).attr('height', svgH).attr('fill', bgColor);
 
-    // Lane divider line
     const divY = layout.britLaneH + YEAR_H + LANE_GAP / 2;
     svg.append('line')
       .attr('x1', LABEL_W).attr('x2', svgW - LABEL_W)
       .attr('y1', divY).attr('y2', divY)
       .attr('stroke', laneLineCol).attr('stroke-width', 1).attr('stroke-dasharray', '4,4');
 
-    // Lane labels
     const laneLabel = (text: string, y: number) => {
       svg.append('rect')
         .attr('x', 4).attr('y', y - 9).attr('width', LABEL_W - 12).attr('height', 16)
@@ -216,7 +194,6 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
     laneLabel('BRITISH DISTRICTS', YEAR_H + 2);
     laneLabel('PRINCELY STATES', layout.britLaneH + YEAR_H + LANE_GAP + 2);
 
-    // Year column headers
     for (const y of YEARS) {
       const x = xForYear(y);
       svg.append('text')
@@ -225,14 +202,12 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
         .attr('fill', darkMode ? '#f59e0b' : '#b45309')
         .text(y);
 
-      // Vertical column tick
       svg.append('line')
         .attr('x1', x).attr('x2', x)
         .attr('y1', YEAR_H).attr('y2', svgH - 8)
         .attr('stroke', laneLineCol).attr('stroke-width', 1);
     }
 
-    // ── Draw links ──────────────────────────────────────────────────────────
     const linkGroup = svg.append('g').attr('class', 'links');
 
     for (const lk of data.links) {
@@ -257,7 +232,6 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
         .attr('stroke-opacity', isHov ? 0.9 : (hovered ? 0.15 : 0.5));
     }
 
-    // ── Draw nodes (bands) ──────────────────────────────────────────────────
     const nodeGroup = svg.append('g').attr('class', 'nodes');
 
     for (const node of data.nodes) {
@@ -290,7 +264,6 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
         .on('mouseleave', () => { setHovered(null); setTooltip(null); })
         .on('click', () => onNodeClick?.(node));
 
-      // Band rect
       g.append('rect')
         .attr('x', pos.x).attr('y', pos.y)
         .attr('width', COL_W - 2).attr('height', BAND_H)
@@ -298,7 +271,6 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
         .attr('fill-opacity', isFaded ? 0.2 : isHov ? 1.0 : 0.85)
         .attr('rx', 2);
 
-      // Name label — show for 1872 (left), 1941 (right), and if name changed
       const prevYearIdx = YEARS.indexOf(node.year) - 1;
       const prevYear = prevYearIdx >= 0 ? YEARS[prevYearIdx] : null;
       const srcName = prevYear ? [...(bwd.get(node.id) || [])].map(id => nodeMap.get(id)?.name)[0] : null;
@@ -324,29 +296,28 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
 
   }, [data, layout, hovered, darkMode, onNodeClick]);
 
-  // ── Tooltip ───────────────────────────────────────────────────────────────
   const tooltipEl = tooltip && (
     <div
       className={`absolute z-50 pointer-events-none rounded-lg shadow-lg border text-xs p-3 max-w-[220px] ${
-        darkMode ? 'bg-gray-900 border-gray-700 text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+        darkMode ? 'bg-[hsl(25,8%,9%)] border-[hsl(25,8%,14%)] text-[hsl(35,12%,90%)]' : 'bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)]'
       }`}
       style={{ left: tooltip.x + 14, top: tooltip.y - 10 }}
     >
       <div className="font-bold text-sm mb-1" style={{ color: tooltip.node.color }}>
         {tooltip.node.name}
       </div>
-      <div className={`mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+      <div className={`mb-1 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
         {tooltip.node.year} · {tooltip.node.type}
       </div>
       {tooltip.sources.length > 0 && tooltip.sources[0] !== tooltip.node.name && (
         <div className="mb-0.5">
-          <span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>From: </span>
+          <span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>From: </span>
           {tooltip.sources.join(', ')}
         </div>
       )}
       {tooltip.targets.length > 0 && (
         <div>
-          <span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>
+          <span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>
             {tooltip.targets.length > 1 ? 'Split into: ' : 'Became: '}
           </span>
           {tooltip.targets.join(', ')}
@@ -355,9 +326,8 @@ export function AlluvialChart({ darkMode = false, onNodeClick }: AlluvialChartPr
     </div>
   );
 
-  // ── Render ────────────────────────────────────────────────────────────────
   if (loading) return (
-    <div className={`flex items-center justify-center h-64 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+    <div className={`flex items-center justify-center h-64 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mr-3" />
       Loading evolution data…
     </div>

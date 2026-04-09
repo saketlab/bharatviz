@@ -24,19 +24,12 @@ interface DistrictMetric {
 type SortField = 'state_name' | 'district_name' | 'area_sq_km' | 'perimeter_km' | 'compactness';
 type SortDirection = 'asc' | 'desc' | null;
 
-interface DistrictStatsProps {
-  darkMode?: boolean;
-}
-
-// Derive shapefile options from DISTRICT_MAP_TYPES — single source of truth.
-// metricsId is the filename stem used under /district-stats/*.csv,
-// derived from the geojson path: strip leading "/" and ".geojson".
 const SHAPEFILE_OPTIONS = Object.values(DISTRICT_MAP_TYPES).map((cfg) => ({
   id: cfg.geojsonPath.replace(/^\//, '').replace(/\.geojson$/, ''),
   name: cfg.displayName,
 }));
 
-export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }) => {
+export const DistrictStats: React.FC<{ darkMode?: boolean }> = () => {
   const [selectedShapefile, setSelectedShapefile] = useState('India_LGD_districts');
   const [data, setData] = useState<DistrictMetric[]>([]);
   const [loading, setLoading] = useState(false);
@@ -171,18 +164,19 @@ export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }
     });
   };
 
-  const thBase = `px-3 py-2 sm:px-4 sm:py-3 text-xs font-medium uppercase tracking-wider cursor-pointer transition-colors ${darkMode ? 'text-gray-300' : 'text-gray-700'}`;
+  const thBase = 'px-3 py-2 sm:px-4 sm:py-3 text-xs font-medium uppercase tracking-wider transition-colors text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,75%)]';
+  const thBtnBase = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 rounded';
   const tdBase = 'px-3 py-2.5 sm:px-4 sm:py-3 text-sm';
-  const tdMuted = `${tdBase} ${darkMode ? 'text-gray-400' : 'text-gray-700'}`;
-  const tdPrimary = `${tdBase} font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`;
+  const tdMuted = `${tdBase} text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,52%)]`;
+  const tdPrimary = `${tdBase} font-medium text-[hsl(28,20%,14%)] dark:text-[hsl(35,10%,82%)]`;
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className={`p-4 sm:p-6 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
-        <h2 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+      <div className="p-4 sm:p-6 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
           District Statistics
         </h2>
-        <p className={`text-sm mb-4 sm:mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <p className="text-sm mb-4 sm:mb-6 text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
           Explore geometric metrics for Indian districts across different shapefiles.
           Metrics include area, perimeter, compactness score, and geographic coordinates.
         </p>
@@ -210,7 +204,7 @@ export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }
             Search
           </Label>
           <div className="relative w-full sm:max-w-lg">
-            <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(28,8%,56%)] dark:text-[hsl(30,8%,45%)]" />
             <Input
               id="search"
               type="text"
@@ -224,15 +218,13 @@ export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }
 
         {!loading && data.length > 0 && (
           <div className="flex flex-wrap gap-3 items-center justify-between">
-            <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
               {filteredAndSortedData.length} districts
               {searchQuery && ` of ${data.length}`}
             </div>
             <button
               onClick={handleExportCSV}
-              className={`flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-sm transition-colors ${
-                darkMode ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              }`}
+              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-sm transition-colors border-[hsl(35,18%,78%)] bg-white text-[hsl(28,20%,22%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,16%)]"
             >
               <Download className="w-4 h-4" />
               Export CSV
@@ -242,47 +234,47 @@ export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }
       </div>
 
       {loading && (
-        <div className={`p-8 sm:p-12 text-center border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333] text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
-          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+        <div className="p-8 sm:p-12 text-center border rounded-lg bg-white border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,55%)]">
+          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[hsl(28,62%,48%)] mx-auto mb-4"></div>
           Loading district metrics...
         </div>
       )}
 
       {error && (
-        <div className={`p-6 border rounded-lg ${darkMode ? 'bg-red-900/20 border-red-800 text-red-400' : 'bg-red-50 border-red-200 text-red-700'}`}>
+        <div className="p-6 border rounded-lg bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
           <p className="font-semibold mb-2">Error loading data</p>
           <p className="text-sm">{error}</p>
         </div>
       )}
 
       {!loading && !error && data.length > 0 && (
-        <div className={`border rounded-lg overflow-hidden ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
+        <div className="border rounded-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[32rem]">
-              <thead className={darkMode ? 'bg-gray-800' : 'bg-gray-50'}>
+              <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
                 <tr>
-                  <th className={`${thBase} text-left`} onClick={() => handleSort('state_name')}>
-                    <div className="flex items-center">State{getSortIcon('state_name')}</div>
+                  <th className={`${thBase} text-left`}>
+                    <button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('state_name')} aria-label={`Sort by state${sortField === 'state_name' ? `, currently ${sortDirection}ending` : ''}`}>State{getSortIcon('state_name')}</button>
                   </th>
-                  <th className={`${thBase} text-left`} onClick={() => handleSort('district_name')}>
-                    <div className="flex items-center">District{getSortIcon('district_name')}</div>
+                  <th className={`${thBase} text-left`}>
+                    <button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('district_name')} aria-label={`Sort by district${sortField === 'district_name' ? `, currently ${sortDirection}ending` : ''}`}>District{getSortIcon('district_name')}</button>
                   </th>
-                  <th className={`${thBase} text-right`} onClick={() => handleSort('area_sq_km')}>
-                    <div className="flex items-center justify-end">Area (km²){getSortIcon('area_sq_km')}</div>
+                  <th className={`${thBase} text-right`}>
+                    <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²){getSortIcon('area_sq_km')}</button>
                   </th>
-                  <th className={`${thBase} text-right hidden sm:table-cell`} onClick={() => handleSort('perimeter_km')}>
-                    <div className="flex items-center justify-end">Perimeter (km){getSortIcon('perimeter_km')}</div>
+                  <th className={`${thBase} text-right hidden sm:table-cell`}>
+                    <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('perimeter_km')} aria-label={`Sort by perimeter${sortField === 'perimeter_km' ? `, currently ${sortDirection}ending` : ''}`}>Perimeter (km){getSortIcon('perimeter_km')}</button>
                   </th>
-                  <th className={`${thBase} text-right`} onClick={() => handleSort('compactness')}>
-                    <div className="flex items-center justify-end">Compact.{getSortIcon('compactness')}</div>
+                  <th className={`${thBase} text-right`}>
+                    <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('compactness')} aria-label={`Sort by compactness${sortField === 'compactness' ? `, currently ${sortDirection}ending` : ''}`}>Compact.{getSortIcon('compactness')}</button>
                   </th>
                 </tr>
               </thead>
-              <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-200'}`}>
+              <tbody className="divide-y divide-[hsl(35,18%,88%)] dark:divide-[hsl(25,8%,14%)]">
                 {paginatedData.map((row, idx) => (
                   <tr
                     key={`${row.state_name}-${row.district_name}-${idx}`}
-                    className={`transition-colors ${darkMode ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'}`}
+                    className="transition-colors hover:bg-[hsl(35,20%,97%)] dark:hover:bg-[hsl(25,8%,12%)]"
                   >
                     <td className={tdPrimary}>{row.state_name || 'N/A'}</td>
                     <td className={tdMuted}>{row.district_name || 'N/A'}</td>
@@ -296,15 +288,15 @@ export const DistrictStats: React.FC<DistrictStatsProps> = ({ darkMode = false }
           </div>
 
           {totalPages > 1 && (
-            <div className={`px-3 py-2.5 sm:px-4 sm:py-3 border-t flex items-center justify-between gap-2 ${darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}>
-              <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className="px-3 py-2.5 sm:px-4 sm:py-3 border-t flex items-center justify-between gap-2 border-[hsl(35,18%,84%)] bg-[hsl(35,20%,97%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)]">
+              <div className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
                 {currentPage}/{totalPages}
               </div>
               <div className="flex gap-2">
                 {(() => {
                   const btnBase = 'px-3 py-1 rounded border text-sm transition-colors';
-                  const active = darkMode ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50';
-                  const disabled = darkMode ? 'border-gray-700 bg-gray-800 text-gray-600 cursor-not-allowed' : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed';
+                  const active = 'border-[hsl(35,18%,78%)] bg-white text-[hsl(28,20%,22%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,16%)]';
+                  const disabled = 'border-[hsl(35,18%,88%)] bg-[hsl(35,20%,95%)] text-[hsl(28,8%,58%)] cursor-not-allowed dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,11%)] dark:text-[hsl(30,8%,38%)]';
                   return (<>
                     <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className={`${btnBase} ${currentPage === 1 ? disabled : active}`}>Prev</button>
                     <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className={`${btnBase} ${currentPage === totalPages ? disabled : active}`}>Next</button>

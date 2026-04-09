@@ -194,7 +194,7 @@ const EmbedDemo = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-[hsl(38,22%,99%)] dark:bg-[hsl(25,8%,9%)]">
       <Helmet>
         <title>Embed Interactive India Maps on Your Website | BharatViz</title>
         <meta name="title" content="Embed Interactive India Maps on Your Website | BharatViz" />
@@ -259,13 +259,13 @@ const EmbedDemo = () => {
         </script>
       </Helmet>
 
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-[hsl(25,8%,12%)] border-b border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,18%)]">
         <div className="container mx-auto px-4 py-4 sm:py-6">
-          <a href="/" className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm mb-2 inline-block">
+          <a href="/" className="text-[hsl(28,55%,42%)] hover:text-[hsl(28,48%,32%)] dark:text-[hsl(35,55%,60%)] dark:hover:text-[hsl(35,48%,72%)] text-xs sm:text-sm mb-2 inline-block">
             ← Back to BharatViz
           </a>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Embed BharatViz Maps</h1>
-          <p className="text-gray-600 mt-2 text-sm sm:text-base md:text-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Embed BharatViz Maps</h1>
+          <p className="text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)] mt-2 text-sm sm:text-base md:text-lg">
             Add live, interactive India maps to your website with just a few lines of code
           </p>
         </div>
@@ -273,7 +273,7 @@ const EmbedDemo = () => {
 
       <div className="container mx-auto px-4 py-8 sm:py-12 max-w-6xl">
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Method 1: iframe Embed</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">Method 1: iframe Embed</h2>
 
           <Card className="mb-6">
             <CardHeader>
@@ -302,7 +302,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{iframeCode}</code>
               </pre>
             </CardContent>
@@ -329,7 +329,7 @@ const EmbedDemo = () => {
         </section>
 
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Method 2: JavaScript widget</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">Method 2: JavaScript widget</h2>
 
           <Card className="mb-6">
             <CardHeader>
@@ -358,7 +358,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{jsCode}</code>
               </pre>
             </CardContent>
@@ -372,7 +372,7 @@ const EmbedDemo = () => {
             <CardContent>
               <div className="border rounded-lg p-4">
                 <div id="js-embed-demo" className="min-h-[500px]">
-                  <div className="text-center py-20 text-gray-500">
+                  <div className="text-center py-20 text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,45%)]">
                     Loading map...
                   </div>
                 </div>
@@ -382,12 +382,12 @@ const EmbedDemo = () => {
         </section>
 
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">District-level maps</h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">District-level maps</h2>
+          <p className="text-sm sm:text-base text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)] mb-6 sm:mb-8">
             BharatViz also supports district-level choropleth maps across India. Hover over districts to see their names and values.
           </p>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">iframe embed (district-level)</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">iframe embed (district-level)</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -416,7 +416,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{districtIframeCode}</code>
               </pre>
             </CardContent>
@@ -441,7 +441,7 @@ const EmbedDemo = () => {
             </CardContent>
           </Card>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">JavaScript widget (district-level)</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">JavaScript widget (district-level)</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -470,7 +470,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{districtJsCode}</code>
               </pre>
             </CardContent>
@@ -484,7 +484,7 @@ const EmbedDemo = () => {
             <CardContent>
               <div className="border rounded-lg p-4">
                 <div id="js-district-embed-demo" className="min-h-[700px]">
-                  <div className="text-center py-20 text-gray-500">
+                  <div className="text-center py-20 text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,45%)]">
                     Loading district map...
                   </div>
                 </div>
@@ -494,13 +494,13 @@ const EmbedDemo = () => {
         </section>
 
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">AQI Color Scale Demo</h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">AQI Color Scale Demo</h2>
+          <p className="text-sm sm:text-base text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)] mb-6 sm:mb-8">
             Demonstrate AQI (Air Quality Index) data with the specialized AQI color scale. This scale uses absolute thresholds:
             0-50 (Good), 51-100 (Satisfactory), 101-200 (Moderate), 201-300 (Poor), 301-400 (Very Poor), 401-500 (Severe).
           </p>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">iframe embed with AQI scale</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">iframe embed with AQI scale</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -529,7 +529,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{aqiIframeCode}</code>
               </pre>
             </CardContent>
@@ -554,7 +554,7 @@ const EmbedDemo = () => {
             </CardContent>
           </Card>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">JavaScript widget with AQI scale</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">JavaScript widget with AQI scale</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -583,7 +583,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{aqiJsCode}</code>
               </pre>
             </CardContent>
@@ -597,7 +597,7 @@ const EmbedDemo = () => {
             <CardContent>
               <div className="border rounded-lg p-4">
                 <div id="js-aqi-embed-demo" className="min-h-[700px]">
-                  <div className="text-center py-20 text-gray-500">
+                  <div className="text-center py-20 text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,45%)]">
                     Loading AQI map...
                   </div>
                 </div>
@@ -607,12 +607,12 @@ const EmbedDemo = () => {
         </section>
 
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Dark Mode Demo - Districts AQI</h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">Dark Mode Demo - Districts AQI</h2>
+          <p className="text-sm sm:text-base text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)] mb-6 sm:mb-8">
             Enable dark mode for maps with black backgrounds and white text/boundaries. This example shows district-level AQI data with the AQI color scale. Perfect for dark-themed websites or nighttime viewing.
           </p>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">iframe embed with dark mode</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">iframe embed with dark mode</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -641,7 +641,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{darkIframeCode}</code>
               </pre>
             </CardContent>
@@ -666,7 +666,7 @@ const EmbedDemo = () => {
             </CardContent>
           </Card>
 
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">JavaScript widget with dark mode</h3>
+          <h3 className="text-xl sm:text-2xl font-semibold text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)] mb-3 sm:mb-4">JavaScript widget with dark mode</h3>
 
           <Card className="mb-6">
             <CardHeader>
@@ -695,7 +695,7 @@ const EmbedDemo = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-4 rounded-lg overflow-x-auto text-sm">
                 <code>{darkJsCode}</code>
               </pre>
             </CardContent>
@@ -709,7 +709,7 @@ const EmbedDemo = () => {
             <CardContent>
               <div className="border rounded-lg p-4 bg-black">
                 <div id="js-dark-embed-demo" className="min-h-[500px]">
-                  <div className="text-center py-20 text-gray-400">
+                  <div className="text-center py-20 text-[hsl(30,8%,45%)]">
                     Loading dark mode AQI map...
                   </div>
                 </div>
@@ -719,7 +719,7 @@ const EmbedDemo = () => {
         </section>
 
         <section className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Configuration options</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)] mb-4 sm:mb-6">Configuration options</h2>
 
           <Card>
             <CardHeader>
@@ -738,7 +738,7 @@ const EmbedDemo = () => {
                       <th className="text-left py-2 pr-4 sm:pr-0">Description</th>
                     </tr>
                   </thead>
-                  <tbody className="text-gray-600">
+                  <tbody className="text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
                     <tr className="border-b">
                       <td className="py-2 pl-4 sm:pl-0 pr-4 font-mono">dataUrl</td>
                       <td className="py-2 pr-4">string</td>
@@ -797,15 +797,15 @@ const EmbedDemo = () => {
         </section>
       </div>
 
-      <footer className="bg-gray-900 text-white py-8 mt-16">
+      <footer className="bg-[hsl(25,8%,9%)] text-white py-8 mt-16">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">
+          <p className="text-[hsl(30,8%,55%)]">
             BharatViz is open-source software licensed under MIT.{' '}
             <a
               href="https://github.com/saketlab/bharatviz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300"
+              className="text-[hsl(35,55%,60%)] hover:text-[hsl(35,48%,72%)]"
             >
               View on GitHub
             </a>

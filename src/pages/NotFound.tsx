@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 const NotFound = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(35,20%,93%)] dark:bg-[hsl(25,8%,9%)]">
       <Helmet>
         <title>404 - Page Not Found | BharatViz</title>
         <meta name="title" content="404 - Page Not Found | BharatViz" />
@@ -19,9 +19,9 @@ const NotFound = () => {
         <meta name="twitter:description" content="The page you're looking for doesn't exist." />
       </Helmet>
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
+        <h1 className="text-4xl font-bold mb-4 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">404</h1>
+        <p className="text-xl mb-4 text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">Oops! Page not found</p>
+        <a href="/" className="text-[hsl(28,55%,42%)] hover:text-[hsl(28,48%,32%)] underline dark:text-[hsl(35,55%,60%)] dark:hover:text-[hsl(35,48%,72%)]">
           Return to Home
         </a>
       </div>

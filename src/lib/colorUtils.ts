@@ -36,24 +36,17 @@ export function roundToSignificantDigits(num: number, digits: number = 2): strin
   if (isNaN(num) || !isFinite(num)) return '';
   if (num === 0) return '0';
   
-  // Handle integers and simple decimals without scientific notation
   if (Math.abs(num) >= 1) {
-    // For numbers >= 1, round to reasonable decimal places
     if (num % 1 === 0 && num < 1e6) {
-      // It's a whole number and not too large, return as integer
       return num.toString();
     } else if (num < 1000) {
-      // Small numbers, keep up to 2 decimal places
       return parseFloat(num.toFixed(2)).toString();
     } else if (num < 10000) {
-      // Thousands, keep up to 1 decimal place
       return parseFloat(num.toFixed(1)).toString();
     } else {
-      // Large numbers, round to nearest integer
       return Math.round(num).toString();
     }
   } else {
-    // For numbers < 1, use fixed decimal places
     if (Math.abs(num) >= 0.01) {
       return parseFloat(num.toFixed(3)).toString();
     } else {
@@ -62,26 +55,18 @@ export function roundToSignificantDigits(num: number, digits: number = 2): strin
   }
 }
 
-// Alternative formatting function specifically for legend labels
 export function formatLegendValue(num: number, precision?: number): string {
   if (num === 0) return '0';
 
-  // Always avoid scientific notation
   if (Math.abs(num) >= 1000000) {
-    // Millions: 1.5M, 2M, etc.
     return (num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1) + 'M';
   } else if (Math.abs(num) >= 1000) {
-    // Thousands: 1.5K, 2K, etc.
     return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'K';
   } else if (Math.abs(num) >= 1) {
-    // Regular numbers: use provided precision or default to 2
     // For discrete bins with custom precision, respect it exactly (including 0 for integers)
     const decimals = precision !== undefined ? precision : 2;
-    const formatted = num.toFixed(decimals);
-    // Remove trailing zeros but keep at least integer part
-    return parseFloat(formatted).toString();
+    return parseFloat(num.toFixed(decimals)).toString();
   } else {
-    // Small decimals: 0.01, 0.001, etc.
     const decimals = precision !== undefined ? precision : 4;
     return parseFloat(num.toFixed(decimals)).toString();
   }

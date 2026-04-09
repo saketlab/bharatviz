@@ -39,13 +39,13 @@ interface FileUploadProps {
   demoDataPath?: string;
   googleSheetLink?: string;
   geojsonPath?: string;
-  selectedState?: string; // Optional: for state-district tab, filter NAs by this state
+  selectedState?: string;
   onMapTitleChange?: (title: string) => void;
   onDemoUrlChange?: (dataUrl: string, title: string) => void;
   darkMode?: boolean;
 }
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataLoad, mode = 'states', templateCsvPath, demoDataPath, googleSheetLink, geojsonPath, selectedState, onMapTitleChange, onDemoUrlChange, darkMode = false }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataLoad, mode = 'states', templateCsvPath, demoDataPath, googleSheetLink, geojsonPath, selectedState, onMapTitleChange, onDemoUrlChange, darkMode: _darkMode }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const [loadingSheet, setLoadingSheet] = useState(false);
@@ -53,10 +53,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   const [fuzzyThreshold, setFuzzyThreshold] = useState<number>(0.4);
   const [demoLoading, setDemoLoading] = useState(false);
   const [demoInfo, setDemoInfo] = useState<{ index: number; total: number } | null>(null);
+  const [showDemoPulse, setShowDemoPulse] = useState(() => {
+    try { return !localStorage.getItem('bharatviz-demo-seen'); } catch { return false; }
+  });
 
   useEffect(() => { setDemoInfo(null); }, [mode]);
 
-  // Helper function to decompress gzipped files
+  const clearDemoPulse = () => {
+    if (showDemoPulse) {
+      setShowDemoPulse(false);
+      try { localStorage.setItem('bharatviz-demo-seen', '1'); } catch { /* ignore */ }
+    }
+  };
+
   const decompressGzip = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -179,7 +188,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
         }
       }
 
-      // Default behaviour: treat each non-state column as a separate value column
       const valueColumns = mode === 'districts' ? headers.slice(2) : headers.slice(1);
       const valueColumn = valueColumns[valueColumns.length - 1];
 
@@ -200,9 +208,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
         return;
       }
 
-      // If multiple value columns are present (e.g., year columns), emit a multi-series payload.
-      // This keeps backward compatibility: if the parent doesn't support multi-series, we fall back
-      // to the last column (current behavior).
       const canEmitMulti = Boolean(onMultiDataLoad) && valueColumns.length > 1;
       if (canEmitMulti) {
         const seriesLimit = 4;
@@ -314,7 +319,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
 
     onMapTitleChange?.('');
 
-    // Check if file is gzipped
     const isGzipped = file.name.endsWith('.gz');
 
     if (isGzipped) {
@@ -352,8 +356,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
     try {
       let csvText: string;
 
-      // Use NFHS-5 showcase demos (cycled without repeats) unless a specific
-      // demoDataPath is provided (e.g. for city wards)
       const showcase = !demoDataPath ? getNextDemo(mode) : null;
 
       if (showcase) {
@@ -470,78 +472,75 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   };
 
   return (
-    <Card className={`p-3 sm:p-6 border-dashed border-2 hover:border-primary/50 transition-colors ${darkMode ? 'bg-[#1a1a1a] border-[#444]' : ''}`}>
+    <Card className="p-3 sm:p-6 transition-colors border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
       <div className="text-center">
-        <Upload className={`mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-2 sm:mb-4 ${darkMode ? 'text-gray-400' : 'text-muted-foreground'}`} />
-        <h3 className={`text-base sm:text-lg font-medium mb-1 sm:mb-2 ${darkMode ? 'text-white' : ''}`}>Upload Your Data</h3>
-        <p className={`text-xs sm:text-sm mb-2 sm:mb-4 ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
+        <Upload className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-2 sm:mb-4 text-[hsl(28,42%,48%)] dark:text-[hsl(28,20%,48%)]" />
+        <h3 className="text-base sm:text-lg font-medium mb-1 sm:mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Upload Your Data</h3>
+        <p className="text-xs sm:text-sm mb-3 sm:mb-4 text-muted-foreground dark:text-[hsl(30,8%,58%)]">
           {mode === 'districts'
             ? 'Upload a CSV, TSV, or gzipped (.gz) file with state, district, and value columns. The last column name becomes the color map title. Your data is never stored.'
             : 'Upload a CSV, TSV, or gzipped (.gz) file with state and value columns. The last column name becomes the color map title. Your data is never stored.'
           }
         </p>
-        <div className="flex flex-row gap-2 sm:gap-3 justify-center">
-          <Button
-            size="sm"
-            onClick={handleUploadClick}
-            className={`text-xs sm:text-sm ${darkMode ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' : ''}`}
-          >
-            Choose File
-          </Button>
+        <div className="flex flex-col items-center gap-2 sm:gap-2.5">
+          <div className="relative">
+            {showDemoPulse && (
+              <span className="absolute -inset-1 rounded-lg motion-safe:animate-ping opacity-60 bg-[hsl(28,62%,48%)] dark:bg-[hsl(28,55%,52%)]" style={{ animationDuration: '1.5s', animationIterationCount: 3 }} />
+            )}
+            <Button
+              size="sm"
+              onClick={() => { clearDemoPulse(); handleLoadDemo(); }}
+              disabled={demoLoading}
+              className="relative flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base px-5 py-2 sm:px-6 sm:py-2.5 font-semibold bg-[hsl(28,62%,48%)] hover:bg-[hsl(28,55%,42%)] text-white border-transparent dark:bg-[hsl(28,55%,52%)] dark:hover:bg-[hsl(28,50%,46%)] dark:text-[hsl(25,8%,6%)]"
+            >
+              <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {demoLoading ? 'Loading…' : 'Load Demo'}
+            </Button>
+          </div>
           <Button
             variant="outline"
             size="sm"
-            onClick={handleLoadDemo}
-            disabled={demoLoading}
-            className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${darkMode ? 'bg-[#252525] border-[#555] text-gray-200 hover:bg-[#333] hover:border-[#666] hover:text-white' : ''}`}
+            onClick={handleUploadClick}
+            className="text-xs sm:text-sm text-[hsl(28,10%,42%)] hover:border-[hsl(28,42%,52%)] hover:text-[hsl(30,42%,28%)] dark:bg-transparent dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,8%,65%)] dark:hover:border-[hsl(28,30%,48%)] dark:hover:text-[hsl(35,10%,82%)]"
           >
-            <Play className="h-3 w-3 sm:h-4 sm:w-4" />
-            {demoLoading ? 'Loading...' : 'Load Demo'}
+            or upload your own CSV
           </Button>
         </div>
         {demoInfo && !demoDataPath && (
-          <p className={`text-xs mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+          <p className="text-xs mt-2 text-[hsl(28,8%,54%)] dark:text-[hsl(28,8%,40%)]">
             {demoInfo.index} of {demoInfo.total} NFHS-5 indicators — click again for more
           </p>
         )}
-        <div className="flex justify-center mt-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className={`flex items-center gap-2 ${darkMode ? 'bg-[#252525] border-[#555] text-gray-200 hover:bg-[#333] hover:border-[#666] hover:text-white' : ''}`}
-            onClick={downloadCSVTemplate}
-          >
-            Download CSV Template
-          </Button>
-        </div>
-        
-        <div className={`mt-4 p-4 border-t ${darkMode ? 'border-[#444]' : 'border-gray-200'}`}>
+
+        <div className="mt-4 p-4 border-t border-[hsl(35,16%,87%)] dark:border-[hsl(25,8%,14%)]">
           <div className="text-center mb-3">
-            <h4 className={`text-sm font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-700'}`}>Or load from URL</h4>
-            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Paste a Google Sheets link (see{' '}
+            <h4 className="text-sm font-medium mb-1 text-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)]">Or load from URL</h4>
+            <p className="text-xs text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,50%)]">
+              Paste a Google Sheets link (sheet must be publicly viewable — see{' '}
               <a
                 href={googleSheetLink || (mode === 'districts'
                   ? "https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing"
                   : "https://docs.google.com/spreadsheets/d/1BtZOnh15b4ZG_I0pFLdMIK7nNqplikn5_ui59SFbxaI/edit?usp=sharing")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`underline ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-700'}`}
+                className="underline text-[hsl(28,45%,38%)] hover:text-[hsl(30,42%,28%)] dark:text-[hsl(28,55%,52%)] dark:hover:text-[hsl(28,48%,58%)]"
               >
                 template
               </a>
-              ) or a direct URL to CSV, TSV, or gzipped files (.csv, .tsv, .csv.gz, .tsv.gz)
+              ) or a direct URL to CSV, TSV, or gzipped files.{' '}
+              <button
+                onClick={downloadCSVTemplate}
+                className="underline text-[hsl(28,38%,42%)] hover:text-[hsl(28,45%,32%)] dark:text-[hsl(28,45%,48%)] dark:hover:text-[hsl(28,55%,58%)]"
+              >
+                Download template
+              </button>
             </p>
           </div>
           <div className="flex flex-col gap-3">
             <div className="relative">
               <input
                 type="text"
-                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  darkMode
-                    ? 'bg-[#222] border-[#444] text-white placeholder-gray-500'
-                    : 'border-gray-300 bg-white text-gray-900'
-                }`}
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent border-[hsl(35,18%,84%)] bg-[hsl(38,22%,99%)] text-[hsl(28,20%,14%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)]"
                 placeholder="https://docs.google.com/... or https://example.com/data.csv"
                 value={googleSheetUrl}
                 onChange={e => setGoogleSheetUrl(e.target.value)}
@@ -550,9 +549,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
               {googleSheetUrl && (
                 <button
                   onClick={() => setGoogleSheetUrl('')}
-                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 ${
-                    darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                  }`}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[hsl(28,8%,58%)] hover:text-[hsl(30,42%,28%)] dark:text-[hsl(28,8%,36%)] dark:hover:text-[hsl(30,8%,58%)]"
                   disabled={loadingSheet}
                 >
                   ✕
@@ -563,14 +560,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
               <Button
                 variant="outline"
                 size="sm"
-                className={`flex items-center gap-2 ${darkMode ? 'bg-[#252525] border-[#555] text-gray-200 hover:bg-[#333] hover:border-[#666] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed' : ''}`}
+                className="flex items-center gap-2 hover:border-[hsl(28,62%,48%)] hover:text-[hsl(30,42%,28%)] dark:bg-[hsl(25,8%,12%)] dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,8%,72%)] dark:hover:bg-[hsl(25,8%,16%)] dark:hover:border-[hsl(28,62%,48%)] disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleLoadGoogleSheet}
                 disabled={loadingSheet || !googleSheetUrl}
               >
                 {loadingSheet ? 'Loading...' : 'Load from URL'}
               </Button>
             </div>
-            {sheetError && <div className={`text-xs text-center ${darkMode ? 'text-red-400' : 'text-red-500'}`}>{sheetError}</div>}
+            {sheetError && <div className="text-xs text-center text-[hsl(0,55%,40%)] dark:text-[hsl(0,52%,50%)]">{sheetError}</div>}
           </div>
         </div>
 

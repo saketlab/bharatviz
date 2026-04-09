@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { EvolutionMap } from './EvolutionMap';
 import { IndiaEvolutionMap } from './IndiaEvolutionMap';
-
-interface HistoricalEvolutionProps {
-  darkMode?: boolean;
-}
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 const VIEWS = [
   { id: 'india',      label: 'India 1951–2024' },
@@ -31,30 +28,31 @@ const INDIA_1872_GEOJSON_YEAR: Record<number, number> = {
   1911: 1911, 1921: 1921, 1931: 1931, 1941: 1941,
 };
 
-export function HistoricalEvolution({ darkMode = false }: HistoricalEvolutionProps) {
+export function HistoricalEvolution({ darkMode: _darkMode }: { darkMode?: boolean } = {}) {
+  const { dark: darkMode } = useDarkMode();
   const [view, setView] = useState<View>('india');
 
   return (
     <div className="space-y-0">
-      <div className={`border rounded-t-lg px-4 pt-4 pb-3 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
+      <div className="border rounded-t-lg px-4 pt-4 pb-3 bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
           <div>
-            <h2 className={`text-lg font-bold leading-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className="text-lg font-bold leading-tight text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
               Administrative Evolution
             </h2>
-            <p className={`mt-1 text-xs leading-relaxed max-w-prose ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            <p className="mt-1 text-xs leading-relaxed max-w-prose text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,55%)]">
               {DESCRIPTIONS[view]}
             </p>
           </div>
-          <div className={`flex items-center gap-1 p-1 rounded-lg self-start shrink-0 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <div className="flex items-center gap-1 p-1 rounded-lg self-start shrink-0 bg-[hsl(35,20%,93%)] dark:bg-[hsl(25,8%,12%)]">
             {VIEWS.map(v => (
               <button
                 key={v.id}
                 onClick={() => setView(v.id)}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 ${
                   view === v.id
-                    ? darkMode ? 'bg-gray-700 text-amber-400' : 'bg-white text-amber-700 shadow-sm'
-                    : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-white text-amber-700 shadow-sm dark:bg-[hsl(25,8%,18%)] dark:text-[hsl(28,55%,58%)]'
+                    : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)] dark:text-[hsl(30,8%,50%)] dark:hover:text-[hsl(35,10%,75%)]'
                 }`}
               >
                 {v.label}
@@ -64,7 +62,7 @@ export function HistoricalEvolution({ darkMode = false }: HistoricalEvolutionPro
         </div>
       </div>
 
-      <div className={`border-x border-b rounded-b-lg overflow-hidden ${darkMode ? 'bg-[#0f0f0f] border-[#333]' : 'bg-white border-gray-200'}`}>
+      <div className="border-x border-b rounded-b-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,5%)] dark:border-[hsl(25,8%,14%)]">
         {view === 'india' && <IndiaEvolutionMap darkMode={darkMode} />}
         {view === 'india1872' && (
           <IndiaEvolutionMap
@@ -77,7 +75,7 @@ export function HistoricalEvolution({ darkMode = false }: HistoricalEvolutionPro
         {view === 'bombay' && <EvolutionMap darkMode={darkMode} />}
       </div>
 
-      <p className={`pt-2 text-[10px] ${darkMode ? 'text-gray-700' : 'text-gray-400'}`}>
+      <p className="pt-2 text-[10px] text-[hsl(28,8%,60%)] dark:text-[hsl(30,8%,40%)]">
         {SOURCES[view]}
       </p>
     </div>

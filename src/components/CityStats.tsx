@@ -33,14 +33,8 @@ interface DatasetStats {
 type DatasetSortField = 'displayName' | 'state' | 'source' | 'type' | 'label' | 'featureCount' | 'totalArea' | 'avgCompactness';
 type WardSortField = 'ward_name' | 'area_sq_km' | 'perimeter_km' | 'compactness';
 
-interface CityStatsProps {
-  darkMode?: boolean;
-}
-
-// Module-level cache so switching datasets doesn't re-parse the 9.2 MB CSV
 let allWardsCache: WardMetric[] | null = null;
 let datasetStatsCache: Map<string, DatasetStats> | null = null;
-// In-flight fetch guard — prevents DatasetView + WardMetricsView from double-fetching simultaneously
 let wardsFetchPromise: Promise<WardMetric[]> | null = null;
 
 function loadWardMetrics(): Promise<WardMetric[]> {
@@ -125,12 +119,13 @@ function usePagination(itemsPerPage = 50) {
   return { currentPage, setCurrentPage, reset, paginate };
 }
 
-function tableClasses(darkMode: boolean) {
-  const thBase = `px-3 py-2 sm:px-4 sm:py-3 text-xs font-medium uppercase tracking-wider cursor-pointer transition-colors ${darkMode ? 'text-gray-300' : 'text-gray-700'}`;
+function tableClasses() {
+  const thBase = 'px-3 py-2 sm:px-4 sm:py-3 text-xs font-medium uppercase tracking-wider transition-colors text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,75%)]';
+  const thBtnBase = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 rounded';
   const tdBase = 'px-3 py-2.5 sm:px-4 sm:py-3 text-sm';
-  const tdMuted = `${tdBase} ${darkMode ? 'text-gray-400' : 'text-gray-700'}`;
-  const tdPrimary = `${tdBase} font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`;
-  return { thBase, tdBase, tdMuted, tdPrimary };
+  const tdMuted = `${tdBase} text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,52%)]`;
+  const tdPrimary = `${tdBase} font-medium text-[hsl(28,20%,14%)] dark:text-[hsl(35,10%,82%)]`;
+  return { thBase, thBtnBase, tdBase, tdMuted, tdPrimary };
 }
 
 function downloadCSV(rows: object[], filename: string) {
@@ -145,19 +140,15 @@ function downloadCSV(rows: object[], filename: string) {
 }
 
 function PaginationBar({
-  currentPage, totalPages, setCurrentPage, darkMode,
-}: { currentPage: number; totalPages: number; setCurrentPage: (fn: (p: number) => number) => void; darkMode: boolean }) {
+  currentPage, totalPages, setCurrentPage,
+}: { currentPage: number; totalPages: number; setCurrentPage: (fn: (p: number) => number) => void }) {
   if (totalPages <= 1) return null;
   const btnBase = 'px-3 py-1 rounded border text-sm transition-colors';
-  const active = darkMode
-    ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700'
-    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50';
-  const disabled = darkMode
-    ? 'border-gray-700 bg-gray-800 text-gray-600 cursor-not-allowed'
-    : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed';
+  const active = 'border-[hsl(35,18%,78%)] bg-white text-[hsl(28,20%,22%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,16%)]';
+  const disabled = 'border-[hsl(35,18%,88%)] bg-[hsl(35,20%,95%)] text-[hsl(28,8%,58%)] cursor-not-allowed dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,11%)] dark:text-[hsl(30,8%,38%)]';
   return (
-    <div className={`px-3 py-2.5 sm:px-4 sm:py-3 border-t flex items-center justify-between gap-2 ${darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}>
-      <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{currentPage}/{totalPages}</span>
+    <div className="px-3 py-2.5 sm:px-4 sm:py-3 border-t flex items-center justify-between gap-2 border-[hsl(35,18%,84%)] bg-[hsl(35,20%,97%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)]">
+      <span className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">{currentPage}/{totalPages}</span>
       <div className="flex gap-2">
         <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className={`${btnBase} ${currentPage === 1 ? disabled : active}`}>Prev</button>
         <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className={`${btnBase} ${currentPage === totalPages ? disabled : active}`}>Next</button>
@@ -166,7 +157,7 @@ function PaginationBar({
   );
 }
 
-function DatasetView({ darkMode, onDrillDown }: { darkMode: boolean; onDrillDown: (id: string) => void }) {
+function DatasetView({ onDrillDown }: { onDrillDown: (id: string) => void }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [stats, setStats] = useState<Map<string, DatasetStats> | null>(null);
   const { sortField, sortDirection, handleSort } = useSort<DatasetSortField>('displayName', 'asc');
@@ -204,13 +195,13 @@ function DatasetView({ darkMode, onDrillDown }: { darkMode: boolean; onDrillDown
 
   const { totalPages, page } = paginate(filtered);
 
-  const { thBase, tdBase, tdMuted, tdPrimary } = tableClasses(darkMode);
+  const { thBase, thBtnBase, tdBase, tdMuted, tdPrimary } = tableClasses();
 
   return (
     <>
       <div className="mb-4">
         <div className="relative w-full sm:max-w-lg">
-          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(28,8%,56%)] dark:text-[hsl(30,8%,45%)]" />
           <Input
             type="text"
             placeholder="Search by city, state, source..."
@@ -222,35 +213,35 @@ function DatasetView({ darkMode, onDrillDown }: { darkMode: boolean; onDrillDown
       </div>
 
       <div className="flex flex-wrap gap-3 items-center justify-between mb-4">
-        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <span className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
           {filtered.length} datasets{searchQuery && ` of ${CITY_DATASETS.length}`}
         </span>
         <button
           onClick={() => downloadCSV(filtered.map(({ id, displayName, state, source, type, label, featureCount, totalArea, avgCompactness }) => ({ id, displayName, state, source, type, label, featureCount, totalArea, avgCompactness })), 'bharatviz-city-datasets.csv')}
-          className={`flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-sm transition-colors ${darkMode ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}
+          className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-sm transition-colors border-[hsl(35,18%,78%)] bg-white text-[hsl(28,20%,22%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,16%)]"
         >
           <Download className="w-4 h-4" />Export CSV
         </button>
       </div>
 
-      <div className={`border rounded-lg overflow-hidden ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
+      <div className="border rounded-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[48rem]">
-            <thead className={darkMode ? 'bg-gray-800' : 'bg-gray-50'}>
+            <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
               <tr>
-                <th className={`${thBase} text-left`} onClick={() => handleSort('displayName')}><div className="flex items-center">City<SortIcon active={sortField === 'displayName'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-left`} onClick={() => handleSort('state')}><div className="flex items-center">State<SortIcon active={sortField === 'state'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-left hidden sm:table-cell`} onClick={() => handleSort('source')}><div className="flex items-center">Source<SortIcon active={sortField === 'source'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-left hidden sm:table-cell`} onClick={() => handleSort('label')}><div className="flex items-center">Label<SortIcon active={sortField === 'label'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-right`} onClick={() => handleSort('featureCount')}><div className="flex items-center justify-end">Wards<SortIcon active={sortField === 'featureCount'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-right`} onClick={() => handleSort('totalArea')}><div className="flex items-center justify-end">Area (km²)<SortIcon active={sortField === 'totalArea'} dir={sortDirection} /></div></th>
-                <th className={`${thBase} text-right hidden sm:table-cell`} onClick={() => handleSort('avgCompactness')}><div className="flex items-center justify-end">Compact.<SortIcon active={sortField === 'avgCompactness'} dir={sortDirection} /></div></th>
+                <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('displayName')} aria-label={`Sort by city${sortField === 'displayName' ? `, currently ${sortDirection}ending` : ''}`}>City<SortIcon active={sortField === 'displayName'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('state')} aria-label={`Sort by state${sortField === 'state' ? `, currently ${sortDirection}ending` : ''}`}>State<SortIcon active={sortField === 'state'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-left hidden sm:table-cell`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('source')} aria-label={`Sort by source${sortField === 'source' ? `, currently ${sortDirection}ending` : ''}`}>Source<SortIcon active={sortField === 'source'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-left hidden sm:table-cell`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('label')} aria-label={`Sort by label${sortField === 'label' ? `, currently ${sortDirection}ending` : ''}`}>Label<SortIcon active={sortField === 'label'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('featureCount')} aria-label={`Sort by wards${sortField === 'featureCount' ? `, currently ${sortDirection}ending` : ''}`}>Wards<SortIcon active={sortField === 'featureCount'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('totalArea')} aria-label={`Sort by area${sortField === 'totalArea' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²)<SortIcon active={sortField === 'totalArea'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-right hidden sm:table-cell`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('avgCompactness')} aria-label={`Sort by compactness${sortField === 'avgCompactness' ? `, currently ${sortDirection}ending` : ''}`}>Compact.<SortIcon active={sortField === 'avgCompactness'} dir={sortDirection} /></button></th>
                 <th className={`${thBase} text-right`}></th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-200'}`}>
+            <tbody className="divide-y divide-[hsl(35,18%,88%)] dark:divide-[hsl(25,8%,14%)]">
               {page.map(row => (
-                <tr key={row.id} className={`transition-colors ${darkMode ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'}`}>
+                <tr key={row.id} className="transition-colors hover:bg-[hsl(35,20%,97%)] dark:hover:bg-[hsl(25,8%,12%)]">
                   <td className={tdPrimary}>{row.displayName}</td>
                   <td className={tdMuted}>{row.state}</td>
                   <td className={`${tdMuted} hidden sm:table-cell`}>{row.source}</td>
@@ -261,7 +252,7 @@ function DatasetView({ darkMode, onDrillDown }: { darkMode: boolean; onDrillDown
                   <td className={`${tdBase} text-right`}>
                     <button
                       onClick={() => onDrillDown(row.id)}
-                      className={`text-xs px-2 py-0.5 rounded border transition-colors ${darkMode ? 'border-blue-700 text-blue-400 hover:bg-blue-900/30' : 'border-blue-300 text-blue-600 hover:bg-blue-50'}`}
+                      className="text-xs px-2 py-0.5 rounded border transition-colors border-[hsl(28,45%,70%)] text-[hsl(28,55%,40%)] hover:bg-[hsl(28,40%,95%)] dark:border-[hsl(28,45%,35%)] dark:text-[hsl(28,55%,58%)] dark:hover:bg-[hsl(28,45%,18%)]"
                     >
                       Ward metrics
                     </button>
@@ -271,13 +262,13 @@ function DatasetView({ darkMode, onDrillDown }: { darkMode: boolean; onDrillDown
             </tbody>
           </table>
         </div>
-        <PaginationBar currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} darkMode={darkMode} />
+        <PaginationBar currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
       </div>
     </>
   );
 }
 
-function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boolean; initialDatasetId: string; onBack: () => void }) {
+function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: string; onBack: () => void }) {
   const [selectedId, setSelectedId] = useState(initialDatasetId);
   const [wards, setWards] = useState<WardMetric[]>([]);
   const [loading, setLoading] = useState(false);
@@ -313,20 +304,20 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
 
   const dataset = useMemo(() => CITY_DATASETS.find(d => d.id === selectedId), [selectedId]);
 
-  const { thBase, tdBase, tdMuted, tdPrimary } = tableClasses(darkMode);
+  const { thBase, thBtnBase, tdBase, tdMuted, tdPrimary } = tableClasses();
 
   return (
     <>
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={onBack}
-          className={`text-sm px-3 py-1.5 rounded border transition-colors ${darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+          className="text-sm px-3 py-1.5 rounded border transition-colors border-[hsl(35,18%,78%)] text-[hsl(28,8%,40%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,12%)]"
         >
           ← Back
         </button>
-        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+        <h3 className="font-semibold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
           Ward Metrics — {dataset?.displayName ?? selectedId}
-          {dataset && <span className={`ml-2 text-sm font-normal ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{dataset.state} · {dataset.label}</span>}
+          {dataset && <span className="ml-2 text-sm font-normal text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,55%)]">{dataset.state} · {dataset.label}</span>}
         </h3>
       </div>
 
@@ -347,14 +338,14 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
       </div>
 
       {loading && (
-        <div className={`p-8 text-center border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333] text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-4" />
+        <div className="p-8 text-center border rounded-lg bg-white border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,55%)]">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[hsl(28,62%,48%)] mx-auto mb-4" />
           Loading ward metrics...
         </div>
       )}
 
       {error && (
-        <div className={`p-4 border rounded-lg ${darkMode ? 'bg-red-900/20 border-red-800 text-red-400' : 'bg-red-50 border-red-200 text-red-700'}`}>
+        <div className="p-4 border rounded-lg bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
           <p className="font-semibold mb-1">Error</p>
           <p className="text-sm">{error}</p>
         </div>
@@ -364,7 +355,7 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
         <>
           <div className="flex flex-wrap gap-3 items-center justify-between mb-3">
             <div className="relative w-full sm:max-w-xs">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(28,8%,56%)] dark:text-[hsl(30,8%,45%)]" />
               <Input
                 type="text"
                 placeholder="Search ward..."
@@ -374,32 +365,32 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
               />
             </div>
             <div className="flex items-center gap-3">
-              <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <span className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
                 {filtered.length} wards{searchQuery && ` of ${wards.length}`}
               </span>
               <button
                 onClick={() => downloadCSV(filtered, `${selectedId}_ward_metrics.csv`)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors ${darkMode ? 'border-gray-600 bg-gray-800 text-gray-300 hover:bg-gray-700' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors border-[hsl(35,18%,78%)] bg-white text-[hsl(28,20%,22%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,16%)]"
               >
                 <Download className="w-4 h-4" />Export
               </button>
             </div>
           </div>
 
-          <div className={`border rounded-lg overflow-hidden ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
+          <div className="border rounded-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[32rem]">
-                <thead className={darkMode ? 'bg-gray-800' : 'bg-gray-50'}>
+                <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
                   <tr>
-                    <th className={`${thBase} text-left`} onClick={() => handleSort('ward_name')}><div className="flex items-center">Ward<SortIcon active={sortField === 'ward_name'} dir={sortDirection} /></div></th>
-                    <th className={`${thBase} text-right`} onClick={() => handleSort('area_sq_km')}><div className="flex items-center justify-end">Area (km²)<SortIcon active={sortField === 'area_sq_km'} dir={sortDirection} /></div></th>
-                    <th className={`${thBase} text-right hidden sm:table-cell`} onClick={() => handleSort('perimeter_km')}><div className="flex items-center justify-end">Perimeter (km)<SortIcon active={sortField === 'perimeter_km'} dir={sortDirection} /></div></th>
-                    <th className={`${thBase} text-right`} onClick={() => handleSort('compactness')}><div className="flex items-center justify-end">Compact.<SortIcon active={sortField === 'compactness'} dir={sortDirection} /></div></th>
+                    <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('ward_name')} aria-label={`Sort by ward${sortField === 'ward_name' ? `, currently ${sortDirection}ending` : ''}`}>Ward<SortIcon active={sortField === 'ward_name'} dir={sortDirection} /></button></th>
+                    <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²)<SortIcon active={sortField === 'area_sq_km'} dir={sortDirection} /></button></th>
+                    <th className={`${thBase} text-right hidden sm:table-cell`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('perimeter_km')} aria-label={`Sort by perimeter${sortField === 'perimeter_km' ? `, currently ${sortDirection}ending` : ''}`}>Perimeter (km)<SortIcon active={sortField === 'perimeter_km'} dir={sortDirection} /></button></th>
+                    <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('compactness')} aria-label={`Sort by compactness${sortField === 'compactness' ? `, currently ${sortDirection}ending` : ''}`}>Compact.<SortIcon active={sortField === 'compactness'} dir={sortDirection} /></button></th>
                   </tr>
                 </thead>
-                <tbody className={`divide-y ${darkMode ? 'divide-gray-800' : 'divide-gray-200'}`}>
+                <tbody className="divide-y divide-[hsl(35,18%,88%)] dark:divide-[hsl(25,8%,14%)]">
                   {page.map((w, i) => (
-                    <tr key={`${w.ward_name}-${i}`} className={`transition-colors ${darkMode ? 'hover:bg-gray-800/50' : 'hover:bg-gray-50'}`}>
+                    <tr key={`${w.ward_name}-${i}`} className="transition-colors hover:bg-[hsl(35,20%,97%)] dark:hover:bg-[hsl(25,8%,12%)]">
                       <td className={tdPrimary}>{w.ward_name || `Ward ${w.ward_number}` || 'N/A'}</td>
                       <td className={`${tdMuted} text-right font-mono`}>{fmt(w.area_sq_km)}</td>
                       <td className={`${tdMuted} text-right font-mono hidden sm:table-cell`}>{fmt(w.perimeter_km)}</td>
@@ -409,13 +400,13 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
                 </tbody>
               </table>
             </div>
-            <PaginationBar currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} darkMode={darkMode} />
+            <PaginationBar currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
           </div>
         </>
       )}
 
       {!loading && !error && wards.length === 0 && (
-        <div className={`p-6 text-center border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333] text-gray-400' : 'bg-white border-gray-200 text-gray-500'}`}>
+        <div className="p-6 text-center border rounded-lg bg-white border-[hsl(35,18%,84%)] text-[hsl(28,8%,44%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,55%)]">
           No ward metrics found for this dataset.
         </div>
       )}
@@ -423,16 +414,16 @@ function WardMetricsView({ darkMode, initialDatasetId, onBack }: { darkMode: boo
   );
 }
 
-export const CityStats: React.FC<CityStatsProps> = ({ darkMode = false }) => {
+export const CityStats: React.FC<{ darkMode?: boolean }> = () => {
   const [drillDownId, setDrillDownId] = useState<string | null>(null);
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className={`p-4 sm:p-6 border rounded-lg ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-gray-200'}`}>
-        <h2 className={`text-xl sm:text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+      <div className="p-4 sm:p-6 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
           City Statistics
         </h2>
-        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <p className="text-sm text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
           {drillDownId
             ? 'Per-ward geometric metrics computed from GeoJSON boundaries. Click "Back" to return to the dataset list.'
             : `Browse all ${CITY_DATASETS.length} city ward boundary datasets. Click "Ward metrics" on any row to see area, perimeter, and compactness per ward.`}
@@ -441,12 +432,11 @@ export const CityStats: React.FC<CityStatsProps> = ({ darkMode = false }) => {
 
       {drillDownId ? (
         <WardMetricsView
-          darkMode={darkMode}
           initialDatasetId={drillDownId}
           onBack={() => setDrillDownId(null)}
         />
       ) : (
-        <DatasetView darkMode={darkMode} onDrillDown={setDrillDownId} />
+        <DatasetView onDrillDown={setDrillDownId} />
       )}
     </div>
   );

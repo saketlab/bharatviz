@@ -14,8 +14,6 @@ import { mean as ssMean, median as ssMedian, standardDeviation, quantile, min as
 import type { DynamicChatContext, Region } from './types';
 import { classifyRegion } from './contextBuilder';
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 interface EntityData {
   name: string;
   value: number;
@@ -27,8 +25,6 @@ interface ToolResult {
   data: unknown;
   error?: string;
 }
-
-// ─── Tool Definitions (OpenAI function-calling format) ──────────────────────
 
 export const toolDefinitions = [
   {
@@ -140,8 +136,6 @@ export const toolDefinitions = [
   }
 ];
 
-// ─── Data Extraction Helpers ────────────────────────────────────────────────
-
 function extractEntities(context: DynamicChatContext): EntityData[] {
   const { userData, geoMetadata } = context;
   if (!userData.allData) return [];
@@ -180,8 +174,6 @@ function filterByState(entities: EntityData[], state: string): EntityData[] {
   });
 }
 
-// ─── Basic Statistics ───────────────────────────────────────────────────────
-
 function computeStats(values: number[]) {
   if (values.length === 0) return null;
 
@@ -204,8 +196,6 @@ function computeStats(values: number[]) {
 function round(v: number, dp = 4): number {
   return Math.round(v * 10 ** dp) / 10 ** dp;
 }
-
-// ─── Spatial Helpers ────────────────────────────────────────────────────────
 
 interface Centroid {
   lat: number;
@@ -321,8 +311,6 @@ async function loadCentroidsForEntities(
 
   return { centroids, matchedEntities };
 }
-
-// ─── Spatial Statistics ─────────────────────────────────────────────────────
 
 function globalMoransI(values: number[], W: number[][]): {
   I: number;
@@ -507,8 +495,6 @@ function getisOrdGiStar(values: number[], W: number[][]): Array<{
   return results;
 }
 
-// ─── Math Helpers ───────────────────────────────────────────────────────────
-
 function computeS1(W: number[][], n: number): number {
   let s1 = 0;
   for (let i = 0; i < n; i++) {
@@ -600,8 +586,6 @@ async function getSpatialData(
   return { centroids, matchedEntities, W: spatialCache.weights.get(k)! };
 }
 
-// ─── Tool Executor ──────────────────────────────────────────────────────────
-
 export async function executeTool(
   toolName: string,
   args: Record<string, unknown>,
@@ -647,8 +631,6 @@ export async function executeTool(
 export function clearSpatialCache(): void {
   spatialCache = null;
 }
-
-// ─── Tool Implementations ───────────────────────────────────────────────────
 
 function summarizeData(
   entities: EntityData[],

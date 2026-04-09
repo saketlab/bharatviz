@@ -39,7 +39,9 @@ export default defineConfig({
             '@radix-ui/react-tabs',
           ],
           // Utility libraries
-          'utils': ['clsx', 'class-variance-authority', 'tailwind-merge']
+          'utils': ['clsx', 'class-variance-authority', 'tailwind-merge'],
+          // WebLLM — only loaded when user opens the AI assistant
+          'webllm': ['@mlc-ai/web-llm']
         }
       }
     }

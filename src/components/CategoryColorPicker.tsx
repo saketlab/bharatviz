@@ -31,8 +31,8 @@ export const CategoryColorPicker: React.FC<CategoryColorPickerProps> = ({
                 type="color"
                 value={colorMapping[category] || '#cccccc'}
                 onChange={(e) => onColorChange(category, e.target.value)}
-                className="w-10 h-10 rounded cursor-pointer border border-gray-300"
-                title={`Color for ${category}`}
+                className="w-10 h-10 rounded cursor-pointer border border-[hsl(35,18%,78%)] dark:border-[hsl(25,8%,20%)]"
+                aria-label={`Color for ${category}`}
               />
               <Label className="text-sm flex-1 truncate" title={category}>
                 {category}
