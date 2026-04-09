@@ -1,8 +1,3 @@
-/**
- * Model Selector Component
- * Allows users to choose which LLM model to use
- */
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -100,7 +95,6 @@ export function ModelSelector({ onSelectModel, onCancel }: ModelSelectorProps) {
         </Alert>
       )}
 
-      {/* Mobile: compact dropdown; Desktop: full cards */}
       {isMobileViewport ? (
         <MobileModelDropdown
           onSelect={onSelectModel}

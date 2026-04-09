@@ -97,13 +97,11 @@ function initPanel(
   const is1901 = year === 1901;
   const W = wrapEl.clientWidth || 200;
   const H = Math.round(W * (showLabel ? 1.12 : 0.75));
-  const bgColor     = darkMode ? '#0f0f0f' : '#f0f4f8';
-  const strokeColor = darkMode ? '#1f2937' : '#ffffff';
+  const strokeColor = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
 
   const svg = d3.select(svgEl);
   svg.selectAll('*').remove();
   svg.attr('width', W).attr('height', H);
-  svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
   const fitTarget = referenceFC ?? fc;
   const pad = showLabel ? 20 : 10;
@@ -118,7 +116,9 @@ function initPanel(
     .attr('d', (f: any) => path(f) || '')
     .attr('stroke', strokeColor)
     .attr('stroke-width', 0.4)
-    .attr('cursor', is1901 ? 'default' : 'pointer');
+    .attr('cursor', is1901 ? 'default' : 'pointer')
+    .attr('tabindex', is1901 ? null : 0)
+    .attr('role', is1901 ? null : 'button');
 
   const labelG = svg.append('g').attr('pointer-events', 'none');
 
@@ -142,8 +142,8 @@ function initPanel(
 
   function applyStyle(s: PanelState) {
     const { hovered, clickedChainId, chainSets, colorLookup: cl, darkMode: dm } = s;
-    const noDataColor  = dm ? '#2d2d2d' : '#d1d5db';
-    const unknownColor = dm ? '#3d3d2d' : '#e5e0d0';
+    const noDataColor  = dm ? 'hsl(25, 8%, 14%)' : 'hsl(35, 18%, 88%)';
+    const unknownColor = dm ? 'hsl(25, 8%, 18%)' : 'hsl(35, 14%, 90%)';
     const clickedNames = clickedChainId != null ? (chainSets.get(clickedChainId) ?? new Set()) : null;
 
     paths
@@ -246,17 +246,36 @@ function Panel({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fc, year, colorLookup, chainSets, darkMode, showLabel]);
 
+  const selectedNames = useMemo(() => {
+    if (clickedChainId == null) return null;
+    const keys = chainSets.get(clickedChainId);
+    if (!keys) return null;
+    const names: string[] = [];
+    for (const [key, node] of colorLookup) {
+      if (keys.has(key)) names.push(node.name);
+    }
+    return names.length ? names : null;
+  }, [clickedChainId, chainSets, colorLookup]);
+
   return (
     <div
       ref={wrapRef}
-      className={`rounded border overflow-hidden ${showLabel ? '' : 'relative w-full'} ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}
+      className={`rounded border overflow-hidden ${showLabel ? '' : 'relative w-full'} ${darkMode ? 'bg-[hsl(25,8%,6%)] border-[hsl(25,8%,14%)]' : 'bg-[hsl(38,30%,97%)] border-[hsl(35,18%,84%)]'}`}
     >
-      <svg ref={svgRef} className="block w-full" />
+      {showLabel && selectedNames && (
+        <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
+          darkMode ? 'bg-red-950 text-red-300' : 'bg-red-50 text-red-700'
+        }`}>
+          {selectedNames.join(' · ')}
+        </div>
+      )}
+      <svg ref={svgRef} className="block w-full" role="img" aria-label={`Bombay presidency district map ${year}`} />
     </div>
   );
 }
 
-export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
+export function EvolutionMap({ darkMode: darkModeProp }: EvolutionMapProps) {
+  const darkMode = darkModeProp ?? false;
   const [mode, setMode]               = useState<'single' | 'grid'>('grid');
   const [yearIdx, setYearIdx]         = useState(0);
   const [allFCs, setAllFCs]           = useState<Map<number, any>>(new Map());
@@ -272,20 +291,26 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
   const year = YEARS[yearIdx];
 
   useEffect(() => {
+    const ac = new AbortController();
     setLoading(true);
     const toLoad = mode === 'grid' ? YEARS : [1872, year];
-    // Skip years already cached
     const needed = toLoad.filter(y => !geojsonCache.has(y));
     const cached  = toLoad.filter(y => geojsonCache.has(y)).map(y => [y, geojsonCache.get(y)] as [number, any]);
     Promise.all(needed.map(y => fetchGeoJSON(y).then(fc => [y, fc] as [number, any])))
       .then(fetched => {
+        if (ac.signal.aborted) return;
         setAllFCs(new Map([...cached, ...fetched]));
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => { if (!ac.signal.aborted) setLoading(false); });
+    return () => ac.abort();
   }, [mode, year]);
 
-  useEffect(() => { fetchEvoData().then(setEvoData).catch(() => {}); }, []);
+  useEffect(() => {
+    const ac = new AbortController();
+    fetchEvoData().then(d => { if (!ac.signal.aborted) setEvoData(d); }).catch(() => {});
+    return () => ac.abort();
+  }, []);
 
   const colorLookups = useMemo(() => {
     if (!evoData) return new Map<number, Map<string, EvoNode>>();
@@ -365,15 +390,15 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
   };
 
   const modeToggle = (
-    <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+    <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-[hsl(25,8%,13%)]' : 'bg-[hsl(35,20%,93%)]'}`}>
       {(['single', 'grid'] as const).map(m => (
         <button
           key={m}
           onClick={() => resetMode(m)}
           className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
             mode === m
-              ? darkMode ? 'bg-gray-700 text-amber-400' : 'bg-white text-amber-700 shadow-sm'
-              : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+              ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-sm'
+              : darkMode ? 'text-[hsl(30,8%,52%)] hover:text-[hsl(35,10%,78%)]' : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)]'
           }`}
         >
           {m === 'single' ? 'Single year' : 'All years'}
@@ -387,23 +412,25 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
       <span className={`text-xs font-mono w-10 text-right ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>
         {year}
       </span>
-      <div className="flex-1 flex items-center gap-1">
+      <div className="flex-1 overflow-x-auto">
+        <div className="flex items-center gap-1 min-w-0">
         {YEARS.map((y, i) => (
-          <button key={y} onClick={() => setYearIdx(i)} className="flex-1 flex flex-col items-center gap-0.5">
+          <button key={y} onClick={() => setYearIdx(i)} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
             <div className={`h-3 w-full rounded-sm transition-all ${
-              i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
+              i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-[hsl(25,8%,18%)] hover:bg-[hsl(25,8%,22%)]' : 'bg-[hsl(35,14%,88%)] hover:bg-[hsl(35,14%,82%)]'
             }`} />
             <span className={`text-[9px] font-mono ${
-              i === yearIdx ? darkMode ? 'text-amber-400' : 'text-amber-700' : darkMode ? 'text-gray-600' : 'text-gray-400'
+              i === yearIdx ? darkMode ? 'text-amber-400' : 'text-amber-700' : darkMode ? 'text-[hsl(30,8%,40%)]' : 'text-[hsl(28,8%,58%)]'
             }`}>{y}</span>
           </button>
         ))}
+        </div>
       </div>
     </div>
   );
 
   const legend = (
-    <div className={`px-4 pb-3 flex flex-wrap gap-4 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+    <div className={`px-4 pb-3 flex flex-wrap gap-4 text-xs ${darkMode ? 'text-[hsl(30,8%,48%)]' : 'text-[hsl(28,8%,44%)]'}`}>
       <span className="flex items-center gap-1.5">
         <span className="inline-block w-3 h-3 rounded-sm" style={{ background: '#2a8fb0' }} />
         British districts
@@ -423,7 +450,7 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
       {clickedChainId != null && (
         <button
           onClick={() => setClickedChainId(null)}
-          className={`ml-auto text-xs underline ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
+          className={`ml-auto text-xs underline ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}
         >
           Clear selection
         </button>
@@ -434,20 +461,20 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
   const tooltipEl = tooltip && (
     <div
       className={`fixed z-50 pointer-events-none rounded-lg shadow-lg border text-xs p-3 ${
-        darkMode ? 'bg-gray-900 border-gray-700 text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+        darkMode ? 'bg-[hsl(25,8%,9%)] border-[hsl(25,8%,14%)] text-[hsl(35,12%,90%)]' : 'bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)]'
       }`}
-      style={{ left: tooltip.x + 14, top: tooltip.y - 10, maxWidth: 220 }}
+      style={{ left: Math.min(tooltip.x + 14, window.innerWidth - 228), top: tooltip.y - 10, maxWidth: 220 }}
     >
       <div className="font-bold text-sm mb-0.5" style={{ color: tooltip.color }}>{tooltip.name}</div>
-      <div className={`mb-1 text-[10px] ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{tooltip.type}</div>
+      <div className={`mb-1 text-[10px] ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>{tooltip.type}</div>
       {tooltip.chainName && tooltip.chainName !== tooltip.name && (
-        <div className={`mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <div className={`mb-1 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
           Chain: <span className="font-medium">{tooltip.chainName}</span>
         </div>
       )}
-      {tooltip.prevName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Was: </span>{tooltip.prevName}</div>}
-      {tooltip.nextName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Became: </span>{tooltip.nextName}</div>}
-      <div className={`mt-1.5 text-[10px] italic ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+      {tooltip.prevName && <div><span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>Was: </span>{tooltip.prevName}</div>}
+      {tooltip.nextName && <div><span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>Became: </span>{tooltip.nextName}</div>}
+      <div className={`mt-1.5 text-[10px] italic ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>
         Click to highlight related districts across all years
       </div>
     </div>
@@ -457,7 +484,7 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
 
   return (
     <div className="relative">
-      <div className={`flex items-center justify-between px-4 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+      <div className={`flex items-center justify-between px-4 py-2 border-b ${darkMode ? 'border-[hsl(25,8%,14%)]' : 'border-[hsl(35,16%,88%)]'}`}>
         {modeToggle}
         {loading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500" />}
       </div>
@@ -465,7 +492,7 @@ export function EvolutionMap({ darkMode = false }: EvolutionMapProps) {
       {scrubber}
 
       {!clickedChainId && (
-        <div className={`px-4 py-2 text-xs text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        <div className={`px-4 py-2 text-xs text-center ${darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}`}>
           Select a district to highlight related ones across all years
         </div>
       )}

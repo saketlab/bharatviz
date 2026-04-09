@@ -21,7 +21,6 @@ const App = () => (
         <Route path="/city-stats" element={<Index />} />
         <Route path="/evolution" element={<Index />} />
         <Route path="/embed-demo" element={<EmbedDemo />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import * as d3 from 'd3';
 import { scaleSequential } from 'd3-scale';
 import { interpolateSpectral, interpolateViridis, interpolateWarm, interpolateCool, interpolatePlasma, interpolateInferno, interpolateMagma, interpolateTurbo, interpolateRdYlBu, interpolateRdYlGn, interpolateBrBG, interpolatePRGn, interpolatePiYG, interpolateRdBu, interpolateRdGy, interpolatePuOr, interpolateBlues, interpolateGreens, interpolateReds, interpolateOranges, interpolatePurples, interpolatePuRd, interpolateSpectral as interpolateSpectralReversed } from 'd3-scale-chromatic';
@@ -156,8 +157,11 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   categoryColors = {},
   naInfo,
   mapTitle,
-  darkMode = false
+  darkMode: darkModeProp
 }, ref) => {
+  const { dark: darkModeHook } = useDarkMode();
+  const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
+  const mapBg = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
   const [geojsonData, setGeojsonData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [statesData, setStatesData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
@@ -190,6 +194,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
 
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dragRafRef = useRef<number | null>(null);
   const rotationCalculator = useRef(createRotationCalculator());
   const isMobile = useIsMobile();
 
@@ -665,10 +670,13 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
 
   const handleLegendMouseMove = useCallback((e: MouseEvent) => {
     if (!dragging || !svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    setLegendPosition({
-      x: e.clientX - svgRect.left - dragOffset.x,
-      y: e.clientY - svgRect.top - dragOffset.y
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      setLegendPosition({ x: cx - svgRect.left - dragOffset.x, y: cy - svgRect.top - dragOffset.y });
     });
   }, [dragging, dragOffset]);
 
@@ -703,12 +711,15 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
 
   const handleTitleMouseMove = useCallback((e: MouseEvent) => {
     if (!draggingTitle || !svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const currentX = isMobile ? 175 : 310;
-    const currentY = isMobile ? 35 : 50;
-    setTitlePosition({
-      x: e.clientX - svgRect.left - currentX - titleDragOffset.x,
-      y: e.clientY - svgRect.top - currentY - titleDragOffset.y
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const currentX = isMobile ? 175 : 310;
+      const currentY = isMobile ? 35 : 50;
+      setTitlePosition({ x: cx - svgRect.left - currentX - titleDragOffset.x, y: cy - svgRect.top - currentY - titleDragOffset.y });
     });
   }, [draggingTitle, titleDragOffset, isMobile]);
 
@@ -733,13 +744,15 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
 
   const handleTitleTouchMove = useCallback((e: TouchEvent) => {
     if (!draggingTitle || !svgRef.current || e.touches.length === 0) return;
-    const touch = e.touches[0];
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const currentX = isMobile ? 175 : 310;
-    const currentY = isMobile ? 35 : 50;
-    setTitlePosition({
-      x: touch.clientX - svgRect.left - currentX - titleDragOffset.x,
-      y: touch.clientY - svgRect.top - currentY - titleDragOffset.y
+    if (dragRafRef.current) return;
+    const tx = e.touches[0].clientX, ty = e.touches[0].clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const currentX = isMobile ? 175 : 310;
+      const currentY = isMobile ? 35 : 50;
+      setTitlePosition({ x: tx - svgRect.left - currentX - titleDragOffset.x, y: ty - svgRect.top - currentY - titleDragOffset.y });
     });
   }, [draggingTitle, titleDragOffset, isMobile]);
 
@@ -779,32 +792,24 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
   const handleLabelMouseMove = useCallback(
   (e: MouseEvent) => {
     if (!draggingLabel || !svgRef.current) return;
-
-    const svgRect = svgRef.current.getBoundingClientRect();
-
-    const newPosition = {
-      x: e.clientX - svgRect.left - draggingLabel.offset.x,
-      y: e.clientY - svgRect.top - draggingLabel.offset.y
-    };
-
-    // ✅ Find the district feature for this label
-    const [stateName, districtName] = draggingLabel.districtKey.split("|");
-
-    const feature = geojsonData?.features.find((f) => {
-      const dn = f.properties.district_name || f.properties.nss_region || "";
-      const sn = f.properties.state_name || "";
-      return dn === districtName && sn === stateName;
+    if (dragRafRef.current) return;
+    const cx = e.clientX, cy = e.clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const newPosition = { x: cx - svgRect.left - draggingLabel.offset.x, y: cy - svgRect.top - draggingLabel.offset.y };
+      const [stateName, districtName] = draggingLabel.districtKey.split("|");
+      const feature = geojsonData?.features.find((f) => {
+        const dn = f.properties.district_name || f.properties.nss_region || "";
+        const sn = f.properties.state_name || "";
+        return dn === districtName && sn === stateName;
+      });
+      if (feature && !isPointInsideDistrict(newPosition, feature)) return;
+      const newPositions = new Map(labelPositions);
+      newPositions.set(draggingLabel.districtKey, newPosition);
+      setLabelPositions(newPositions);
     });
-
-    // ✅ Only update if label is inside district
-    if (feature) {
-      const inside = isPointInsideDistrict(newPosition, feature);
-      if (!inside) return; // ❌ stop if outside
-    }
-
-    const newPositions = new Map(labelPositions);
-    newPositions.set(draggingLabel.districtKey, newPosition);
-    setLabelPositions(newPositions);
   },
   [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
 );
@@ -830,33 +835,24 @@ const handleLabelMouseUp = () => {
 const handleLabelTouchMove = useCallback(
   (e: TouchEvent) => {
     if (!draggingLabel || !svgRef.current || e.touches.length === 0) return;
-
-    const touch = e.touches[0];
-    const svgRect = svgRef.current.getBoundingClientRect();
-
-    const newPosition = {
-      x: touch.clientX - svgRect.left - draggingLabel.offset.x,
-      y: touch.clientY - svgRect.top - draggingLabel.offset.y
-    };
-
-    // ✅ Find the district feature for this label
-    const [stateName, districtName] = draggingLabel.districtKey.split("|");
-
-    const feature = geojsonData?.features.find((f) => {
-      const dn = f.properties.district_name || f.properties.nss_region || "";
-      const sn = f.properties.state_name || "";
-      return dn === districtName && sn === stateName;
+    if (dragRafRef.current) return;
+    const tx = e.touches[0].clientX, ty = e.touches[0].clientY;
+    dragRafRef.current = requestAnimationFrame(() => {
+      dragRafRef.current = null;
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const newPosition = { x: tx - svgRect.left - draggingLabel.offset.x, y: ty - svgRect.top - draggingLabel.offset.y };
+      const [stateName, districtName] = draggingLabel.districtKey.split("|");
+      const feature = geojsonData?.features.find((f) => {
+        const dn = f.properties.district_name || f.properties.nss_region || "";
+        const sn = f.properties.state_name || "";
+        return dn === districtName && sn === stateName;
+      });
+      if (feature && !isPointInsideDistrict(newPosition, feature)) return;
+      const newPositions = new Map(labelPositions);
+      newPositions.set(draggingLabel.districtKey, newPosition);
+      setLabelPositions(newPositions);
     });
-
-    // ✅ Only update if label is inside district
-    if (feature) {
-      const inside = isPointInsideDistrict(newPosition, feature);
-      if (!inside) return;
-    }
-
-    const newPositions = new Map(labelPositions);
-    newPositions.set(draggingLabel.districtKey, newPosition);
-    setLabelPositions(newPositions);
   },
   [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
 );
@@ -923,8 +919,7 @@ const handleLabelTouchMove = useCallback(
       return getColorForValue(value, values, colorScale, invertColors, colorBarSettings);
     };
 
-    // Calculate color scale values
-   const numericValues = data
+    const numericValues = data
   .map(d => d.value)
   .filter((v): v is number => typeof v === "number" && !isNaN(v));
 
@@ -932,10 +927,8 @@ const minValue = numericValues.length > 0 ? Math.min(...numericValues) : 0;
 const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
 
     
-    // Find the legend rectangle that uses the gradient
     const legendRect = svgClone.querySelector('rect[fill*="districts-legend-gradient"]');
     if (legendRect) {
-      // Get the rect's position and dimensions
       const x = parseFloat(legendRect.getAttribute('x') || '0');
       const y = parseFloat(legendRect.getAttribute('y') || '0');
       const width = parseFloat(legendRect.getAttribute('width') || '200');
@@ -943,46 +936,32 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
       const stroke = legendRect.getAttribute('stroke');
       const strokeWidth = legendRect.getAttribute('stroke-width');
       const rx = legendRect.getAttribute('rx');
-      
-      // Get parent element
       const parent = legendRect.parentElement;
       if (parent) {
-        // Remove the original gradient rect
         legendRect.remove();
-        
-        // Create multiple small rectangles with solid colors
-        const numSegments = 50; // More segments for smoother gradient
+        const numSegments = 50;
         const segmentWidth = width / numSegments;
-        
         for (let i = 0; i < numSegments; i++) {
           const t = i / (numSegments - 1);
           const value = minValue + t * (maxValue - minValue);
-         const color = getColorForValue(value, numericValues, colorScale, invertColors, colorBarSettings);
-
+          const color = getColorForValue(value, numericValues, colorScale, invertColors, colorBarSettings);
           const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
           rect.setAttribute('x', (x + i * segmentWidth).toString());
           rect.setAttribute('y', y.toString());
           rect.setAttribute('width', segmentWidth.toString());
           rect.setAttribute('height', height.toString());
           rect.setAttribute('fill', color);
-          
-          // Add stroke only to first and last segment to maintain border
           if (i === 0 || i === numSegments - 1) {
             if (stroke) rect.setAttribute('stroke', stroke);
             if (strokeWidth) rect.setAttribute('stroke-width', strokeWidth);
           }
-          
-          // Add border radius to first and last segments
           if (rx && (i === 0 || i === numSegments - 1)) {
             rect.setAttribute('rx', rx);
           }
-          
           parent.appendChild(rect);
         }
       }
     }
-    
-    // Also remove any gradient definitions that are no longer needed
     const gradients = svgClone.querySelectorAll('#districts-legend-gradient');
     gradients.forEach(gradient => gradient.remove());
   };
@@ -1014,27 +993,18 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('landscape');
         
-        // Get PDF dimensions
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        
-        // Calculate margins and available space
-        const pdfMargin = 15; // 15mm margin
+        const pdfMargin = 15;
         const availableWidth = pdfWidth - (2 * pdfMargin);
         const availableHeight = pdfHeight - (2 * pdfMargin);
-        
-        // Calculate aspect ratio preserving dimensions
         const canvasAspectRatio = canvas.width / canvas.height;
         let imgWidth = availableWidth;
         let imgHeight = availableWidth / canvasAspectRatio;
-        
-        // If height exceeds available space, scale by height instead
         if (imgHeight > availableHeight) {
           imgHeight = availableHeight;
           imgWidth = availableHeight * canvasAspectRatio;
         }
-        
-        // Center the image
         const x = (pdfWidth - imgWidth) / 2;
         const y = (pdfHeight - imgHeight) / 2;
         
@@ -1079,12 +1049,11 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
       const svgElement = svgRef.current.cloneNode(true) as SVGElement;
       svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       
-      // Ensure consistent font handling
       const allElements = svgElement.querySelectorAll('*');
       allElements.forEach(el => {
         const element = el as SVGElement;
         if (element.tagName === 'text') {
-          element.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+          element.setAttribute('font-family', "'DM Sans', Arial, sans-serif");
         }
       });
       
@@ -1096,13 +1065,10 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
       if (!svgRef.current) return;
       
       try {
-        // Dynamically import PDF libraries
         const [{ default: jsPDF }, { svg2pdf }] = await Promise.all([
           import('jspdf'),
           import('svg2pdf.js')
         ]);
-        
-        // Create PDF document
         const pdf = new jsPDF({
           orientation: 'portrait',
           unit: 'mm',
@@ -1112,71 +1078,40 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        // Get the actual SVG dimensions
         const svgWidth = isMobile ? 350 : 800;
         const svgHeight = isMobile ? 440 : selectedState ? 1100 : 890;
-
-        // Clone the SVG to avoid modifying the original
         const svgClone = svgRef.current.cloneNode(true) as SVGSVGElement;
-
-        // Ensure the cloned SVG has proper attributes for full capture
         svgClone.setAttribute('width', svgWidth.toString());
         svgClone.setAttribute('height', svgHeight.toString());
         svgClone.setAttribute('viewBox', `${isMobile ? '0 0 350 440' : selectedState ? '0 0 800 1100' : '0 0 800 890'}`);
         svgClone.style.width = `${svgWidth}px`;
         svgClone.style.height = `${svgHeight}px`;
-
-        // Remove any CSS classes that might interfere with export
         svgClone.removeAttribute('class');
-
-        // Force all elements to be visible and properly positioned
         const allElements = svgClone.querySelectorAll('*');
         allElements.forEach(el => {
           const element = el as SVGElement;
           element.style.visibility = 'visible';
           element.style.display = 'block';
-          // Ensure text elements are properly rendered with consistent font
           if (element.tagName === 'text') {
-            element.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+            element.setAttribute('font-family', "'DM Sans', Arial, sans-serif");
           }
         });
-
-        // Fix the legend gradient to match the selected color scale
         fixDistrictsLegendGradient(svgClone);
-
-        // Calculate PDF margins and available space
-        const pdfMargin = 10; // 10mm margin
+        const pdfMargin = 10;
         const availableWidth = pdfWidth - (2 * pdfMargin);
         const availableHeight = pdfHeight - (2 * pdfMargin);
-        
-        // Convert SVG dimensions to mm (1px = 0.264583mm at 96dpi)
         const svgWidthMm = svgWidth * 0.264583;
         const svgHeightMm = svgHeight * 0.264583;
-        
-        // Calculate scale to fit entire SVG in PDF
         const scaleX = availableWidth / svgWidthMm;
         const scaleY = availableHeight / svgHeightMm;
         const scale = Math.min(scaleX, scaleY);
-        
-        // Calculate final dimensions and position
         const finalWidth = svgWidthMm * scale;
         const finalHeight = svgHeightMm * scale;
         const x = (pdfWidth - finalWidth) / 2;
         const y = (pdfHeight - finalHeight) / 2;
-        
-        // Use svg2pdf.js for true vector conversion
-        await svg2pdf(svgClone, pdf, {
-          x: x,
-          y: y,
-          width: finalWidth,
-          height: finalHeight
-        });
-        
-        // Save the PDF
+        await svg2pdf(svgClone, pdf, { x, y, width: finalWidth, height: finalHeight });
         pdf.save(`bharatviz-districts-${Date.now()}.pdf`);
-        
       } catch (error) {
-        // Fallback to raster PDF if vector conversion fails
         try {
           await exportDistrictsFallbackPDF();
         } catch (fallbackError) {
@@ -1197,19 +1132,15 @@ Chittoor,50`;
     }
   }));
 
-  // PERFORMANCE OPTIMIZATION: Memoize expensive district label calculations
-  // This prevents recalculating for every render (must be before early return)
   const { districtLabelData, maxArea, minArea, districtDataMap } = useMemo(() => {
     if (!geojsonData) return { districtLabelData: [], maxArea: 0, minArea: 0, districtDataMap: new Map() };
 
-    // Create a map for O(1) district data lookup instead of O(n) array search
     const map = new Map<string, number | string | undefined>();
     data.forEach(d => {
       const key = `${d.state.toLowerCase().trim()}|${d.district.toLowerCase().trim()}`;
       map.set(key, d.value);
     });
 
-    // Calculate min and max area once instead of for every feature
     let max = 0;
     let min = Infinity;
     const labels = geojsonData.features.map(feature => {
@@ -1259,10 +1190,12 @@ const dataExtent =
               viewBox={isMobile ? "0 0 350 440" : selectedState ? "0 0 800 1100" : "0 0 800 890"}
               className="max-w-full h-auto"
               style={{
-                backgroundColor: darkMode ? '#000000' : '#ffffff',
+                backgroundColor: mapBg,
                 willChange: renderingData ? 'contents' : 'auto',
-                transform: 'translateZ(0)', // Force GPU acceleration
+                transform: 'translateZ(0)',
               }}
+              role="img"
+              aria-label={dataTitle ? `India districts map — ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` — ${selectedState}` : ''}`}
             >
               {geojsonData.features.map((feature, index) => {
                 const mapWidth = isMobile ? 320 : 760;
@@ -1300,7 +1233,6 @@ const dataExtent =
                 );
               })}
               
-              {/* District Name Labels - OPTIMIZED with dragging and values */}
 {((!hideDistrictNames && !hideDistrictValues) || (!hideDistrictNames) || (!hideDistrictValues)) &&
   districtLabelData.length > 0 && (
     <g className="district-labels">
@@ -1309,12 +1241,10 @@ const dataExtent =
         const stateName = feature.properties.state_name || '';
         if (!districtName) return null;
 
-        // Get label center using polylabel (guaranteed inside polygon)
         const [lng, lat] = getPolygonCenter(feature.geometry);
         const screenPos = geoToScreen(lng, lat);
         let labelPosition = { x: screenPos.x, y: screenPos.y };
 
-        // Font size based on area
         const minFontSize = isMobile ? 6 : 7;
         const maxFontSize = isMobile ? 16 : 18;
         const areaRange = maxArea - minArea;
@@ -1324,40 +1254,34 @@ const dataExtent =
         const fontSizingFactor = selectedState ? 0.75 : 0.65;
         const finalFontSize = baseFinalFontSize * fontSizingFactor;
 
-        // Apply custom position if dragged
         const districtKey = `${stateName}|${districtName}`;
         const customPosition = labelPositions.get(districtKey);
         if (customPosition) {
           labelPosition = customPosition;
         }
 
-        // ✅ O(1) district value lookup
         const lookupKey = `${stateName.toLowerCase().trim()}|${districtName.toLowerCase().trim()}`;
         const districtValue = districtDataMap.get(lookupKey);
 
         const fillColor = getDistrictColorForValue(districtValue, dataExtent);
 
-        // ✅ Text color based on fill color
         const textColor =
           fillColor === 'white' || !isColorDark(fillColor) ? '#0f172a' : '#ffffff';
 
-        // ✅ Respect hideDistrictNames flag
         if (hideDistrictNames) return null;
 
-        // ✅ Rotation OFF (kept same)
         const rotationAngle = 0;
         const transform = `translate(${labelPosition.x}, ${labelPosition.y}) rotate(${rotationAngle})`;
 
         return (
           <g key={`label-group-${index}`} transform={transform}>
-            {/* District name */}
             <text
               x={0}
               y={-finalFontSize / 2}
               textAnchor="middle"
               dominantBaseline="middle"
               style={{
-                fontFamily: 'Arial, Helvetica, sans-serif',
+                fontFamily: "'DM Sans', Arial, sans-serif",
                 fontSize: `${finalFontSize}px`,
                 fontWeight: '600',
                 fill: textColor,
@@ -1376,7 +1300,6 @@ const dataExtent =
               {districtName}
             </text>
 
-            {/* District value */}
             {districtValue !== undefined && (
               <text
                 x={0}
@@ -1384,7 +1307,7 @@ const dataExtent =
                 textAnchor="middle"
                 dominantBaseline="middle"
                 style={{
-                  fontFamily: 'Arial, Helvetica, sans-serif',
+                  fontFamily: "'DM Sans', Arial, sans-serif",
                   fontSize: `${finalFontSize * 0.7}px`,
                   fontWeight: '400',
                   fill: textColor,
@@ -1404,7 +1327,7 @@ const dataExtent =
     </g>
   )}
 
-              {/* State boundaries overlay */}
+
               {showStateBoundaries && statesData && statesData.features
                 .filter(stateFeature => {
                   // If selectedState is provided, only show that state's boundary
@@ -1437,7 +1360,7 @@ const dataExtent =
                 );
               })}
               
-              {/* Main Title */}
+
               <g className="main-title-container">
                 {editingMainTitle ? (
                   <foreignObject x={isMobile ? 75 : 160} y={isMobile ? 15 : 25} width={isMobile ? 200 : 300} height={40}>
@@ -1471,7 +1394,7 @@ const dataExtent =
                     y={isMobile ? 35 : 50 + titlePosition.y}
                     textAnchor="middle"
                     style={{
-                      fontFamily: 'Arial, Helvetica, sans-serif',
+                      fontFamily: "'DM Sans', Arial, sans-serif",
                       fontSize: isMobile ? 16 : 20,
                       fontWeight: 700,
                       fill: darkMode ? '#ffffff' : '#1f2937',
@@ -1490,10 +1413,10 @@ const dataExtent =
                 )}
               </g>
 
-              {/* Legend */}
+
               {data.length > 0 && (
                 <>
-                  {/* Categorical Legend */}
+
                   {dataType === 'categorical' ? (
                     <CategoricalLegend
                       categories={getUniqueCategories(data.map(d => d.value))}
@@ -1509,7 +1432,6 @@ const dataExtent =
                       darkMode={darkMode}
                     />
                   ) : dataType === 'numerical' && colorBarSettings?.isDiscrete ? (
-                    /* Discrete Legend */
                     <DiscreteLegend
                       data={data.map(d => d.value).filter(v => typeof v === 'number') as number[]}
                       colorScale={colorScale}
@@ -1526,7 +1448,6 @@ const dataExtent =
                       darkMode={darkMode}
                     />
                   ) : dataType === 'numerical' ? (
-                    /* Continuous Legend */
                     <g
                       className="legend-container"
                       transform={`translate(${legendPosition.x}, ${legendPosition.y})`}
@@ -1558,7 +1479,7 @@ const dataExtent =
                           x={0}
                           y={30}
                           textAnchor="start"
-                          style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif", fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
                           onDoubleClick={e => { e.stopPropagation(); setEditingMin(true); }}
                         >
                           {legendMin}
@@ -1581,7 +1502,7 @@ const dataExtent =
                           x={isMobile ? 75 : 100}
                           y={30}
                           textAnchor="middle"
-                          style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif", fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
                           onDoubleClick={e => { e.stopPropagation(); setEditingMean(true); }}
                         >
                           {legendMean}
@@ -1604,7 +1525,7 @@ const dataExtent =
                           x={isMobile ? 150 : 200}
                           y={30}
                           textAnchor="end"
-                          style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif", fontSize: isMobile ? 10 : 12, fontWeight: 500, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
                           onDoubleClick={e => { e.stopPropagation(); setEditingMax(true); }}
                         >
                           {legendMax}
@@ -1627,7 +1548,7 @@ const dataExtent =
                           x={isMobile ? 75 : 100}
                           y={-5}
                           textAnchor="middle"
-                          style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: isMobile ? 11 : 13, fontWeight: 600, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif", fontSize: isMobile ? 11 : 13, fontWeight: 600, fill: darkMode ? '#ffffff' : '#374151', cursor: 'pointer' }}
                           onDoubleClick={e => { e.stopPropagation(); setEditingTitle(true); }}
                         >
                           {legendTitle}
@@ -1638,7 +1559,7 @@ const dataExtent =
                 </>
               )}
 
-              {/* NA Legend */}
+
               {naInfo && naInfo.count > 0 && showNALegend && (
                 <g
                   className="na-legend"
@@ -1667,7 +1588,7 @@ const dataExtent =
                     x={isMobile ? 25 : 30}
                     y={isMobile ? 19 : 22}
                     style={{
-                      fontFamily: 'Arial, Helvetica, sans-serif',
+                      fontFamily: "'DM Sans', Arial, sans-serif",
                       fontSize: isMobile ? 11 : 13,
                       fill: darkMode ? '#ffffff' : '#374151'
                     }}
@@ -1688,7 +1609,7 @@ const dataExtent =
                       textAnchor="middle"
                       dy={isMobile ? 3 : 4}
                       style={{
-                        fontFamily: 'Arial, Helvetica, sans-serif',
+                        fontFamily: "'DM Sans', Arial, sans-serif",
                         fontSize: isMobile ? 10 : 12,
                         fontWeight: 'bold',
                         fill: 'white'
@@ -1701,13 +1622,20 @@ const dataExtent =
               )}
             </svg>
 
-            {/* Hover Tooltip */}
+
             {hoveredDistrict && (
-              <div className="absolute top-2 left-7 bg-white border border-gray-300 rounded-lg p-3 shadow-lg z-10 pointer-events-none">
-                <div className="font-medium">{hoveredDistrict.district}</div>
-                <div className="text-xs text-muted-foreground">{hoveredDistrict.state}</div>
+              <div
+                className="absolute top-2 left-7 rounded-lg px-3 py-2 shadow-lg z-10 pointer-events-none"
+                style={{
+                  backgroundColor: darkMode ? 'hsl(25, 8%, 11%)' : 'hsl(38, 30%, 99%)',
+                  border: `1px solid ${darkMode ? 'hsl(25, 8%, 18%)' : 'hsl(35, 18%, 84%)'}`,
+                  color: darkMode ? 'hsl(35, 12%, 90%)' : 'hsl(28, 20%, 14%)',
+                }}
+              >
+                <div className="font-medium text-sm">{hoveredDistrict.district}</div>
+                <div className="text-xs mt-0.5" style={{ color: darkMode ? 'hsl(30, 8%, 55%)' : 'hsl(28, 10%, 46%)' }}>{hoveredDistrict.state}</div>
                 {hoveredDistrict.value !== undefined && (
-                  <div className="text-xs">
+                  <div className="text-xs mt-0.5" style={{ color: darkMode ? 'hsl(30, 8%, 62%)' : 'hsl(28, 10%, 46%)' }}>
                     {typeof hoveredDistrict.value === 'number' ? roundToSignificantDigits(hoveredDistrict.value) : String(hoveredDistrict.value)}
                   </div>
                 )}

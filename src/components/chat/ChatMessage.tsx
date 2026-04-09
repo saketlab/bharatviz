@@ -1,8 +1,3 @@
-/**
- * Chat Message Component
- * Displays individual messages in the chat interface
- */
-
 import React from 'react';
 import { Bot, User } from 'lucide-react';
 import type { ChatMessage as ChatMessageType } from '@/lib/chat/types';
@@ -27,7 +22,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      {/* Avatar */}
       <div
         className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
           isUser ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
@@ -36,7 +30,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
         {isUser ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
       </div>
 
-      {/* Message Content */}
       <div className={`flex-1 max-w-[80%] ${isUser ? 'text-right' : 'text-left'}`}>
         <div
           className={`inline-block px-4 py-2 rounded-lg ${
@@ -50,12 +43,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </div>
         </div>
 
-        {/* Timestamp */}
         <div className="text-xs text-muted-foreground mt-1 px-1">
           {formatTimestamp(message.timestamp)}
         </div>
 
-        {/* Suggestions */}
         {message.response?.suggestions && message.response.suggestions.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
             {message.response.suggestions.map((suggestion, idx) => (
@@ -63,7 +54,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 key={idx}
                 className="text-xs px-2 py-1 rounded-full bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
                 onClick={() => {
-                  // This will be handled by parent component
                   const event = new CustomEvent('suggestion-click', { detail: suggestion });
                   window.dispatchEvent(event);
                 }}
@@ -78,17 +68,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
   );
 }
 
-/**
- * Format message content with basic markdown support
- */
 function formatMessage(content: string): JSX.Element {
-  // Split by double newlines for paragraphs
   const paragraphs = content.split('\n\n');
 
   return (
     <>
       {paragraphs.map((para, idx) => {
-        // Check for lists
         if (para.trim().startsWith('-') || para.trim().startsWith('•')) {
           const items = para.split('\n').filter(line => line.trim());
           return (
@@ -102,7 +87,6 @@ function formatMessage(content: string): JSX.Element {
           );
         }
 
-        // Check for numbered lists
         if (/^\d+\./.test(para.trim())) {
           const items = para.split('\n').filter(line => line.trim());
           return (
@@ -116,7 +100,6 @@ function formatMessage(content: string): JSX.Element {
           );
         }
 
-        // Check for headers
         if (para.startsWith('##')) {
           return (
             <h3 key={idx} className="font-semibold text-base mt-3 mb-2">
@@ -125,7 +108,6 @@ function formatMessage(content: string): JSX.Element {
           );
         }
 
-        // Regular paragraph
         return (
           <p key={idx} className="text-sm my-2">
             {formatInlineMarkdown(para)}
@@ -136,15 +118,11 @@ function formatMessage(content: string): JSX.Element {
   );
 }
 
-/**
- * Format inline markdown (bold, italic, code)
- */
 function formatInlineMarkdown(text: string): (string | JSX.Element)[] {
   const parts: (string | JSX.Element)[] = [];
   const current = text;
   let key = 0;
 
-  // Simple bold detection **text**
   const boldRegex = /\*\*(.+?)\*\*/g;
   let lastIndex = 0;
 
@@ -164,30 +142,23 @@ function formatInlineMarkdown(text: string): (string | JSX.Element)[] {
   return parts.length > 0 ? parts : [text];
 }
 
-/**
- * Format timestamp
- */
 function formatTimestamp(date: Date): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
 
-  // Less than 1 minute
   if (diff < 60000) {
     return 'Just now';
   }
 
-  // Less than 1 hour
   if (diff < 3600000) {
     const minutes = Math.floor(diff / 60000);
     return `${minutes}m ago`;
   }
 
-  // Less than 24 hours
   if (diff < 86400000) {
     const hours = Math.floor(diff / 3600000);
     return `${hours}h ago`;
   }
 
-  // Format as time
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }

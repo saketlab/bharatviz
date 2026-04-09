@@ -1,8 +1,3 @@
-/**
- * Chat Panel Component
- * Main chat interface with model loading, message history, and input
- */
-
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -22,11 +17,9 @@ interface ChatPanelProps {
 }
 
 export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
-  // UI state
   const [isOpen, setIsOpen] = useState(false);
   const [showModelSelector, setShowModelSelector] = useState(true);
 
-  // Model state
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('');
@@ -34,7 +27,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
   const [currentModelId, setCurrentModelId] = useState<string | null>(null);
   const [modelPopoverOpen, setModelPopoverOpen] = useState(false);
 
-  // Chat state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -42,7 +34,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
   const [llmQuestions, setLlmQuestions] = useState<string[]>([]);
   const [toolStatus, setToolStatus] = useState<string | null>(null);
 
-  // Refs
   const engineRef = useRef<WebLLMEngine | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -69,19 +60,16 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     return () => { stale = true; };
   }, [contextFingerprint, modelReady]);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streamingContent]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen && modelReady && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen, modelReady]);
 
-  // Listen for suggestion clicks
   useEffect(() => {
     const handleSuggestionClick = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -95,9 +83,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     return () => window.removeEventListener('suggestion-click', handleSuggestionClick);
   }, []);
 
-  /**
-   * Initialize model
-   */
   const handleModelSelect = async (modelId: string) => {
     setIsModelLoading(true);
     setShowModelSelector(false);
@@ -115,7 +100,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
       setModelReady(true);
       setIsModelLoading(false);
 
-      // Add welcome message
       addSystemMessage('AI assistant ready! Ask me about patterns in your map data.');
 
     } catch (error) {
@@ -126,9 +110,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     }
   };
 
-  /**
-   * Add a system message
-   */
   const addSystemMessage = (content: string) => {
     const message: ChatMessage = {
       id: Date.now().toString(),
@@ -139,36 +120,28 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     setMessages(prev => [...prev, message]);
   };
 
-  /**
-   * Handle sending a message
-   */
   const handleSendMessage = async () => {
-    // Validate input
     if (!input.trim()) {
       return;
     }
 
-    // Check if engine is ready
     if (!engineRef.current || !modelReady) {
       addSystemMessage('❌ Please wait for the model to finish loading before sending messages.');
       return;
     }
 
-    // CRITICAL: Check if context exists and capture it immediately
-    // to prevent race conditions during async operations
+    // Capture context immediately to prevent race conditions during async operations
     if (!context) {
       addSystemMessage('❌ Context not available. Please make sure you have uploaded data to the map. The chatbot needs data context to answer questions.');
       return;
     }
 
-    // Validate context structure
     if (!context.currentView || !context.geoMetadata || !context.userData) {
       console.error('ChatPanel - Context structure is invalid:', context);
       addSystemMessage('❌ Context structure is invalid. Please try reloading the data.');
       return;
     }
 
-    // Capture context value to prevent race conditions
     const currentContext = context;
 
     const userMessage: ChatMessage = {
@@ -183,7 +156,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     setIsGenerating(true);
     setStreamingContent('');
 
-    // Create assistant message placeholder
     const assistantMessageId = (Date.now() + 1).toString();
     const assistantMessage: ChatMessage = {
       id: assistantMessageId,
@@ -195,7 +167,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     setMessages(prev => [...prev, assistantMessage]);
 
     try {
-      // Update context with current conversation (exclude system messages)
       const updatedContext: DynamicChatContext = {
         ...currentContext,
         conversationHistory: messages
@@ -206,7 +177,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
           }))
       };
 
-      // Query with tool support (falls back to streaming if no data)
       let fullResponse = '';
 
       await engineRef.current.queryWithTools(
@@ -216,7 +186,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
           fullResponse += chunk;
           setStreamingContent(fullResponse);
 
-          // Update message in real-time
           setMessages(prevMessages =>
             prevMessages.map(msg =>
               msg.id === assistantMessageId
@@ -229,7 +198,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
           setToolStatus(status);
         },
         () => {
-          // On complete
           setIsGenerating(false);
           setStreamingContent('');
           setToolStatus(null);
@@ -250,9 +218,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     }
   };
 
-  /**
-   * Handle key press in input
-   */
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -260,9 +225,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     }
   };
 
-  /**
-   * Reset chat
-   */
   const handleReset = async () => {
     if (engineRef.current) {
       await engineRef.current.resetChat();
@@ -272,7 +234,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
   };
 
   const handleChangeModel = async (newModelId?: string) => {
-    // Guard against rapid clicks during model switch
     if (isModelLoading) return;
 
     if (engineRef.current) {
@@ -287,10 +248,8 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     setModelPopoverOpen(false);
 
     if (newModelId) {
-      // Direct switch — skip the full model selector, go straight to loading
       handleModelSelect(newModelId);
     } else {
-      // Go back to the full model selector screen
       setShowModelSelector(true);
     }
   };
@@ -300,6 +259,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
       <Button
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 rounded-full h-12 w-12 sm:h-14 sm:w-14 shadow-lg z-50"
         size="icon"
+        aria-label="Open AI assistant"
         onClick={() => setIsOpen(true)}
       >
         <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -308,14 +268,14 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 sm:bottom-6 sm:right-6 sm:left-auto sm:w-[420px] h-[600px] sm:h-[700px] bg-background border sm:rounded-lg shadow-2xl flex flex-col overflow-hidden z-50">
+    <div className="fixed inset-x-0 bottom-0 sm:bottom-6 sm:right-6 sm:left-auto sm:w-[min(420px,calc(100vw-3rem))] h-[600px] sm:h-[700px] bg-background border sm:rounded-lg shadow-2xl flex flex-col overflow-hidden z-50">
       <div className="flex items-center justify-between p-3 sm:p-4 border-b bg-card">
         <div className="min-w-0 flex-1">
           {modelReady && currentModelId ? (
             <>
               <Popover open={modelPopoverOpen} onOpenChange={setModelPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <button className="flex items-center gap-1.5 text-sm sm:text-base font-semibold hover:text-primary transition-colors">
+                  <button aria-expanded={modelPopoverOpen} aria-haspopup="listbox" className="flex items-center gap-1.5 text-sm sm:text-base font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded">
                     <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                     <span className="truncate">{currentModelName}</span>
                     <ChevronDown className="h-3 w-3 flex-shrink-0 opacity-50" />
@@ -368,17 +328,16 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
         </div>
         <div className="flex items-center gap-1">
           {modelReady && (
-            <Button variant="ghost" size="icon" onClick={handleReset} title="Clear chat">
+            <Button variant="ghost" size="icon" aria-label="Clear chat" onClick={handleReset}>
               <RotateCcw className="h-4 w-4" />
             </Button>
           )}
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+          <Button variant="ghost" size="icon" aria-label="Close assistant" onClick={() => setIsOpen(false)}>
             <X className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Model Selector */}
       {showModelSelector && !modelReady && (
         <div className="flex-1 overflow-y-auto">
           <ModelSelector
@@ -388,7 +347,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
         </div>
       )}
 
-      {/* Model Loading */}
       {isModelLoading && (
         <div className="flex-1 flex flex-col items-center justify-center p-6">
           <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
@@ -403,10 +361,8 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
         </div>
       )}
 
-      {/* Chat Interface */}
       {modelReady && !showModelSelector && (
         <>
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {!context && (
               <Alert variant="destructive">
@@ -459,7 +415,6 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className="p-4 border-t bg-card">
             <div className="flex gap-2">
               <textarea
@@ -476,6 +431,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
                 onClick={handleSendMessage}
                 disabled={isGenerating || !input.trim() || !context}
                 size="icon"
+                aria-label={isGenerating ? 'Generating response' : 'Send message'}
               >
                 {isGenerating ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

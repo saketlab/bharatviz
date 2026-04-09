@@ -90,7 +90,6 @@
     "vite": "^7.1.12"
   },
   "overrides": {
-    "minimatch": "^10.2.1",
-    "ajv": "^8.18.0"
+    "minimatch": "^10.2.1"
   }
 }

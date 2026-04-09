@@ -128,13 +128,11 @@ function initPanel(
   const { darkMode } = state;
   const W = wrapEl.clientWidth || 200;
   const H = Math.round(W * (showLabel ? 1.35 : 1.1));
-  const bgColor     = darkMode ? '#0f0f0f' : '#f0f4f8';
-  const strokeColor = darkMode ? '#1f2937' : '#ffffff';
+  const strokeColor = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
 
   const svg = d3.select(svgEl);
   svg.selectAll('*').remove();
   svg.attr('width', W).attr('height', H);
-  svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
   const fitTarget = refFC ?? fc;
   const pad = showLabel ? 16 : 8;
@@ -149,7 +147,9 @@ function initPanel(
     .attr('d', (f: any) => path(f) || '')
     .attr('stroke', strokeColor)
     .attr('stroke-width', 0.3)
-    .attr('cursor', 'pointer');
+    .attr('cursor', 'pointer')
+    .attr('tabindex', 0)
+    .attr('role', 'button');
 
   const labelG = svg.append('g').attr('pointer-events', 'none');
 
@@ -164,7 +164,7 @@ function initPanel(
 
   function applyStyle(s: PanelState) {
     const { hovered, clickedChainId, chainSets, colorLookup: cl, darkMode: dm } = s;
-    const noDataColor  = dm ? '#2d2d2d' : '#d1d5db';
+    const noDataColor  = dm ? 'hsl(25, 8%, 14%)' : 'hsl(35, 18%, 88%)';
     const clickedKeys = clickedChainId != null ? (chainSets.get(clickedChainId) ?? new Set()) : null;
 
     paths
@@ -225,8 +225,8 @@ function SegBtn({ label, active, darkMode, onClick }: { label: string; active: b
       onClick={onClick}
       className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
         active
-          ? darkMode ? 'bg-gray-700 text-amber-400' : 'bg-white text-amber-700 shadow-sm'
-          : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+          ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-sm'
+          : darkMode ? 'text-[hsl(30,8%,52%)] hover:text-[hsl(35,10%,78%)]' : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)]'
       }`}
     >
       {label}
@@ -298,7 +298,7 @@ function Panel({
   return (
     <div
       ref={wrapRef}
-      className={`rounded border overflow-hidden ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}
+      className={`rounded border overflow-hidden ${darkMode ? 'bg-[hsl(25,8%,6%)] border-[hsl(25,8%,14%)]' : 'bg-[hsl(38,30%,97%)] border-[hsl(35,18%,84%)]'}`}
     >
       {showLabel && selectedNames && (
         <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
@@ -307,17 +307,18 @@ function Panel({
           {selectedNames.join(' · ')}
         </div>
       )}
-      <svg ref={svgRef} className="block w-full" />
+      <svg ref={svgRef} className="block w-full" role="img" aria-label={`India district map ${year}`} />
     </div>
   );
 }
 
 export function IndiaEvolutionMap({
-  darkMode = false,
+  darkMode: darkModeProp,
   evolutionFile = '/evolution-data/india_evolution.json',
   geojsonYearMap = GEOJSON_YEAR_DEFAULT,
   originYear = 1951,
 }: IndiaEvolutionMapProps) {
+  const darkMode = darkModeProp ?? false;
   const YEARS = useMemo(() => {
     const allYears = new Set([...Object.keys(geojsonYearMap).map(Number)]);
     return [...allYears].sort((a, b) => a - b);
@@ -348,6 +349,7 @@ export function IndiaEvolutionMap({
   const year = YEARS[yearIdx];
 
   useEffect(() => {
+    const ac = new AbortController();
     setLoading(true);
     const toLoad = mode === 'grid' ? YEARS : [YEARS[0], year];
     const needed: number[] = [], cached: [number, any][] = [];
@@ -357,15 +359,21 @@ export function IndiaEvolutionMap({
     }
     Promise.all(needed.map(y => fetchGeoJSON(y).then(fc => [y, fc] as [number, any])))
       .then(fetched => {
+        if (ac.signal.aborted) return;
         setAllFCs(new Map([...cached, ...fetched]));
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => { if (!ac.signal.aborted) setLoading(false); });
+    return () => ac.abort();
   }, [mode, year, YEARS, fetchGeoJSON]);
 
   const refFC = allFCs.get(YEARS[0]) ?? null;
 
-  useEffect(() => { fetchEvoData().then(setEvoData).catch(() => {}); }, [fetchEvoData]);
+  useEffect(() => {
+    const ac = new AbortController();
+    fetchEvoData().then(d => { if (!ac.signal.aborted) setEvoData(d); }).catch(() => {});
+    return () => ac.abort();
+  }, [fetchEvoData]);
 
   const derived = useMemo(() => {
     const emptyColorLookups = new Map<number, Map<string, EvoNode>>();
@@ -452,41 +460,41 @@ export function IndiaEvolutionMap({
   const tooltipEl = tooltip && (
     <div
       className={`fixed z-50 pointer-events-none rounded-lg shadow-lg border text-xs p-3 ${
-        darkMode ? 'bg-gray-900 border-gray-700 text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+        darkMode ? 'bg-[hsl(25,8%,9%)] border-[hsl(25,8%,14%)] text-[hsl(35,12%,90%)]' : 'bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)]'
       }`}
-      style={{ left: tooltip.x + 14, top: tooltip.y - 10, maxWidth: 240 }}
+      style={{ left: Math.min(tooltip.x + 14, window.innerWidth - 248), top: tooltip.y - 10, maxWidth: 240 }}
     >
       <div className="font-bold text-sm mb-0.5" style={{ color: tooltip.color }}>{tooltip.name}</div>
-      <div className={`mb-1 text-[10px] ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{tooltip.stateName}</div>
+      <div className={`mb-1 text-[10px] ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>{tooltip.stateName}</div>
       {tooltip.chainName && (
-        <div className={`mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <div className={`mb-1 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
           Origin: <span className="font-medium">{tooltip.chainName}</span>
           {tooltip.originState && ` (${tooltip.originState})`}
         </div>
       )}
-      {tooltip.prevName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Carved from: </span>{tooltip.prevName}</div>}
-      {tooltip.nextName && <div><span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>Split into: </span>{tooltip.nextName}</div>}
+      {tooltip.prevName && <div><span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>Carved from: </span>{tooltip.prevName}</div>}
+      {tooltip.nextName && <div><span className={darkMode ? 'text-[hsl(30,8%,42%)]' : 'text-[hsl(28,8%,54%)]'}>Split into: </span>{tooltip.nextName}</div>}
     </div>
   );
 
   return (
     <div className="relative">
-      <div className={`flex items-center justify-between px-3 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'}`}>
-        <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+      <div className={`flex items-center justify-between px-3 py-2 border-b ${darkMode ? 'border-[hsl(25,8%,14%)]' : 'border-[hsl(35,16%,88%)]'}`}>
+        <div className={`flex items-center gap-1 p-1 rounded-lg ${darkMode ? 'bg-[hsl(25,8%,13%)]' : 'bg-[hsl(35,20%,93%)]'}`}>
           <SegBtn label="All years" active={mode === 'grid'} darkMode={darkMode} onClick={() => resetMode('grid')} />
           <SegBtn label="Single year" active={mode === 'single'} darkMode={darkMode} onClick={() => resetMode('single')} />
         </div>
 
         <div className="flex items-center gap-2">
           {selectedMeta ? (
-            <span className={`flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-amber-50 text-amber-800 border border-amber-200'}`}>
+            <span className={`flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ${darkMode ? 'bg-[hsl(25,8%,14%)] text-[hsl(35,10%,82%)]' : 'bg-amber-50 text-amber-800 border border-amber-200'}`}>
               <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0" />
               {selectedMeta.name}
-              {selectedMeta.state && <span className={darkMode ? 'text-gray-500' : 'text-amber-600'}> · {selectedMeta.state}</span>}
-              <button onClick={() => setClickedChainId(null)} className={`ml-1 ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
+              {selectedMeta.state && <span className={darkMode ? 'text-[hsl(30,8%,44%)]' : 'text-amber-600'}> · {selectedMeta.state}</span>}
+              <button onClick={() => setClickedChainId(null)} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
             </span>
           ) : (
-            <span className={`text-xs italic ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+            <span className={`text-xs italic ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>
               Click a district to trace its lineage
             </span>
           )}
@@ -495,21 +503,23 @@ export function IndiaEvolutionMap({
       </div>
 
       {mode === 'single' && (
-        <div className={`flex items-center gap-3 px-4 py-2 border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+        <div className={`flex items-center gap-3 px-4 py-2 border-b ${darkMode ? 'border-[hsl(25,8%,14%)]' : 'border-[hsl(35,16%,92%)]'}`}>
           <span className={`text-sm font-semibold w-10 shrink-0 ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>{year}</span>
-          <div className="flex-1 flex items-center gap-1">
+          <div className="flex-1 overflow-x-auto">
+            <div className="flex items-center gap-1">
             {YEARS.map((y, i) => (
-              <button key={y} onClick={() => setYearIdx(i)} className="flex-1 flex flex-col items-center gap-1 group">
+              <button key={y} onClick={() => setYearIdx(i)} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
                 <div className={`h-2 w-full rounded-full transition-all ${
-                  i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-gray-700 group-hover:bg-gray-600' : 'bg-gray-200 group-hover:bg-gray-300'
+                  i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-[hsl(25,8%,18%)] group-hover:bg-[hsl(25,8%,22%)]' : 'bg-[hsl(35,14%,88%)] group-hover:bg-[hsl(35,14%,82%)]'
                 }`} />
                 <span className={`text-[9px] font-mono leading-none ${
                   i === yearIdx
                     ? darkMode ? 'text-amber-400' : 'text-amber-700'
-                    : darkMode ? 'text-gray-600' : 'text-gray-400'
+                    : darkMode ? 'text-[hsl(30,8%,40%)]' : 'text-[hsl(28,8%,58%)]'
                 }`}>{String(y)}</span>
               </button>
             ))}
+            </div>
           </div>
         </div>
       )}
@@ -541,7 +551,7 @@ export function IndiaEvolutionMap({
         </div>
       )}
 
-      <div className={`px-4 py-2 flex items-center gap-4 text-[10px] border-t ${darkMode ? 'border-gray-800 text-gray-600' : 'border-gray-100 text-gray-400'}`}>
+      <div className={`px-4 py-2 flex items-center gap-4 text-[10px] border-t ${darkMode ? 'border-[hsl(25,8%,14%)] text-[hsl(30,8%,36%)]' : 'border-[hsl(35,16%,92%)] text-[hsl(28,8%,58%)]'}`}>
         {clickedChainId != null && (
           <span className="flex items-center gap-1">
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-500" />
@@ -549,7 +559,7 @@ export function IndiaEvolutionMap({
           </span>
         )}
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: darkMode ? '#3d3d3d' : '#d1d5db' }} />
+          <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: darkMode ? 'hsl(25,8%,22%)' : 'hsl(35,14%,82%)' }} />
           No {originYear} origin
         </span>
         {evoData && (

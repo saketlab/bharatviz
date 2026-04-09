@@ -8,89 +8,124 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Warm off-white — tinted toward ochre, not pure white */
+    --background: 38 30% 97%;
+    --foreground: 28 20% 14%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 38 25% 99%;
+    --card-foreground: 28 20% 14%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 38 25% 99%;
+    --popover-foreground: 28 20% 14%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand primary: deep ochre/amber */
+    --primary: 30 42% 28%;
+    --primary-foreground: 38 30% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: warm stone */
+    --secondary: 35 18% 92%;
+    --secondary-foreground: 28 22% 22%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 35 18% 92%;
+    --muted-foreground: 28 10% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: warm ochre tint — active states */
+    --accent: 38 28% 90%;
+    --accent-foreground: 30 42% 28%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 38 30% 97%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 35 20% 86%;
+    --input: 35 20% 86%;
+    --ring: 28 42% 42%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Raw brand colors for direct use (not wrapped in hsl()) */
+    --brand-saffron-hsl: 28, 68%, 48%;
+    --brand-saffron-light-hsl: 35, 55%, 86%;
+    --brand-saffron-dark-hsl: 28, 45%, 28%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-background: 35 22% 95%;
+    --sidebar-foreground: 28 18% 25%;
+    --sidebar-primary: 30 42% 28%;
+    --sidebar-primary-foreground: 38 30% 97%;
+    --sidebar-accent: 38 28% 90%;
+    --sidebar-accent-foreground: 28 18% 25%;
+    --sidebar-border: 35 18% 85%;
+    --sidebar-ring: 28 55% 46%;
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* SVG/canvas colors — consumed by JS at render time */
+    --map-bg: hsl(38, 30%, 97%);
+    --map-empty-fill: hsl(35, 18%, 92%);
+    --map-no-data-fill: hsl(35, 20%, 86%);
+    --map-stroke: hsl(28, 20%, 14%);
+    --map-label-primary: hsl(28, 20%, 14%);
+    --map-label-secondary: hsl(28, 10%, 46%);
+    --map-tooltip-bg: rgba(254, 249, 243, 0.95);
+    --map-tooltip-border: hsl(35, 20%, 86%);
+    --chart-bg: hsl(38, 30%, 97%);
+    --chart-text: hsl(28, 20%, 14%);
+    --chart-muted: hsl(28, 10%, 46%);
+    --chart-line: hsl(35, 18%, 84%);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 25 8% 6%;
+    --foreground: 35 12% 93%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 25 8% 9%;
+    --card-foreground: 35 12% 93%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 25 8% 9%;
+    --popover-foreground: 35 12% 93%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 35 12% 93%;
+    --primary-foreground: 25 8% 6%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 25 8% 14%;
+    --secondary-foreground: 35 12% 93%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 25 8% 14%;
+    --muted-foreground: 30 8% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 25 8% 14%;
+    --accent-foreground: 35 12% 93%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 55% 40%;
+    --destructive-foreground: 35 12% 93%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 25 8% 14%;
+    --input: 25 8% 14%;
+    --ring: 28 48% 52%;
+
+    --brand-saffron-hsl: 28, 60%, 58%;
+    --brand-saffron-light-hsl: 28, 30%, 22%;
+    --brand-saffron-dark-hsl: 35, 20%, 70%;
+
+    --sidebar-background: 25 8% 5%;
+    --sidebar-foreground: 35 10% 86%;
+    --sidebar-primary: 28 55% 52%;
+    --sidebar-primary-foreground: 25 8% 6%;
+    --sidebar-accent: 25 8% 12%;
+    --sidebar-accent-foreground: 35 10% 86%;
+    --sidebar-border: 25 8% 12%;
+    --sidebar-ring: 28 55% 52%;
+
+    /* SVG/canvas colors — dark mode */
+    --map-bg: hsl(25, 8%, 6%);
+    --map-empty-fill: hsl(25, 8%, 14%);
+    --map-no-data-fill: hsl(25, 8%, 14%);
+    --map-stroke: hsl(35, 12%, 93%);
+    --map-label-primary: hsl(35, 12%, 93%);
+    --map-label-secondary: hsl(30, 8%, 60%);
+    --map-tooltip-bg: rgba(14, 12, 11, 0.97);
+    --map-tooltip-border: hsl(25, 8%, 14%);
+    --chart-bg: hsl(25, 8%, 6%);
+    --chart-text: hsl(35, 12%, 93%);
+    --chart-muted: hsl(30, 8%, 60%);
+    --chart-line: hsl(25, 8%, 16%);
   }
 }
 
@@ -99,7 +134,21 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    font-size: 16px;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  /* Tabular numbers for any data/metric context */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
