@@ -2,13 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* Warm off-white — tinted toward ochre, not pure white */
     --background: 38 30% 97%;
     --foreground: 28 20% 14%;
 
@@ -18,18 +13,15 @@ All colors MUST be HSL.
     --popover: 38 25% 99%;
     --popover-foreground: 28 20% 14%;
 
-    /* Brand primary: deep ochre/amber */
     --primary: 30 42% 28%;
     --primary-foreground: 38 30% 97%;
 
-    /* Secondary: warm stone */
     --secondary: 35 18% 92%;
     --secondary-foreground: 28 22% 22%;
 
     --muted: 35 18% 92%;
     --muted-foreground: 28 10% 46%;
 
-    /* Accent: warm ochre tint — active states */
     --accent: 38 28% 90%;
     --accent-foreground: 30 42% 28%;
 
@@ -42,7 +34,7 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    /* Raw brand colors for direct use (not wrapped in hsl()) */
+    /* Raw HSL values for use in rgba() or JS contexts */
     --brand-saffron-hsl: 28, 68%, 48%;
     --brand-saffron-light-hsl: 35, 55%, 86%;
     --brand-saffron-dark-hsl: 28, 45%, 28%;
@@ -56,7 +48,7 @@ All colors MUST be HSL.
     --sidebar-border: 35 18% 85%;
     --sidebar-ring: 28 55% 46%;
 
-    /* SVG/canvas colors — consumed by JS at render time */
+    /* SVG/canvas map colors — consumed by JS renderers, not Tailwind */
     --map-bg: hsl(38, 30%, 97%);
     --map-empty-fill: hsl(35, 18%, 92%);
     --map-no-data-fill: hsl(35, 20%, 86%);
@@ -113,7 +105,7 @@ All colors MUST be HSL.
     --sidebar-border: 25 8% 12%;
     --sidebar-ring: 28 55% 52%;
 
-    /* SVG/canvas colors — dark mode */
+    /* SVG/canvas map colors — dark mode */
     --map-bg: hsl(25, 8%, 6%);
     --map-empty-fill: hsl(25, 8%, 14%);
     --map-no-data-fill: hsl(25, 8%, 14%);
@@ -147,8 +139,22 @@ All colors MUST be HSL.
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
-  /* Tabular numbers for any data/metric context */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  .primary-tab + .primary-tab {
+    border-left: 1px solid hsl(35, 18%, 88%);
+  }
+  .dark .primary-tab + .primary-tab {
+    border-left-color: hsl(25, 8%, 18%);
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }

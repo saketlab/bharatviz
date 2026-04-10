@@ -1297,8 +1297,8 @@ const Index = () => {
 
   const seoContent = getSEOContent();
 
-  const primaryTabClass = 'flex-1 rounded-md px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
-  const secondaryTabClass = 'rounded px-2.5 py-1.5 sm:px-4 sm:py-2 font-medium text-xs sm:text-sm transition-all duration-150 border border-[hsl(35,16%,87%)] bg-transparent text-[hsl(28,8%,50%)] hover:border-[hsl(28,25%,72%)] hover:text-[hsl(28,18%,30%)] data-[state=active]:border-[hsl(28,42%,52%)] data-[state=active]:text-[hsl(28,38%,24%)] data-[state=active]:bg-[hsl(35,28%,92%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)] dark:text-[hsl(30,8%,50%)] dark:hover:border-[hsl(28,30%,40%)] dark:hover:text-[hsl(30,8%,68%)] dark:data-[state=active]:border-[hsl(28,45%,42%)] dark:data-[state=active]:text-[hsl(35,10%,82%)] dark:data-[state=active]:bg-[hsl(28,14%,20%)]';
+  const primaryTabClass = 'primary-tab flex-1 rounded-none px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
+  const secondaryTabClass = 'shrink-0 rounded px-2.5 py-1.5 sm:px-4 sm:py-2 font-medium text-xs sm:text-sm transition-all duration-150 border border-[hsl(35,16%,87%)] bg-transparent text-[hsl(28,8%,50%)] hover:border-[hsl(28,25%,72%)] hover:text-[hsl(28,18%,30%)] data-[state=active]:border-[hsl(28,42%,52%)] data-[state=active]:text-[hsl(28,38%,24%)] data-[state=active]:bg-[hsl(35,28%,92%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)] dark:text-[hsl(30,8%,50%)] dark:hover:border-[hsl(28,30%,40%)] dark:hover:text-[hsl(30,8%,68%)] dark:data-[state=active]:border-[hsl(28,45%,42%)] dark:data-[state=active]:text-[hsl(35,10%,82%)] dark:data-[state=active]:bg-[hsl(28,14%,20%)]';
 
   return (
     <div className="min-h-screen p-3 sm:p-6 bg-[hsl(38,30%,97%)] dark:bg-[hsl(25,8%,6%)]">
@@ -1401,7 +1401,7 @@ const Index = () => {
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
             </div>
-            <TabsList className="flex flex-wrap gap-1 sm:gap-1.5 bg-transparent p-0 h-auto">
+            <TabsList className="flex flex-nowrap overflow-x-auto gap-1 sm:gap-1.5 bg-transparent p-0 h-auto scrollbar-none">
               <TabsTrigger value="district-stats" className={secondaryTabClass}>District Stats</TabsTrigger>
               <TabsTrigger value="city-stats" className={secondaryTabClass}>City Stats</TabsTrigger>
               <TabsTrigger value="evolution" className={secondaryTabClass}>Evolution</TabsTrigger>

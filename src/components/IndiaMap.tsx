@@ -93,7 +93,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
   const labelSecondaryColor = darkMode ? '#8a7f72' : '#6b7280';
 
   useEffect(() => {
-    setLegendPosition(isMobile ? { x: 190, y: 10 } : DEFAULT_LEGEND_POSITION.STATES);
+    setLegendPosition(isMobile ? { x: 10, y: 290 } : DEFAULT_LEGEND_POSITION.STATES);
   }, [isMobile]);
 
   useEffect(() => {
