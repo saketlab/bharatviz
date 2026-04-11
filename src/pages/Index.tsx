@@ -1199,7 +1199,7 @@ const Index = () => {
   };
 
   const getSEOContent = () => {
-    const baseUrl = 'https://bharatviz.saketlab.org';
+    const baseUrl = 'https://bharatviz.org';
 
     const seoConfigs = {
       states: {
@@ -1314,7 +1314,7 @@ const Index = () => {
         <meta property="og:url" content={seoContent.canonical} />
         <meta property="og:title" content={seoContent.ogTitle} />
         <meta property="og:description" content={seoContent.ogDescription} />
-        <meta property="og:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
+        <meta property="og:image" content="https://bharatviz.org/bharatviz_favicon.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="BharatViz: Mapping India" />
@@ -1325,7 +1325,7 @@ const Index = () => {
         <meta name="twitter:url" content={seoContent.canonical} />
         <meta name="twitter:title" content={seoContent.ogTitle} />
         <meta name="twitter:description" content={seoContent.ogDescription} />
-        <meta name="twitter:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
+        <meta name="twitter:image" content="https://bharatviz.org/bharatviz_favicon.png" />
         <meta name="twitter:image:alt" content="BharatViz: Mapping India" />
         <meta name="twitter:site" content="@saketkc" />
         <meta name="twitter:creator" content="@saketkc" />
@@ -1342,7 +1342,7 @@ const Index = () => {
             "@type": "WebApplication",
             "name": "BharatViz",
             "description": "Fast choropleth maps for India - visualize state and district level data",
-            "url": "https://bharatviz.saketlab.org",
+            "url": "https://bharatviz.org",
             "applicationCategory": "DataVisualization",
             "operatingSystem": "Web Browser",
             "offers": {
@@ -2181,7 +2181,7 @@ POST /api/v1/districts/map
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">iframe embed</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`<iframe
-  src="https://bharatviz.saketlab.org/api/v1/embed?dataUrl=https://yoursite.com/data.csv&colorScale=viridis&title=My%20Map"
+  src="https://bharatviz.org/api/v1/embed?dataUrl=https://yoursite.com/data.csv&colorScale=viridis&title=My%20Map"
   width="800"
   height="600"
   frameborder="0">
@@ -2193,7 +2193,7 @@ POST /api/v1/districts/map
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">JavaScript widget</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
 {`<div id="my-map"></div>
-<script src="https://bharatviz.saketlab.org/api/embed.js"></script>
+<script src="https://bharatviz.org/api/embed.js"></script>
 <script>
   BharatViz.embed({
     container: '#my-map',
@@ -2208,7 +2208,7 @@ POST /api/v1/districts/map
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Direct SVG</h3>
                       <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
-{`<img src="https://bharatviz.saketlab.org/api/v1/embed/svg?dataUrl=https://yoursite.com/data.csv&colorScale=viridis" />`}
+{`<img src="https://bharatviz.org/api/v1/embed/svg?dataUrl=https://yoursite.com/data.csv&colorScale=viridis" />`}
                       </pre>
                     </div>
 
@@ -2218,7 +2218,7 @@ POST /api/v1/districts/map
 {`# 1. Create data.csv in your GitHub repo
 # 2. Enable GitHub Pages in repo settings
 # 3. Embed using your GitHub Pages URL:
-<iframe src="https://bharatviz.saketlab.org/api/v1/embed?dataUrl=https://USERNAME.github.io/REPO/data.csv&colorScale=viridis"></iframe>`}
+<iframe src="https://bharatviz.org/api/v1/embed?dataUrl=https://USERNAME.github.io/REPO/data.csv&colorScale=viridis"></iframe>`}
                       </pre>
                     </div>
 

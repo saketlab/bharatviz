@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, Server, Plug, Code2, Palette, Map, Link2 } from 'lucide-react';
+import { Copy, Check, Terminal, Server, Plug, Code2, Palette, Map, Link2, GitBranch } from 'lucide-react';
 
 interface MCPDocsProps {
   darkMode?: boolean;
@@ -34,6 +34,13 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code }) => (
   </div>
 );
 
+const CurlExample: React.FC<{ label: string; code: string }> = ({ label, code }) => (
+  <div>
+    <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">{label}</p>
+    <CodeBlock code={code} />
+  </div>
+);
+
 const MCPDocs: React.FC<MCPDocsProps> = () => {
   const cardClass = 'p-5 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]';
   const headingClass = 'font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]';
@@ -46,7 +53,7 @@ const MCPDocs: React.FC<MCPDocsProps> = () => {
   "mcpServers": {
     "bharatviz": {
       "type": "url",
-      "url": "https://bharatviz.saketlab.org/api/mcp"
+      "url": "https://bharatviz.org/api/mcp"
     }
   }
 }`;
@@ -221,7 +228,7 @@ npm run build`;
             1. Add to your AI assistant (Recommended - no install needed)
           </h4>
           <p className={`${textClass} mb-3`}>
-            Use the hosted MCP server at <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.saketlab.org/api/mcp</code>. No cloning or building required.
+            Use the hosted MCP server at <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.org/api/mcp</code>. No cloning or building required.
           </p>
 
           <div className="space-y-4">
@@ -380,13 +387,13 @@ npm run build`;
           <div className="mt-4 space-y-2">
             <p className="font-medium text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Examples:</p>
             <CodeBlock code={`# Mumbai wards with viridis color scale in dark mode
-https://bharatviz.saketlab.org/cities?city=Mumbai&dataset=mumbai&colorScale=viridis&darkMode=true
+https://bharatviz.org/cities?city=Mumbai&dataset=mumbai&colorScale=viridis&darkMode=true
 
 # Maharashtra districts with Census 2011 boundaries
-https://bharatviz.saketlab.org/state-districts?selectedState=Maharashtra&mapType=census-2011-districts
+https://bharatviz.org/state-districts?selectedState=Maharashtra&mapType=census-2011-districts
 
 # Load external CSV data into district view
-https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&colorScale=blues`} />
+https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=blues`} />
           </div>
         </div>
       </div>
@@ -424,6 +431,93 @@ https://bharatviz.saketlab.org/districts?dataUrl=https://example.com/data.csv&co
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="space-y-4">
+        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+          <GitBranch className="h-5 w-5" />
+          District Evolution API
+        </h3>
+
+        <div className={cardClass}>
+          <p className={`${textClass} mb-4`}>
+            Trace how a district's name and boundaries changed across Indian Census years (1951–2011).
+            Districts can split, merge, or be renamed — the API traces these changes forward and backward.
+            An interactive Swagger UI is available at{' '}
+            <a
+              href="/api-docs"
+              className="text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)] underline underline-offset-2"
+            >
+              /api-docs
+            </a>.
+          </p>
+
+          <div className="space-y-5">
+            <CurlExample
+              label="Trace a district across all census years:"
+              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"`}
+            />
+            <CurlExample
+              label="Get a single year's entry:"
+              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=24%20Parganas&state=West%20Bengal&year=1991"`}
+            />
+            <CurlExample
+              label="Include GeoJSON boundary polygons for each year:"
+              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"`}
+            />
+            <CurlExample
+              label="Download the full deduplicated transition table (3,636 rows):"
+              code={`curl -O "https://bharatviz.org/api/v1/district-evolution/data.csv"`}
+            />
+            <CurlExample
+              label="Example response — Coimbatore split over time:"
+              code={`{
+  "query": { "district": "Coimbatore", "state": "Tamil Nadu" },
+  "matches": [{
+    "modern_state": "Tamil Nadu",
+    "evolution": {
+      "1951": { "state": "Tamil Nadu", "district": "Coimbatore" },
+      "1961": { "state": "Tamil Nadu", "district": "Coimbatore" },
+      "1971": { "state": "Tamil Nadu", "district": "Coimbatore" },
+      "1981": { "state": "Tamil Nadu", "district": "Periyar / Coimbatore" },
+      "1991": { "state": "Tamil Nadu", "district": "Periyar / Coimbatore" },
+      "2001": { "state": "Tamil Nadu", "district": "Erode / Coimbatore" },
+      "2011": { "state": "Tamil Nadu", "district": "Erode / Tiruppur / Coimbatore" }
+    }
+  }]
+}`}
+            />
+          </div>
+
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
+              <thead>
+                <tr>
+                  <th className={`${tableHeaderClass} border`}>Parameter</th>
+                  <th className={`${tableHeaderClass} border`}>Required</th>
+                  <th className={`${tableHeaderClass} border`}>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { param: 'district', req: 'Yes', desc: 'District name (case-insensitive)' },
+                  { param: 'state', req: 'No', desc: 'Modern state name to narrow results' },
+                  { param: 'year', req: 'No', desc: 'Census year: 1951 | 1961 | 1971 | 1981 | 1991 | 2001 | 2011' },
+                  { param: 'geojson', req: 'No', desc: 'Attach WGS84 boundary polygons for each year (true/false)' },
+                ].map((row) => (
+                  <tr key={row.param}>
+                    <td className={`${tableCellClass} border font-mono text-xs`}>
+                      <span className={badgeClass}>{row.param}</span>
+                    </td>
+                    <td className={`${tableCellClass} border text-xs`}>{row.req}</td>
+                    <td className={`${tableCellClass} border`}>{row.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

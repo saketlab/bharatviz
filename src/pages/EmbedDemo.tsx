@@ -201,13 +201,13 @@ const EmbedDemo = () => {
         <meta name="description" content="Easily embed beautiful, interactive choropleth maps of India on your website. State-level and district-level data visualization with simple iframe or JavaScript integration. Free to use." />
         <meta name="keywords" content="embed India maps, interactive maps, choropleth embed, India data visualization, map widget, iframe maps, district maps embed, state maps widget, REST API maps, data journalism India" />
 
-        <link rel="canonical" href="https://bharatviz.saketlab.org/embed-demo" />
+        <link rel="canonical" href="https://bharatviz.org/embed-demo" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://bharatviz.saketlab.org/embed-demo" />
+        <meta property="og:url" content="https://bharatviz.org/embed-demo" />
         <meta property="og:title" content="Embed Interactive India Maps on Your Website | BharatViz" />
         <meta property="og:description" content="Easily embed beautiful, interactive choropleth maps of India on your website. State-level and district-level data visualization with simple iframe or JavaScript integration. Free to use." />
-        <meta property="og:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
+        <meta property="og:image" content="https://bharatviz.org/bharatviz_favicon.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="BharatViz - Interactive India Maps Embed Demo" />
@@ -215,10 +215,10 @@ const EmbedDemo = () => {
         <meta property="og:locale" content="en_US" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content="https://bharatviz.saketlab.org/embed-demo" />
+        <meta name="twitter:url" content="https://bharatviz.org/embed-demo" />
         <meta name="twitter:title" content="Embed Interactive India Maps on Your Website | BharatViz" />
         <meta name="twitter:description" content="Easily embed beautiful, interactive choropleth maps of India. State-level and district-level data visualization with simple iframe or JavaScript integration." />
-        <meta name="twitter:image" content="https://bharatviz.saketlab.org/bharatviz_favicon.png" />
+        <meta name="twitter:image" content="https://bharatviz.org/bharatviz_favicon.png" />
         <meta name="twitter:image:alt" content="BharatViz - Interactive India Maps" />
         <meta name="twitter:site" content="@saketkc" />
         <meta name="twitter:creator" content="@saketkc" />
@@ -233,7 +233,7 @@ const EmbedDemo = () => {
             "@type": "HowTo",
             "name": "How to Embed Interactive India Maps",
             "description": "Learn how to embed beautiful, interactive choropleth maps of India on your website using BharatViz",
-            "image": "https://bharatviz.saketlab.org/bharatviz_favicon.png",
+            "image": "https://bharatviz.org/bharatviz_favicon.png",
             "step": [
               {
                 "@type": "HowToStep",

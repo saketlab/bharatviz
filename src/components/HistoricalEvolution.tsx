@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { EvolutionMap } from './EvolutionMap';
 import { IndiaEvolutionMap } from './IndiaEvolutionMap';
+import { DistrictEvolutionSearch } from './DistrictEvolutionSearch';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
 const VIEWS = [
+  { id: 'district',   label: 'District Search' },
   { id: 'india',      label: 'India 1951–2024' },
   { id: 'india1872',  label: 'India 1872–1941' },
   { id: 'bombay',     label: 'Bombay 1872–1941' },
@@ -15,12 +18,14 @@ const DESCRIPTIONS: Record<View, string> = {
   india:      'District boundaries across eight census decades. Colours trace each district to its 1951 origin — splits, merges, and renames preserve the parent\'s colour.',
   india1872:  'All-India district boundaries across eight census decades under British colonial administration. Colours trace each district to its 1872 origin.',
   bombay:     'Spatial boundaries of Bombay Presidency across seven census years. Colours trace each district to its 1872 origin.',
+  district:   'Trace any district\'s boundaries across census years 1951–2011. Districts that split, merge, or were renamed are shown at each decade.',
 };
 
 const SOURCES: Record<View, string> = {
   india:      'GeoJSON: Census of India. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
   india1872:  'GeoJSON: Jolad et al., Harvard Dataverse. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
   bombay:     'GeoJSON: Jolad et al., Harvard Dataverse. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
+  district:   'Boundaries: harmonized Census GeoJSONs (1951–2011). Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
 };
 
 const INDIA_1872_GEOJSON_YEAR: Record<number, number> = {
@@ -30,7 +35,36 @@ const INDIA_1872_GEOJSON_YEAR: Record<number, number> = {
 
 export function HistoricalEvolution({ darkMode: _darkMode }: { darkMode?: boolean } = {}) {
   const { dark: darkMode } = useDarkMode();
-  const [view, setView] = useState<View>('india');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const viewFromUrl = searchParams.get('evoView') as View | null;
+  const [view, setView] = useState<View>(
+    viewFromUrl && (VIEWS as readonly { id: string }[]).some(v => v.id === viewFromUrl) ? viewFromUrl : 'district'
+  );
+
+  const districtFromUrl = searchParams.get('evoDistrict') ?? undefined;
+  const initialDistrict = useRef(districtFromUrl ?? 'Hazaribagh');
+
+  const handleViewChange = (v: View) => {
+    setView(v);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.set('evoView', v);
+      if (v !== 'district') next.delete('evoDistrict');
+      return next;
+    }, { replace: true });
+  };
+
+  useEffect(() => {
+    if (!searchParams.has('evoView')) {
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.set('evoView', view);
+        return next;
+      }, { replace: true });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-0">
@@ -48,7 +82,7 @@ export function HistoricalEvolution({ darkMode: _darkMode }: { darkMode?: boolea
             {VIEWS.map(v => (
               <button
                 key={v.id}
-                onClick={() => setView(v.id)}
+                onClick={() => handleViewChange(v.id)}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 ${
                   view === v.id
                     ? 'bg-white text-amber-700 shadow-sm dark:bg-[hsl(25,8%,18%)] dark:text-[hsl(28,55%,58%)]'
@@ -73,6 +107,18 @@ export function HistoricalEvolution({ darkMode: _darkMode }: { darkMode?: boolea
           />
         )}
         {view === 'bombay' && <EvolutionMap darkMode={darkMode} />}
+        {view === 'district' && (
+          <DistrictEvolutionSearch
+            darkMode={darkMode}
+            defaultDistrict={initialDistrict.current}
+            onDistrictChange={d => setSearchParams(prev => {
+              const next = new URLSearchParams(prev);
+              next.set('evoView', 'district');
+              if (d) next.set('evoDistrict', d); else next.delete('evoDistrict');
+              return next;
+            }, { replace: true })}
+          />
+        )}
       </div>
 
       <p className="pt-2 text-[10px] text-[hsl(28,8%,60%)] dark:text-[hsl(30,8%,40%)]">

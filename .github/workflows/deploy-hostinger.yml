@@ -62,6 +62,29 @@ jobs:
           target: "/var/www/bharatviz/"
           overwrite: true
 
+      - name: Deploy harmonized district data to Hostinger
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT || 22 }}
+          source: "harmonized_districts/district_proliferation_1951_2024.csv"
+          target: "/var/www/bharatviz/"
+          overwrite: true
+
+      - name: Deploy harmonized GeoJSON boundaries to Hostinger
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT || 22 }}
+          source: "public/harmonized-districts/*"
+          target: "/var/www/bharatviz/public/harmonized-districts/"
+          strip_components: 2
+          overwrite: true
+
       - name: Build and restart API server
         uses: appleboy/ssh-action@v1.0.3
         with:

@@ -5,12 +5,15 @@ import rateLimit from 'express-rate-limit';
 import { randomUUID } from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import swaggerUi from 'swagger-ui-express';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMcpServer } from './mcpTools.js';
 import mapRoutes from './routes/mapRoutes.js';
 import districtsMapRoutes from './routes/districtsMapRoutes.js';
 import embedRoutes from './routes/embedRoutes.js';
 import proxyRoutes from './routes/proxyRoutes.js';
+import districtEvolutionRoutes from './routes/districtEvolutionRoutes.js';
+import { openApiSpec } from './openapi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,6 +43,11 @@ app.use(helmet({
   }
 }));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, {
+  customSiteTitle: 'BharatViz API Docs',
+  swaggerOptions: { defaultModelsExpandDepth: -1 },
+}));
+
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST'],
@@ -52,7 +60,8 @@ const limiter = rateLimit({
   max: 100,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1',
 });
 
 app.use('/api/', limiter);
@@ -131,6 +140,7 @@ app.use('/api/v1/states', mapRoutes);
 app.use('/api/v1/districts', districtsMapRoutes);
 app.use('/api/v1/embed', embedRoutes);
 app.use('/api/v1/proxy', proxyRoutes);
+app.use('/api/v1/district-evolution', districtEvolutionRoutes);
 
 app.get('/api/embed.js', (req, res) => {
   res.type('application/javascript');
@@ -147,7 +157,20 @@ app.get('/', (req, res) => {
     name: 'BharatViz API',
     version: '1.0.0',
     description: 'Generate India choropleth maps programmatically',
+    docs: 'https://bharatviz.org/api-docs',
     endpoints: {
+      'GET /api/v1/district-evolution': {
+        description: 'Trace a district\'s name across census years 1951–2011',
+        params: {
+          district: 'string - Required',
+          state: 'string - Optional (narrows to one state)',
+          year: 'number - Optional (1951|1961|1971|1981|1991|2001|2011)',
+          geojson: 'boolean - Optional (attach boundary polygons)',
+        },
+      },
+      'GET /api/v1/district-evolution/data.csv': {
+        description: 'Download deduplicated district transition table as CSV',
+      },
       'POST /api/v1/states/map': {
         description: 'Generate state-level choropleth map',
         requestBody: {
