@@ -43,10 +43,19 @@ app.use(helmet({
   }
 }));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, {
-  customSiteTitle: 'BharatViz API Docs',
-  swaggerOptions: { defaultModelsExpandDepth: -1 },
-}));
+app.use('/api-docs', swaggerUi.serve, (req: any, res: any, next: any) => {
+  const isLocal = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
+  const spec = {
+    ...openApiSpec,
+    servers: isLocal
+      ? [{ url: 'http://localhost:3001', description: 'Local development' }]
+      : [{ url: 'https://bharatviz.org', description: 'Production' }],
+  };
+  swaggerUi.setup(spec, {
+    customSiteTitle: 'BharatViz API Docs',
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  })(req, res, next);
+});
 
 app.use(cors({
   origin: '*',

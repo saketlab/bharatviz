@@ -12,8 +12,7 @@ export const openApiSpec = {
     license: { name: 'MIT' },
   },
   servers: [
-    { url: 'https://bharatviz.saketlab.org', description: 'Production' },
-    { url: 'http://localhost:3001', description: 'Local development' },
+    { url: 'https://bharatviz.org', description: 'Production' },
   ],
   tags: [
     { name: 'District Evolution', description: 'Trace how districts changed across census years (1951–2011)' },
@@ -24,13 +23,11 @@ export const openApiSpec = {
       get: {
         tags: ['District Evolution'],
         summary: 'Trace a district across census years',
-        description: `Returns the name(s) a district had in each census year from 1951 to 2011.
+        description: `Returns the district(s) a given district evolved into/from across census years 1951–2011.
 
-When a district **splits**, multiple successor names are joined with \` / \` (e.g. \`"North Twenty Four Parganas / South Twenty Four Parganas"\`).
+Each year maps to an **array** of entries — one per district part. When a district splits, each successor is a separate object. Empty array means the district did not exist that year.
 
-When a district **merges**, the backward trace returns the predecessor name(s).
-
-If \`state\` is omitted and the district name is ambiguous, all matching states are returned.`,
+If \`state\` is omitted and the district name is ambiguous, all matching states are returned as separate matches.`,
         parameters: [
           {
             name: 'district',
@@ -91,18 +88,20 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                           modern_state: { type: 'string', description: 'Modern state name from the mapping table' },
                           evolution: {
                             type: 'object',
-                            description: 'Map of census year → district name(s). Null if the district did not exist that year.',
+                            description: 'Map of census year → array of district entries. Empty array if the district did not exist that year.',
                             additionalProperties: {
-                              oneOf: [
-                                {
-                                  type: 'object',
-                                  properties: {
-                                    state: { type: 'string' },
-                                    district: { type: 'string', description: 'District name, or "A / B / C" for splits' },
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  state: { type: 'string' },
+                                  district: { type: 'string' },
+                                  geojson: {
+                                    description: 'GeoJSON FeatureCollection for this district (only present when geojson=true)',
+                                    oneOf: [{ type: 'object' }, { type: 'null' }],
                                   },
                                 },
-                                { type: 'null' },
-                              ],
+                              },
                             },
                           },
                         },
@@ -112,19 +111,19 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                 },
                 examples: {
                   coimbatore: {
-                    summary: 'Coimbatore — name stable, boundary splits',
+                    summary: 'Coimbatore — splits into Periyar, Erode, Tiruppur over time',
                     value: {
                       query: { district: 'Coimbatore', state: 'Tamil Nadu' },
                       matches: [{
                         modern_state: 'Tamil Nadu',
                         evolution: {
-                          '1951': { state: 'Tamil Nadu', district: 'Coimbatore' },
-                          '1961': { state: 'Tamil Nadu', district: 'Coimbatore' },
-                          '1971': { state: 'Tamil Nadu', district: 'Coimbatore' },
-                          '1981': { state: 'Tamil Nadu', district: 'Periyar / Coimbatore' },
-                          '1991': { state: 'Tamil Nadu', district: 'Periyar / Coimbatore' },
-                          '2001': { state: 'Tamil Nadu', district: 'Erode / Coimbatore' },
-                          '2011': { state: 'Tamil Nadu', district: 'Erode / Tiruppur / Coimbatore' },
+                          '1951': [{ state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '1961': [{ state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '1971': [{ state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '1981': [{ state: 'Tamil Nadu', district: 'Periyar' }, { state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '1991': [{ state: 'Tamil Nadu', district: 'Periyar' }, { state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '2001': [{ state: 'Tamil Nadu', district: 'Erode' }, { state: 'Tamil Nadu', district: 'Coimbatore' }],
+                          '2011': [{ state: 'Tamil Nadu', district: 'Erode' }, { state: 'Tamil Nadu', district: 'Tiruppur' }, { state: 'Tamil Nadu', district: 'Coimbatore' }],
                         },
                       }],
                     },
@@ -136,10 +135,13 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                       matches: [{
                         modern_state: 'West Bengal',
                         evolution: {
-                          '1951': { state: 'West Bengal', district: '24 - Parganas' },
-                          '1971': { state: 'West Bengal', district: 'Twenty Four Parganas' },
-                          '1991': { state: 'West Bengal', district: 'North Twenty Four Parganas / South Twenty Four Parganas' },
-                          '2011': { state: 'West Bengal', district: 'North Twenty Four Parganas / South Twenty Four Parganas' },
+                          '1951': [{ state: 'West Bengal', district: '24 - Parganas' }],
+                          '1961': [],
+                          '1971': [{ state: 'West Bengal', district: 'Twenty Four Parganas' }],
+                          '1981': [],
+                          '1991': [{ state: 'West Bengal', district: 'North Twenty Four Parganas' }, { state: 'West Bengal', district: 'South Twenty Four Parganas' }],
+                          '2001': [{ state: 'West Bengal', district: 'North Twenty Four Parganas' }, { state: 'West Bengal', district: 'South Twenty Four Parganas' }],
+                          '2011': [{ state: 'West Bengal', district: 'North Twenty Four Parganas' }, { state: 'West Bengal', district: 'South Twenty Four Parganas' }],
                         },
                       }],
                     },
