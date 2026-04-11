@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, Server, Plug, Code2, Palette, Map, Link2, GitBranch } from 'lucide-react';
+import { Copy, Check, Terminal, Server, Plug, Code2, Palette, Map, Link2, GitBranch, Hash } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface MCPDocsProps {
   darkMode?: boolean;
@@ -24,6 +25,12 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
     </button>
   );
 };
+
+const SectionAnchor: React.FC<{ id: string }> = ({ id }) => (
+  <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 hover:!opacity-100 text-inherit transition-opacity" aria-hidden>
+    <Hash className="h-4 w-4 inline" />
+  </a>
+);
 
 const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code }) => (
   <div className="relative">
@@ -205,9 +212,10 @@ npm run build`;
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div>
-        <h2 className={`text-2xl ${headingClass} mb-2 flex items-center gap-3`}>
+        <h2 id="mcp-server" className={`text-2xl ${headingClass} mb-2 flex items-center gap-3 group`}>
           <Plug className="h-7 w-7" />
           MCP Server for AI Assistants
+          <SectionAnchor id="mcp-server" />
         </h2>
         <p className={`${textClass} text-lg`}>
           Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate
@@ -218,9 +226,10 @@ npm run build`;
       </div>
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="quick-start" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
           Quick Start
+          <SectionAnchor id="quick-start" />
         </h3>
 
         <div className={cardClass}>
@@ -286,9 +295,10 @@ npm run build`;
       </div>
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="available-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Server className="h-5 w-5" />
           Available Tools
+          <SectionAnchor id="available-tools" />
         </h3>
 
         <div className="overflow-x-auto">
@@ -317,9 +327,10 @@ npm run build`;
 
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="examples" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Code2 className="h-5 w-5" />
           Examples
+          <SectionAnchor id="examples" />
         </h3>
 
         <div className={cardClass}>
@@ -339,9 +350,10 @@ npm run build`;
 
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="shareable-urls" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Link2 className="h-5 w-5" />
           Shareable URLs
+          <SectionAnchor id="shareable-urls" />
         </h3>
 
         <div className={cardClass}>
@@ -400,9 +412,10 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
 
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="color-scales" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Palette className="h-5 w-5" />
           Color Scales
+          <SectionAnchor id="color-scales" />
         </h3>
 
         <div className={cardClass}>
@@ -437,9 +450,10 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
 
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="district-evolution-api" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <GitBranch className="h-5 w-5" />
           District Evolution API
+          <SectionAnchor id="district-evolution-api" />
         </h3>
 
         <div className={cardClass}>
@@ -455,41 +469,155 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
             </a>.
           </p>
 
-          <div className="space-y-5">
-            <CurlExample
-              label="Trace a district across all census years:"
-              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"`}
-            />
-            <CurlExample
-              label="Get a single year's entry:"
-              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=24%20Parganas&state=West%20Bengal&year=1991"`}
-            />
-            <CurlExample
-              label="Include GeoJSON boundary polygons for each year:"
-              code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"`}
-            />
-            <CurlExample
-              label="Download the full deduplicated transition table (3,636 rows):"
-              code={`curl -O "https://bharatviz.org/api/v1/district-evolution/data.csv"`}
-            />
-            <CurlExample
-              label="Example response — Coimbatore split over time:"
-              code={`{
+          <Tabs defaultValue="curl" className="mb-5">
+            <TabsList className="mb-3">
+              <TabsTrigger value="curl">curl</TabsTrigger>
+              <TabsTrigger value="python">Python</TabsTrigger>
+              <TabsTrigger value="r">R</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="curl" className="space-y-5">
+              <CurlExample
+                label="Trace a district across all census years:"
+                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"`}
+              />
+              <CurlExample
+                label="Get a single year's entry:"
+                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=24%20Parganas&state=West%20Bengal&year=1991"`}
+              />
+              <CurlExample
+                label="Include GeoJSON boundary polygons:"
+                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"`}
+              />
+              <CurlExample
+                label="Download full transition table (CSV):"
+                code={`curl -O "https://bharatviz.org/api/v1/district-evolution/data.csv"`}
+              />
+            </TabsContent>
+
+            <TabsContent value="python" className="space-y-5">
+              <CurlExample
+                label="Trace a district across all census years:"
+                code={`import urllib.request, json
+
+url = "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"
+with urllib.request.urlopen(url) as r:
+    data = json.load(r)
+
+match = data["matches"][0]
+for year, entries in match["evolution"].items():
+    names = [e["district"] for e in entries]
+    print(year, "→", ", ".join(names) if names else "(not extant)")`}
+              />
+              <CurlExample
+                label="Fetch with GeoJSON and plot with geopandas:"
+                code={`import urllib.request, json
+import geopandas as gpd
+import matplotlib.pyplot as plt
+
+url = "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"
+with urllib.request.urlopen(url) as r:
+    data = json.load(r)
+
+match = data["matches"][0]
+fig, axes = plt.subplots(1, 7, figsize=(21, 4))
+for ax, (year, entries) in zip(axes, match["evolution"].items()):
+    features = [e["geojson"] for e in entries if e.get("geojson")]
+    all_features = [f for fc in features for f in fc["features"]]
+    if all_features:
+        gdf = gpd.GeoDataFrame.from_features(all_features)
+        gdf.plot(ax=ax, color="#e07b39", edgecolor="white", linewidth=0.5)
+    ax.set_title(year, fontsize=9)
+    ax.axis("off")
+plt.tight_layout()
+plt.show()`}
+              />
+              <CurlExample
+                label="Download transition CSV into pandas:"
+                code={`import pandas as pd
+
+df = pd.read_csv("https://bharatviz.org/api/v1/district-evolution/data.csv")
+print(df.head())`}
+              />
+            </TabsContent>
+
+            <TabsContent value="r" className="space-y-5">
+              <CurlExample
+                label="Trace a district across all census years:"
+                code={`library(httr2)
+library(purrr)
+
+resp <- request("https://bharatviz.org/api/v1/district-evolution") |>
+  req_url_query(district = "Coimbatore", state = "Tamil Nadu") |>
+  req_perform() |>
+  resp_body_json()
+
+match <- resp$matches[[1]]
+imap(match$evolution, \\(entries, year) {
+  names <- map_chr(entries, "district")
+  cat(year, "→", paste(names, collapse = ", "), "\\n")
+})`}
+              />
+              <CurlExample
+                label="Fetch with GeoJSON and plot with sf:"
+                code={`library(httr2)
+library(sf)
+library(purrr)
+library(ggplot2)
+
+resp <- request("https://bharatviz.org/api/v1/district-evolution") |>
+  req_url_query(district = "Coimbatore", geojson = "true") |>
+  req_perform() |>
+  resp_body_json()
+
+match <- resp$matches[[1]]
+panels <- imap(match$evolution, \\(entries, year) {
+  features <- keep(map(entries, "geojson"), \\(g) !is.null(g))
+  if (length(features) == 0) return(NULL)
+  all_features <- list_rbind(map(features, \\(fc) {
+    st_read(jsonlite::toJSON(fc, auto_unbox = TRUE), quiet = TRUE)
+  }))
+  list(year = year, gdf = all_features)
+}) |> compact()
+
+plots <- map(panels, \\(p) {
+  ggplot(p$gdf) +
+    geom_sf(fill = "#e07b39", colour = "white", linewidth = 0.3) +
+    ggtitle(p$year) + theme_void() +
+    theme(plot.title = element_text(hjust = 0.5, size = 9))
+})
+patchwork::wrap_plots(plots, nrow = 1)`}
+              />
+              <CurlExample
+                label="Download transition CSV:"
+                code={`df <- read.csv("https://bharatviz.org/api/v1/district-evolution/data.csv")
+head(df)`}
+              />
+            </TabsContent>
+          </Tabs>
+
+          <div className="mb-5">
+            <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Example response — Coimbatore split over time:</p>
+            <CodeBlock code={`{
   "query": { "district": "Coimbatore", "state": "Tamil Nadu" },
   "matches": [{
     "modern_state": "Tamil Nadu",
     "evolution": {
-      "1951": { "state": "Tamil Nadu", "district": "Coimbatore" },
-      "1961": { "state": "Tamil Nadu", "district": "Coimbatore" },
-      "1971": { "state": "Tamil Nadu", "district": "Coimbatore" },
-      "1981": { "state": "Tamil Nadu", "district": "Periyar / Coimbatore" },
-      "1991": { "state": "Tamil Nadu", "district": "Periyar / Coimbatore" },
-      "2001": { "state": "Tamil Nadu", "district": "Erode / Coimbatore" },
-      "2011": { "state": "Tamil Nadu", "district": "Erode / Tiruppur / Coimbatore" }
+      "1951": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "1961": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "1971": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "1981": [{ "state": "Tamil Nadu", "district": "Periyar" },
+               { "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "1991": [{ "state": "Tamil Nadu", "district": "Periyar" },
+               { "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "2001": [{ "state": "Tamil Nadu", "district": "Erode" },
+               { "state": "Tamil Nadu", "district": "Coimbatore" }],
+      "2011": [{ "state": "Tamil Nadu", "district": "Erode" },
+               { "state": "Tamil Nadu", "district": "Tiruppur" },
+               { "state": "Tamil Nadu", "district": "Coimbatore" }]
     }
   }]
-}`}
-            />
+}`} />
           </div>
 
           <div className="mt-4 overflow-x-auto">
@@ -524,9 +652,10 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
 
 
       <div className="space-y-4">
-        <h3 className={`text-xl ${headingClass} flex items-center gap-2`}>
+        <h3 id="map-boundaries" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Map className="h-5 w-5" />
           All 41 Available Map Boundaries
+          <SectionAnchor id="map-boundaries" />
         </h3>
 
         <div className="overflow-x-auto">
