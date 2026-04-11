@@ -101,13 +101,11 @@ jobs:
 
             cd /var/www/bharatviz/server
 
-            if [ ! -f .env.production ]; then
-              cat > .env.production << 'EOF'
+            cat > .env.production << 'EOF'
             NODE_ENV=production
             PORT=3001
-            ALLOWED_ORIGINS=http://bharatviz.saketlab.org,https://bharatviz.saketlab.org
+            ALLOWED_ORIGINS=http://bharatviz.org,https://bharatviz.org,http://bharatviz.saketlab.org,https://bharatviz.saketlab.org
             EOF
-            fi
 
             npm install
             npm run build
