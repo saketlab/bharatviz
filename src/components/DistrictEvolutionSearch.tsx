@@ -433,11 +433,11 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
             }`}>
               <span className="mt-0.5 h-3 w-3 rounded-full shrink-0" style={{ background: DISTRICT_COLOR }} />
               <div className="min-w-0">
-                <span className={`font-semibold ${darkMode ? 'text-amber-400' : 'text-amber-800'}`}>
+                <div className={`font-semibold ${darkMode ? 'text-amber-400' : 'text-amber-800'}`}>
                   {response?.query.district}
-                </span>
-                <span className={` · ${muted}`}>{match.modern_state}</span>
-                <div className={`mt-0.5 leading-relaxed ${muted}`}>
+                </div>
+                <div className={`mt-0.5 text-xs ${muted}`}>{match.modern_state}</div>
+                <div className={`mt-1.5 leading-relaxed ${muted}`}>
                   {CENSUS_YEARS.map((y, i) => {
                     const entries = match.evolution[String(y)];
                     const label = entries?.length ? entries.map(e => e.district).join(' / ') : null;

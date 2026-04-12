@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import * as d3 from 'd3';
 import { Feature } from 'geojson';
+import { Search, X } from 'lucide-react';
 
 interface EvoNode {
   id: string;
@@ -128,11 +129,13 @@ function initPanel(
   const { darkMode } = state;
   const W = wrapEl.clientWidth || 200;
   const H = Math.round(W * (showLabel ? 1.35 : 1.1));
-  const strokeColor = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
+  const bgColor    = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
+  const strokeColor = bgColor;
 
   const svg = d3.select(svgEl);
   svg.selectAll('*').remove();
   svg.attr('width', W).attr('height', H);
+  svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
   const fitTarget = refFC ?? fc;
   const pad = showLabel ? 16 : 8;
@@ -302,7 +305,7 @@ function Panel({
     >
       {showLabel && selectedNames && (
         <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
-          darkMode ? 'bg-red-950 text-red-300' : 'bg-red-50 text-red-700'
+          darkMode ? 'bg-[hsl(22,60%,14%)] text-[hsl(22,70%,60%)]' : 'bg-[hsl(28,80%,96%)] text-[hsl(22,62%,38%)]'
         }`}>
           {selectedNames.join(' · ')}
         </div>
@@ -340,6 +343,9 @@ export function IndiaEvolutionMap({
   const [loading, setLoading]         = useState(true);
   const [hovered, setHovered]         = useState<string | null>(null);
   const [clickedChainId, setClickedChainId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen]   = useState(false);
+  const searchRef                     = useRef<HTMLInputElement>(null);
   const [tooltip, setTooltip]         = useState<{
     x: number; y: number; name: string; stateName: string;
     chainName?: string; originState?: string;
@@ -445,6 +451,34 @@ export function IndiaEvolutionMap({
 
   const handleClick = useCallback((chainId: number | null) => {
     setClickedChainId(prev => prev === chainId ? null : chainId);
+    setSearchQuery('');
+  }, []);
+
+  const searchSuggestions = useMemo(() => {
+    if (!evoData || !searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const seen = new Set<number>();
+    const prefix: { chainId: number; name: string; state: string }[] = [];
+    const substr: { chainId: number; name: string; state: string }[] = [];
+    for (const chain of evoData.chains) {
+      if (seen.has(chain.chainId)) continue;
+      const norm = chain.canonicalName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (norm.startsWith(q)) { seen.add(chain.chainId); prefix.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState }); }
+      else if (norm.includes(q)) { seen.add(chain.chainId); substr.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState }); }
+    }
+    return [...prefix, ...substr].slice(0, 20);
+  }, [evoData, searchQuery]);
+
+  const handleSearchSelect = useCallback((chainId: number, name: string) => {
+    setClickedChainId(chainId);
+    setSearchQuery(name);
+    setSearchOpen(false);
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setSearchQuery('');
+    setSearchOpen(false);
+    setClickedChainId(null);
   }, []);
 
   const resetMode = (m: 'single' | 'grid') => {
@@ -452,6 +486,7 @@ export function IndiaEvolutionMap({
     setClickedChainId(null);
     setHovered(null);
     setTooltip(null);
+    setSearchQuery('');
   };
 
   const selectedMeta = clickedChainId != null ? chainMeta.get(clickedChainId) : null;
@@ -486,15 +521,60 @@ export function IndiaEvolutionMap({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Search box */}
+          <div className="relative">
+            <div className={`flex items-center gap-1.5 rounded-md px-2 py-1 border text-xs ${
+              darkMode
+                ? 'bg-[hsl(25,8%,11%)] border-[hsl(25,8%,18%)] text-[hsl(35,12%,82%)]'
+                : 'bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)]'
+            }`}>
+              <Search className="w-3 h-3 shrink-0 opacity-50" />
+              <input
+                ref={searchRef}
+                value={searchQuery}
+                onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+                onFocus={() => setSearchOpen(true)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+                placeholder="Search district…"
+                className="bg-transparent outline-none w-28 placeholder:opacity-40"
+              />
+              {searchQuery && (
+                <button onClick={clearSearch} aria-label="Clear search" className="opacity-50 hover:opacity-100">
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            {searchOpen && searchSuggestions.length > 0 && (
+              <div className={`absolute right-0 top-full mt-1 z-50 rounded-md shadow-lg border overflow-hidden text-xs ${
+                darkMode
+                  ? 'bg-[hsl(25,8%,9%)] border-[hsl(25,8%,18%)] text-[hsl(35,12%,82%)]'
+                  : 'bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)]'
+              }`} style={{ minWidth: '180px', maxHeight: '200px', overflowY: 'auto' }}>
+                {searchSuggestions.map(s => (
+                  <button
+                    key={s.chainId}
+                    onMouseDown={() => handleSearchSelect(s.chainId, s.name)}
+                    className={`w-full text-left px-3 py-1.5 flex flex-col gap-0.5 ${
+                      darkMode ? 'hover:bg-[hsl(25,8%,14%)]' : 'hover:bg-amber-50'
+                    }`}
+                  >
+                    <span className="font-medium">{s.name}</span>
+                    {s.state && <span className={`text-[10px] ${darkMode ? 'text-[hsl(30,8%,46%)]' : 'text-[hsl(28,8%,52%)]'}`}>{s.state}</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {selectedMeta ? (
             <span className={`flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ${darkMode ? 'bg-[hsl(25,8%,14%)] text-[hsl(35,10%,82%)]' : 'bg-amber-50 text-amber-800 border border-amber-200'}`}>
               <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0" />
               {selectedMeta.name}
               {selectedMeta.state && <span className={darkMode ? 'text-[hsl(30,8%,44%)]' : 'text-amber-600'}> · {selectedMeta.state}</span>}
-              <button onClick={() => setClickedChainId(null)} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
+              <button onClick={() => { setClickedChainId(null); setSearchQuery(''); }} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
             </span>
           ) : (
-            <span className={`text-xs italic ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>
+            <span className={`text-xs italic hidden sm:inline ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>
               Click a district to trace its lineage
             </span>
           )}
