@@ -48,7 +48,7 @@ Allow: /llms.txt
 Allow: /llms-full.txt
 
 # Sitemaps
-Sitemap: https://bharatviz.saketlab.org/sitemap.xml
+Sitemap: https://bharatviz.org/sitemap.xml
 
 # Crawl-delay for default bot
 Crawl-delay: 1

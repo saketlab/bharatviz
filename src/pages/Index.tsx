@@ -1206,20 +1206,20 @@ const Index = () => {
 
     const seoConfigs = {
       states: {
-        title: 'BharatViz: Mapping India | State Choropleth Maps',
-        description: 'Mapping India\'s 36 states and union territories with publication-ready choropleth maps. 27 boundary sets spanning Census 1941-2011, LGD, NFHS. 17 color scales, dark mode, export to PNG/SVG/PDF. Free and open source.',
-        keywords: 'India maps, choropleth, state maps, data visualization, India states, Census India maps, LGD boundaries, research visualization, map maker',
+        title: 'BharatViz: Mapping India',
+        description: 'Create India choropleth maps without writing code. Upload a CSV, get a publication-ready state map in seconds. 36 states and UTs, 27 boundary sets, 17 color scales, export to PNG/SVG/PDF.',
+        keywords: 'no code India maps, free India map maker, India choropleth map, state maps India, India data visualization, LGD, NFHS, Census India, map maker free',
         canonical: baseUrl,
         ogTitle: 'BharatViz: Mapping India',
-        ogDescription: 'Mapping India\'s 36 states with publication-ready choropleth maps. 27 boundary sets, 17 color scales, export to PNG/SVG/PDF. Free and open source.'
+        ogDescription: 'Create India maps without writing code. Upload a CSV, get a publication-ready choropleth map. 36 states, 27 boundary sets. Free.'
       },
       districts: {
-        title: 'Mapping India\'s 750+ Districts | BharatViz',
-        description: 'Mapping India\'s 750+ districts with choropleth maps. Support for LGD, NFHS-5, NFHS-4, Census 2011-1941, Survey of India, and ISRO Bhuvan boundaries. Export to PNG, SVG, PDF. Free tool for district-level data analysis.',
-        keywords: 'India district maps, district choropleth, LGD districts, NFHS-5, NFHS-4, Census 2011, district data visualization, India geography, district boundaries',
+        title: 'Free No-Code India District Map Maker | BharatViz',
+        description: 'Create India district choropleth maps without writing code. Upload a CSV to visualize 750+ districts across LGD, NFHS-5, NFHS-4, Census 2011-1941, Survey of India, and ISRO Bhuvan. Export to PNG, SVG, PDF.',
+        keywords: 'no code India district maps, India district map maker, free district choropleth, LGD districts, NFHS-5, NFHS-4, Census 2011, district data visualization, India geography',
         canonical: `${baseUrl}/districts`,
-        ogTitle: 'Mapping India\'s 750+ Districts | BharatViz',
-        ogDescription: 'Mapping India\'s 750+ districts with customizable choropleth maps. LGD, NFHS-5, NFHS-4, Census, and more boundary sets.'
+        ogTitle: 'Free No-Code India District Map Maker | BharatViz',
+        ogDescription: 'Create India district maps without writing code. 750+ districts, LGD, NFHS-5, NFHS-4, Census boundaries. Upload CSV, export PNG/SVG/PDF.'
       },
       regions: {
         title: 'Mapping India by NSSO Regions | BharatViz',
@@ -1980,7 +1980,7 @@ const Index = () => {
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Web interface</h2>
                   <p className="text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-6">
-                    BharatViz is a free tool for mapping India. Create publication-ready choropleth maps at state, district, and city levels with just a few clicks.
+                    BharatViz is a free, no-code tool for mapping India. Upload a CSV and get a publication-ready choropleth map in seconds, at state, district, or city level.
                   </p>
                   <div className="space-y-6">
                     <div className="flex gap-4">

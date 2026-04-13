@@ -1,7 +1,7 @@
 # BharatViz - Complete LLM Reference
 
 > Fast, high-quality choropleth map generator for India
-> Website: https://bharatviz.saketlab.org
+> Website: https://bharatviz.org
 > GitHub: https://github.com/saketlab/bharatviz
 > License: MIT
 
@@ -24,7 +24,7 @@ Add to `.mcp.json`, `claude_desktop_config.json`, or any MCP client configuratio
   "mcpServers": {
     "bharatviz": {
       "type": "url",
-      "url": "https://bharatviz.saketlab.org/api/mcp"
+      "url": "https://bharatviz.org/api/mcp"
     }
   }
 }
@@ -262,7 +262,7 @@ Returns a CSV template with all entity names pre-filled for a given boundary typ
 
 ## REST API Reference
 
-Base URL: `https://bharatviz.saketlab.org/api/v1`
+Base URL: `https://bharatviz.org/api/v1`
 
 ### POST /states/map
 
@@ -342,7 +342,7 @@ import requests
 import base64
 
 response = requests.post(
-    "https://bharatviz.saketlab.org/api/v1/states/map",
+    "https://bharatviz.org/api/v1/states/map",
     json={
         "data": [
             {"state": "Maharashtra", "value": 112},
@@ -368,7 +368,7 @@ library(httr)
 library(jsonlite)
 
 response <- POST(
-  "https://bharatviz.saketlab.org/api/v1/states/map",
+  "https://bharatviz.org/api/v1/states/map",
   body = list(
     data = list(
       list(state = "Maharashtra", value = 112),

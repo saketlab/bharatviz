@@ -2,7 +2,7 @@
   "name": "BharatViz - India Choropleth Map Generator",
   "short_name": "BharatViz",
   "description": "Create beautiful choropleth maps of India with state and district data. Free online tool with customizable colors and export options.",
-  "start_url": "https://bharatviz.saketlab.org/",
+  "start_url": "https://bharatviz.org/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2563eb",

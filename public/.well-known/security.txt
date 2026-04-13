@@ -2,6 +2,6 @@ Contact: https://github.com/saketlab/bharatviz/security/advisories
 Contact: saket@saket.sh
 Expires: 2026-11-12T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://bharatviz.saketlab.org/.well-known/security.txt
+Canonical: https://bharatviz.org/.well-known/security.txt
 Policy: https://github.com/saketlab/bharatviz/blob/main/SECURITY.md
 Acknowledgments: https://github.com/saketlab/bharatviz#acknowledgments

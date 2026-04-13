@@ -15,7 +15,7 @@ BharatViz provides a Model Context Protocol (MCP) server that lets AI assistants
   "mcpServers": {
     "bharatviz": {
       "type": "url",
-      "url": "https://bharatviz.saketlab.org/api/mcp"
+      "url": "https://bharatviz.org/api/mcp"
     }
   }
 }
@@ -54,7 +54,7 @@ cd bharatviz/server && npm install && npm run build
 
 ## REST API
 
-Base URL: `https://bharatviz.saketlab.org/api/v1`
+Base URL: `https://bharatviz.org/api/v1`
 
 - `POST /states/map` - Generate state-level map
 - `POST /districts/map` - Generate district-level map
@@ -62,4 +62,4 @@ Base URL: `https://bharatviz.saketlab.org/api/v1`
 
 ## Full Documentation
 
-For complete tool schemas, all 27 map IDs, and detailed examples: https://bharatviz.saketlab.org/llms-full.txt
+For complete tool schemas, all 27 map IDs, and detailed examples: https://bharatviz.org/llms-full.txt
