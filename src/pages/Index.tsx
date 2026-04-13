@@ -529,7 +529,7 @@ const Index = () => {
               const hasDistrict = data[0] && ('district_name' in data[0] || 'district' in data[0]);
               const colorScale = searchParams.get('colorScale') as ColorScale || 'spectral';
               const title = titleFromParams || searchParams.get('title') || '';
-              const boundary = searchParams.get('boundary') || 'LGD';
+              const boundary = searchParams.get('boundary');
               const showStateBoundaries = searchParams.get('showStateBoundaries') === 'true';
               const invertColors = searchParams.get('invertColors') === 'true';
 
@@ -570,7 +570,7 @@ const Index = () => {
                 setDistrictColorScale(colorScale);
                 setDistrictInvertColors(invertColors);
                 setShowStateBoundaries(showStateBoundaries);
-                setSelectedDistrictMapType(boundary);
+                if (boundary) setSelectedDistrictMapType(boundary);
 
                 const values = (hasDistrict ? data : []).map(d => parseVal(d[valueCol]));
                 const dataType = detectDataType(values);
