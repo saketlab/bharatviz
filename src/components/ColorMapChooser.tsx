@@ -31,6 +31,8 @@ interface ColorMapChooserProps {
   onShowStateBoundariesChange?: (show: boolean) => void;
   boundaryColor?: BoundaryColor;
   onBoundaryColorChange?: (color: BoundaryColor) => void;
+  boundaryWidth?: number;
+  onBoundaryWidthChange?: (width: number) => void;
   hideDistrictNames?: boolean;
   onHideDistrictNamesChange?: (hide: boolean) => void;
   hideDistrictValues?: boolean;
@@ -69,6 +71,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
   hideStateNames, hideValues, onHideStateNamesChange, onHideValuesChange,
   showStateBoundaries, onShowStateBoundariesChange,
   boundaryColor, onBoundaryColorChange,
+  boundaryWidth, onBoundaryWidthChange,
   hideDistrictNames, onHideDistrictNamesChange,
   hideDistrictValues, onHideDistrictValuesChange,
   colorBarSettings, onColorBarSettingsChange,
@@ -241,7 +244,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
           )}
 
           {(invertColors !== undefined || hideStateNames !== undefined || hideValues !== undefined ||
-            showStateBoundaries !== undefined || boundaryColor !== undefined || hideDistrictNames !== undefined || hideDistrictValues !== undefined) && (
+            showStateBoundaries !== undefined || boundaryColor !== undefined || boundaryWidth !== undefined || hideDistrictNames !== undefined || hideDistrictValues !== undefined) && (
             <>
               <Separator className="dark:bg-[hsl(25,8%,16%)]" />
               <div className="space-y-2">
@@ -267,20 +270,38 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
                     Show state boundaries
                   </label>
                 )}
-                {boundaryColor !== undefined && onBoundaryColorChange && (
-                  <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-[hsl(30,6%,68%)]">
-                    <span>Boundaries</span>
-                    <div className="flex rounded overflow-hidden border border-input text-xs">
-                      {(['auto', 'white', 'dark'] as const).map(opt => (
-                        <button
-                          key={opt}
-                          onClick={() => onBoundaryColorChange(opt)}
-                          className={`px-2 py-0.5 capitalize transition-colors ${boundaryColor === opt ? 'bg-[hsl(28,62%,48%)] text-white' : 'hover:bg-accent'}`}
-                        >
-                          {opt}
-                        </button>
-                      ))}
+                {(boundaryColor !== undefined || boundaryWidth !== undefined) && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-[hsl(30,6%,68%)]">
+                      <span>Boundaries</span>
+                      {boundaryColor !== undefined && onBoundaryColorChange && (
+                        <div className="flex rounded overflow-hidden border border-input text-xs">
+                          {(['auto', 'white', 'dark'] as const).map(opt => (
+                            <button
+                              key={opt}
+                              onClick={() => onBoundaryColorChange(opt)}
+                              className={`px-2 py-0.5 capitalize transition-colors ${boundaryColor === opt ? 'bg-[hsl(28,62%,48%)] text-white' : 'hover:bg-accent'}`}
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
+                    {boundaryWidth !== undefined && onBoundaryWidthChange && (
+                      <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-[hsl(30,6%,68%)]">
+                        <span className="shrink-0">Thickness</span>
+                        <input
+                          type="range"
+                          min={0.1}
+                          max={1.5}
+                          step={0.05}
+                          value={boundaryWidth}
+                          onChange={e => onBoundaryWidthChange(parseFloat(e.target.value))}
+                          className="w-full h-1.5 accent-[hsl(28,62%,48%)] cursor-pointer"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
                 {hideDistrictNames !== undefined && onHideDistrictNamesChange && (

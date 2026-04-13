@@ -97,6 +97,7 @@ const Index = () => {
   const [districtMapTitle, setDistrictMapTitle] = useState<string>('');
   const [showStateBoundaries, setShowStateBoundaries] = useState(true);
   const [boundaryColor, setBoundaryColor] = useState<BoundaryColor>('auto');
+  const [boundaryWidth, setBoundaryWidth] = useState(0.3);
   const [districtColorBarSettings, setDistrictColorBarSettings] = useState<ColorBarSettings>({
     isDiscrete: false,
     binCount: 5,
@@ -1541,6 +1542,7 @@ const Index = () => {
                     naInfo={stateNAInfo}
                     darkMode={darkMode}
                     boundaryColor={boundaryColor}
+                    boundaryWidth={boundaryWidth}
                   />
                 )}
                 <div className="mt-4">
@@ -1590,6 +1592,8 @@ const Index = () => {
                     }}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
               </div>
@@ -1615,6 +1619,7 @@ const Index = () => {
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
                   boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1707,6 +1712,8 @@ const Index = () => {
                     }}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
               </div>
@@ -1732,6 +1739,7 @@ const Index = () => {
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
                   boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1782,6 +1790,8 @@ const Index = () => {
                     darkMode={darkMode}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
               </div>
@@ -1812,6 +1822,7 @@ const Index = () => {
                   naInfo={stateDistrictNAInfo}
                   darkMode={darkMode}
                   boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1948,6 +1959,8 @@ const Index = () => {
                     }}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
               </div>
@@ -2296,6 +2309,7 @@ POST /api/v1/districts/map
                   darkMode={darkMode}
                   cityName={currentCityDataset?.displayName || selectedCity}
                   boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -2431,6 +2445,8 @@ POST /api/v1/districts/map
                     }}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
               </div>

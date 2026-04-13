@@ -76,6 +76,7 @@ interface IndiaCityMapProps {
   darkMode?: boolean;
   cityName?: string;
   boundaryColor?: BoundaryColor;
+  boundaryWidth?: number;
 }
 
 export interface IndiaCityMapRef {
@@ -142,7 +143,8 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
   naInfo,
   darkMode: darkModeProp,
   cityName = 'City',
-  boundaryColor = 'auto'
+  boundaryColor = 'auto',
+  boundaryWidth = 0.3
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -972,7 +974,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                   ? resolveBoundaryStroke(boundaryColor, darkMode ? '#1a1a1a' : 'white', darkMode)
                   : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)
               }
-              strokeWidth={isHovered ? "1.5" : "0.3"}
+              strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
               className="cursor-pointer transition-all duration-200"
               onMouseEnter={() => handleWardHover(feature)}
               onMouseLeave={handleWardLeave}

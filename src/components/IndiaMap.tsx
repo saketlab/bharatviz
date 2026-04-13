@@ -47,6 +47,7 @@ interface IndiaMapProps {
   naInfo?: NAInfo;
   darkMode?: boolean;
   boundaryColor?: BoundaryColor;
+  boundaryWidth?: number;
 }
 
 export interface IndiaMapRef {
@@ -58,10 +59,12 @@ export interface IndiaMapRef {
   getSVGElement: () => SVGSVGElement | null;
 }
 
-export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorScale = 'spectral', invertColors = false, hideStateNames = false, hideValues = false, dataTitle = '', mapTitle, colorBarSettings, dataType = 'numerical', categoryColors = {}, naInfo, darkMode: darkModeProp, boundaryColor = 'auto' }, ref) => {
+export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorScale = 'spectral', invertColors = false, hideStateNames = false, hideValues = false, dataTitle = '', mapTitle, colorBarSettings, dataType = 'numerical', categoryColors = {}, naInfo, darkMode: darkModeProp, boundaryColor = 'auto', boundaryWidth = 0.3 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
   const svgRef = useRef<SVGSVGElement>(null);
+  const boundaryWidthRef = useRef(boundaryWidth);
+  boundaryWidthRef.current = boundaryWidth;
   const dragRafRef = useRef<number | null>(null);
   const [mapData, setMapData] = useState<GeoJSON.FeatureCollection | null>(null);
   const [renderingData, setRenderingData] = useState(false);
@@ -662,6 +665,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
       .data(mapData.features)
       .enter()
       .append("path")
+      .attr("class", "state-path")
       .attr("d", path)
       .attr("fill", (d: GeoJSON.Feature) => {
         if (data.length === 0) {
@@ -699,27 +703,27 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
 
         return theme.stroke;
       })
-      .attr("stroke-width", 0.5)
+      .attr("stroke-width", boundaryWidthRef.current)
       .style("cursor", "pointer")
       .on("mouseenter", function(event: MouseEvent, d: GeoJSON.Feature) {
         const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
         const originalName = d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM;
         const value = dataMap.get(stateName);
-        
-        setHoveredState({ 
-          state: originalName, 
-          value: value 
+
+        setHoveredState({
+          state: originalName,
+          value: value
         });
-        
+
         d3.select(this)
-          .attr("stroke-width", 1.5)
+          .attr("stroke-width", boundaryWidthRef.current * 5)
           .style("filter", "brightness(1.1)");
       })
       .on("mouseleave", function() {
         setHoveredState(null);
-        
+
         d3.select(this)
-          .attr("stroke-width", 0.5)
+          .attr("stroke-width", boundaryWidthRef.current)
           .style("filter", null);
       });
 
@@ -924,7 +928,13 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
       }, 300);
     }
 
-  }, [mapData, data, colorScale, invertColors, hideStateNames, hideValues, isMobile, colorBarSettings, categoryColors, dataType, darkMode]);
+  }, [mapData, data, colorScale, invertColors, hideStateNames, hideValues, isMobile, colorBarSettings, categoryColors, dataType, darkMode, boundaryColor]);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+    d3.select(svgRef.current).selectAll<SVGPathElement, GeoJSON.Feature>('path.state-path')
+      .attr('stroke-width', boundaryWidth);
+  }, [boundaryWidth]);
 
   useEffect(() => {
     if (data.length > 0 && dataType === 'numerical') {

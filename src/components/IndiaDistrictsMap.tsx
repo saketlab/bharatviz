@@ -85,6 +85,7 @@ interface IndiaDistrictsMapProps {
   mapTitle?: string;
   darkMode?: boolean;
   boundaryColor?: BoundaryColor;
+  boundaryWidth?: number;
 }
 
 export interface IndiaDistrictsMapRef {
@@ -160,6 +161,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   mapTitle,
   darkMode: darkModeProp,
   boundaryColor = 'auto',
+  boundaryWidth = 0.3,
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -1219,7 +1221,7 @@ Chittoor,50`;
                     d={path}
                     fill={fillColor}
                     stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)}
-                    strokeWidth={isHovered ? "1.5" : "0.3"}
+                    strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
                     className="cursor-pointer transition-all duration-200"
                     onMouseEnter={() => handleDistrictHover(feature)}
                     onMouseLeave={handleDistrictLeave}
@@ -1352,7 +1354,7 @@ Chittoor,50`;
                     d={path}
                     fill="none"
                     stroke={stateBoundaryStroke}
-                    strokeWidth="1.2"
+                    strokeWidth={boundaryWidth * 4}
                     pointerEvents="none"
                     className="state-boundary"
                   />
