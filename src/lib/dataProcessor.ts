@@ -31,6 +31,23 @@ function normalizeString(str: string): string {
   return str.trim().toLowerCase().replace(/\s*&\s*/g, ' and ').replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
 }
 
+const STATE_ALIASES: Record<string, string[]> = {
+  'delhi': ['nct of delhi', 'national capital territory of delhi'],
+  'dadra and nagar haveli': ['dadra and nagar haveli and daman and diu'],
+  'daman and diu': ['dadra and nagar haveli and daman and diu'],
+  'jammu and kashmir': ['ladakh'],
+};
+
+function resolveStateAlias(normalized: string, referenceList: string[]): string | null {
+  for (const [canonical, aliases] of Object.entries(STATE_ALIASES)) {
+    if (aliases.includes(normalized)) {
+      const match = referenceList.find(r => normalizeString(r) === canonical);
+      if (match) return match;
+    }
+  }
+  return null;
+}
+
 function fuzzyMatch(input: string, referenceList: string[], threshold: number): string | null {
   const normalized = normalizeString(input);
   const normalizedRefs = referenceList.map(ref => ({
@@ -40,6 +57,9 @@ function fuzzyMatch(input: string, referenceList: string[], threshold: number): 
 
   const exactMatch = normalizedRefs.find(ref => ref.normalized === normalized);
   if (exactMatch) return exactMatch.original;
+
+  const aliasMatch = resolveStateAlias(normalized, referenceList);
+  if (aliasMatch) return aliasMatch;
 
   if (normalized.length === 0 || referenceList.length === 0) return null;
 

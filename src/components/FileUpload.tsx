@@ -87,7 +87,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   const processUploadedData = async (result: Papa.ParseResult<Record<string, string>>) => {
     try {
       const data = result.data as Array<Record<string, string>>;
-      const headers = (result.meta.fields || []).filter(h => h.trim() !== '');
+      const headers = (result.meta.fields || []).filter(h => h.trim() !== '' && !/^_\d+$/.test(h.trim()));
 
       const requiredColumns = mode === 'districts' ? 3 : 2;
       if (headers.length < requiredColumns) {
@@ -419,9 +419,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   }
 
   function extractSheetInfo(url: string) {
-    const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)(?:\/.*?gid=(\d+))?/);
+    const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
     if (!match) return null;
-    return { sheetId: match[1], gid: match[2] || '0' };
+    const sheetId = match[1];
+    const gidInPath = url.match(/[?&]gid=(\d+)/)?.[1];
+    const gidInHash = url.match(/#.*?gid=(\d+)/)?.[1];
+    return { sheetId, gid: gidInPath || gidInHash || '0' };
   }
 
   const handleLoadGoogleSheet = async () => {
