@@ -28,7 +28,7 @@ interface ProcessedData<T> {
 }
 
 function normalizeString(str: string): string {
-  return str.trim().toLowerCase().replace(/[^\w\s]/g, '');
+  return str.trim().toLowerCase().replace(/\s*&\s*/g, ' and ').replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 function fuzzyMatch(input: string, referenceList: string[], threshold: number): string | null {
