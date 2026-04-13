@@ -344,8 +344,6 @@ export function IndiaEvolutionMap({
   const [hovered, setHovered]         = useState<string | null>(null);
   const [clickedChainId, setClickedChainId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchOpen, setSearchOpen]   = useState(false);
-  const searchRef                     = useRef<HTMLInputElement>(null);
   const [tooltip, setTooltip]         = useState<{
     x: number; y: number; name: string; stateName: string;
     chainName?: string; originState?: string;
@@ -454,30 +452,31 @@ export function IndiaEvolutionMap({
     setSearchQuery('');
   }, []);
 
+  const normalizedChains = useMemo(() => {
+    if (!evoData) return new Map<number, string>();
+    return new Map(evoData.chains.map(c => [c.chainId, c.canonicalName.toLowerCase().replace(/[^a-z0-9]/g, '')]));
+  }, [evoData]);
+
   const searchSuggestions = useMemo(() => {
     if (!evoData || !searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const seen = new Set<number>();
     const prefix: { chainId: number; name: string; state: string }[] = [];
     const substr: { chainId: number; name: string; state: string }[] = [];
     for (const chain of evoData.chains) {
-      if (seen.has(chain.chainId)) continue;
-      const norm = chain.canonicalName.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (norm.startsWith(q)) { seen.add(chain.chainId); prefix.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState }); }
-      else if (norm.includes(q)) { seen.add(chain.chainId); substr.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState }); }
+      const norm = normalizedChains.get(chain.chainId) ?? '';
+      if (norm.startsWith(q)) prefix.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState });
+      else if (norm.includes(q)) substr.push({ chainId: chain.chainId, name: chain.canonicalName, state: chain.originState });
     }
     return [...prefix, ...substr].slice(0, 20);
-  }, [evoData, searchQuery]);
+  }, [evoData, searchQuery, normalizedChains]);
 
-  const handleSearchSelect = useCallback((chainId: number, name: string) => {
+  const handleSearchSelect = useCallback((chainId: number) => {
     setClickedChainId(chainId);
-    setSearchQuery(name);
-    setSearchOpen(false);
+    setSearchQuery('');
   }, []);
 
   const clearSearch = useCallback(() => {
     setSearchQuery('');
-    setSearchOpen(false);
     setClickedChainId(null);
   }, []);
 
@@ -530,11 +529,8 @@ export function IndiaEvolutionMap({
             }`}>
               <Search className="w-3 h-3 shrink-0 opacity-50" />
               <input
-                ref={searchRef}
                 value={searchQuery}
-                onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
-                onFocus={() => setSearchOpen(true)}
-                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+                onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search district…"
                 className="bg-transparent outline-none w-28 placeholder:opacity-40"
               />
@@ -544,7 +540,7 @@ export function IndiaEvolutionMap({
                 </button>
               )}
             </div>
-            {searchOpen && searchSuggestions.length > 0 && (
+            {searchSuggestions.length > 0 && (
               <div className={`absolute right-0 top-full mt-1 z-50 rounded-md shadow-lg border overflow-hidden text-xs ${
                 darkMode
                   ? 'bg-[hsl(25,8%,9%)] border-[hsl(25,8%,18%)] text-[hsl(35,12%,82%)]'
@@ -553,7 +549,7 @@ export function IndiaEvolutionMap({
                 {searchSuggestions.map(s => (
                   <button
                     key={s.chainId}
-                    onMouseDown={() => handleSearchSelect(s.chainId, s.name)}
+                    onMouseDown={() => handleSearchSelect(s.chainId)}
                     className={`w-full text-left px-3 py-1.5 flex flex-col gap-0.5 ${
                       darkMode ? 'hover:bg-[hsl(25,8%,14%)]' : 'hover:bg-amber-50'
                     }`}

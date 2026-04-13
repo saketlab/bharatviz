@@ -198,6 +198,13 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   const rotationCalculator = useRef(createRotationCalculator());
   const isMobile = useIsMobile();
 
+  const scopedNumericValues = useMemo(() => {
+    const scoped = selectedState
+      ? data.filter(d => d.state.toLowerCase().trim() === selectedState.toLowerCase().trim())
+      : data;
+    return scoped.map(d => d.value).filter((v): v is number => typeof v === 'number' && !isNaN(v));
+  }, [data, selectedState]);
+
   useEffect(() => {
     if (isMobile) {
       setLegendPosition({ x: 190, y: 10 });
@@ -230,7 +237,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
 
   useEffect(() => {
     if (data.length > 0 && dataType === 'numerical') {
-      const values = data.map(d => d.value).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
+      const values = scopedNumericValues;
       const minValue = values.length > 0 ? Math.min(...values) : 0;
       const maxValue = values.length > 0 ? Math.max(...values) : 1;
       const meanValue = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0.5;
@@ -242,7 +249,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
       setLegendMean('0.5');
       setLegendMax('1');
     }
-  }, [data, dataType]);
+  }, [scopedNumericValues, data.length, dataType]);
 
   useEffect(() => {
     const loadGeoData = async () => {
@@ -632,8 +639,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       const [minVal, maxVal] = dataExtent;
       if (minVal === maxVal) return colorScales[colorScale](0.5);
 
-      const values = data.map(d => d.value).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
-      return getColorForValue(value, values, colorScale, invertColors, colorBarSettings);
+      return getColorForValue(value, scopedNumericValues, colorScale, invertColors, colorBarSettings);
     }
 
     return darkMode ? '#1a1a1a' : '#e5e7eb';
@@ -915,13 +921,10 @@ const handleLabelTouchMove = useCallback(
       const [minVal, maxVal] = dataExtent;
       if (minVal === maxVal) return colorScales[colorScale](0.5);
 
-      const values = data.map(d => d.value).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
-      return getColorForValue(value, values, colorScale, invertColors, colorBarSettings);
+      return getColorForValue(value, scopedNumericValues, colorScale, invertColors, colorBarSettings);
     };
 
-    const numericValues = data
-  .map(d => d.value)
-  .filter((v): v is number => typeof v === "number" && !isNaN(v));
+    const numericValues = scopedNumericValues;
 
 const minValue = numericValues.length > 0 ? Math.min(...numericValues) : 0;
 const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
@@ -1161,13 +1164,8 @@ Chittoor,50`;
     );
   }
 
-  const numericValues = data
-  .map(d => d.value)
-  .filter(v => typeof v === 'number' && !isNaN(v)) as number[];
-
-const dataExtent =
-  numericValues.length > 0
-    ? ([Math.min(...numericValues), Math.max(...numericValues)] as [number, number])
+  const dataExtent: [number, number] | undefined = scopedNumericValues.length > 0
+    ? [Math.min(...scopedNumericValues), Math.max(...scopedNumericValues)]
     : undefined;
 
 
