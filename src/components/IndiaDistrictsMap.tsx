@@ -536,7 +536,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       .attr('y1', '0%')
       .attr('y2', '0%');
 
-    const values = data.map(d => d.value).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
+    const values = scopedNumericValues;
     const minValue = values.length > 0 ? Math.min(...values) : 0;
     const maxValue = values.length > 0 ? Math.max(...values) : 1;
 
@@ -565,7 +565,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
         .attr('offset', `${t * 100}%`)
         .attr('stop-color', color);
     }
-  }, [colorScale, invertColors, data, colorBarSettings, dataType, geojsonData]);
+  }, [colorScale, invertColors, scopedNumericValues, colorBarSettings, dataType, geojsonData]);
 
   const projectCoordinate = (lng: number, lat: number, width = 800, height = 890): [number, number] => {
     if (!bounds) return [0, 0];
