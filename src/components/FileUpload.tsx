@@ -87,7 +87,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   const processUploadedData = async (result: Papa.ParseResult<Record<string, string>>) => {
     try {
       const data = result.data as Array<Record<string, string>>;
-      const headers = result.meta.fields || [];
+      const headers = (result.meta.fields || []).filter(h => h.trim() !== '');
 
       const requiredColumns = mode === 'districts' ? 3 : 2;
       if (headers.length < requiredColumns) {
