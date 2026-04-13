@@ -1,6 +1,4 @@
-/**
- * Color utility functions for BharatViz
- */
+export type BoundaryColor = 'auto' | 'white' | 'dark';
 
 export function parseColorToRGB(color: string): { r: number; g: number; b: number } {
   if (color.startsWith('#')) {
@@ -30,6 +28,14 @@ export function isColorDark(color: string): boolean {
   const { r, g, b } = parseColorToRGB(color);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance < 0.6;
+}
+
+export function resolveBoundaryStroke(boundaryColor: BoundaryColor, fillColor: string, darkMode: boolean): string {
+  if (boundaryColor === 'white') return '#ffffff';
+  if (boundaryColor === 'dark') return '#0f172a';
+  return fillColor === 'white' || fillColor === '#1a1a1a' || !isColorDark(fillColor)
+    ? (darkMode ? '#ffffff' : '#0f172a')
+    : '#ffffff';
 }
 
 export function roundToSignificantDigits(num: number, digits: number = 2): string {

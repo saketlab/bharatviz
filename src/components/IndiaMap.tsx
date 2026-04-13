@@ -4,7 +4,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { getMapTheme } from '@/lib/mapTheme';
 import * as d3 from 'd3';
 import { ColorScale, ColorBarSettings } from './ColorMapChooser';
-import { isColorDark, roundToSignificantDigits } from '@/lib/colorUtils';
+import { isColorDark, roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
 import { getColorForValue, getDiscreteLegendStops } from '@/lib/discreteColorUtils';
 import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
@@ -46,6 +46,7 @@ interface IndiaMapProps {
   categoryColors?: CategoryColorMapping;
   naInfo?: NAInfo;
   darkMode?: boolean;
+  boundaryColor?: BoundaryColor;
 }
 
 export interface IndiaMapRef {
@@ -57,7 +58,7 @@ export interface IndiaMapRef {
   getSVGElement: () => SVGSVGElement | null;
 }
 
-export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorScale = 'spectral', invertColors = false, hideStateNames = false, hideValues = false, dataTitle = '', mapTitle, colorBarSettings, dataType = 'numerical', categoryColors = {}, naInfo, darkMode: darkModeProp }, ref) => {
+export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorScale = 'spectral', invertColors = false, hideStateNames = false, hideValues = false, dataTitle = '', mapTitle, colorBarSettings, dataType = 'numerical', categoryColors = {}, naInfo, darkMode: darkModeProp, boundaryColor = 'auto' }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
   const svgRef = useRef<SVGSVGElement>(null);
@@ -682,20 +683,18 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
         return getColorForValue(value as number, values, colorScale, invertColors, colorBarSettings);
       })
       .attr("stroke", (d: GeoJSON.Feature) => {
-        if (data.length === 0) {
-          return theme.stroke;
-        }
+        if (boundaryColor !== 'auto') return resolveBoundaryStroke(boundaryColor, '', darkMode);
+
+        if (data.length === 0) return theme.stroke;
 
         const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
         const value = dataMap.get(stateName);
 
-        if (value === undefined || isNaN(value)) {
-          return theme.stroke;
-        }
+        if (value === undefined || isNaN(value)) return theme.stroke;
 
         if (colorScaleFunction) {
           const fillColor = colorScaleFunction(value);
-          return fillColor === "#ffffff" || !isColorDark(fillColor) ? "#0f172a" : "#ffffff";
+          return resolveBoundaryStroke('auto', fillColor, darkMode);
         }
 
         return theme.stroke;

@@ -7,7 +7,7 @@ import { interpolateSpectral, interpolateViridis, interpolatePlasma, interpolate
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import { type ColorScale, ColorBarSettings } from './ColorMapChooser';
-import { isColorDark, roundToSignificantDigits } from '@/lib/colorUtils';
+import { isColorDark, roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
 import { getColorForValue, getDiscreteLegendStops } from '@/lib/discreteColorUtils';
 import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
@@ -75,6 +75,7 @@ interface IndiaCityMapProps {
   naInfo?: NAInfo;
   darkMode?: boolean;
   cityName?: string;
+  boundaryColor?: BoundaryColor;
 }
 
 export interface IndiaCityMapRef {
@@ -140,7 +141,8 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
   categoryColors = {},
   naInfo,
   darkMode: darkModeProp,
-  cityName = 'City'
+  cityName = 'City',
+  boundaryColor = 'auto'
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -966,8 +968,9 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               d={path}
               fill={fillColor}
               stroke={
-                data.length === 0 ? (darkMode ? "#ffffff" : "#0f172a") :
-                fillColor === 'white' || fillColor === '#1a1a1a' || !isColorDark(fillColor) ? (darkMode ? "#ffffff" : "#0f172a") : "#ffffff"
+                data.length === 0
+                  ? resolveBoundaryStroke(boundaryColor, darkMode ? '#1a1a1a' : 'white', darkMode)
+                  : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)
               }
               strokeWidth={isHovered ? "1.5" : "0.3"}
               className="cursor-pointer transition-all duration-200"

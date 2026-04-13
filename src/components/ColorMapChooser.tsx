@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping } from '@/lib/categoricalUtils';
+import { type BoundaryColor } from '@/lib/colorUtils';
 import { CategoryColorPicker } from './CategoryColorPicker';
 
 export type ColorScale = 'aqi' | 'blues' | 'greens' | 'reds' | 'oranges' | 'purples' | 'pinks' | 'viridis' | 'plasma' | 'inferno' | 'magma' | 'rdylbu' | 'rdylgn' | 'spectral' | 'brbg' | 'piyg' | 'puor';
@@ -28,6 +29,8 @@ interface ColorMapChooserProps {
   namesLabel?: string;
   showStateBoundaries?: boolean;
   onShowStateBoundariesChange?: (show: boolean) => void;
+  boundaryColor?: BoundaryColor;
+  onBoundaryColorChange?: (color: BoundaryColor) => void;
   hideDistrictNames?: boolean;
   onHideDistrictNamesChange?: (hide: boolean) => void;
   hideDistrictValues?: boolean;
@@ -65,6 +68,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
   selectedScale, onScaleChange, invertColors, onInvertColorsChange,
   hideStateNames, hideValues, onHideStateNamesChange, onHideValuesChange,
   showStateBoundaries, onShowStateBoundariesChange,
+  boundaryColor, onBoundaryColorChange,
   hideDistrictNames, onHideDistrictNamesChange,
   hideDistrictValues, onHideDistrictValuesChange,
   colorBarSettings, onColorBarSettingsChange,
@@ -237,7 +241,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
           )}
 
           {(invertColors !== undefined || hideStateNames !== undefined || hideValues !== undefined ||
-            showStateBoundaries !== undefined || hideDistrictNames !== undefined || hideDistrictValues !== undefined) && (
+            showStateBoundaries !== undefined || boundaryColor !== undefined || hideDistrictNames !== undefined || hideDistrictValues !== undefined) && (
             <>
               <Separator className="dark:bg-[hsl(25,8%,16%)]" />
               <div className="space-y-2">
@@ -262,6 +266,22 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
                     <input type="checkbox" checked={showStateBoundaries} onChange={e => onShowStateBoundariesChange(e.target.checked)} className="accent-[hsl(28,62%,48%)]" />
                     Show state boundaries
                   </label>
+                )}
+                {boundaryColor !== undefined && onBoundaryColorChange && (
+                  <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-[hsl(30,6%,68%)]">
+                    <span>Boundaries</span>
+                    <div className="flex rounded overflow-hidden border border-input text-xs">
+                      {(['auto', 'white', 'dark'] as const).map(opt => (
+                        <button
+                          key={opt}
+                          onClick={() => onBoundaryColorChange(opt)}
+                          className={`px-2 py-0.5 capitalize transition-colors ${boundaryColor === opt ? 'bg-[hsl(28,62%,48%)] text-white' : 'hover:bg-accent'}`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
                 {hideDistrictNames !== undefined && onHideDistrictNamesChange && (
                   <label className={checkboxClass}>

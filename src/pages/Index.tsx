@@ -28,6 +28,7 @@ import { CityStats } from '@/components/CityStats';
 import { HistoricalEvolution } from '@/components/HistoricalEvolution';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping, detectDataType, getUniqueCategories, generateDefaultCategoryColors } from '@/lib/categoricalUtils';
+import { type BoundaryColor } from '@/lib/colorUtils';
 import { STATES_CITATION, NSSO_CITATION, getDistrictsCitationInfo, getCityCitationInfo } from '@/lib/citations';
 const ChatPanel = lazy(() => import('@/components/chat/ChatPanel').then(m => ({ default: m.ChatPanel })));
 const buildDynamicContext = (...args: Parameters<typeof import('@/lib/chat/contextBuilder').buildDynamicContext>) =>
@@ -95,6 +96,7 @@ const Index = () => {
   const [districtDataTitle, setDistrictDataTitle] = useState<string>('');
   const [districtMapTitle, setDistrictMapTitle] = useState<string>('');
   const [showStateBoundaries, setShowStateBoundaries] = useState(true);
+  const [boundaryColor, setBoundaryColor] = useState<BoundaryColor>('auto');
   const [districtColorBarSettings, setDistrictColorBarSettings] = useState<ColorBarSettings>({
     isDiscrete: false,
     binCount: 5,
@@ -1538,6 +1540,7 @@ const Index = () => {
                     categoryColors={stateCategoryColors}
                     naInfo={stateNAInfo}
                     darkMode={darkMode}
+                    boundaryColor={boundaryColor}
                   />
                 )}
                 <div className="mt-4">
@@ -1585,6 +1588,8 @@ const Index = () => {
                     onCategoryColorChange={(category, color) => {
                       setStateCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
                   />
                 </div>
               </div>
@@ -1609,6 +1614,7 @@ const Index = () => {
                   categoryColors={districtCategoryColors}
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
+                  boundaryColor={boundaryColor}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1699,6 +1705,8 @@ const Index = () => {
                     onCategoryColorChange={(category, color) => {
                       setDistrictCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
                   />
                 </div>
               </div>
@@ -1723,6 +1731,7 @@ const Index = () => {
                   categoryColors={districtCategoryColors}
                   naInfo={districtNAInfo}
                   darkMode={darkMode}
+                  boundaryColor={boundaryColor}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1771,6 +1780,8 @@ const Index = () => {
                       setDistrictCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
                     darkMode={darkMode}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
                   />
                 </div>
               </div>
@@ -1800,6 +1811,7 @@ const Index = () => {
                   categoryColors={stateDistrictCategoryColors}
                   naInfo={stateDistrictNAInfo}
                   darkMode={darkMode}
+                  boundaryColor={boundaryColor}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -1934,6 +1946,8 @@ const Index = () => {
                     onCategoryColorChange={(category, color) => {
                       setStateDistrictCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
                   />
                 </div>
               </div>
@@ -2281,6 +2295,7 @@ POST /api/v1/districts/map
                   naInfo={cityNAInfo}
                   darkMode={darkMode}
                   cityName={currentCityDataset?.displayName || selectedCity}
+                  boundaryColor={boundaryColor}
                 />
                 <div className="mt-4">
                   <ExportOptions
@@ -2414,6 +2429,8 @@ POST /api/v1/districts/map
                     onCategoryColorChange={(category, color) => {
                       setCityCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
                   />
                 </div>
               </div>

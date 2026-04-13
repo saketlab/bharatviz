@@ -8,7 +8,7 @@ import { extent } from 'd3-array';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import { type ColorScale, ColorBarSettings } from './ColorMapChooser';
-import { isColorDark, roundToSignificantDigits } from '@/lib/colorUtils';
+import { isColorDark, roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
 import { getColorForValue, getDiscreteLegendStops } from '@/lib/discreteColorUtils';
 import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
@@ -84,6 +84,7 @@ interface IndiaDistrictsMapProps {
   naInfo?: NAInfo;
   mapTitle?: string;
   darkMode?: boolean;
+  boundaryColor?: BoundaryColor;
 }
 
 export interface IndiaDistrictsMapRef {
@@ -157,11 +158,14 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   categoryColors = {},
   naInfo,
   mapTitle,
-  darkMode: darkModeProp
+  darkMode: darkModeProp,
+  boundaryColor = 'auto',
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
   const mapBg = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
+
+  const stateBoundaryStroke = boundaryColor === 'white' ? '#ffffff' : boundaryColor === 'dark' ? '#0f172a' : (darkMode ? '#ffffff' : '#1f2937');
   const [geojsonData, setGeojsonData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [statesData, setStatesData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
@@ -1214,10 +1218,7 @@ Chittoor,50`;
                     key={index}
                     d={path}
                     fill={fillColor}
-                    stroke={
-                      data.length === 0 ? (darkMode ? "#ffffff" : "#0f172a") :
-                      fillColor === 'white' || fillColor === '#1a1a1a' || !isColorDark(fillColor) ? (darkMode ? "#ffffff" : "#0f172a") : "#ffffff"
-                    }
+                    stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)}
                     strokeWidth={isHovered ? "1.5" : "0.3"}
                     className="cursor-pointer transition-all duration-200"
                     onMouseEnter={() => handleDistrictHover(feature)}
@@ -1350,7 +1351,7 @@ Chittoor,50`;
                     key={`state-boundary-${index}`}
                     d={path}
                     fill="none"
-                    stroke={darkMode ? "#ffffff" : "#1f2937"}
+                    stroke={stateBoundaryStroke}
                     strokeWidth="1.2"
                     pointerEvents="none"
                     className="state-boundary"
