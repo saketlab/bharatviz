@@ -12,7 +12,7 @@ const controller = new DistrictsMapController();
  * {
  *   "data": [{"state": "...", "district": "...", "value": ...}],
  *   "state": "...",                         // Required: which state to display
- *   "mapType": "LGD" | "NFHS5" | "NFHS4",  // Optional, default: "LGD"
+ *   "mapType": "LGD" | "NFHS5" | "NFHS4" | "BHUVAN" | "SOI" | "NSSO" | "2011" | "2001" | ... // Optional, default: "LGD"
  *   "colorScale": "...",                    // Optional
  *   "invertColors": false,                  // Optional
  *   "mainTitle": "...",                     // Optional
@@ -29,7 +29,7 @@ router.post('/state-districts/map', (req, res) => controller.generateStateDistri
  * Request body:
  * {
  *   "data": [{"state": "...", "district": "...", "value": ...}],
- *   "mapType": "LGD" | "NFHS5" | "NFHS4",  // Optional, default: "LGD"
+ *   "mapType": "LGD" | "NFHS5" | "NFHS4" | "BHUVAN" | "SOI" | "NSSO" | "2011" | "2001" | ... // Optional, default: "LGD"
  *   "colorScale": "...",                    // Optional
  *   "invertColors": false,                  // Optional
  *   "showStateBoundaries": true,            // Optional

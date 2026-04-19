@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { DistrictsMapRequest, ColorScale } from '../types/index.js';
 import type { FeatureCollection, Feature, Geometry, Polygon, MultiPolygon } from 'geojson';
 import { getColorForValue, getD3ColorInterpolator } from '../utils/discreteColorUtils.js';
-import { isColorDark, roundToSignificantDigits } from '../utils/colorUtils.js';
+import { isColorDark, roundToSignificantDigits, escapeHtml } from '../utils/colorUtils.js';
 import { DEFAULT_LEGEND_POSITION, MAP_DIMENSIONS } from '../utils/constants.js';
 import polylabel from 'polylabel';
 
@@ -19,42 +19,32 @@ export interface DistrictMapData {
   value: number;
 }
 
-// District map configuration matching frontend
-export const DISTRICT_MAP_TYPES = {
-  LGD: {
-    id: 'LGD',
-    name: 'LGD',
-    geojsonPath: 'India_LGD_districts.geojson',
-    statesPath: 'India_LGD_states.geojson'
-  },
-  NFHS5: {
-    id: 'NFHS5',
-    name: 'NFHS5',
-    geojsonPath: 'India_NFHS5_districts_simplified.geojson',
-    statesPath: 'India_LGD_states.geojson'
-  },
-  NFHS4: {
-    id: 'NFHS4',
-    name: 'NFHS4',
-    geojsonPath: 'India_NFHS4_districts_simplified.geojson',
-    statesPath: 'India_NFHS4_states_simplified.geojson'
-  }
+export const DISTRICT_MAP_TYPES: Record<string, { id: string; name: string; geojsonPath: string; statesPath: string }> = {
+  '1872': { id: '1872', name: 'Census 1872', geojsonPath: 'India-1872-districts.geojson', statesPath: 'India-1872-states.geojson' },
+  '1881': { id: '1881', name: 'Census 1881', geojsonPath: 'India-1881-districts.geojson', statesPath: 'India-1881-states.geojson' },
+  '1891': { id: '1891', name: 'Census 1891', geojsonPath: 'India-1891-districts.geojson', statesPath: 'India-1891-states.geojson' },
+  '1901': { id: '1901', name: 'Census 1901', geojsonPath: 'India-1901-districts.geojson', statesPath: 'India-1901-states.geojson' },
+  '1911': { id: '1911', name: 'Census 1911', geojsonPath: 'India-1911-districts.geojson', statesPath: 'India-1911-states.geojson' },
+  '1921': { id: '1921', name: 'Census 1921', geojsonPath: 'India-1921-districts.geojson', statesPath: 'India-1921-states.geojson' },
+  '1931': { id: '1931', name: 'Census 1931', geojsonPath: 'India-1931-districts.geojson', statesPath: 'India-1931-states.geojson' },
+  '1941': { id: '1941', name: 'Census 1941', geojsonPath: 'India-1941-districts.geojson', statesPath: 'India-1941-states.geojson' },
+  '1951': { id: '1951', name: 'Census 1951', geojsonPath: 'India-1951-districts.geojson', statesPath: 'India-1951-states.geojson' },
+  '1961': { id: '1961', name: 'Census 1961', geojsonPath: 'India-1961-districts.geojson', statesPath: 'India-1961-states.geojson' },
+  '1971': { id: '1971', name: 'Census 1971', geojsonPath: 'India-1971-districts.geojson', statesPath: 'India-1971-states.geojson' },
+  '1981': { id: '1981', name: 'Census 1981', geojsonPath: 'India-1981-districts.geojson', statesPath: 'India-1981-states.geojson' },
+  '1991': { id: '1991', name: 'Census 1991', geojsonPath: 'India-1991-districts.geojson', statesPath: 'India-1991-states.geojson' },
+  '2001': { id: '2001', name: 'Census 2001', geojsonPath: 'India-2001-districts.geojson', statesPath: 'India-2001-states.geojson' },
+  '2011': { id: '2011', name: 'Census 2011', geojsonPath: 'India-2011-districts.geojson', statesPath: 'India-2011-states.geojson' },
+  LGD:   { id: 'LGD',   name: 'LGD',          geojsonPath: 'India_LGD_districts.geojson',              statesPath: 'India_LGD_states.geojson' },
+  BHUVAN:{ id: 'BHUVAN',name: 'Bhuvan',        geojsonPath: 'India-bhuvan-districts.geojson',           statesPath: 'India-bhuvan-states.geojson' },
+  SOI:   { id: 'SOI',   name: 'Survey of India',geojsonPath: 'India-soi-districts.geojson',             statesPath: 'India-soi-states.geojson' },
+  NFHS5: { id: 'NFHS5', name: 'NFHS-5',        geojsonPath: 'India_NFHS5_districts_simplified.geojson', statesPath: 'India_LGD_states.geojson' },
+  NFHS4: { id: 'NFHS4', name: 'NFHS-4',        geojsonPath: 'India_NFHS4_districts_simplified.geojson', statesPath: 'India_NFHS4_states_simplified.geojson' },
+  NSSO:  { id: 'NSSO',  name: 'NSSO Regions',  geojsonPath: 'India_NFHS5_NSSO_regions_boundaries.geojson', statesPath: 'India_LGD_states.geojson' },
 };
 
-export type DistrictMapType = 'LGD' | 'NFHS5' | 'NFHS4';
+export type DistrictMapType = string;
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-/**
- * Renders district-level India maps as SVG using D3 and JSDOM
- */
 export class DistrictsMapRenderer {
   private districtsGeojson: GeoJSON.FeatureCollection | null = null;
   private statesGeojson: GeoJSON.FeatureCollection | null = null;
@@ -62,50 +52,30 @@ export class DistrictsMapRenderer {
 
   constructor() {}
 
-  /**
-   * Load GeoJSON data for a specific map type
-   */
   async loadGeoJSON(mapType: DistrictMapType = 'LGD'): Promise<void> {
-    const config = DISTRICT_MAP_TYPES[mapType];
+    const config = DISTRICT_MAP_TYPES[mapType] || DISTRICT_MAP_TYPES['LGD'];
 
-    if (this.districtsGeojson && this.currentMapType === mapType) {
-      return; // Already loaded
-    }
+    if (this.districtsGeojson && this.currentMapType === mapType) return;
 
     this.currentMapType = mapType;
 
-    // Load districts GeoJSON
-    const districtsPath = join(__dirname, '../../public', config.geojsonPath);
-    try {
-      const districtsContent = await readFile(districtsPath, 'utf-8');
-      this.districtsGeojson = JSON.parse(districtsContent);
-    } catch (error) {
-      // If local file doesn't exist, fetch from the live BharatViz site
-      const response = await fetch(`https://bharatviz.saketlab.org/${config.geojsonPath}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch districts GeoJSON: ${response.status} ${response.statusText}`);
+    const loadOne = async (filename: string): Promise<GeoJSON.FeatureCollection> => {
+      const filePath = join(__dirname, '../../public', filename);
+      try {
+        return JSON.parse(await readFile(filePath, 'utf-8'));
+      } catch {
+        const response = await fetch(`https://bharatviz.org/${filename}`);
+        if (!response.ok) throw new Error(`Failed to fetch ${filename}: ${response.status} ${response.statusText}`);
+        return response.json() as Promise<GeoJSON.FeatureCollection>;
       }
-      this.districtsGeojson = await response.json() as GeoJSON.FeatureCollection;
-    }
+    };
 
-    // Load states GeoJSON (for boundaries)
-    const statesPath = join(__dirname, '../../public', config.statesPath);
-    try {
-      const statesContent = await readFile(statesPath, 'utf-8');
-      this.statesGeojson = JSON.parse(statesContent);
-    } catch (error) {
-      // If local file doesn't exist, fetch from the live BharatViz site
-      const response = await fetch(`https://bharatviz.saketlab.org/${config.statesPath}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch states GeoJSON: ${response.status} ${response.statusText}`);
-      }
-      this.statesGeojson = await response.json() as GeoJSON.FeatureCollection;
-    }
+    [this.districtsGeojson, this.statesGeojson] = await Promise.all([
+      loadOne(config.geojsonPath),
+      loadOne(config.statesPath),
+    ]);
   }
 
-  /**
-   * Load GeoJSON data from custom file paths
-   */
   async loadGeoJSONFromPaths(districtsPath: string, statesPath?: string): Promise<void> {
     const districtsContent = await readFile(districtsPath, 'utf-8');
     this.districtsGeojson = JSON.parse(districtsContent);
@@ -118,9 +88,6 @@ export class DistrictsMapRenderer {
     }
   }
 
-  /**
-   * Calculate geographic bounds from GeoJSON
-   */
   private calculateBounds(geojson: GeoJSON.FeatureCollection): { minLng: number; maxLng: number; minLat: number; maxLat: number } {
     let minLng = Infinity;
     let maxLng = -Infinity;
@@ -130,14 +97,12 @@ export class DistrictsMapRenderer {
     const processCoordinates = (coords: unknown): void => {
       if (Array.isArray(coords)) {
         if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
-          // This is a coordinate pair [lng, lat]
           const [lng, lat] = coords;
           minLng = Math.min(minLng, lng);
           maxLng = Math.max(maxLng, lng);
           minLat = Math.min(minLat, lat);
           maxLat = Math.max(maxLat, lat);
         } else {
-          // This is an array of coordinates or arrays
           coords.forEach(processCoordinates);
         }
       }
@@ -153,9 +118,6 @@ export class DistrictsMapRenderer {
     return { minLng, maxLng, minLat, maxLat };
   }
 
-  /**
-   * Project a coordinate to canvas space (matching frontend exactly)
-   */
   private projectCoordinate(
     lng: number,
     lat: number,
@@ -187,9 +149,6 @@ export class DistrictsMapRenderer {
     return [x, y];
   }
 
-  /**
-   * Convert GeoJSON coordinates to SVG path data
-   */
   private convertCoordinatesToPath(
     coordinates: number[][] | number[][][] | number[][][][],
     bounds: { minLng: number; maxLng: number; minLat: number; maxLat: number },
@@ -206,9 +165,7 @@ export class DistrictsMapRenderer {
       }).join(' L ');
     };
 
-    // Check if it's a MultiPolygon
     if (coordinates[0] && Array.isArray(coordinates[0][0]) && Array.isArray(coordinates[0][0][0])) {
-      // MultiPolygon
       return (coordinates as number[][][][]).map(polygon => {
         return polygon.map(ring => {
           const pathData = convertRing(ring);
@@ -216,7 +173,6 @@ export class DistrictsMapRenderer {
         }).join(' ');
       }).join(' ');
     } else if (coordinates[0] && Array.isArray(coordinates[0][0])) {
-      // Polygon
       return (coordinates as number[][][]).map(ring => {
         const pathData = convertRing(ring);
         return `M ${pathData} Z`;
@@ -226,9 +182,6 @@ export class DistrictsMapRenderer {
     return '';
   }
 
-  /**
-   * Render the districts map and return SVG string
-   */
   async renderMap(request: DistrictsMapRequest): Promise<string> {
     const mapType = (request.mapType || 'LGD') as DistrictMapType;
     await this.loadGeoJSON(mapType);
@@ -246,17 +199,14 @@ export class DistrictsMapRenderer {
       darkMode = false
     } = request;
 
-    // Calculate statistics
     const values = data.map(d => d.value);
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
     const meanValue = values.reduce((a, b) => a + b, 0) / values.length;
 
-    // Create a virtual DOM
     const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
     const document = dom.window.document;
 
-    // Canvas dimensions
     const width = 800;
     const height = state ? 1100 : 890;
 
@@ -269,7 +219,6 @@ export class DistrictsMapRenderer {
       .style('font-family', 'Arial, Helvetica, sans-serif')
       .style('background-color', darkMode ? '#000000' : '#ffffff');
 
-    // Add background rectangle
     svg.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -277,11 +226,9 @@ export class DistrictsMapRenderer {
       .attr('height', height)
       .attr('fill', darkMode ? '#000000' : 'white');
 
-    // Create map content group
     const mapGroup = svg.append('g')
       .attr('class', 'map-content');
 
-    // For state-district maps, filter geojson to only that state
     let geojsonForBounds = this.districtsGeojson;
     if (state) {
       const stateNormalized = state.toLowerCase().trim();
@@ -294,20 +241,14 @@ export class DistrictsMapRenderer {
       };
     }
 
-    // Calculate bounds from GeoJSON (matching frontend exactly)
     const bounds = this.calculateBounds(geojsonForBounds);
-
-    // Create color scale
     const interpolator = getD3ColorInterpolator(colorScale);
-
-    // Create value map for lookup
     const valueMap = new Map<string, number>();
     data.forEach(d => {
       const key = `${d.state.toLowerCase().trim()}|${d.district.toLowerCase().trim()}`;
       valueMap.set(key, d.value);
     });
 
-    // Helper function to get district value
     const getDistrictValue = (properties: Record<string, unknown>): number | undefined => {
       const stateName = String(properties.state_name || properties.STATE || '').toLowerCase().trim();
       const districtName = String(properties.district_name || properties.DISTRICT || '').toLowerCase().trim();
@@ -315,60 +256,41 @@ export class DistrictsMapRenderer {
       return valueMap.get(key);
     };
 
-    // For state-district maps, only render the specified state's districts
-    const featuresToRender = state
-      ? this.districtsGeojson.features.filter((feature: Feature) => {
-          const featureStateName = String(feature.properties?.state_name || feature.properties?.STATE || '').toLowerCase().trim();
-          return featureStateName === state.toLowerCase().trim();
-        })
-      : this.districtsGeojson.features;
+    const featuresToRender = geojsonForBounds.features;
 
-    // Helper function to calculate visual center of a polygon using polylabel
     const calculateVisualCenter = (coordinates: number[][] | number[][][] | number[][][][], type: string): [number, number] | null => {
       try {
         if (type === 'Polygon') {
-          const polygonCoords = coordinates as number[][][];
-          const center = polylabel(polygonCoords, 1.0);
+          const center = polylabel(coordinates as number[][][], 1.0);
           return [center[0], center[1]];
         } else if (type === 'MultiPolygon') {
           const multiCoords = coordinates as number[][][][];
-          // For MultiPolygon, find the largest polygon and use its visual center
           let largestPolygon: number[][][] | null = null;
           let largestArea = 0;
-
           multiCoords.forEach(polygon => {
-            // Calculate approximate area of the polygon
             const ring = polygon[0];
             let area = 0;
             for (let i = 0; i < ring.length - 1; i++) {
               area += (ring[i][0] * ring[i + 1][1]) - (ring[i + 1][0] * ring[i][1]);
             }
             area = Math.abs(area) / 2;
-
-            if (area > largestArea) {
-              largestArea = area;
-              largestPolygon = polygon;
-            }
+            if (area > largestArea) { largestArea = area; largestPolygon = polygon; }
           });
-
           if (largestPolygon) {
             const center = polylabel(largestPolygon, 1.0);
             return [center[0], center[1]];
           }
         }
-
         return null;
-      } catch (e) {
-        console.error('Error calculating visual center:', e);
+      } catch {
         return null;
       }
     };
 
-    // Draw districts using custom projection (matching frontend exactly)
     featuresToRender.forEach((feature: Feature) => {
       const value = getDistrictValue(feature.properties);
 
-      let fillColor = darkMode ? '#1a1a1a' : 'white'; // Default for no data
+      let fillColor = darkMode ? '#1a1a1a' : 'white';
 
       if (value !== undefined) {
         const t = (value - minValue) / (maxValue - minValue);
@@ -376,10 +298,9 @@ export class DistrictsMapRenderer {
         fillColor = interpolator(colorT);
       }
 
-      // Determine stroke color based on fill color darkness (matching frontend)
       const strokeColor = (fillColor === 'white' || fillColor === '#1a1a1a' || !isColorDark(fillColor))
-        ? (darkMode ? '#ffffff' : '#0f172a')  // White stroke in dark mode, dark stroke in light mode
-        : '#ffffff'; // White stroke for dark fills
+        ? (darkMode ? '#ffffff' : '#0f172a')
+        : '#ffffff';
 
       let pathData = '';
       if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
@@ -393,7 +314,6 @@ export class DistrictsMapRenderer {
         .attr('stroke', strokeColor)
         .attr('stroke-width', 0.3);
 
-      // Add title element for hover tooltips
       const districtName = String(feature.properties?.district_name || feature.properties?.DISTRICT || '');
       if (districtName) {
         if (value !== undefined) {
@@ -406,7 +326,6 @@ export class DistrictsMapRenderer {
       }
     });
 
-    // Add district labels and values (if not hidden)
     if (!hideDistrictNames || !hideValues) {
       featuresToRender.forEach((feature: Feature) => {
         const value = getDistrictValue(feature.properties);
@@ -421,7 +340,6 @@ export class DistrictsMapRenderer {
 
         if (!visualCenter) return;
 
-        // Project visual center to canvas coordinates
         const [x, y] = this.projectCoordinate(visualCenter[0], visualCenter[1], bounds, width, height);
 
         const districtName = String(feature.properties?.district_name || feature.properties?.DISTRICT || '');
@@ -433,10 +351,7 @@ export class DistrictsMapRenderer {
 
         const textColor = (fillColor === 'white' || !isColorDark(fillColor)) ? '#0f172a' : '#ffffff';
 
-        // Smaller font size for districts
         const fontSize = 9;
-
-        // Build tspan elements based on what should be shown
         let tspanElements = '';
         let currentDy = 0;
 
@@ -449,7 +364,6 @@ export class DistrictsMapRenderer {
           tspanElements += `<tspan x="${x}" dy="${currentDy}">${roundToSignificantDigits(value)}</tspan>`;
         }
 
-        // Only append if there's content to show
         if (tspanElements) {
           const textElement = mapGroup.append('text')
             .attr('x', x)
@@ -461,7 +375,6 @@ export class DistrictsMapRenderer {
             .attr('fill', textColor)
             .style('pointer-events', 'none');
 
-          // Insert tspan elements by modifying the DOM directly
           const textNode = textElement.node();
           if (textNode) {
             textNode.innerHTML = tspanElements;
@@ -470,9 +383,7 @@ export class DistrictsMapRenderer {
       });
     }
 
-    // Draw state boundaries if requested
     if (showStateBoundaries && this.statesGeojson) {
-      // For state-district maps, only show the specified state's boundary
       const statesToRender = state
         ? this.statesGeojson.features.filter((feature: Feature) => {
             const featureStateName = String(feature.properties?.state_name || feature.properties?.STATE || '').toLowerCase().trim();
@@ -495,7 +406,6 @@ export class DistrictsMapRenderer {
       });
     }
 
-    // Add title
     svg.append('text')
       .attr('x', width / 2)
       .attr('y', 30)
@@ -505,7 +415,6 @@ export class DistrictsMapRenderer {
       .attr('fill', darkMode ? '#ffffff' : '#000000')
       .text(mainTitle);
 
-    // Add legend
     this.addLegend(svg, {
       minValue,
       maxValue,
@@ -519,9 +428,6 @@ export class DistrictsMapRenderer {
     return document.body.innerHTML;
   }
 
-  /**
-   * Add horizontal legend to the map
-   */
   private addLegend(
     svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     options: {
@@ -542,7 +448,6 @@ export class DistrictsMapRenderer {
       .attr('class', 'legend')
       .attr('transform', `translate(${legendPosition.x}, ${legendPosition.y})`);
 
-    // Add legend title (NO background box in frontend)
     legendGroup.append('text')
       .attr('x', legendWidth / 2)
       .attr('y', -5)
@@ -552,7 +457,6 @@ export class DistrictsMapRenderer {
       .attr('fill', options.darkMode ? '#ffffff' : '#374151')
       .text(options.legendTitle);
 
-    // Create horizontal gradient
     const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs');
     const gradient = defs.append('linearGradient')
       .attr('id', 'districts-legend-gradient')
@@ -563,19 +467,15 @@ export class DistrictsMapRenderer {
 
     const interpolator = getD3ColorInterpolator(options.colorScale as ColorScale);
 
-    // Create gradient stops
     for (let i = 0; i <= 10; i++) {
       const t = i / 10;
       let color: string;
 
       if (options.colorScale === 'aqi') {
-        // For AQI, use absolute value mapping
         const value = options.minValue + t * (options.maxValue - options.minValue);
         color = getColorForValue(value, [options.minValue, options.maxValue], 'aqi', options.invertColors);
       } else {
-        // For other scales, use normalized interpolation
-        const normalizedT = options.invertColors ? (1 - t) : t;
-        color = interpolator(normalizedT);
+        color = interpolator(options.invertColors ? (1 - t) : t);
       }
 
       gradient.append('stop')
@@ -583,7 +483,6 @@ export class DistrictsMapRenderer {
         .attr('stop-color', color);
     }
 
-    // Add gradient rectangle with border (matching frontend exactly)
     legendGroup.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -594,7 +493,6 @@ export class DistrictsMapRenderer {
       .attr('stroke-width', '0.5')
       .attr('rx', '3');
 
-    // Add min, mean, max labels (matching frontend style exactly)
     legendGroup.append('text')
       .attr('x', 0)
       .attr('y', 30)

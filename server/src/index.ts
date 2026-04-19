@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -10,6 +10,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { createMcpServer } from './mcpTools.js';
 import mapRoutes from './routes/mapRoutes.js';
 import districtsMapRoutes from './routes/districtsMapRoutes.js';
+import cityMapRoutes from './routes/cityMapRoutes.js';
 import embedRoutes from './routes/embedRoutes.js';
 import proxyRoutes from './routes/proxyRoutes.js';
 import districtEvolutionRoutes from './routes/districtEvolutionRoutes.js';
@@ -43,7 +44,7 @@ app.use(helmet({
   }
 }));
 
-app.use('/api-docs', swaggerUi.serve, (req: any, res: any, next: any) => {
+app.use('/api-docs', swaggerUi.serve, (req: Request, res: Response, next: NextFunction) => {
   const isLocal = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
   const spec = {
     ...openApiSpec,
@@ -147,6 +148,7 @@ app.delete('/api/mcp', async (req, res) => {
 
 app.use('/api/v1/states', mapRoutes);
 app.use('/api/v1/districts', districtsMapRoutes);
+app.use('/api/v1/cities', cityMapRoutes);
 app.use('/api/v1/embed', embedRoutes);
 app.use('/api/v1/proxy', proxyRoutes);
 app.use('/api/v1/district-evolution', districtEvolutionRoutes);
@@ -198,7 +200,7 @@ app.get('/', (req, res) => {
         requestBody: {
           data: 'Array<{ state: string, district: string, value: number }> - Required',
           state: 'string - Required: which state to display',
-          mapType: 'string - Optional: "LGD" | "NFHS5" | "NFHS4" (default: LGD)',
+          mapType: 'string - Optional: "LGD" | "NFHS5" | "NFHS4" | "BHUVAN" | "SOI" | "NSSO" | "1872"..."2011" (default: LGD)',
           colorScale: 'string - Optional (default: spectral)',
           invertColors: 'boolean - Optional (default: false)',
           hideValues: 'boolean - Optional (default: false)',
@@ -207,16 +209,20 @@ app.get('/', (req, res) => {
           formats: 'Array<"png" | "svg" | "pdf"> - Optional (default: ["png"])'
         },
         availableMapTypes: {
-          LGD: 'Local Government Directory (LGD) district boundaries',
-          NFHS5: 'NFHS-5 survey district boundaries',
-          NFHS4: 'NFHS-4 survey district boundaries'
+          LGD: 'Local Government Directory (LGD) — latest official boundaries',
+          BHUVAN: 'ISRO Bhuvan boundaries',
+          SOI: 'Survey of India boundaries',
+          NFHS5: 'NFHS-5 survey boundaries (2019-21)',
+          NFHS4: 'NFHS-4 survey boundaries (2015-16)',
+          NSSO: 'NSSO regional boundaries',
+          '1872-2011': 'Historical Census boundaries (pass the year as the value)'
         }
       },
       'POST /api/v1/districts/map': {
         description: 'Generate district-level choropleth map',
         requestBody: {
           data: 'Array<{ state: string, district: string, value: number }> - Required',
-          mapType: 'string - Optional: "LGD" | "NFHS5" | "NFHS4" (default: LGD)',
+          mapType: 'string - Optional: "LGD" | "NFHS5" | "NFHS4" | "BHUVAN" | "SOI" | "NSSO" | "1872"..."2011" (default: LGD)',
           colorScale: 'string - Optional (default: spectral)',
           invertColors: 'boolean - Optional (default: false)',
           hideValues: 'boolean - Optional (default: false)',
@@ -226,9 +232,13 @@ app.get('/', (req, res) => {
           formats: 'Array<"png" | "svg" | "pdf"> - Optional (default: ["png"])'
         },
         availableMapTypes: {
-          LGD: 'Local Government Directory (LGD) district boundaries',
-          NFHS5: 'NFHS-5 survey district boundaries',
-          NFHS4: 'NFHS-4 survey district boundaries'
+          LGD: 'Local Government Directory (LGD) — latest official boundaries',
+          BHUVAN: 'ISRO Bhuvan boundaries',
+          SOI: 'Survey of India boundaries',
+          NFHS5: 'NFHS-5 survey boundaries (2019-21)',
+          NFHS4: 'NFHS-4 survey boundaries (2015-16)',
+          NSSO: 'NSSO regional boundaries',
+          '1872-2011': 'Historical Census boundaries (pass the year as the value)'
         }
       },
       availableColorScales: [
@@ -238,7 +248,7 @@ app.get('/', (req, res) => {
       ]
     },
     examples: {
-      curl: `curl -X POST http://bharatviz.saketlab.org/api/v1/states/map \\
+      curl: `curl -X POST https://bharatviz.org/api/v1/states/map \\
   -H "Content-Type: application/json" \\
   -d '{
     "data": [

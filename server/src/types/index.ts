@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Color scales matching the frontend
 export const ColorScales = [
   'aqi', 'spectral', 'rdylbu', 'rdylgn', 'brbg', 'piyg', 'puor',
   'blues', 'greens', 'reds', 'oranges', 'purples', 'pinks',
@@ -9,12 +8,20 @@ export const ColorScales = [
 
 export type ColorScale = typeof ColorScales[number];
 
-// Request validation schema
+export const DistrictMapTypes = [
+  '1872', '1881', '1891', '1901', '1911', '1921', '1931', '1941',
+  '1951', '1961', '1971', '1981', '1991', '2001', '2011',
+  'LGD', 'BHUVAN', 'SOI', 'NFHS5', 'NFHS4', 'NSSO'
+] as const;
+export type DistrictMapType = typeof DistrictMapTypes[number];
+
 export const StatesMapRequestSchema = z.object({
   data: z.array(z.object({
     state: z.string(),
     value: z.number()
   })).min(1, 'At least one data point is required'),
+
+  mapType: z.enum(DistrictMapTypes).optional().default('LGD'),
 
   colorScale: z.enum(ColorScales).optional().default('spectral'),
 
@@ -41,10 +48,6 @@ export const StatesMapRequestSchema = z.object({
 
 export type StatesMapRequest = z.infer<typeof StatesMapRequestSchema>;
 
-// Districts map types
-export const DistrictMapTypes = ['LGD', 'NFHS5', 'NFHS4'] as const;
-export type DistrictMapType = typeof DistrictMapTypes[number];
-
 export const DistrictsMapRequestSchema = z.object({
   data: z.array(z.object({
     state: z.string(),
@@ -68,7 +71,6 @@ export const DistrictsMapRequestSchema = z.object({
 
   showStateBoundaries: z.boolean().optional().default(true),
 
-  // State name for single-state rendering (filters and zooms to that state)
   state: z.string().optional(),
 
   darkMode: z.boolean().optional().default(false),
@@ -84,7 +86,6 @@ export const DistrictsMapRequestSchema = z.object({
 
 export type DistrictsMapRequest = z.infer<typeof DistrictsMapRequestSchema>;
 
-// State-District map request (single state with districts)
 export const StateDistrictMapRequestSchema = z.object({
   data: z.array(z.object({
     state: z.string(),
@@ -121,10 +122,9 @@ export const StateDistrictMapRequestSchema = z.object({
 
 export type StateDistrictMapRequest = z.infer<typeof StateDistrictMapRequestSchema>;
 
-// Response types
 export interface MapExportResult {
   format: 'png' | 'svg' | 'pdf';
-  data: string; // base64 encoded
+  data: string;
   mimeType: string;
 }
 

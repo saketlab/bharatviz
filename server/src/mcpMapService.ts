@@ -3,6 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { StatesMapRenderer } from './services/mapRenderer.js';
 import { DistrictsMapRenderer } from './services/districtsMapRenderer.js';
+import type { ColorScale } from './types/index.js';
 import { ExportService } from './services/exportService.js';
 import type { FeatureCollection } from 'geojson';
 
@@ -235,7 +236,7 @@ export class McpMapService {
 
     const svgString = await renderer.renderMap({
       data: resolvedData,
-      colorScale: (options.colorScale as any) || 'spectral',
+      colorScale: (options.colorScale as ColorScale) || 'spectral',
       invertColors: options.invertColors ?? false,
       hideStateNames: options.hideStateNames ?? false,
       hideValues: options.hideValues ?? false,
@@ -302,7 +303,7 @@ export class McpMapService {
 
     const svgString = await renderer.renderMap({
       data: resolvedData.map(d => ({ state: d.state, district: d.district, value: d.value })),
-      colorScale: (options.colorScale as any) || 'spectral',
+      colorScale: (options.colorScale as ColorScale) || 'spectral',
       invertColors: options.invertColors ?? false,
       hideDistrictNames: options.hideDistrictNames ?? true,
       hideValues: options.hideValues ?? true,

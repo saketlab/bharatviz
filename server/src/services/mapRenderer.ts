@@ -37,29 +37,47 @@ type StateFeatureCollection = FeatureCollection<Geometry, StateProperties>;
 type D3Selection = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 type D3GeoPath = d3.GeoPath<unknown, d3.GeoPermissibleObjects>;
 
-/**
- * Renders a state-level India map as SVG using D3 and JSDOM
- */
+const STATE_MAP_FILES: Record<string, string> = {
+  '1872': 'India-1872-states.geojson',
+  '1881': 'India-1881-states.geojson',
+  '1891': 'India-1891-states.geojson',
+  '1901': 'India-1901-states.geojson',
+  '1911': 'India-1911-states.geojson',
+  '1921': 'India-1921-states.geojson',
+  '1931': 'India-1931-states.geojson',
+  '1941': 'India-1941-states.geojson',
+  '1951': 'India-1951-states.geojson',
+  '1961': 'India-1961-states.geojson',
+  '1971': 'India-1971-states.geojson',
+  '1981': 'India-1981-states.geojson',
+  '1991': 'India-1991-states.geojson',
+  '2001': 'India-2001-states.geojson',
+  '2011': 'India-2011-states.geojson',
+  LGD:    'India_LGD_states.geojson',
+  BHUVAN: 'India-bhuvan-states.geojson',
+  SOI:    'India-soi-states.geojson',
+  NFHS5:  'India_NFHS5_states_simplified.geojson',
+  NFHS4:  'India_NFHS4_states_simplified.geojson',
+};
+
 export class StatesMapRenderer {
   private geojsonData: StateFeatureCollection | null = null;
+  private currentMapType: string = 'LGD';
 
   constructor() {}
 
-  /**
-   * Load GeoJSON data
-   */
-  async loadGeoJSON(): Promise<void> {
-    if (this.geojsonData) return;
+  async loadGeoJSON(mapType: string = 'LGD'): Promise<void> {
+    if (this.geojsonData && this.currentMapType === mapType) return;
 
-    // Try to load from local file first
-    const geojsonPath = join(__dirname, '../../public/india_map_states.geojson');
+    this.currentMapType = mapType;
+    const filename = STATE_MAP_FILES[mapType] || STATE_MAP_FILES['LGD'];
+    const geojsonPath = join(__dirname, '../../public', filename);
 
     try {
       const geojsonContent = await readFile(geojsonPath, 'utf-8');
       this.geojsonData = JSON.parse(geojsonContent);
     } catch (error) {
-      // If local file doesn't exist, fetch from the live BharatViz site
-      const response = await fetch('https://bharatviz.saketlab.org/India_LGD_states.geojson');
+      const response = await fetch(`https://bharatviz.org/${filename}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch GeoJSON: ${response.status} ${response.statusText}`);
       }
@@ -67,19 +85,13 @@ export class StatesMapRenderer {
     }
   }
 
-  /**
-   * Load GeoJSON data from a custom file path
-   */
   async loadGeoJSONFromPath(geojsonPath: string): Promise<void> {
     const geojsonContent = await readFile(geojsonPath, 'utf-8');
     this.geojsonData = JSON.parse(geojsonContent);
   }
 
-  /**
-   * Render the map and return SVG string
-   */
   async renderMap(request: StatesMapRequest): Promise<string> {
-    await this.loadGeoJSON();
+    await this.loadGeoJSON(request.mapType || 'LGD');
 
     const {
       data,
@@ -92,17 +104,14 @@ export class StatesMapRenderer {
       darkMode = false
     } = request;
 
-    // Calculate statistics
     const values = data.map(d => d.value);
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
     const meanValue = values.reduce((a, b) => a + b, 0) / values.length;
 
-    // Create a virtual DOM
     const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
     const document = dom.window.document;
 
-    // Canvas dimensions (matching frontend)
     const width = 800;
     const height = 800;
     const margin = { top: 70, right: 20, bottom: 70, left: 20 };
@@ -116,7 +125,6 @@ export class StatesMapRenderer {
       .style('font-family', 'Arial, Helvetica, sans-serif')
       .style('background-color', darkMode ? '#000000' : '#ffffff');
 
-    // Add background rectangle as fallback
     svg.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -124,21 +132,17 @@ export class StatesMapRenderer {
       .attr('height', height)
       .attr('fill', darkMode ? '#000000' : 'white');
 
-    // Create projection using fitSize (CRITICAL - this is what frontend uses!)
     const projection = d3.geoMercator()
       .fitSize([width - margin.left - margin.right, height - margin.top - margin.bottom], this.geojsonData);
 
     const path = d3.geoPath().projection(projection);
 
-    // Create data lookup map
     const dataMap = new Map(data.map(d => [d.state.toLowerCase().trim(), d.value]));
 
-    // Create main map group with margin transform
     const mapGroup = svg.append('g')
       .attr('class', 'map-content')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Render map paths
     mapGroup.selectAll('path')
       .data(this.geojsonData.features)
       .join('path')
@@ -158,7 +162,6 @@ export class StatesMapRenderer {
       })
       .attr('stroke-width', 0.5)
       .each((d: StateFeature, i: number, nodes: HTMLElement[]) => {
-        // Add title element for hover tooltips
         const pathElement = d3.select(nodes[i]);
         const stateName = this.getStateName(d.properties);
         const displayName = this.getDisplayName(stateName);
@@ -173,7 +176,6 @@ export class StatesMapRenderer {
         }
       });
 
-    // Add state labels and values
     if (!hideStateNames || !hideValues) {
       mapGroup.selectAll('text.state-label')
         .data(this.geojsonData.features)
@@ -211,7 +213,6 @@ export class StatesMapRenderer {
           let fontSize = Math.sqrt(area) / 12;
           fontSize = Math.max(7, Math.min(14, fontSize));
 
-          // Smaller states get reduced font size
           const smallerStates = ['delhi', 'chandigarh', 'sikkim', 'tripura', 'manipur', 'mizoram', 'nagaland', 'meghalaya', 'puducherry', 'lakshadweep'];
           if (smallerStates.includes(stateName)) {
             fontSize = Math.max(6, fontSize * 0.7);
@@ -223,7 +224,6 @@ export class StatesMapRenderer {
           text.attr('font-size', `${fontSize}px`);
           text.attr('fill', textColor);
 
-          // State name
           if (!hideStateNames) {
             text.append('tspan')
               .attr('x', 0)
@@ -231,7 +231,6 @@ export class StatesMapRenderer {
               .text(this.getDisplayName(stateName));
           }
 
-          // Value
           if (!hideValues) {
             text.append('tspan')
               .attr('x', 0)
@@ -241,7 +240,6 @@ export class StatesMapRenderer {
         });
     }
 
-    // Add legend
     this.addLegend(svg, {
       minValue,
       maxValue,
@@ -252,7 +250,6 @@ export class StatesMapRenderer {
       darkMode
     });
 
-    // Add main title
     svg.append('text')
       .attr('x', width / 2)
       .attr('y', 30)
@@ -262,13 +259,9 @@ export class StatesMapRenderer {
       .attr('fill', darkMode ? '#ffffff' : '#000000')
       .text(mainTitle);
 
-    // Return the SVG as string
     return document.body.innerHTML;
   }
 
-  /**
-   * Add legend to the map (matches frontend design exactly - horizontal gradient)
-   */
   private addLegend(
     svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     options: {
@@ -282,14 +275,13 @@ export class StatesMapRenderer {
     }
   ): void {
     const legendPosition = DEFAULT_LEGEND_POSITION.STATES;
-    const legendWidth = 180;  // Horizontal gradient width
-    const legendHeight = 20;   // Horizontal gradient height
+    const legendWidth = 180;
+    const legendHeight = 20;
 
     const legendGroup = svg.append('g')
       .attr('class', 'legend')
       .attr('transform', `translate(${legendPosition.x}, ${legendPosition.y})`);
 
-    // Add legend background box (no border)
     legendGroup.append('rect')
       .attr('x', -10)
       .attr('y', -35)
@@ -299,7 +291,6 @@ export class StatesMapRenderer {
       .attr('stroke', 'none')
       .attr('rx', 5);
 
-    // Add title
     legendGroup.append('text')
       .attr('x', legendWidth / 2)
       .attr('y', -15)
@@ -309,7 +300,6 @@ export class StatesMapRenderer {
       .attr('fill', options.darkMode ? '#ffffff' : '#374151')
       .text(options.legendTitle);
 
-    // Create horizontal gradient
     const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs');
     const gradient = defs.append('linearGradient')
       .attr('id', 'states-legend-gradient')
@@ -320,19 +310,15 @@ export class StatesMapRenderer {
 
     const interpolator = getD3ColorInterpolator(options.colorScale as ColorScale);
 
-    // Create gradient stops
     for (let i = 0; i <= 10; i++) {
       const t = i / 10;
       let color: string;
 
       if (options.colorScale === 'aqi') {
-        // For AQI, use absolute value mapping
         const value = options.minValue + t * (options.maxValue - options.minValue);
         color = getColorForValue(value, [options.minValue, options.maxValue], 'aqi', options.invertColors);
       } else {
-        // For other scales, use normalized interpolation
-        const normalizedT = options.invertColors ? (1 - t) : t;
-        color = interpolator(normalizedT);
+        color = interpolator(options.invertColors ? (1 - t) : t);
       }
 
       gradient.append('stop')
@@ -340,7 +326,6 @@ export class StatesMapRenderer {
         .attr('stop-color', color);
     }
 
-    // Add gradient rectangle (horizontal) - NO BORDER
     legendGroup.append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -349,7 +334,6 @@ export class StatesMapRenderer {
       .style('fill', 'url(#states-legend-gradient)')
       .attr('stroke', 'none');
 
-    // Add min, mean, max labels (positioned below the horizontal bar)
     legendGroup.append('text')
       .attr('x', 0)
       .attr('y', legendHeight + 18)
@@ -375,31 +359,19 @@ export class StatesMapRenderer {
       .text(roundToSignificantDigits(options.maxValue));
   }
 
-  /**
-   * Get state name from GeoJSON properties
-   */
   private getStateName(properties: Record<string, unknown>): string {
     const name = String(properties.state_name || properties.NAME_1 || properties.name || properties.ST_NM || '');
     return name.toLowerCase().trim();
   }
 
-  /**
-   * Get display name for state
-   */
   private getDisplayName(stateName: string): string {
     return STATE_ABBREVIATIONS[stateName] || this.toTitleCase(stateName);
   }
 
-  /**
-   * Convert string to title case
-   */
   private toTitleCase(str: string): string {
     return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
   }
 
-  /**
-   * Determine if white text should be used
-   */
   private shouldUseWhiteText(stateName: string, color: string): boolean {
     if (BLACK_TEXT_STATES.includes(stateName)) {
       return false;
@@ -407,13 +379,9 @@ export class StatesMapRenderer {
     return isColorDark(color);
   }
 
-  /**
-   * Get adjusted position for state labels (matches frontend exactly)
-   */
   private getStatePosition(stateName: string, centroid: [number, number], feature: StateFeature, path: d3.GeoPath<unknown, d3.GeoPermissibleObjects>): { x: number; y: number } {
     let [x, y] = centroid;
 
-    // External label states (positioned outside their boundaries)
     if (EXTERNAL_LABEL_STATES.includes(stateName)) {
       const bounds = path.bounds(feature);
 
@@ -481,7 +449,6 @@ export class StatesMapRenderer {
           break;
       }
     } else {
-      // Internal adjustments for regular states
       switch (stateName) {
         case 'west bengal':
           y += 13;
