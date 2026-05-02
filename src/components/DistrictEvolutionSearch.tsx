@@ -163,6 +163,12 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
 
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [stateSearchValue, setStateSearchValue] = useState('');
+  const [showStateDropdown, setShowStateDropdown] = useState(false);
+  const stateDropdownRef = useRef<HTMLDivElement>(null);
+  const stateInputRef = useRef<HTMLInputElement>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<EvolutionResponse | null>(null);
@@ -209,12 +215,33 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const allStates = useMemo(() => {
+    const s = new Set(allNames.map(n => n.state).filter(Boolean));
+    return Array.from(s).sort();
+  }, [allNames]);
+
+  const filteredStates = useMemo(() => {
+    const q = stateSearchValue.toLowerCase().trim();
+    if (!q) return allStates;
+    return allStates.filter(s => s.toLowerCase().includes(q));
+  }, [allStates, stateSearchValue]);
+
+  const namesForState = useMemo(
+    () => selectedState ? allNames.filter(n => n.state === selectedState) : allNames,
+    [allNames, selectedState]
+  );
+
   useEffect(() => {
-    const results = filterNames(allNames, inputValue);
+    if (!inputValue.trim()) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const results = filterNames(namesForState, inputValue);
     setSuggestions(results);
     setActiveSuggestion(-1);
-    setShowSuggestions(results.length > 0 && inputValue.trim().length > 0);
-  }, [inputValue, allNames]);
+    setShowSuggestions(results.length > 0);
+  }, [inputValue, namesForState]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -224,6 +251,10 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
       }
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setStateDropdownOpen(false);
+      }
+      if (stateDropdownRef.current && !stateDropdownRef.current.contains(e.target as Node)) {
+        setShowStateDropdown(false);
+        setStateSearchValue('');
       }
     };
     document.addEventListener('mousedown', handler);
@@ -287,14 +318,32 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
     }
   };
 
-  const clear = () => {
+  const resetSearch = () => {
     setInputValue('');
     setResponse(null);
     setError(null);
     setSelectedMatchIdx(0);
     setShowSuggestions(false);
+  };
+
+  const clear = () => {
+    resetSearch();
     onDistrictChangeRef.current?.(null);
     inputRef.current?.focus();
+  };
+
+  const selectState = (state: string) => {
+    setSelectedState(state);
+    setShowStateDropdown(false);
+    setStateSearchValue('');
+    resetSearch();
+    inputRef.current?.focus();
+  };
+
+  const clearState = () => {
+    setSelectedState('');
+    setStateSearchValue('');
+    resetSearch();
   };
 
   const match = response?.matches[selectedMatchIdx] ?? null;
@@ -312,9 +361,71 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
   return (
     <div className="relative">
       <div className={`px-4 py-3 border-b ${border} ${bg}`}>
-        <div className="relative">
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
+        <div className="flex flex-col gap-2">
+
+          <div className="relative" ref={stateDropdownRef}>
+            <button
+              type="button"
+              onClick={() => {
+                setShowStateDropdown(o => !o);
+                setTimeout(() => stateInputRef.current?.focus(), 50);
+              }}
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${inputBg}`}
+            >
+              <span className={selectedState ? '' : 'opacity-50'}>
+                {selectedState || 'Filter by state (optional)'}
+              </span>
+              <div className="flex items-center gap-1 shrink-0">
+                {selectedState && (
+                  <button
+                    type="button"
+                    onClick={e => { e.stopPropagation(); clearState(); }}
+                    className={`${muted} hover:text-current`}
+                    aria-label="Clear state filter"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                <ChevronDown className={`h-4 w-4 ${muted} transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} />
+              </div>
+            </button>
+
+            {showStateDropdown && (
+              <div className={`absolute left-0 right-0 top-full mt-1 z-40 rounded-lg border shadow-lg overflow-hidden ${suggBg}`}>
+                <div className={`px-2 py-1.5 border-b ${border}`}>
+                  <input
+                    ref={stateInputRef}
+                    type="text"
+                    value={stateSearchValue}
+                    onChange={e => setStateSearchValue(e.target.value)}
+                    placeholder="Search states…"
+                    className={`w-full px-2 py-1 rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 ${inputBg}`}
+                    autoComplete="off"
+                  />
+                </div>
+                <div style={{ maxHeight: 240, overflowY: 'auto' }}>
+                  {filteredStates.length === 0 && (
+                    <p className={`px-3 py-2 text-xs italic ${muted}`}>No states found</p>
+                  )}
+                  {filteredStates.map(s => (
+                    <button
+                      key={s}
+                      type="button"
+                      onMouseDown={e => { e.preventDefault(); selectState(s); }}
+                      className={`w-full text-left text-sm px-3 py-2 transition-colors ${
+                        s === selectedState ? suggActive : `${darkMode ? 'text-[hsl(35,10%,82%)]' : 'text-[hsl(28,20%,14%)]'} ${suggHover}`
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <div className="relative">
               <Search className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${muted}`} />
               <input
                 ref={inputRef}
@@ -323,7 +434,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                 onChange={e => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                placeholder="Type a district name, e.g. 24 Para, Coimbatore, Bombay…"
+                placeholder={selectedState ? `Search districts in ${selectedState}…` : 'Type a district name, e.g. 24 Para, Coimbatore, Bombay…'}
                 className={`w-full pl-9 pr-8 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 ${inputBg}`}
                 autoComplete="off"
                 spellCheck={false}
@@ -338,31 +449,31 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
+
+              {showSuggestions && (
+                <div
+                  ref={suggestRef}
+                  className={`absolute left-0 right-0 top-full mt-1 z-30 rounded-lg border shadow-lg overflow-hidden ${suggBg}`}
+                  style={{ maxHeight: 280, overflowY: 'auto' }}
+                >
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={`${s.district}|${s.state}`}
+                      type="button"
+                      onMouseDown={e => { e.preventDefault(); selectSuggestion(s); }}
+                      onMouseEnter={() => setActiveSuggestion(i)}
+                      className={`w-full text-left px-3 py-2 text-sm flex items-baseline justify-between gap-2 transition-colors ${
+                        i === activeSuggestion ? suggActive : `${darkMode ? 'text-[hsl(35,10%,82%)]' : 'text-[hsl(28,20%,14%)]'} ${suggHover}`
+                      }`}
+                    >
+                      <span className="font-medium">{s.district}</span>
+                      <span className={`text-xs shrink-0 ${i === activeSuggestion ? 'opacity-70' : muted}`}>{s.state}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-
-          {showSuggestions && (
-            <div
-              ref={suggestRef}
-              className={`absolute left-0 right-0 top-full mt-1 z-30 rounded-lg border shadow-lg overflow-hidden ${suggBg}`}
-              style={{ maxHeight: 280, overflowY: 'auto' }}
-            >
-              {suggestions.map((s, i) => (
-                <button
-                  key={`${s.district}|${s.state}`}
-                  type="button"
-                  onMouseDown={e => { e.preventDefault(); selectSuggestion(s); }}
-                  onMouseEnter={() => setActiveSuggestion(i)}
-                  className={`w-full text-left px-3 py-2 text-sm flex items-baseline justify-between gap-2 transition-colors ${
-                    i === activeSuggestion ? suggActive : `${darkMode ? 'text-[hsl(35,10%,82%)]' : 'text-[hsl(28,20%,14%)]'} ${suggHover}`
-                  }`}
-                >
-                  <span className="font-medium">{s.district}</span>
-                  <span className={`text-xs shrink-0 ${i === activeSuggestion ? 'opacity-70' : muted}`}>{s.state}</span>
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {response && response.matches.length > 1 && (
