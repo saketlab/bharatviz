@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import { IndiaCityMap, type IndiaCityMapRef, type CityWardData } from '@/components/IndiaCityMap';
+import { IndiaPincodesMap, type IndiaPincodesMapRef, type PincodeMapData } from '@/components/IndiaPincodesMap';
 import { getUniqueStatesFromGeoJSON } from '@/lib/stateUtils';
 import { loadStateGistMapping, getAvailableStates, getStateGeoJSONUrl, type StateGistMapping } from '@/lib/stateGistMapping';
 import { fetchWithCorsFallback } from '@/lib/corsProxy';
@@ -66,7 +67,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -151,6 +152,24 @@ const Index = () => {
   const [cityHideNames, setCityHideNames] = useState(false);
   const [cityHideValues, setCityHideValues] = useState(false);
 
+  const [pincodeMapData, setPincodeMapData] = useState<PincodeMapData[]>([]);
+  const [pincodeColorScale, setPincodeColorScale] = useState<ColorScale>('spectral');
+  const [pincodeInvertColors, setPincodeInvertColors] = useState(false);
+  const [pincodeDataTitle, setPincodeDataTitle] = useState<string>('');
+  const [pincodeMapTitle, setPincodeMapTitle] = useState<string>('');
+  const [pincodeColorBarSettings, setPincodeColorBarSettings] = useState<ColorBarSettings>({
+    isDiscrete: false,
+    binCount: 5,
+    customBoundaries: [],
+    useCustomBoundaries: false
+  });
+  const [pincodeDataType, setPincodeDataType] = useState<DataType>('numerical');
+  const [pincodeCategoryColors, setPincodeCategoryColors] = useState<CategoryColorMapping>({});
+  const [pincodeNAInfo, setPincodeNAInfo] = useState<NAInfo | undefined>(undefined);
+  const [selectedPincodeState, setSelectedPincodeState] = useState<string>('Maharashtra');
+  const [pincodeStateSearchQuery, setPincodeStateSearchQuery] = useState<string>('');
+  const [pincodeAvailableStates, setPincodeAvailableStates] = useState<string[]>([]);
+
   const { dark: darkMode, toggle: toggleDarkMode, setDark: setDarkMode } = useDarkMode();
 
   const [chatContext, setChatContext] = useState<DynamicChatContext | null>(null);
@@ -165,6 +184,7 @@ const Index = () => {
   const districtMapRef = useRef<IndiaDistrictsMapRef>(null);
   const stateDistrictMapRef = useRef<IndiaDistrictsMapRef>(null);
   const cityMapRef = useRef<IndiaCityMapRef>(null);
+  const pincodeMapRef = useRef<IndiaPincodesMapRef>(null);
 
   const hasReadInitialUrl = useRef<Set<string>>(new Set());
   const skipDataUrlLoad = useRef(false);
@@ -466,6 +486,53 @@ const Index = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedCity, selectedCityDataset, cityColorScale, cityInvertColors, cityHideNames, cityHideValues, darkMode, location.pathname, navigate]);
+
+  // Pincodes tab: read initial URL state
+  useEffect(() => {
+    if (hasReadInitialUrl.current.has('pincodes')) return;
+    if (activeTab !== 'pincodes') return;
+
+    const params = new URLSearchParams(location.search);
+
+    const colorScale = params.get('colorScale') as ColorScale;
+    if (colorScale) setPincodeColorScale(colorScale);
+
+    const invertColors = params.get('invertColors');
+    if (invertColors) setPincodeInvertColors(invertColors === 'true');
+
+    const state = params.get('selectedState');
+    if (state) setSelectedPincodeState(state);
+
+    hasReadInitialUrl.current.add('pincodes');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  // Pincodes tab: persist URL state
+  useEffect(() => {
+    if (!hasReadInitialUrl.current.has('pincodes')) return;
+    if (activeTab !== 'pincodes') return;
+
+    const params = new URLSearchParams(location.search);
+    params.set('colorScale', pincodeColorScale);
+    params.set('selectedState', selectedPincodeState);
+    if (pincodeInvertColors) params.set('invertColors', 'true');
+    else params.delete('invertColors');
+
+    const newUrl = buildUrl(params);
+    if (location.pathname + location.search !== newUrl) {
+      navigate(newUrl, { replace: true });
+    }
+  }, [activeTab, pincodeColorScale, pincodeInvertColors, selectedPincodeState, darkMode, location.pathname, location.search, navigate]);
+
+  useEffect(() => {
+    if (activeTab !== 'pincodes') return;
+    getUniqueStatesFromGeoJSON(DATA_FILES.PINCODES_GEOJSON).then(states => {
+      setPincodeAvailableStates(states);
+      if (!states.includes(selectedPincodeState) && states.length > 0) {
+        setSelectedPincodeState(states[0]);
+      }
+    });
+  }, [activeTab]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -935,10 +1002,34 @@ const Index = () => {
     }
   };
 
+  const handlePincodeDataLoad = (rawData: Array<{ pincode?: string; pin?: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
+    const data: PincodeMapData[] = rawData
+      .filter(row => row.value !== '' && row.value !== 'NA')
+      .map(row => ({
+        pincode: row.pincode || row.pin || '',
+        value: row.value
+      }));
+
+    setPincodeMapData(data);
+    setPincodeDataTitle(title || '');
+    setPincodeNAInfo(naInfo ? { pincodes: naInfo.states, count: naInfo.count } : undefined);
+
+    const values = data.map(d => d.value);
+    const dataType = detectDataType(values);
+    setPincodeDataType(dataType);
+
+    if (dataType === 'categorical') {
+      const categories = getUniqueCategories(values);
+      setPincodeCategoryColors(generateDefaultCategoryColors(categories));
+      setPincodeColorBarSettings(prev => ({ ...prev, isDiscrete: true }));
+    }
+  };
+
   const getActiveMapRef = () => {
     if (activeTab === 'states') return stateMapRef.current;
     if (activeTab === 'districts' || activeTab === 'regions') return districtMapRef.current;
     if (activeTab === 'cities') return cityMapRef.current;
+    if (activeTab === 'pincodes') return pincodeMapRef.current;
     return stateDistrictMapRef.current;
   };
 
@@ -1245,6 +1336,14 @@ const Index = () => {
         ogTitle: 'Mapping India\'s Cities | BharatViz',
         ogDescription: 'Ward-level choropleth maps for 130+ Indian cities. Data from DataMeet, SBM, and AMRUT sources.'
       },
+      pincodes: {
+        title: 'India Pincode Maps | BharatViz',
+        description: 'Visualize India at pincode level with choropleth maps. 19,000+ pincodes across all states and UTs. Upload a CSV with pincode and value to create publication-ready maps.',
+        keywords: 'India pincode maps, pincode choropleth, ZIP code India map, postal code visualization, India postal boundaries, pincode data visualization',
+        canonical: `${baseUrl}/pincodes`,
+        ogTitle: 'India Pincode Maps | BharatViz',
+        ogDescription: 'Pincode-level choropleth maps for all Indian states. 19,000+ pincodes. Upload CSV, export to PNG/SVG/PDF.'
+      },
       evolution: {
         title: 'Administrative Evolution of India | BharatViz',
         description: 'Trace how India\'s district boundaries changed across eight census decades from 1872 to 2024. Explore splits, merges, and renames across all-India and Bombay Presidency maps with colour-coded lineage chains.',
@@ -1400,6 +1499,7 @@ const Index = () => {
               <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
               <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
               <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
+              <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
             </TabsList>
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
@@ -2442,6 +2542,107 @@ POST /api/v1/districts/map
                     categoryColors={cityCategoryColors}
                     onCategoryColorChange={(category, color) => {
                       setCityCategoryColors(prev => ({ ...prev, [category]: color }));
+                    }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={`space-y-6 ${activeTab === 'pincodes' ? 'block' : 'hidden'}`}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <IndiaPincodesMap
+                  ref={pincodeMapRef}
+                  data={pincodeMapData}
+                  colorScale={pincodeColorScale}
+                  invertColors={pincodeInvertColors}
+                  dataTitle={pincodeDataTitle}
+                  selectedState={selectedPincodeState}
+                  colorBarSettings={pincodeColorBarSettings}
+                  dataType={pincodeDataType}
+                  categoryColors={pincodeCategoryColors}
+                  naInfo={pincodeNAInfo}
+                  mapTitle={pincodeMapTitle}
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                />
+                <div className="mt-4">
+                  <ExportOptions
+                    onExportPNG={handleExportPNG}
+                    onExportSVG={handleExportSVG}
+                    onExportPDF={handleExportPDF}
+                    onCopyToClipboard={handleCopyToClipboard}
+                    disabled={pincodeMapData.length === 0}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5">
+                  <Label htmlFor="pincode-state-selector" className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    State
+                  </Label>
+                  <input
+                    type="text"
+                    placeholder="Search state..."
+                    value={pincodeStateSearchQuery}
+                    onChange={(e) => setPincodeStateSearchQuery(e.target.value)}
+                    className="w-full mb-2 px-3 py-2 border rounded-md text-sm border-input bg-background dark:bg-[hsl(25,10%,16%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,12%,90%)]"
+                  />
+                  <Select value={selectedPincodeState} onValueChange={(value) => {
+                    setSelectedPincodeState(value);
+                    setPincodeStateSearchQuery('');
+                  }}>
+                    <SelectTrigger id="pincode-state-selector" className="w-full">
+                      <SelectValue placeholder="Select a state">
+                        {selectedPincodeState}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {pincodeAvailableStates
+                        .filter((state) =>
+                          state.toLowerCase().includes(pincodeStateSearchQuery.toLowerCase())
+                        )
+                        .map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      {pincodeStateSearchQuery.length > 0 && pincodeAvailableStates.filter((state) =>
+                        state.toLowerCase().includes(pincodeStateSearchQuery.toLowerCase())
+                      ).length === 0 && (
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground dark:text-[hsl(30,8%,55%)]">
+                          No states found
+                        </div>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <FileUpload
+                  onDataLoad={handlePincodeDataLoad}
+                  mode="states"
+                  onMapTitleChange={setPincodeMapTitle}
+                />
+                <div className="mt-6">
+                  <ColorMapChooser
+                    selectedScale={pincodeColorScale}
+                    onScaleChange={setPincodeColorScale}
+                    invertColors={pincodeInvertColors}
+                    onInvertColorsChange={setPincodeInvertColors}
+                    colorBarSettings={pincodeColorBarSettings}
+                    onColorBarSettingsChange={setPincodeColorBarSettings}
+                    dataType={pincodeDataType}
+                    categories={getUniqueCategories(pincodeMapData.map(d => d.value))}
+                    categoryColors={pincodeCategoryColors}
+                    onCategoryColorChange={(category, color) => {
+                      setPincodeCategoryColors(prev => ({ ...prev, [category]: color }));
                     }}
                     boundaryColor={boundaryColor}
                     onBoundaryColorChange={setBoundaryColor}

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Download, FileImage, FileText, FileSpreadsheet, MapIcon, ClipboardCopy, Check, Quote, X, ChevronDown } from 'lucide-react';
+import { Download, FileImage, FileText, FileSpreadsheet, MapIcon, ClipboardCopy, Check, Quote, X, ChevronDown, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type CitationInfo, getCitation, getCitationStructured } from '@/lib/citations';
 
@@ -87,6 +87,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
   defaultOpen = false,
 }) => {
   const copyFeedback = useCopyFeedback();
+  const geojsonUrlCopyFeedback = useCopyFeedback(1500);
   const [open, setOpen] = useState(defaultOpen);
   const [showCitation, setShowCitation] = useState(false);
 
@@ -110,6 +111,15 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
     if (!onCopyToClipboard) return;
     onCopyToClipboard();
     copyFeedback.trigger();
+  };
+
+  const handleCopyGeoJSONUrl = () => {
+    if (!geojsonDownloadUrl) return;
+    const absoluteUrl = geojsonDownloadUrl.startsWith('http')
+      ? geojsonDownloadUrl
+      : `${window.location.origin}${geojsonDownloadUrl}`;
+    navigator.clipboard.writeText(absoluteUrl);
+    geojsonUrlCopyFeedback.trigger();
   };
 
   const structured = citationInfo ? getCitationStructured(citationInfo) : null;
@@ -155,9 +165,20 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
               </Button>
             )}
             {geojsonDownloadUrl && (
-              <Button onClick={handleDownloadGeoJSON} variant="outline" size="sm" className="flex items-center gap-2">
-                <MapIcon className="h-4 w-4" />GeoJSON
-              </Button>
+              <>
+                <Button onClick={handleDownloadGeoJSON} variant="outline" size="sm" className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />GeoJSON
+                </Button>
+                <Button
+                  onClick={handleCopyGeoJSONUrl}
+                  variant={geojsonUrlCopyFeedback.copied ? "default" : "outline"}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  {geojsonUrlCopyFeedback.copied ? <Check className="h-4 w-4" /> : <Link className="h-4 w-4" />}
+                  {geojsonUrlCopyFeedback.copied ? 'Copied!' : 'Copy URL'}
+                </Button>
+              </>
             )}
             {citationInfo && (
               <Button

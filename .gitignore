@@ -303,3 +303,7 @@ server/test-memory.js
 server/test-memory-detailed.js
 server/compare-memory.js
 server/compare-final.js
+
+# Large pincode GeoJSON files (too heavy for git)
+pincode_with_districts.geojson
+public/India_pincodes_simplified.geojson
