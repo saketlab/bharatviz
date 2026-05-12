@@ -72,6 +72,45 @@ interface Bounds {
   maxLat: number;
 }
 
+interface PincodeRenderFeature {
+  path: string;
+  pincode: string;
+  officeName: string;
+  state: string;
+  district: string;
+  value?: number | string;
+  fillColor: string;
+  strokeColor: string;
+  title: string;
+}
+
+const PincodePath = React.memo(({
+  feature,
+  isHovered,
+  boundaryWidth,
+  onHover,
+  onLeave,
+}: {
+  feature: PincodeRenderFeature;
+  isHovered: boolean;
+  boundaryWidth: number;
+  onHover: (feature: PincodeRenderFeature) => void;
+  onLeave: () => void;
+}) => (
+  <path
+    d={feature.path}
+    fill={feature.fillColor}
+    stroke={feature.strokeColor}
+    strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
+    className="cursor-pointer"
+    onMouseEnter={() => onHover(feature)}
+    onMouseLeave={onLeave}
+  >
+    <title>{feature.title}</title>
+  </path>
+));
+PincodePath.displayName = 'PincodePath';
+
 export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMapProps>(({
   data,
   colorScale,
@@ -209,7 +248,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
       const timeoutId = setTimeout(() => setRenderingData(false), 200);
       return () => clearTimeout(timeoutId);
     }
-  }, [data, geojsonData, bounds, colorScale, invertColors, colorBarSettings, dataType, darkMode]);
+  }, [data, geojsonData, bounds, colorScale, invertColors, colorBarSettings, dataType, darkMode, data.length]);
 
   const calculateBounds = (data: { features: GeoJSONFeature[] }) => {
     let minLng = Infinity, maxLng = -Infinity;
@@ -240,91 +279,17 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     setBounds({ minLng, maxLng, minLat, maxLat });
   };
 
-  const projectCoordinate = (lng: number, lat: number, width = 800, height = 1100): [number, number] => {
-    if (!bounds) return [0, 0];
-
-    const geoWidth = bounds.maxLng - bounds.minLng;
-    const geoHeight = bounds.maxLat - bounds.minLat;
-    const geoAspectRatio = geoWidth / geoHeight;
-    const canvasAspectRatio = width / height;
-
-    let projectionWidth = width;
-    let projectionHeight = height;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    if (geoAspectRatio > canvasAspectRatio) {
-      projectionHeight = width / geoAspectRatio;
-      offsetY = (height - projectionHeight) / 2;
-    } else {
-      projectionWidth = height * geoAspectRatio;
-      offsetX = (width - projectionWidth) / 2;
-    }
-
-    const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX;
-    const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY;
-
-    return [x, y];
-  };
-
-  const convertCoordinatesToPath = (coordinates: number[][][] | number[][][][], width = 800, height = 1100, yOffset = 0, xOffset = 0): string => {
-    if (!coordinates || !Array.isArray(coordinates)) return '';
-
-    const convertRing = (ring: number[][]) => {
-      return ring.map(coord => {
-        const [lng, lat] = coord;
-        const [x, y] = projectCoordinate(lng, lat, width, height);
-        return `${x + xOffset},${y + yOffset}`;
-      }).join(' L ');
-    };
-
-    if (coordinates[0] && Array.isArray(coordinates[0][0]) && Array.isArray((coordinates[0][0] as number[][])[0])) {
-      return (coordinates as number[][][][]).map(polygon => {
-        return polygon.map(ring => {
-          const pathData = convertRing(ring);
-          return `M ${pathData} Z`;
-        }).join(' ');
-      }).join(' ');
-    } else if (coordinates[0] && Array.isArray(coordinates[0][0])) {
-      return (coordinates as number[][][]).map(ring => {
-        const pathData = convertRing(ring);
-        return `M ${pathData} Z`;
-      }).join(' ');
-    }
-
-    return '';
-  };
-
-  const getColorForPincode = (value: number | string | undefined, dataExtent: [number, number] | undefined): string => {
-    if (value === undefined) return darkMode ? '#1a1a1a' : 'white';
-
-    if (dataType === 'categorical' && typeof value === 'string') {
-      return getCategoryColor(value, categoryColors, darkMode ? '#1a1a1a' : '#e5e7eb');
-    }
-
-    if (typeof value === 'number') {
-      if (!dataExtent) return darkMode ? '#1a1a1a' : 'white';
-      if (isNaN(value)) return darkMode ? '#1a1a1a' : 'white';
-      const [minVal, maxVal] = dataExtent;
-      if (minVal === maxVal) return colorScales[colorScale](0.5);
-      return getColorForValue(value, numericValues, colorScale, invertColors, colorBarSettings);
-    }
-
-    return darkMode ? '#1a1a1a' : '#e5e7eb';
-  };
-
-  const handlePincodeHover = (feature: GeoJSONFeature) => {
-    const pincode = feature.properties.pincode || '';
+  const handlePincodeHover = useCallback((feature: PincodeRenderFeature) => {
     setHoveredPincode({
-      pincode,
-      officeName: feature.properties.office_name || '',
-      state: feature.properties.state_name || '',
-      district: feature.properties.district_name || '',
-      value: pincodeDataMap.get(pincode)
+      pincode: feature.pincode,
+      officeName: feature.officeName,
+      state: feature.state,
+      district: feature.district,
+      value: feature.value,
     });
-  };
+  }, []);
 
-  const handlePincodeLeave = () => setHoveredPincode(null);
+  const handlePincodeLeave = useCallback(() => setHoveredPincode(null), []);
 
   // Legend drag handlers
   const handleLegendMouseDown = (e: React.MouseEvent) => {
@@ -436,7 +401,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
         .attr('offset', `${t * 100}%`)
         .attr('stop-color', color);
     }
-  }, [colorScale, invertColors, dataExtent, colorBarSettings, dataType]);
+  }, [colorScale, invertColors, dataExtent, colorBarSettings, dataType, data.length]);
 
   // Build pincode data map for quick lookup
   const pincodeDataMap = useMemo(() => {
@@ -444,6 +409,106 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     data.forEach(d => map.set(d.pincode, d.value));
     return map;
   }, [data]);
+
+  // Memoize path computation — must be before any early returns to satisfy Rules of Hooks
+  const computedPaths = useMemo(() => {
+    if (!geojsonData || !bounds) return [];
+    const mapWidth = isMobile ? 320 : 760;
+    const mapHeight = isMobile ? 400 : 1050;
+    const yOffset = isMobile ? 55 : 45;
+    const xOffset = isMobile ? 15 : 20;
+    const geoWidth = bounds.maxLng - bounds.minLng;
+    const geoHeight = bounds.maxLat - bounds.minLat;
+    const geoAspectRatio = geoWidth / geoHeight;
+    const canvasAspectRatio = mapWidth / mapHeight;
+    let projectionWidth = mapWidth;
+    let projectionHeight = mapHeight;
+    let projectionOffsetX = 0;
+    let projectionOffsetY = 0;
+
+    if (geoAspectRatio > canvasAspectRatio) {
+      projectionHeight = mapWidth / geoAspectRatio;
+      projectionOffsetY = (mapHeight - projectionHeight) / 2;
+    } else {
+      projectionWidth = mapHeight * geoAspectRatio;
+      projectionOffsetX = (mapWidth - projectionWidth) / 2;
+    }
+
+    const project = (lng: number, lat: number): [number, number] => [
+      ((lng - bounds.minLng) / geoWidth) * projectionWidth + projectionOffsetX + xOffset,
+      ((bounds.maxLat - lat) / geoHeight) * projectionHeight + projectionOffsetY + yOffset,
+    ];
+
+    const convertRing = (ring: number[][]) => {
+      let path = '';
+      for (let i = 0; i < ring.length; i++) {
+        const [lng, lat] = ring[i];
+        const [x, y] = project(lng, lat);
+        path += `${i === 0 ? '' : ' L '}${x},${y}`;
+      }
+      return path;
+    };
+
+    const convertCoordinatesToPath = (coordinates: number[][][] | number[][][][]): string => {
+      if (!coordinates || !Array.isArray(coordinates)) return '';
+
+      if (coordinates[0] && Array.isArray(coordinates[0][0]) && Array.isArray((coordinates[0][0] as number[][])[0])) {
+        return (coordinates as number[][][][]).map(polygon =>
+          polygon.map(ring => `M ${convertRing(ring)} Z`).join(' ')
+        ).join(' ');
+      }
+
+      if (coordinates[0] && Array.isArray(coordinates[0][0])) {
+        return (coordinates as number[][][]).map(ring => `M ${convertRing(ring)} Z`).join(' ');
+      }
+
+      return '';
+    };
+
+    return geojsonData.features.map((feature) => convertCoordinatesToPath(feature.geometry.coordinates));
+  }, [geojsonData, bounds, isMobile]);
+
+  const dataExtentTuple = useMemo<[number, number] | undefined>(() => (
+    numericValues.length > 0 ? [dataExtent.min, dataExtent.max] : undefined
+  ), [numericValues.length, dataExtent.min, dataExtent.max]);
+
+  const pincodeRenderFeatures = useMemo<PincodeRenderFeature[]>(() => {
+    if (!geojsonData || !bounds) return [];
+    const noDataColor = darkMode ? '#1a1a1a' : 'white';
+    const categoricalFallback = darkMode ? '#1a1a1a' : '#e5e7eb';
+
+    return geojsonData.features.map((feature, index) => {
+      const pincode = feature.properties.pincode || '';
+      const value = pincodeDataMap.get(pincode);
+      let fillColor = noDataColor;
+
+      if (dataType === 'categorical' && typeof value === 'string') {
+        fillColor = getCategoryColor(value, categoryColors, categoricalFallback);
+      } else if (typeof value === 'number' && !isNaN(value) && dataExtentTuple) {
+        fillColor = dataExtentTuple[0] === dataExtentTuple[1]
+          ? colorScales[colorScale](0.5)
+          : getColorForValue(value, numericValues, colorScale, invertColors, colorBarSettings);
+      } else if (value !== undefined) {
+        fillColor = categoricalFallback;
+      }
+
+      const officeName = feature.properties.office_name || '';
+      const district = feature.properties.district_name || '';
+      const title = `${pincode}${officeName ? ` — ${officeName}` : ''}${district ? `, ${district}` : ''}${value !== undefined ? `: ${typeof value === 'number' ? roundToSignificantDigits(value) : String(value)}` : ''}`;
+
+      return {
+        path: computedPaths[index],
+        pincode,
+        officeName,
+        state: feature.properties.state_name || '',
+        district,
+        value,
+        fillColor,
+        strokeColor: data.length === 0 ? boundaryStroke : resolveBoundaryStroke(boundaryColor, fillColor, darkMode),
+        title,
+      };
+    });
+  }, [geojsonData, bounds, computedPaths, pincodeDataMap, darkMode, dataType, categoryColors, dataExtentTuple, colorScale, numericValues, invertColors, colorBarSettings, data.length, boundaryStroke, boundaryColor]);
 
   // Fix legend gradient for PDF export
   const fixLegendGradient = (svgClone: SVGSVGElement) => {
@@ -649,21 +714,6 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     );
   }
 
-  const dataExtentTuple: [number, number] | undefined = numericValues.length > 0
-    ? [dataExtent.min, dataExtent.max]
-    : undefined;
-
-  const computedPaths = useMemo(() => {
-    if (!geojsonData || !bounds) return [];
-    const mapWidth = isMobile ? 320 : 760;
-    const mapHeight = isMobile ? 400 : 1050;
-    const yOffset = isMobile ? 55 : 45;
-    const xOffset = isMobile ? 15 : 20;
-    return geojsonData.features.map((feature) =>
-      convertCoordinatesToPath(feature.geometry.coordinates, mapWidth, mapHeight, yOffset, xOffset)
-    );
-  }, [geojsonData, bounds, isMobile]);
-
   return (
     <div ref={containerRef} className="relative w-full flex justify-center">
       {renderingData && (
@@ -690,32 +740,16 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
         role="img"
         aria-label={dataTitle ? `India pincodes map — ${dataTitle} (${selectedState})` : `India pincodes choropleth map — ${selectedState}`}
       >
-        {geojsonData.features.map((feature, index) => {
-          const path = computedPaths[index];
-          const pincode = feature.properties.pincode || '';
-          const pincodeValue = pincodeDataMap.get(pincode);
-          const fillColor = getColorForPincode(pincodeValue, dataExtentTuple);
-          const isHovered = hoveredPincode?.pincode === pincode;
-
-          return (
-            <path
-              key={index}
-              d={path}
-              fill={fillColor}
-              stroke={data.length === 0 ? boundaryStroke : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)}
-              strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
-              className="cursor-pointer"
-              onMouseEnter={() => handlePincodeHover(feature)}
-              onMouseLeave={handlePincodeLeave}
-            >
-              <title>
-                {pincode}{feature.properties.office_name ? ` — ${feature.properties.office_name}` : ''}
-                {feature.properties.district_name ? `, ${feature.properties.district_name}` : ''}
-                {pincodeValue !== undefined ? `: ${typeof pincodeValue === 'number' ? roundToSignificantDigits(pincodeValue) : String(pincodeValue)}` : ''}
-              </title>
-            </path>
-          );
-        })}
+        {pincodeRenderFeatures.map((feature, index) => (
+          <PincodePath
+            key={`${feature.pincode}-${index}`}
+            feature={feature}
+            isHovered={hoveredPincode?.pincode === feature.pincode}
+            boundaryWidth={boundaryWidth}
+            onHover={handlePincodeHover}
+            onLeave={handlePincodeLeave}
+          />
+        ))}
 
         {/* Main title */}
         <g className="main-title-container">

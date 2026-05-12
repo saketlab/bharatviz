@@ -4,8 +4,8 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { Helmet } from 'react-helmet-async';
 import Papa from 'papaparse';
 import { FileUpload } from '@/components/FileUpload';
-import { IndiaMap, type IndiaMapRef } from '@/components/IndiaMap';
-import { IndiaDistrictsMap, type IndiaDistrictsMapRef } from '@/components/IndiaDistrictsMap';
+import type { IndiaMapRef } from '@/components/IndiaMap';
+import type { IndiaDistrictsMapRef } from '@/components/IndiaDistrictsMap';
 import { ExportOptions } from '@/components/ExportOptions';
 import { ColorMapChooser, type ColorScale, type ColorBarSettings } from '@/components/ColorMapChooser';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,17 +16,12 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
-import { IndiaCityMap, type IndiaCityMapRef, type CityWardData } from '@/components/IndiaCityMap';
-import { IndiaPincodesMap, type IndiaPincodesMapRef, type PincodeMapData } from '@/components/IndiaPincodesMap';
+import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
+import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
 import { getUniqueStatesFromGeoJSON } from '@/lib/stateUtils';
 import { loadStateGistMapping, getAvailableStates, getStateGeoJSONUrl, type StateGistMapping } from '@/lib/stateGistMapping';
 import { fetchWithCorsFallback } from '@/lib/corsProxy';
 import showcaseDemoUrls from '@/lib/showcase-demo-urls.json';
-import Credits from '@/components/Credits';
-import MCPDocs from '@/components/MCPDocs';
-import { DistrictStats } from '@/components/DistrictStats';
-import { CityStats } from '@/components/CityStats';
-import { HistoricalEvolution } from '@/components/HistoricalEvolution';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
 import { type DataType, type CategoryColorMapping, detectDataType, getUniqueCategories, generateDefaultCategoryColors } from '@/lib/categoricalUtils';
 import { type BoundaryColor } from '@/lib/colorUtils';
@@ -36,6 +31,27 @@ const buildDynamicContext = (...args: Parameters<typeof import('@/lib/chat/conte
   import('@/lib/chat/contextBuilder').then(m => m.buildDynamicContext(...args));
 import { DATA_FILES, MAP_DIMENSIONS } from '@/lib/constants';
 import type { DynamicChatContext, DataPoint } from '@/lib/chat/types';
+
+const IndiaMap = lazy(() => import('@/components/IndiaMap').then(m => ({ default: m.IndiaMap })));
+const IndiaDistrictsMap = lazy(() => import('@/components/IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap })));
+const IndiaCityMap = lazy(() => import('@/components/IndiaCityMap').then(m => ({ default: m.IndiaCityMap })));
+const IndiaPincodesMap = lazy(() => import('@/components/IndiaPincodesMap').then(m => ({ default: m.IndiaPincodesMap })));
+const DistrictStats = lazy(() => import('@/components/DistrictStats').then(m => ({ default: m.DistrictStats })));
+const CityStats = lazy(() => import('@/components/CityStats').then(m => ({ default: m.CityStats })));
+const HistoricalEvolution = lazy(() => import('@/components/HistoricalEvolution').then(m => ({ default: m.HistoricalEvolution })));
+const Credits = lazy(() => import('@/components/Credits'));
+const MCPDocs = lazy(() => import('@/components/MCPDocs'));
+
+const TabPanel = ({ active, children }: { active: boolean; children: React.ReactNode }) => {
+  if (!active) return null;
+  return (
+    <div className="space-y-6">
+      <Suspense fallback={<div className="h-96 rounded border border-border bg-background animate-pulse" />}>
+        {children}
+      </Suspense>
+    </div>
+  );
+};
 
 interface StateMapData {
   state: string;
@@ -1514,7 +1530,7 @@ const Index = () => {
             </TabsList>
           </div>
 
-          <div className={`space-y-6 ${activeTab === 'states' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'states'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 {stateMultiYearSeries.length > 0 ? (
@@ -1698,9 +1714,9 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'districts' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'districts'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
@@ -1818,9 +1834,9 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'regions' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'regions'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
@@ -1896,9 +1912,9 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'state-districts' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'state-districts'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaDistrictsMap
@@ -2065,9 +2081,9 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'help' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'help'}>
             <div className="max-w-4xl mx-auto p-6 space-y-10">
               <div className="pl-4 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)] py-1">
                 <h2 className="text-sm font-semibold text-[hsl(28,20%,30%)] dark:text-[hsl(35,10%,80%)] mb-1">Privacy & data security</h2>
@@ -2386,9 +2402,9 @@ POST /api/v1/districts/map
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'cities' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'cities'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaCityMap
@@ -2551,9 +2567,9 @@ POST /api/v1/districts/map
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'pincodes' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'pincodes'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 <IndiaPincodesMap
@@ -2652,27 +2668,27 @@ POST /api/v1/districts/map
                 </div>
               </div>
             </div>
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'district-stats' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'district-stats'}>
             <DistrictStats />
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'city-stats' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'city-stats'}>
             <CityStats />
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'evolution' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'evolution'}>
             <HistoricalEvolution />
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'credits' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'credits'}>
             <Credits />
-          </div>
+          </TabPanel>
 
-          <div className={`space-y-6 ${activeTab === 'mcp' ? 'block' : 'hidden'}`}>
+          <TabPanel active={activeTab === 'mcp'}>
             <MCPDocs />
-          </div>
+          </TabPanel>
         </Tabs>
       </div>
       <footer className="w-full text-center text-xs mt-8 mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">

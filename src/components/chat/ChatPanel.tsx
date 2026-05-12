@@ -4,12 +4,12 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MessageSquare, X, Send, RotateCcw, Loader2, ChevronDown, Check } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { WebLLMEngine, type InitProgress } from '@/lib/chat/webLLMEngine';
 import { getStarterQuestions } from '@/lib/chat/promptBuilder';
 import { AVAILABLE_MODELS, getModelInfo, MODEL_GROUPS } from '@/lib/chat/models';
 import { ModelSelector } from './ModelSelector';
 import { ChatMessage as ChatMessageComponent } from './ChatMessage';
 import type { DynamicChatContext, ChatMessage, MapAction } from '@/lib/chat/types';
+import type { InitProgress, WebLLMEngine as WebLLMEngineInstance } from '@/lib/chat/webLLMEngine';
 
 interface ChatPanelProps {
   context: DynamicChatContext | null;
@@ -34,7 +34,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
   const [llmQuestions, setLlmQuestions] = useState<string[]>([]);
   const [toolStatus, setToolStatus] = useState<string | null>(null);
 
-  const engineRef = useRef<WebLLMEngine | null>(null);
+  const engineRef = useRef<WebLLMEngineInstance | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -88,6 +88,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     setShowModelSelector(false);
 
     try {
+      const { WebLLMEngine } = await import('@/lib/chat/webLLMEngine');
       const engine = new WebLLMEngine(modelId);
 
       await engine.initialize((progress: InitProgress) => {

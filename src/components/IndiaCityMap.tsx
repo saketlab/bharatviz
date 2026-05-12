@@ -5,7 +5,6 @@ import * as d3 from 'd3';
 import { scaleSequential } from 'd3-scale';
 import { interpolateSpectral, interpolateViridis, interpolatePlasma, interpolateInferno, interpolateMagma, interpolateRdYlBu, interpolateRdYlGn, interpolateBrBG, interpolatePiYG, interpolatePuOr, interpolateBlues, interpolateGreens, interpolateReds, interpolateOranges, interpolatePurples, interpolatePuRd } from 'd3-scale-chromatic';
 import { saveAs } from 'file-saver';
-import jsPDF from 'jspdf';
 import { type ColorScale, ColorBarSettings } from './ColorMapChooser';
 import { isColorDark, roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
 import { getColorForValue, getDiscreteLegendStops } from '@/lib/discreteColorUtils';
