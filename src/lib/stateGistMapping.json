@@ -1,0 +1,2250 @@
+{
+  "1941": {
+    "Ajmer Marwara": {
+      "gist_id": "8a41a46b37d772be66b056662b408a44",
+      "html_url": "https://gist.github.com/saketkc/8a41a46b37d772be66b056662b408a44",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8a41a46b37d772be66b056662b408a44/raw/0679b99cbc3c6e29d3701902de76cb5cfa461615/bharatviz_1941_Ajmer_Marwara_districts.geojson",
+      "filename": "bharatviz_1941_Ajmer_Marwara_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "65f26b0b44769be292ecbb0be7930b25",
+      "html_url": "https://gist.github.com/saketkc/65f26b0b44769be292ecbb0be7930b25",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/65f26b0b44769be292ecbb0be7930b25/raw/1e265a8d878e95c2145be2bcfe6514c021a82e1f/bharatviz_1941_Assam_districts.geojson",
+      "filename": "bharatviz_1941_Assam_districts.geojson"
+    },
+    "Baroda": {
+      "gist_id": "81210fe99b342b77b7ffe66d52112e8c",
+      "html_url": "https://gist.github.com/saketkc/81210fe99b342b77b7ffe66d52112e8c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/81210fe99b342b77b7ffe66d52112e8c/raw/3a84f0ef14b1b90ef0bcd221c2c719c38c69685f/bharatviz_1941_Baroda_districts.geojson",
+      "filename": "bharatviz_1941_Baroda_districts.geojson"
+    },
+    "Bengal": {
+      "gist_id": "f89aec18d22dfe342820bebc227cf2b3",
+      "html_url": "https://gist.github.com/saketkc/f89aec18d22dfe342820bebc227cf2b3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f89aec18d22dfe342820bebc227cf2b3/raw/2232c1ee59c68a6ac5e7b20893e068c4829b72af/bharatviz_1941_Bengal_districts.geojson",
+      "filename": "bharatviz_1941_Bengal_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "d0635b167989683090748a7234b9c2cf",
+      "html_url": "https://gist.github.com/saketkc/d0635b167989683090748a7234b9c2cf",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d0635b167989683090748a7234b9c2cf/raw/a490fd6c6ff93b83c91381cf9e841edc6bd3048c/bharatviz_1941_Bihar_districts.geojson",
+      "filename": "bharatviz_1941_Bihar_districts.geojson"
+    },
+    "Bombay": {
+      "gist_id": "f8aeaa9742941029fcb88e78f985ef23",
+      "html_url": "https://gist.github.com/saketkc/f8aeaa9742941029fcb88e78f985ef23",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f8aeaa9742941029fcb88e78f985ef23/raw/4de06110a129f5e66b8ff5f71994787a0b17d31f/bharatviz_1941_Bombay_districts.geojson",
+      "filename": "bharatviz_1941_Bombay_districts.geojson"
+    },
+    "Central India Agency": {
+      "gist_id": "c3824fa86671d15afbe109d550a29787",
+      "html_url": "https://gist.github.com/saketkc/c3824fa86671d15afbe109d550a29787",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c3824fa86671d15afbe109d550a29787/raw/9f016f37a224973c5a1d29657013ddd5e14883b2/bharatviz_1941_Central_India_Agency_districts.geojson",
+      "filename": "bharatviz_1941_Central_India_Agency_districts.geojson"
+    },
+    "Central Province and Berar": {
+      "gist_id": "be912d9fb7c28466150aedc4c1912c7a",
+      "html_url": "https://gist.github.com/saketkc/be912d9fb7c28466150aedc4c1912c7a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/be912d9fb7c28466150aedc4c1912c7a/raw/1fca7ea96d9544f9721e603bb56762cc42ea0002/bharatviz_1941_Central_Province_and_Berar_districts.geojson",
+      "filename": "bharatviz_1941_Central_Province_and_Berar_districts.geojson"
+    },
+    "Coorg": {
+      "gist_id": "e898a8dba053f84abe98291fc1fdadb2",
+      "html_url": "https://gist.github.com/saketkc/e898a8dba053f84abe98291fc1fdadb2",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e898a8dba053f84abe98291fc1fdadb2/raw/e7ffa8e66c9ee47f9326f03deaf35259ebab8d92/bharatviz_1941_Coorg_districts.geojson",
+      "filename": "bharatviz_1941_Coorg_districts.geojson"
+    },
+    "Daman": {
+      "gist_id": "9d701727dedf78f584a2e572c4374c0b",
+      "html_url": "https://gist.github.com/saketkc/9d701727dedf78f584a2e572c4374c0b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9d701727dedf78f584a2e572c4374c0b/raw/6075467b59fe2aa2f191673e1ec15a99252aa3f3/bharatviz_1941_Daman_districts.geojson",
+      "filename": "bharatviz_1941_Daman_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "f7fb6fffb063cbc83ebaffb477409540",
+      "html_url": "https://gist.github.com/saketkc/f7fb6fffb063cbc83ebaffb477409540",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f7fb6fffb063cbc83ebaffb477409540/raw/4d49c247b3ec82e180bd2993cbe68a03070db339/bharatviz_1941_Delhi_districts.geojson",
+      "filename": "bharatviz_1941_Delhi_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "bfdd4f50cdf417287f72eae6885e2974",
+      "html_url": "https://gist.github.com/saketkc/bfdd4f50cdf417287f72eae6885e2974",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bfdd4f50cdf417287f72eae6885e2974/raw/9084719ef942ed76e19e32f12f9ec2f35d52a345/bharatviz_1941_Goa_districts.geojson",
+      "filename": "bharatviz_1941_Goa_districts.geojson"
+    },
+    "Gwalior": {
+      "gist_id": "39d8411b521a053c4ce91d4d79c3d895",
+      "html_url": "https://gist.github.com/saketkc/39d8411b521a053c4ce91d4d79c3d895",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/39d8411b521a053c4ce91d4d79c3d895/raw/3d2e66c4108c31b7d02b381ed5c82601f4df84be/bharatviz_1941_Gwalior_districts.geojson",
+      "filename": "bharatviz_1941_Gwalior_districts.geojson"
+    },
+    "Himachal": {
+      "gist_id": "a9137f8bd0c55b17b1e3c4d6587dd5af",
+      "html_url": "https://gist.github.com/saketkc/a9137f8bd0c55b17b1e3c4d6587dd5af",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a9137f8bd0c55b17b1e3c4d6587dd5af/raw/2319a4013311326537afbd5e0374ee16b9680150/bharatviz_1941_Himachal_districts.geojson",
+      "filename": "bharatviz_1941_Himachal_districts.geojson"
+    },
+    "Hyderabad": {
+      "gist_id": "6249068a324d79b0632780dff764f328",
+      "html_url": "https://gist.github.com/saketkc/6249068a324d79b0632780dff764f328",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6249068a324d79b0632780dff764f328/raw/9fe8fae584285cc30c52a893b98b714896ea98c4/bharatviz_1941_Hyderabad_districts.geojson",
+      "filename": "bharatviz_1941_Hyderabad_districts.geojson"
+    },
+    "Jammu and kashmir": {
+      "gist_id": "6f8c4c5905506422031da0709e5a9269",
+      "html_url": "https://gist.github.com/saketkc/6f8c4c5905506422031da0709e5a9269",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6f8c4c5905506422031da0709e5a9269/raw/945c0d27a82735f66738b5ff54956c33683181e7/bharatviz_1941_Jammu_and_kashmir_districts.geojson",
+      "filename": "bharatviz_1941_Jammu_and_kashmir_districts.geojson"
+    },
+    "Karikal": {
+      "gist_id": "1c5a46f81c1d3106ab69d3fb2ff41c36",
+      "html_url": "https://gist.github.com/saketkc/1c5a46f81c1d3106ab69d3fb2ff41c36",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1c5a46f81c1d3106ab69d3fb2ff41c36/raw/aafe750d62b9c76f157c71b4f24a9bf7e5ddf92b/bharatviz_1941_Karikal_districts.geojson",
+      "filename": "bharatviz_1941_Karikal_districts.geojson"
+    },
+    "Madras": {
+      "gist_id": "be69c6e7fbcaff6cb5a4294a697e0f26",
+      "html_url": "https://gist.github.com/saketkc/be69c6e7fbcaff6cb5a4294a697e0f26",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/be69c6e7fbcaff6cb5a4294a697e0f26/raw/7e9f94b974af154155abcd322b76e74419d12035/bharatviz_1941_Madras_districts.geojson",
+      "filename": "bharatviz_1941_Madras_districts.geojson"
+    },
+    "Mahe": {
+      "gist_id": "19a53eb74352a78c84d69a8e8ef748f5",
+      "html_url": "https://gist.github.com/saketkc/19a53eb74352a78c84d69a8e8ef748f5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/19a53eb74352a78c84d69a8e8ef748f5/raw/31f676f13d2161bbe5b63b30df6637b4736bb89d/bharatviz_1941_Mahe_districts.geojson",
+      "filename": "bharatviz_1941_Mahe_districts.geojson"
+    },
+    "Mysore": {
+      "gist_id": "d0689eb91f3b0e32d0216ff9bd559e81",
+      "html_url": "https://gist.github.com/saketkc/d0689eb91f3b0e32d0216ff9bd559e81",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d0689eb91f3b0e32d0216ff9bd559e81/raw/8d82958c8bc6638ab1c4173142948c9bec90aaf4/bharatviz_1941_Mysore_districts.geojson",
+      "filename": "bharatviz_1941_Mysore_districts.geojson"
+    },
+    "Naga tribes": {
+      "gist_id": "2cd3d218bbaa5416b2beed30d55becbc",
+      "html_url": "https://gist.github.com/saketkc/2cd3d218bbaa5416b2beed30d55becbc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2cd3d218bbaa5416b2beed30d55becbc/raw/16b421832db9b3ea74afbac4abf5c8bdfd4e48f8/bharatviz_1941_Naga_tribes_districts.geojson",
+      "filename": "bharatviz_1941_Naga_tribes_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "4391f4612bdd7fe771936f3df11d1720",
+      "html_url": "https://gist.github.com/saketkc/4391f4612bdd7fe771936f3df11d1720",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4391f4612bdd7fe771936f3df11d1720/raw/cf35986dcce4bc14bada38ba7ce716a28f567d10/bharatviz_1941_Orissa_districts.geojson",
+      "filename": "bharatviz_1941_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "24a86735e7888fe63d2c608e9118c30a",
+      "html_url": "https://gist.github.com/saketkc/24a86735e7888fe63d2c608e9118c30a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/24a86735e7888fe63d2c608e9118c30a/raw/c300939aba2dc983f2c8dcc11dc150cc58e7b4af/bharatviz_1941_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1941_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "652b7d548920671bc2aeb071ac6653fa",
+      "html_url": "https://gist.github.com/saketkc/652b7d548920671bc2aeb071ac6653fa",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/652b7d548920671bc2aeb071ac6653fa/raw/a97ce09d54c4f54b111fdae6133ab516e89f37ba/bharatviz_1941_Punjab_districts.geojson",
+      "filename": "bharatviz_1941_Punjab_districts.geojson"
+    },
+    "Rajputana Agency": {
+      "gist_id": "773837cce48725fcd7b4701ebe1168af",
+      "html_url": "https://gist.github.com/saketkc/773837cce48725fcd7b4701ebe1168af",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/773837cce48725fcd7b4701ebe1168af/raw/4734c37e24b915bd402d2323c61c9a06e9ce9723/bharatviz_1941_Rajputana_Agency_districts.geojson",
+      "filename": "bharatviz_1941_Rajputana_Agency_districts.geojson"
+    },
+    "Rann of Kutch": {
+      "gist_id": "91f474bd488a0f537d1898b235036429",
+      "html_url": "https://gist.github.com/saketkc/91f474bd488a0f537d1898b235036429",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/91f474bd488a0f537d1898b235036429/raw/8d8fc4d85b67f541e7ef240a7a1c4369095580a1/bharatviz_1941_Rann_of_Kutch_districts.geojson",
+      "filename": "bharatviz_1941_Rann_of_Kutch_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "b4710beb5a5633d66de60a72a27ac5dd",
+      "html_url": "https://gist.github.com/saketkc/b4710beb5a5633d66de60a72a27ac5dd",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b4710beb5a5633d66de60a72a27ac5dd/raw/d584c023add240e6c9c670fa32a05ad3ebc701ec/bharatviz_1941_Sikkim_districts.geojson",
+      "filename": "bharatviz_1941_Sikkim_districts.geojson"
+    },
+    "United Province": {
+      "gist_id": "a4996931c09d413f38f6427e735ac263",
+      "html_url": "https://gist.github.com/saketkc/a4996931c09d413f38f6427e735ac263",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a4996931c09d413f38f6427e735ac263/raw/1ac1f851bbbadaffe21023ee4b5036c73b89c3d6/bharatviz_1941_United_Province_districts.geojson",
+      "filename": "bharatviz_1941_United_Province_districts.geojson"
+    },
+    "Western India State Agency": {
+      "gist_id": "14cc30fe677a1f12010daf1483e18ab1",
+      "html_url": "https://gist.github.com/saketkc/14cc30fe677a1f12010daf1483e18ab1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/14cc30fe677a1f12010daf1483e18ab1/raw/9c1f55b5de421c34bbfa7ec2ef5d08c9c8433769/bharatviz_1941_Western_India_State_Agency_districts.geojson",
+      "filename": "bharatviz_1941_Western_India_State_Agency_districts.geojson"
+    }
+  },
+  "1951": {
+    "Ajmer": {
+      "gist_id": "318b78d02dc84a1866356f1a2530b249",
+      "html_url": "https://gist.github.com/saketkc/318b78d02dc84a1866356f1a2530b249",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/318b78d02dc84a1866356f1a2530b249/raw/60523d7089eea2689e321f4a8d2d9a8d636fdee6/bharatviz_1951_Ajmer_districts.geojson",
+      "filename": "bharatviz_1951_Ajmer_districts.geojson"
+    },
+    "Andaman and Nicobar Islands": {
+      "gist_id": "1f7edd505980e3416371b6d1011e60a6",
+      "html_url": "https://gist.github.com/saketkc/1f7edd505980e3416371b6d1011e60a6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1f7edd505980e3416371b6d1011e60a6/raw/89240ea27b4a858fbc95baae57a26ca6090a2357/bharatviz_1951_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_1951_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "22e7da5bd37f0919c7b0032e5b61321a",
+      "html_url": "https://gist.github.com/saketkc/22e7da5bd37f0919c7b0032e5b61321a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/22e7da5bd37f0919c7b0032e5b61321a/raw/a5e2583aebe303dcf4a21da0bd1c5c480b6b5382/bharatviz_1951_Assam_districts.geojson",
+      "filename": "bharatviz_1951_Assam_districts.geojson"
+    },
+    "Bhopal": {
+      "gist_id": "0eab1787859790807e77b60160981b19",
+      "html_url": "https://gist.github.com/saketkc/0eab1787859790807e77b60160981b19",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0eab1787859790807e77b60160981b19/raw/1c7b1080468690079390bec862f3fd7fea829ea9/bharatviz_1951_Bhopal_districts.geojson",
+      "filename": "bharatviz_1951_Bhopal_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "1203c079a388ec46cd5212ebd7e5f10a",
+      "html_url": "https://gist.github.com/saketkc/1203c079a388ec46cd5212ebd7e5f10a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1203c079a388ec46cd5212ebd7e5f10a/raw/563c64f9c9c63fd5d1db119becbd943a8c9b9bba/bharatviz_1951_Bihar_districts.geojson",
+      "filename": "bharatviz_1951_Bihar_districts.geojson"
+    },
+    "Bilaspur": {
+      "gist_id": "6048af9e0085d80d3c06580f8401bdfc",
+      "html_url": "https://gist.github.com/saketkc/6048af9e0085d80d3c06580f8401bdfc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6048af9e0085d80d3c06580f8401bdfc/raw/6a8487833340f55eae4c5d0418d4d4930c1208ca/bharatviz_1951_Bilaspur_districts.geojson",
+      "filename": "bharatviz_1951_Bilaspur_districts.geojson"
+    },
+    "Bombay": {
+      "gist_id": "99f46b7af3f6642733966f42d3b291be",
+      "html_url": "https://gist.github.com/saketkc/99f46b7af3f6642733966f42d3b291be",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/99f46b7af3f6642733966f42d3b291be/raw/2c2dbc11cd3e1bace1d17cc063c7a41d9585ada0/bharatviz_1951_Bombay_districts.geojson",
+      "filename": "bharatviz_1951_Bombay_districts.geojson"
+    },
+    "Chandernagore": {
+      "gist_id": "26aa043656c2aed836dd2c7432f6815f",
+      "html_url": "https://gist.github.com/saketkc/26aa043656c2aed836dd2c7432f6815f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/26aa043656c2aed836dd2c7432f6815f/raw/bcfe327a337bda08a507573491a4da0f0f930922/bharatviz_1951_Chandernagore_districts.geojson",
+      "filename": "bharatviz_1951_Chandernagore_districts.geojson"
+    },
+    "Coorg": {
+      "gist_id": "2460c27bb1944e4c61d3bcd0973a3bf6",
+      "html_url": "https://gist.github.com/saketkc/2460c27bb1944e4c61d3bcd0973a3bf6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2460c27bb1944e4c61d3bcd0973a3bf6/raw/520212712f3e79878b882be365f633f76ab749a1/bharatviz_1951_Coorg_districts.geojson",
+      "filename": "bharatviz_1951_Coorg_districts.geojson"
+    },
+    "Daman": {
+      "gist_id": "dd8a04c5219b148ea6da433b5639c907",
+      "html_url": "https://gist.github.com/saketkc/dd8a04c5219b148ea6da433b5639c907",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/dd8a04c5219b148ea6da433b5639c907/raw/492e93c793e9485f667d17537c8832c66c8f0c79/bharatviz_1951_Daman_districts.geojson",
+      "filename": "bharatviz_1951_Daman_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "0150c27d128931131ca4e1858eacd807",
+      "html_url": "https://gist.github.com/saketkc/0150c27d128931131ca4e1858eacd807",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0150c27d128931131ca4e1858eacd807/raw/892540535342a6d2ab306c01fede6a9781d7d961/bharatviz_1951_Delhi_districts.geojson",
+      "filename": "bharatviz_1951_Delhi_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "ffad9d54eae2d8dde8e637f274ae8552",
+      "html_url": "https://gist.github.com/saketkc/ffad9d54eae2d8dde8e637f274ae8552",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ffad9d54eae2d8dde8e637f274ae8552/raw/72a5d52231d183671a8ea3190009f1ee73643755/bharatviz_1951_Goa_districts.geojson",
+      "filename": "bharatviz_1951_Goa_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "cffcf741974e7460efb25c8f624c0fe5",
+      "html_url": "https://gist.github.com/saketkc/cffcf741974e7460efb25c8f624c0fe5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cffcf741974e7460efb25c8f624c0fe5/raw/350f871956e971f80ed50ff12b1935d428adb3f8/bharatviz_1951_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1951_Himachal_Pradesh_districts.geojson"
+    },
+    "Hyderabad": {
+      "gist_id": "47c0faebde0e1066df6570dbb9d63db5",
+      "html_url": "https://gist.github.com/saketkc/47c0faebde0e1066df6570dbb9d63db5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/47c0faebde0e1066df6570dbb9d63db5/raw/62f5ae4b6ebf4dc0d4677a0956f77380ce73165e/bharatviz_1951_Hyderabad_districts.geojson",
+      "filename": "bharatviz_1951_Hyderabad_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "198482fd7bc65f5f6425008dcf23942b",
+      "html_url": "https://gist.github.com/saketkc/198482fd7bc65f5f6425008dcf23942b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/198482fd7bc65f5f6425008dcf23942b/raw/96bfe53fc3e4f37ac627952e2a8747d2b325f16c/bharatviz_1951_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_1951_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Karaikal (P)": {
+      "gist_id": "f7733773de40ac9c318625fe1212ec0a",
+      "html_url": "https://gist.github.com/saketkc/f7733773de40ac9c318625fe1212ec0a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f7733773de40ac9c318625fe1212ec0a/raw/b08e86f08eeb31da0c1bf6b9588d0cc321f1db9e/bharatviz_1951_Karaikal_(P)_districts.geojson",
+      "filename": "bharatviz_1951_Karaikal_(P)_districts.geojson"
+    },
+    "Kutch": {
+      "gist_id": "d8eea25cec25f1e834a8bbeb2c5995d2",
+      "html_url": "https://gist.github.com/saketkc/d8eea25cec25f1e834a8bbeb2c5995d2",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d8eea25cec25f1e834a8bbeb2c5995d2/raw/a4161370d050600841e7473165a27864b60f40fd/bharatviz_1951_Kutch_districts.geojson",
+      "filename": "bharatviz_1951_Kutch_districts.geojson"
+    },
+    "Madhya Bharat": {
+      "gist_id": "a44a0abfa7b442681b0cbbcfaf707bbd",
+      "html_url": "https://gist.github.com/saketkc/a44a0abfa7b442681b0cbbcfaf707bbd",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a44a0abfa7b442681b0cbbcfaf707bbd/raw/6914bf0d0e1bfaebeb87f7276a43bb6a5141602e/bharatviz_1951_Madhya_Bharat_districts.geojson",
+      "filename": "bharatviz_1951_Madhya_Bharat_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "592097eca40391ad0bbc494dea28bcca",
+      "html_url": "https://gist.github.com/saketkc/592097eca40391ad0bbc494dea28bcca",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/592097eca40391ad0bbc494dea28bcca/raw/b3da18da4728e72ca0f0b5ab0a355bef578fc190/bharatviz_1951_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1951_Madhya_Pradesh_districts.geojson"
+    },
+    "Madras": {
+      "gist_id": "cbc0cdf06a00bcf2d96568bea304662a",
+      "html_url": "https://gist.github.com/saketkc/cbc0cdf06a00bcf2d96568bea304662a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cbc0cdf06a00bcf2d96568bea304662a/raw/5b597ed7fd09ca916ba37cfef68f5bfee77fb2a4/bharatviz_1951_Madras_districts.geojson",
+      "filename": "bharatviz_1951_Madras_districts.geojson"
+    },
+    "Mahe (P)": {
+      "gist_id": "ca83f21a41e48247db9252c68f373481",
+      "html_url": "https://gist.github.com/saketkc/ca83f21a41e48247db9252c68f373481",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ca83f21a41e48247db9252c68f373481/raw/fc7e6da344d25e4e1557ca37906b5000c9a24f0e/bharatviz_1951_Mahe_(P)_districts.geojson",
+      "filename": "bharatviz_1951_Mahe_(P)_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "13c53710a315467bf6ae705130a02c8a",
+      "html_url": "https://gist.github.com/saketkc/13c53710a315467bf6ae705130a02c8a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/13c53710a315467bf6ae705130a02c8a/raw/d9e0181a8e61685c7e16913a504816e252d4b8ed/bharatviz_1951_Manipur_districts.geojson",
+      "filename": "bharatviz_1951_Manipur_districts.geojson"
+    },
+    "Mysore": {
+      "gist_id": "a6bd142467f79103468c71c5e8b80204",
+      "html_url": "https://gist.github.com/saketkc/a6bd142467f79103468c71c5e8b80204",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a6bd142467f79103468c71c5e8b80204/raw/39893f1ecf6cf89e98c35a30a63194d1277de495/bharatviz_1951_Mysore_districts.geojson",
+      "filename": "bharatviz_1951_Mysore_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "d5e223049b20f2c6c9da6209e2a34bb4",
+      "html_url": "https://gist.github.com/saketkc/d5e223049b20f2c6c9da6209e2a34bb4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d5e223049b20f2c6c9da6209e2a34bb4/raw/ec3a5eb0e7cddcfe99805c49328ec1b0dbf33be2/bharatviz_1951_Orissa_districts.geojson",
+      "filename": "bharatviz_1951_Orissa_districts.geojson"
+    },
+    "Patial and East Punjab States Union": {
+      "gist_id": "f67539a033ce308e7b82ca52653e0266",
+      "html_url": "https://gist.github.com/saketkc/f67539a033ce308e7b82ca52653e0266",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f67539a033ce308e7b82ca52653e0266/raw/f9281af7b2adddfa4dde7ce0873288bec54bb8ed/bharatviz_1951_Patial_and_East_Punjab_States_Union_districts.geojson",
+      "filename": "bharatviz_1951_Patial_and_East_Punjab_States_Union_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "af05af56bf1e7842003060c17e94a981",
+      "html_url": "https://gist.github.com/saketkc/af05af56bf1e7842003060c17e94a981",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/af05af56bf1e7842003060c17e94a981/raw/434c56883b6aa1a03c7af8f94d37a73efe88bd61/bharatviz_1951_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1951_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "f2434f46557dd5bfb8d07a3c634c97f8",
+      "html_url": "https://gist.github.com/saketkc/f2434f46557dd5bfb8d07a3c634c97f8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f2434f46557dd5bfb8d07a3c634c97f8/raw/1291cdfc1c495cdf202d1a3962c9262574238473/bharatviz_1951_Punjab_districts.geojson",
+      "filename": "bharatviz_1951_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "d45d9c080e9b073a1887d997fb8644c8",
+      "html_url": "https://gist.github.com/saketkc/d45d9c080e9b073a1887d997fb8644c8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d45d9c080e9b073a1887d997fb8644c8/raw/2da0eaca08d5aa73b4ba3340a179752883aa956d/bharatviz_1951_Rajasthan_districts.geojson",
+      "filename": "bharatviz_1951_Rajasthan_districts.geojson"
+    },
+    "Rann of Kutch": {
+      "gist_id": "d8e84c44b89d6fdfa802c7050f87df4e",
+      "html_url": "https://gist.github.com/saketkc/d8e84c44b89d6fdfa802c7050f87df4e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d8e84c44b89d6fdfa802c7050f87df4e/raw/11b495312bdcd74d803c4632de895d179fb866ac/bharatviz_1951_Rann_of_Kutch_districts.geojson",
+      "filename": "bharatviz_1951_Rann_of_Kutch_districts.geojson"
+    },
+    "Saurashtra": {
+      "gist_id": "290c22915dbf5eae0c4430b245330fe1",
+      "html_url": "https://gist.github.com/saketkc/290c22915dbf5eae0c4430b245330fe1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/290c22915dbf5eae0c4430b245330fe1/raw/5a529509f5653616ae3e7cd83fadd9f246875229/bharatviz_1951_Saurashtra_districts.geojson",
+      "filename": "bharatviz_1951_Saurashtra_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "f2bb0571ef9fe784beefdfb7af57d298",
+      "html_url": "https://gist.github.com/saketkc/f2bb0571ef9fe784beefdfb7af57d298",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f2bb0571ef9fe784beefdfb7af57d298/raw/515fe4a69a300b0033415d04d4a96353a299c4b4/bharatviz_1951_Sikkim_districts.geojson",
+      "filename": "bharatviz_1951_Sikkim_districts.geojson"
+    },
+    "Travancore-Cochin": {
+      "gist_id": "8d743f16f7dfcb6289d89b206e5161a4",
+      "html_url": "https://gist.github.com/saketkc/8d743f16f7dfcb6289d89b206e5161a4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8d743f16f7dfcb6289d89b206e5161a4/raw/9e577f9b941028083efb3c745434a914588a3d09/bharatviz_1951_Travancore-Cochin_districts.geojson",
+      "filename": "bharatviz_1951_Travancore-Cochin_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "7930f6d7248870ab2b8e8e1086ee7369",
+      "html_url": "https://gist.github.com/saketkc/7930f6d7248870ab2b8e8e1086ee7369",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7930f6d7248870ab2b8e8e1086ee7369/raw/1bea3f9eb358b2c407e6960af8a6045846c5c8a3/bharatviz_1951_Tripura_districts.geojson",
+      "filename": "bharatviz_1951_Tripura_districts.geojson"
+    },
+    "Unknown": {
+      "gist_id": "920a0c95e51a35579e59e806d8286b3d",
+      "html_url": "https://gist.github.com/saketkc/920a0c95e51a35579e59e806d8286b3d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/920a0c95e51a35579e59e806d8286b3d/raw/ebb6bebf4fca96c2799705c973fbe380c038a1b5/bharatviz_1951_Unknown_districts.geojson",
+      "filename": "bharatviz_1951_Unknown_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "f98d04d8afa95d252148e71229da4055",
+      "html_url": "https://gist.github.com/saketkc/f98d04d8afa95d252148e71229da4055",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f98d04d8afa95d252148e71229da4055/raw/8b08e1b9913c06c92e9c51f23870ce41b98563f7/bharatviz_1951_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_1951_Uttar_Pradesh_districts.geojson"
+    },
+    "Vindhya Pradesh": {
+      "gist_id": "f986e854818e8484f24cf6b8dec0777d",
+      "html_url": "https://gist.github.com/saketkc/f986e854818e8484f24cf6b8dec0777d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f986e854818e8484f24cf6b8dec0777d/raw/6f62cb1877262ed08899b46961dcf1972a3bb7b9/bharatviz_1951_Vindhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1951_Vindhya_Pradesh_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "387e14deaa972b34612ea9b727dbe2fc",
+      "html_url": "https://gist.github.com/saketkc/387e14deaa972b34612ea9b727dbe2fc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/387e14deaa972b34612ea9b727dbe2fc/raw/e7fcbaed93e55f87422b95271c733d9480426591/bharatviz_1951_West_Bengal_districts.geojson",
+      "filename": "bharatviz_1951_West_Bengal_districts.geojson"
+    },
+    "Yanam": {
+      "gist_id": "86216fd2b7f6f7d0528233078bc6cd8c",
+      "html_url": "https://gist.github.com/saketkc/86216fd2b7f6f7d0528233078bc6cd8c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/86216fd2b7f6f7d0528233078bc6cd8c/raw/b136de0670b66ca45dbcd0a2701098f6f582604e/bharatviz_1951_Yanam_districts.geojson",
+      "filename": "bharatviz_1951_Yanam_districts.geojson"
+    }
+  },
+  "1961": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "4bdc739845ac1c4a18e3892b3d7e2dfb",
+      "html_url": "https://gist.github.com/saketkc/4bdc739845ac1c4a18e3892b3d7e2dfb",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4bdc739845ac1c4a18e3892b3d7e2dfb/raw/f635c9c90ed69d607267934642eac31d239f05a3/bharatviz_1961_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_1961_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "319b4edb77950f2663fd4ec48ece8184",
+      "html_url": "https://gist.github.com/saketkc/319b4edb77950f2663fd4ec48ece8184",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/319b4edb77950f2663fd4ec48ece8184/raw/f8c37aca9edc3a077239630426c7d0758936f69e/bharatviz_1961_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_1961_Andhra_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "0cfe6bc16f6f562069cd69f7634f839e",
+      "html_url": "https://gist.github.com/saketkc/0cfe6bc16f6f562069cd69f7634f839e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0cfe6bc16f6f562069cd69f7634f839e/raw/e4eef4f996403496b46d7887df46eef5710770bb/bharatviz_1961_Assam_districts.geojson",
+      "filename": "bharatviz_1961_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "85c3cdcbdcf887ed7e785ad5ea5dd752",
+      "html_url": "https://gist.github.com/saketkc/85c3cdcbdcf887ed7e785ad5ea5dd752",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/85c3cdcbdcf887ed7e785ad5ea5dd752/raw/4bb4d60e679586d7c7e4f68cb365696295f94950/bharatviz_1961_Bihar_districts.geojson",
+      "filename": "bharatviz_1961_Bihar_districts.geojson"
+    },
+    "Dadra and Nagar Haveli": {
+      "gist_id": "e0f5528e2b538edf6f8151947a6e6eeb",
+      "html_url": "https://gist.github.com/saketkc/e0f5528e2b538edf6f8151947a6e6eeb",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e0f5528e2b538edf6f8151947a6e6eeb/raw/7504db52e7c2bf0d7060074fc2f07773773d2cfe/bharatviz_1961_Dadra_and_Nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_1961_Dadra_and_Nagar_Haveli_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "775fef60d2f294242e8f6967327c5b8f",
+      "html_url": "https://gist.github.com/saketkc/775fef60d2f294242e8f6967327c5b8f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/775fef60d2f294242e8f6967327c5b8f/raw/efb6cd3852992c3f5a1907545f05704f5c4751ce/bharatviz_1961_Delhi_districts.geojson",
+      "filename": "bharatviz_1961_Delhi_districts.geojson"
+    },
+    "Goa, Daman and Diu": {
+      "gist_id": "884777e11bb46a976a888d9f5ff8a78e",
+      "html_url": "https://gist.github.com/saketkc/884777e11bb46a976a888d9f5ff8a78e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/884777e11bb46a976a888d9f5ff8a78e/raw/4fff00bf3033d23723354b6a936e914a25ee88f5/bharatviz_1961_Goa%2C_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_1961_Goa,_Daman_and_Diu_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "2cc1feecd1f2c8e1735478d35a5ebf94",
+      "html_url": "https://gist.github.com/saketkc/2cc1feecd1f2c8e1735478d35a5ebf94",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2cc1feecd1f2c8e1735478d35a5ebf94/raw/85507b875fd1ca438c3c2151e1861d7e766ffe12/bharatviz_1961_Gujarat_districts.geojson",
+      "filename": "bharatviz_1961_Gujarat_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "d9d916ec65cd2dbd4428e107d3dbe5bc",
+      "html_url": "https://gist.github.com/saketkc/d9d916ec65cd2dbd4428e107d3dbe5bc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d9d916ec65cd2dbd4428e107d3dbe5bc/raw/b35918258890b289abbb859182c32013e3d73aa1/bharatviz_1961_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1961_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "07641cbe26f0f8b91c11bd45b9b7c608",
+      "html_url": "https://gist.github.com/saketkc/07641cbe26f0f8b91c11bd45b9b7c608",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/07641cbe26f0f8b91c11bd45b9b7c608/raw/8496d0ff949a325738709d0be29485bf71e790d4/bharatviz_1961_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_1961_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "594a2a491307ea4d1843410dc1364016",
+      "html_url": "https://gist.github.com/saketkc/594a2a491307ea4d1843410dc1364016",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/594a2a491307ea4d1843410dc1364016/raw/143acd80a8644bd720f686c7ec55e2c6120877d0/bharatviz_1961_Kerala_districts.geojson",
+      "filename": "bharatviz_1961_Kerala_districts.geojson"
+    },
+    "Laccadive, Minicoy and Amindivi Islands": {
+      "gist_id": "3b3e0622831e1ef5b0be2d0f8a213890",
+      "html_url": "https://gist.github.com/saketkc/3b3e0622831e1ef5b0be2d0f8a213890",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3b3e0622831e1ef5b0be2d0f8a213890/raw/1de839735f79845c84acef6775ec1b53eb19d30a/bharatviz_1961_Laccadive%2C_Minicoy_and_Amindivi_Islands_districts.geojson",
+      "filename": "bharatviz_1961_Laccadive,_Minicoy_and_Amindivi_Islands_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "e2f7155c9e5622b9ec8646f611776095",
+      "html_url": "https://gist.github.com/saketkc/e2f7155c9e5622b9ec8646f611776095",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e2f7155c9e5622b9ec8646f611776095/raw/585de9ed3f7a73b8dc5b8c51c8bf27e21f8092ea/bharatviz_1961_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1961_Madhya_Pradesh_districts.geojson"
+    },
+    "Madras": {
+      "gist_id": "02c4b1ea3992498828764d9cc09f2e87",
+      "html_url": "https://gist.github.com/saketkc/02c4b1ea3992498828764d9cc09f2e87",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/02c4b1ea3992498828764d9cc09f2e87/raw/440d4edf48475eb1decb788b178b34d1f978f5fa/bharatviz_1961_Madras_districts.geojson",
+      "filename": "bharatviz_1961_Madras_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "5a2fa1f9ad17a4bba1ac0a9b1dc909e3",
+      "html_url": "https://gist.github.com/saketkc/5a2fa1f9ad17a4bba1ac0a9b1dc909e3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5a2fa1f9ad17a4bba1ac0a9b1dc909e3/raw/4f2ca892cdc1903cfd93ae3481caf142138d9dc6/bharatviz_1961_Maharashtra_districts.geojson",
+      "filename": "bharatviz_1961_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "df53518c687f07741fbf1a9431f8ce67",
+      "html_url": "https://gist.github.com/saketkc/df53518c687f07741fbf1a9431f8ce67",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/df53518c687f07741fbf1a9431f8ce67/raw/0bc68f6d8688e18d20678d2c25fee06fbf78988e/bharatviz_1961_Manipur_districts.geojson",
+      "filename": "bharatviz_1961_Manipur_districts.geojson"
+    },
+    "Mysore": {
+      "gist_id": "1a728b24517a9a57f7ef70b7e224f76d",
+      "html_url": "https://gist.github.com/saketkc/1a728b24517a9a57f7ef70b7e224f76d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1a728b24517a9a57f7ef70b7e224f76d/raw/9496da9f762fd5b4a335f63d85770cce5b88bd94/bharatviz_1961_Mysore_districts.geojson",
+      "filename": "bharatviz_1961_Mysore_districts.geojson"
+    },
+    "Naga Hills-Tuensang Area": {
+      "gist_id": "e29a64af1ae766a172a0136197081a7f",
+      "html_url": "https://gist.github.com/saketkc/e29a64af1ae766a172a0136197081a7f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e29a64af1ae766a172a0136197081a7f/raw/efcd5ad16579aa54dd9a3b6acab9c0de44076cb6/bharatviz_1961_Naga_Hills-Tuensang_Area_districts.geojson",
+      "filename": "bharatviz_1961_Naga_Hills-Tuensang_Area_districts.geojson"
+    },
+    "North-East Frontier Agency": {
+      "gist_id": "599c93410027b9f6aaf4ee9971ed3af5",
+      "html_url": "https://gist.github.com/saketkc/599c93410027b9f6aaf4ee9971ed3af5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/599c93410027b9f6aaf4ee9971ed3af5/raw/15ebdb9557c6f99ebbd7b934ff4ea5b6e2585e7e/bharatviz_1961_North-East_Frontier_Agency_districts.geojson",
+      "filename": "bharatviz_1961_North-East_Frontier_Agency_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "bc4fa8e286bd555269230ae592c998f9",
+      "html_url": "https://gist.github.com/saketkc/bc4fa8e286bd555269230ae592c998f9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bc4fa8e286bd555269230ae592c998f9/raw/c835cbe09d3503b32bb86a10b8b0061823bee30e/bharatviz_1961_Orissa_districts.geojson",
+      "filename": "bharatviz_1961_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "97f0c6fa82cc718e92625cb69364fa47",
+      "html_url": "https://gist.github.com/saketkc/97f0c6fa82cc718e92625cb69364fa47",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/97f0c6fa82cc718e92625cb69364fa47/raw/a7a6f3243ae450d6dbc3495444dba2a40dcbbe1a/bharatviz_1961_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1961_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "c5fd91d49962d51e9d0eccf1b53d7b93",
+      "html_url": "https://gist.github.com/saketkc/c5fd91d49962d51e9d0eccf1b53d7b93",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c5fd91d49962d51e9d0eccf1b53d7b93/raw/0c93fa0e2c2e1ffd0bc70b07b13facbffd303dfc/bharatviz_1961_Punjab_districts.geojson",
+      "filename": "bharatviz_1961_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "6ec52e4449de0c0b0a2c5a4789405533",
+      "html_url": "https://gist.github.com/saketkc/6ec52e4449de0c0b0a2c5a4789405533",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6ec52e4449de0c0b0a2c5a4789405533/raw/e1d8f87724593193520a6477604a3a7d458c8b5a/bharatviz_1961_Rajasthan_districts.geojson",
+      "filename": "bharatviz_1961_Rajasthan_districts.geojson"
+    },
+    "Rann Of Kutch": {
+      "gist_id": "c66e4118336bedbe17094cba0209ea99",
+      "html_url": "https://gist.github.com/saketkc/c66e4118336bedbe17094cba0209ea99",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c66e4118336bedbe17094cba0209ea99/raw/e2f317d408b79b52a33edce2bccadccd6fca0308/bharatviz_1961_Rann_Of_Kutch_districts.geojson",
+      "filename": "bharatviz_1961_Rann_Of_Kutch_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "0f11c0d92c259ef4e2455a4fb1b67193",
+      "html_url": "https://gist.github.com/saketkc/0f11c0d92c259ef4e2455a4fb1b67193",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0f11c0d92c259ef4e2455a4fb1b67193/raw/1dd0c6637ac250cc46f7e04af9acc0842f700671/bharatviz_1961_Sikkim_districts.geojson",
+      "filename": "bharatviz_1961_Sikkim_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "e277a9c9fedec457e6da00a693622b31",
+      "html_url": "https://gist.github.com/saketkc/e277a9c9fedec457e6da00a693622b31",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e277a9c9fedec457e6da00a693622b31/raw/1f0be10f6683d29b70d2ffc6e22a3724d0dd3a44/bharatviz_1961_Tripura_districts.geojson",
+      "filename": "bharatviz_1961_Tripura_districts.geojson"
+    },
+    "Unknown": {
+      "gist_id": "323afe0972f18c2d1ae503d87e10f65d",
+      "html_url": "https://gist.github.com/saketkc/323afe0972f18c2d1ae503d87e10f65d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/323afe0972f18c2d1ae503d87e10f65d/raw/3e7fd4d30e14502d050abf7c380d142212dc0462/bharatviz_1961_Unknown_districts.geojson",
+      "filename": "bharatviz_1961_Unknown_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "b955ea324c6b92d9900f53ceafe421a7",
+      "html_url": "https://gist.github.com/saketkc/b955ea324c6b92d9900f53ceafe421a7",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b955ea324c6b92d9900f53ceafe421a7/raw/99def0df85a92e2edb2411a5c936a2a7abdffc3e/bharatviz_1961_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_1961_Uttar_Pradesh_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "0599f7f32aada444395881f9fef28574",
+      "html_url": "https://gist.github.com/saketkc/0599f7f32aada444395881f9fef28574",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0599f7f32aada444395881f9fef28574/raw/7177ff8aa979eec14dbd3ab191f425191c8bc383/bharatviz_1961_West_Bengal_districts.geojson",
+      "filename": "bharatviz_1961_West_Bengal_districts.geojson"
+    }
+  },
+  "1971": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "bd41ed56b8f19ffd29770e41b1340402",
+      "html_url": "https://gist.github.com/saketkc/bd41ed56b8f19ffd29770e41b1340402",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bd41ed56b8f19ffd29770e41b1340402/raw/0430584dcffcbc0a3f44e6fcef74bf79beadc0ef/bharatviz_1971_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_1971_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "e9eea71b27637c03e8f0e8423a03f61b",
+      "html_url": "https://gist.github.com/saketkc/e9eea71b27637c03e8f0e8423a03f61b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e9eea71b27637c03e8f0e8423a03f61b/raw/3569cafbd65c6c87580c0451b0cd21150ce6f9f6/bharatviz_1971_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_1971_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "9847ea29bceaad3bb798b7b0f62ce584",
+      "html_url": "https://gist.github.com/saketkc/9847ea29bceaad3bb798b7b0f62ce584",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9847ea29bceaad3bb798b7b0f62ce584/raw/cad671210a0fabf627a5caed4157f4008cc94f56/bharatviz_1971_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1971_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "4c456d7ca72dacdf04824c6f961de57c",
+      "html_url": "https://gist.github.com/saketkc/4c456d7ca72dacdf04824c6f961de57c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4c456d7ca72dacdf04824c6f961de57c/raw/ef9f96ac1f80924d800feb76e91664dc7288a6f9/bharatviz_1971_Assam_districts.geojson",
+      "filename": "bharatviz_1971_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "1feec9668e2216ad5e1b3a7dc4ec32e4",
+      "html_url": "https://gist.github.com/saketkc/1feec9668e2216ad5e1b3a7dc4ec32e4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1feec9668e2216ad5e1b3a7dc4ec32e4/raw/fef3a9184e281c858e0bc4e30acf94471563d798/bharatviz_1971_Bihar_districts.geojson",
+      "filename": "bharatviz_1971_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "80e9775298c230df655ff482ef87de11",
+      "html_url": "https://gist.github.com/saketkc/80e9775298c230df655ff482ef87de11",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/80e9775298c230df655ff482ef87de11/raw/94bb80a2a584df3550a853b9e9f2fc343272ec63/bharatviz_1971_Chandigarh_districts.geojson",
+      "filename": "bharatviz_1971_Chandigarh_districts.geojson"
+    },
+    "Dadra and Nagar Haveli": {
+      "gist_id": "92544938f385b35499b97af28be3f903",
+      "html_url": "https://gist.github.com/saketkc/92544938f385b35499b97af28be3f903",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/92544938f385b35499b97af28be3f903/raw/3a4e505eaed25d18ab5082c0fa0c7504048bb431/bharatviz_1971_Dadra_and_Nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_1971_Dadra_and_Nagar_Haveli_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "9d809483dd920823e95f6688ece43528",
+      "html_url": "https://gist.github.com/saketkc/9d809483dd920823e95f6688ece43528",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9d809483dd920823e95f6688ece43528/raw/dd11834b44199543a2580741b05d2526de2d1da2/bharatviz_1971_Delhi_districts.geojson",
+      "filename": "bharatviz_1971_Delhi_districts.geojson"
+    },
+    "Goa, Daman and Diu": {
+      "gist_id": "ab372df5422c4aa29452a74cfc1fb1e3",
+      "html_url": "https://gist.github.com/saketkc/ab372df5422c4aa29452a74cfc1fb1e3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ab372df5422c4aa29452a74cfc1fb1e3/raw/3f8aefd8b266081238f3a0832d495645bba575cb/bharatviz_1971_Goa%2C_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_1971_Goa,_Daman_and_Diu_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "23ea79debcfe0c0596df95453d38e9ed",
+      "html_url": "https://gist.github.com/saketkc/23ea79debcfe0c0596df95453d38e9ed",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/23ea79debcfe0c0596df95453d38e9ed/raw/190b5a189ce98725afb9c366db2a76e8ab8e2ec6/bharatviz_1971_Gujarat_districts.geojson",
+      "filename": "bharatviz_1971_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "b412602efeb9102f0af6263f280e884b",
+      "html_url": "https://gist.github.com/saketkc/b412602efeb9102f0af6263f280e884b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b412602efeb9102f0af6263f280e884b/raw/c6b9a33fe0ffb36a8466ea8f4d7ef3547e073543/bharatviz_1971_Haryana_districts.geojson",
+      "filename": "bharatviz_1971_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "eae02de57afed3bb05c170520149fc2c",
+      "html_url": "https://gist.github.com/saketkc/eae02de57afed3bb05c170520149fc2c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/eae02de57afed3bb05c170520149fc2c/raw/f91a15d143b4a09659f827b9c7cd388b70bae643/bharatviz_1971_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1971_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "1fbc8d5b91fd8dacd003f35811019292",
+      "html_url": "https://gist.github.com/saketkc/1fbc8d5b91fd8dacd003f35811019292",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1fbc8d5b91fd8dacd003f35811019292/raw/914bcab8ec639645604a4c8694faf5f93543e66e/bharatviz_1971_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_1971_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "855189cf8177167e7e3eb4f591d8e54d",
+      "html_url": "https://gist.github.com/saketkc/855189cf8177167e7e3eb4f591d8e54d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/855189cf8177167e7e3eb4f591d8e54d/raw/a6b9bde76624831e7a24229d19688c0bb8af7974/bharatviz_1971_Kerala_districts.geojson",
+      "filename": "bharatviz_1971_Kerala_districts.geojson"
+    },
+    "Laccadive, Minicoy and Amindivi Islands": {
+      "gist_id": "9f08b21fd6460498f9faeebc97879203",
+      "html_url": "https://gist.github.com/saketkc/9f08b21fd6460498f9faeebc97879203",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9f08b21fd6460498f9faeebc97879203/raw/4e82d8ad910b3cf4f7f8ab546fcc31c104a8718b/bharatviz_1971_Laccadive%2C_Minicoy_and_Amindivi_Islands_districts.geojson",
+      "filename": "bharatviz_1971_Laccadive,_Minicoy_and_Amindivi_Islands_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "73593359873da5d44f558f7fea4b6c0c",
+      "html_url": "https://gist.github.com/saketkc/73593359873da5d44f558f7fea4b6c0c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/73593359873da5d44f558f7fea4b6c0c/raw/5c879fac8d4f888bab742894a7965a75e9901f1a/bharatviz_1971_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1971_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "c625c112afab1c9e52d215f93e7a6c87",
+      "html_url": "https://gist.github.com/saketkc/c625c112afab1c9e52d215f93e7a6c87",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c625c112afab1c9e52d215f93e7a6c87/raw/dbc227a264a4899f090538160a1f82f91b0f6e77/bharatviz_1971_Maharashtra_districts.geojson",
+      "filename": "bharatviz_1971_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "7c39ec9a0e4e77bd9241907ff2ae2257",
+      "html_url": "https://gist.github.com/saketkc/7c39ec9a0e4e77bd9241907ff2ae2257",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7c39ec9a0e4e77bd9241907ff2ae2257/raw/282bbcc2ef5b651a4c8d0ae22eb9e43a5b4dfd18/bharatviz_1971_Manipur_districts.geojson",
+      "filename": "bharatviz_1971_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "f8dde9c67ede68e470146c7e9e5f0103",
+      "html_url": "https://gist.github.com/saketkc/f8dde9c67ede68e470146c7e9e5f0103",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f8dde9c67ede68e470146c7e9e5f0103/raw/3329ab35c8c0b964c2df745b16c424e6d999d160/bharatviz_1971_Meghalaya_districts.geojson",
+      "filename": "bharatviz_1971_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "ad47a472505a58c423a3adaf6eaefbcf",
+      "html_url": "https://gist.github.com/saketkc/ad47a472505a58c423a3adaf6eaefbcf",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ad47a472505a58c423a3adaf6eaefbcf/raw/edf41f53464dce7f7a9a884e651af73e537ac6e7/bharatviz_1971_Mizoram_districts.geojson",
+      "filename": "bharatviz_1971_Mizoram_districts.geojson"
+    },
+    "Mysore": {
+      "gist_id": "c7cb484ad4c32e26ca3dffe37a9e0fcc",
+      "html_url": "https://gist.github.com/saketkc/c7cb484ad4c32e26ca3dffe37a9e0fcc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c7cb484ad4c32e26ca3dffe37a9e0fcc/raw/9eb5f61262936d1fae6555863773fb876b07d747/bharatviz_1971_Mysore_districts.geojson",
+      "filename": "bharatviz_1971_Mysore_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "1d448b0a5281a07e56e316bcfef7030d",
+      "html_url": "https://gist.github.com/saketkc/1d448b0a5281a07e56e316bcfef7030d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1d448b0a5281a07e56e316bcfef7030d/raw/953bce4145d49dbc4a33942f012b65955daa7270/bharatviz_1971_Nagaland_districts.geojson",
+      "filename": "bharatviz_1971_Nagaland_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "3bfd5473577927919549055e55f61f3d",
+      "html_url": "https://gist.github.com/saketkc/3bfd5473577927919549055e55f61f3d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3bfd5473577927919549055e55f61f3d/raw/5f65a61ac06f52b121338353bc714c68cba5bc04/bharatviz_1971_Orissa_districts.geojson",
+      "filename": "bharatviz_1971_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "a0f2540c3b96ed90a48af7b22533257e",
+      "html_url": "https://gist.github.com/saketkc/a0f2540c3b96ed90a48af7b22533257e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a0f2540c3b96ed90a48af7b22533257e/raw/3041283f3d664c82666dc2b46474638073d714a3/bharatviz_1971_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1971_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "a6eab59ba405fbfe49c2d5c512b1bf94",
+      "html_url": "https://gist.github.com/saketkc/a6eab59ba405fbfe49c2d5c512b1bf94",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a6eab59ba405fbfe49c2d5c512b1bf94/raw/34c47ba700fd837663b451b4b5284f83dd7896c6/bharatviz_1971_Punjab_districts.geojson",
+      "filename": "bharatviz_1971_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "d78496edd85d7422c3cbf7bb98d88e5d",
+      "html_url": "https://gist.github.com/saketkc/d78496edd85d7422c3cbf7bb98d88e5d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d78496edd85d7422c3cbf7bb98d88e5d/raw/0c74660725cc17d0ee8edb47c486e7a2e555c47b/bharatviz_1971_Rajasthan_districts.geojson",
+      "filename": "bharatviz_1971_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "b85fc4f3f4b834041a1cae1c6dc29c1c",
+      "html_url": "https://gist.github.com/saketkc/b85fc4f3f4b834041a1cae1c6dc29c1c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b85fc4f3f4b834041a1cae1c6dc29c1c/raw/74d80422d6fb4e37b4cf8f2a67ba17a6ef29c955/bharatviz_1971_Sikkim_districts.geojson",
+      "filename": "bharatviz_1971_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "a6d9831897cee9811170ad31199fdacf",
+      "html_url": "https://gist.github.com/saketkc/a6d9831897cee9811170ad31199fdacf",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a6d9831897cee9811170ad31199fdacf/raw/5afa35669c914cbd5e4c7b2c1b679b159ce90fff/bharatviz_1971_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_1971_Tamil_Nadu_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "00a48913c779115e9bdd49526459ae4f",
+      "html_url": "https://gist.github.com/saketkc/00a48913c779115e9bdd49526459ae4f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/00a48913c779115e9bdd49526459ae4f/raw/51f53666f06a8106a7e60e1fd57578e827f44e18/bharatviz_1971_Tripura_districts.geojson",
+      "filename": "bharatviz_1971_Tripura_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "f16efad65af5180ba0c05cfdf72d0727",
+      "html_url": "https://gist.github.com/saketkc/f16efad65af5180ba0c05cfdf72d0727",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f16efad65af5180ba0c05cfdf72d0727/raw/6948c3e8540fec62b1827257e639f858b5052c37/bharatviz_1971_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_1971_Uttar_Pradesh_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "fe18bf0a8725e6df6284c1cfd5d79d77",
+      "html_url": "https://gist.github.com/saketkc/fe18bf0a8725e6df6284c1cfd5d79d77",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fe18bf0a8725e6df6284c1cfd5d79d77/raw/0b99bf0f821ba20ac3a37085f502e439527d2b53/bharatviz_1971_West_Bengal_districts.geojson",
+      "filename": "bharatviz_1971_West_Bengal_districts.geojson"
+    }
+  },
+  "1981": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "cbe564efacb4b5a1d2a05fa54cce83f9",
+      "html_url": "https://gist.github.com/saketkc/cbe564efacb4b5a1d2a05fa54cce83f9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cbe564efacb4b5a1d2a05fa54cce83f9/raw/c5dda02a85c165151ade0a9ca910872e2296373a/bharatviz_1981_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_1981_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "772884234037568b3d6dca9cc078b760",
+      "html_url": "https://gist.github.com/saketkc/772884234037568b3d6dca9cc078b760",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/772884234037568b3d6dca9cc078b760/raw/e01988803f2bf56348d7ff14a860c67e512ccb5c/bharatviz_1981_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_1981_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "9a7891060dc980c36947c44deb911cdf",
+      "html_url": "https://gist.github.com/saketkc/9a7891060dc980c36947c44deb911cdf",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9a7891060dc980c36947c44deb911cdf/raw/b6030899b91ded8701b86e02d5b8fc3bf196872b/bharatviz_1981_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1981_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "bf6c920c9a78d50d133b0889660731b2",
+      "html_url": "https://gist.github.com/saketkc/bf6c920c9a78d50d133b0889660731b2",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bf6c920c9a78d50d133b0889660731b2/raw/1bc1ba3145a98ea9d48e459ea3a63d9357f963db/bharatviz_1981_Assam_districts.geojson",
+      "filename": "bharatviz_1981_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "fd9de4d02b2cc64485ef32283a7a69e6",
+      "html_url": "https://gist.github.com/saketkc/fd9de4d02b2cc64485ef32283a7a69e6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fd9de4d02b2cc64485ef32283a7a69e6/raw/f51f38ae2150480ec999d885b17c167fbd6e8f0b/bharatviz_1981_Bihar_districts.geojson",
+      "filename": "bharatviz_1981_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "e287b5f92578e1341f6e9830c3f5ef2e",
+      "html_url": "https://gist.github.com/saketkc/e287b5f92578e1341f6e9830c3f5ef2e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e287b5f92578e1341f6e9830c3f5ef2e/raw/ebded9991a0997cfe2554efd5944b7325680b551/bharatviz_1981_Chandigarh_districts.geojson",
+      "filename": "bharatviz_1981_Chandigarh_districts.geojson"
+    },
+    "Dadra and nagar Haveli": {
+      "gist_id": "633a74259c2151a7cc0d074592a2d334",
+      "html_url": "https://gist.github.com/saketkc/633a74259c2151a7cc0d074592a2d334",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/633a74259c2151a7cc0d074592a2d334/raw/8c35f89066332db8214eeb659ca8e9e7234e677e/bharatviz_1981_Dadra_and_nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_1981_Dadra_and_nagar_Haveli_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "9d201d35daa96db1a9ff32e8db2f6eb4",
+      "html_url": "https://gist.github.com/saketkc/9d201d35daa96db1a9ff32e8db2f6eb4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9d201d35daa96db1a9ff32e8db2f6eb4/raw/4c5ee22a3539627dd423011bdeb11d1ca5560119/bharatviz_1981_Delhi_districts.geojson",
+      "filename": "bharatviz_1981_Delhi_districts.geojson"
+    },
+    "Goa, Daman and Diu": {
+      "gist_id": "1bd989e03de20118e8943d5b5366d0a4",
+      "html_url": "https://gist.github.com/saketkc/1bd989e03de20118e8943d5b5366d0a4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1bd989e03de20118e8943d5b5366d0a4/raw/9e2fd05aa46a3e90b2c6ecb4a254b0888cd99ac1/bharatviz_1981_Goa%2C_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_1981_Goa,_Daman_and_Diu_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "209076947a613f5bfe708fbd5f6101eb",
+      "html_url": "https://gist.github.com/saketkc/209076947a613f5bfe708fbd5f6101eb",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/209076947a613f5bfe708fbd5f6101eb/raw/7eb7ed7a31d21d32c97340f329416c8dece8e1b8/bharatviz_1981_Gujarat_districts.geojson",
+      "filename": "bharatviz_1981_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "6a2814b8c4c821859aaa40fd0e3e97e1",
+      "html_url": "https://gist.github.com/saketkc/6a2814b8c4c821859aaa40fd0e3e97e1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6a2814b8c4c821859aaa40fd0e3e97e1/raw/3dedf9776ad3d1bb8c63720009f6060cd0ec2f03/bharatviz_1981_Haryana_districts.geojson",
+      "filename": "bharatviz_1981_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "228a04a2a1a7baf1153b9ecbd83ff836",
+      "html_url": "https://gist.github.com/saketkc/228a04a2a1a7baf1153b9ecbd83ff836",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/228a04a2a1a7baf1153b9ecbd83ff836/raw/06913df80a4b2701908df24ea8eb193cff2207ab/bharatviz_1981_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1981_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "984c62efaa0f082798ff8527cac53bcb",
+      "html_url": "https://gist.github.com/saketkc/984c62efaa0f082798ff8527cac53bcb",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/984c62efaa0f082798ff8527cac53bcb/raw/ee8babe4dff7a8f240e85ec022618a1ae56015e4/bharatviz_1981_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_1981_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "0a448101af4bce48e9cff9e7e570b624",
+      "html_url": "https://gist.github.com/saketkc/0a448101af4bce48e9cff9e7e570b624",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0a448101af4bce48e9cff9e7e570b624/raw/4734095e429d27d22f575b4384dc50d18c5c375a/bharatviz_1981_Karnataka_districts.geojson",
+      "filename": "bharatviz_1981_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "826e350291222949a6b2e399f4faad7e",
+      "html_url": "https://gist.github.com/saketkc/826e350291222949a6b2e399f4faad7e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/826e350291222949a6b2e399f4faad7e/raw/b166dbea9a4410148132246916383cd22bb4952d/bharatviz_1981_Kerala_districts.geojson",
+      "filename": "bharatviz_1981_Kerala_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "f55900101fde2e1d4212ab68402c0264",
+      "html_url": "https://gist.github.com/saketkc/f55900101fde2e1d4212ab68402c0264",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f55900101fde2e1d4212ab68402c0264/raw/c4ff8a9029b60ef04cb22491119af70b7ad97611/bharatviz_1981_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_1981_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "d9eefbf287b5c8896e20a75fb3dc82c5",
+      "html_url": "https://gist.github.com/saketkc/d9eefbf287b5c8896e20a75fb3dc82c5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d9eefbf287b5c8896e20a75fb3dc82c5/raw/46180c455a17f2312a6eec9218b95496026e5fe6/bharatviz_1981_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1981_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "7d780b31fd123406004f30e15fd2315d",
+      "html_url": "https://gist.github.com/saketkc/7d780b31fd123406004f30e15fd2315d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7d780b31fd123406004f30e15fd2315d/raw/1d83687d8c250fec8cd088c9140fcd55d0c5837e/bharatviz_1981_Maharashtra_districts.geojson",
+      "filename": "bharatviz_1981_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "513625f8eff403bdf21c205dd6f27083",
+      "html_url": "https://gist.github.com/saketkc/513625f8eff403bdf21c205dd6f27083",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/513625f8eff403bdf21c205dd6f27083/raw/a624ee80a8e4305d5bef4728da908dd72ade1589/bharatviz_1981_Manipur_districts.geojson",
+      "filename": "bharatviz_1981_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "2f691d03b32d7be5603ac9e68285abf3",
+      "html_url": "https://gist.github.com/saketkc/2f691d03b32d7be5603ac9e68285abf3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2f691d03b32d7be5603ac9e68285abf3/raw/ad2777f8f16969fc7241c4ca8211414a8d524406/bharatviz_1981_Meghalaya_districts.geojson",
+      "filename": "bharatviz_1981_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "28c09afecaa3f787eef41e20791f1852",
+      "html_url": "https://gist.github.com/saketkc/28c09afecaa3f787eef41e20791f1852",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/28c09afecaa3f787eef41e20791f1852/raw/e64134c8af4d9dd065fc8105307567a65902cf6f/bharatviz_1981_Mizoram_districts.geojson",
+      "filename": "bharatviz_1981_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "7c3d7391af33b522fa2035b5285deef2",
+      "html_url": "https://gist.github.com/saketkc/7c3d7391af33b522fa2035b5285deef2",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7c3d7391af33b522fa2035b5285deef2/raw/036d0326dd5849fc810aaa76f82382c152032ad5/bharatviz_1981_Nagaland_districts.geojson",
+      "filename": "bharatviz_1981_Nagaland_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "98e41c660a6f662c2144b876a35d3db3",
+      "html_url": "https://gist.github.com/saketkc/98e41c660a6f662c2144b876a35d3db3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/98e41c660a6f662c2144b876a35d3db3/raw/29ef7b03456c6378a1a4c134c8f12dd09943a131/bharatviz_1981_Orissa_districts.geojson",
+      "filename": "bharatviz_1981_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "189c1dac3e872352fc4850e267209d34",
+      "html_url": "https://gist.github.com/saketkc/189c1dac3e872352fc4850e267209d34",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/189c1dac3e872352fc4850e267209d34/raw/074a07aac7d89ed93dfaacfd1f2defa309ef17b1/bharatviz_1981_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1981_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "9eb55fce554f5258458acd5ac35213cd",
+      "html_url": "https://gist.github.com/saketkc/9eb55fce554f5258458acd5ac35213cd",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9eb55fce554f5258458acd5ac35213cd/raw/4970526c8503218c2cfe21ca4f495df51616af00/bharatviz_1981_Punjab_districts.geojson",
+      "filename": "bharatviz_1981_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "69790259a4dd91e902d48a0c7f68c4ab",
+      "html_url": "https://gist.github.com/saketkc/69790259a4dd91e902d48a0c7f68c4ab",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/69790259a4dd91e902d48a0c7f68c4ab/raw/e1ab667367f5df8226f403cad84f1b0a4635a59f/bharatviz_1981_Rajasthan_districts.geojson",
+      "filename": "bharatviz_1981_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "1be20d9d7eab6b0c1740156fad46aa81",
+      "html_url": "https://gist.github.com/saketkc/1be20d9d7eab6b0c1740156fad46aa81",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1be20d9d7eab6b0c1740156fad46aa81/raw/76951cbddf44ebb57eba967b41ad53cfe8b77710/bharatviz_1981_Sikkim_districts.geojson",
+      "filename": "bharatviz_1981_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "bbd80fc6a1fa63daa7dfb9405d888323",
+      "html_url": "https://gist.github.com/saketkc/bbd80fc6a1fa63daa7dfb9405d888323",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bbd80fc6a1fa63daa7dfb9405d888323/raw/9853bf17f318d14ee0f55ad313f6d9fc3fb1d532/bharatviz_1981_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_1981_Tamil_Nadu_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "ac5f46cea2ee11d4a88b09fa8f55715b",
+      "html_url": "https://gist.github.com/saketkc/ac5f46cea2ee11d4a88b09fa8f55715b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ac5f46cea2ee11d4a88b09fa8f55715b/raw/bd496f2e79ad737c7e431029e83a9e06a5e93ef7/bharatviz_1981_Tripura_districts.geojson",
+      "filename": "bharatviz_1981_Tripura_districts.geojson"
+    },
+    "Unknown": {
+      "gist_id": "17cc5ff3be9f48d19c0cd53b8a230c5f",
+      "html_url": "https://gist.github.com/saketkc/17cc5ff3be9f48d19c0cd53b8a230c5f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/17cc5ff3be9f48d19c0cd53b8a230c5f/raw/13c944f10787955cc56469b9bd8f0e13cff88f5c/bharatviz_1981_Unknown_districts.geojson",
+      "filename": "bharatviz_1981_Unknown_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "a309753aea648e82b60ca52f8e0e4f98",
+      "html_url": "https://gist.github.com/saketkc/a309753aea648e82b60ca52f8e0e4f98",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a309753aea648e82b60ca52f8e0e4f98/raw/a2027327970a129b76318f40031c249276b16b50/bharatviz_1981_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_1981_Uttar_Pradesh_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "fee22d3e1164c385daf2e6473c3e0cdd",
+      "html_url": "https://gist.github.com/saketkc/fee22d3e1164c385daf2e6473c3e0cdd",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fee22d3e1164c385daf2e6473c3e0cdd/raw/a8fb7adf023ecd664ca0c2896dcb547c18de02f9/bharatviz_1981_West_Bengal_districts.geojson",
+      "filename": "bharatviz_1981_West_Bengal_districts.geojson"
+    }
+  },
+  "1991": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "7e7f8d6c0d3322fa3a9275e1de5b0204",
+      "html_url": "https://gist.github.com/saketkc/7e7f8d6c0d3322fa3a9275e1de5b0204",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7e7f8d6c0d3322fa3a9275e1de5b0204/raw/93230cce2d4767c5eb5f5b54beaf4a0d133f6d8f/bharatviz_1991_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_1991_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "1a9e7ee409afed456004c8a406425cc4",
+      "html_url": "https://gist.github.com/saketkc/1a9e7ee409afed456004c8a406425cc4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1a9e7ee409afed456004c8a406425cc4/raw/daf136c40407a937b6d61fb3136c5fe9ff5a89aa/bharatviz_1991_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_1991_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "37698cc5a12598c8611eb7e54f4c6132",
+      "html_url": "https://gist.github.com/saketkc/37698cc5a12598c8611eb7e54f4c6132",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/37698cc5a12598c8611eb7e54f4c6132/raw/1bf9c1317e3f6f41fa18db8540ac1989903ce4a3/bharatviz_1991_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1991_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "426b5fa3a8a73100b7926dd2c181c3f4",
+      "html_url": "https://gist.github.com/saketkc/426b5fa3a8a73100b7926dd2c181c3f4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/426b5fa3a8a73100b7926dd2c181c3f4/raw/cf53406632b0f56421f931b4977e3f20642d4eb7/bharatviz_1991_Assam_districts.geojson",
+      "filename": "bharatviz_1991_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "0cf9646bddf4fa329799912618efb9f3",
+      "html_url": "https://gist.github.com/saketkc/0cf9646bddf4fa329799912618efb9f3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0cf9646bddf4fa329799912618efb9f3/raw/445b275a7eccd55dd4708fd91cfbb9a906b7b39f/bharatviz_1991_Bihar_districts.geojson",
+      "filename": "bharatviz_1991_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "9289ddd5ec57f6231cdea3584cdcf4b6",
+      "html_url": "https://gist.github.com/saketkc/9289ddd5ec57f6231cdea3584cdcf4b6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9289ddd5ec57f6231cdea3584cdcf4b6/raw/2b26d7a4445182b4ae2c1a8b977a2099ceeb00ff/bharatviz_1991_Chandigarh_districts.geojson",
+      "filename": "bharatviz_1991_Chandigarh_districts.geojson"
+    },
+    "Dadra and Nagar Haveli": {
+      "gist_id": "05cc24bb8e615ee11ab339828d71500d",
+      "html_url": "https://gist.github.com/saketkc/05cc24bb8e615ee11ab339828d71500d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/05cc24bb8e615ee11ab339828d71500d/raw/49186394260380839624f0d391f337e454d4c3e3/bharatviz_1991_Dadra_and_Nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_1991_Dadra_and_Nagar_Haveli_districts.geojson"
+    },
+    "Daman and Diu": {
+      "gist_id": "4815b1bc2dec929e47e07ea8f0ea873e",
+      "html_url": "https://gist.github.com/saketkc/4815b1bc2dec929e47e07ea8f0ea873e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4815b1bc2dec929e47e07ea8f0ea873e/raw/81f3917c0595a52257359309b1bb368e32ad56bd/bharatviz_1991_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_1991_Daman_and_Diu_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "6d9649d2dd5f392456722458e36a1257",
+      "html_url": "https://gist.github.com/saketkc/6d9649d2dd5f392456722458e36a1257",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6d9649d2dd5f392456722458e36a1257/raw/2dab79d704871445231fbf10cb922d63337588b8/bharatviz_1991_Delhi_districts.geojson",
+      "filename": "bharatviz_1991_Delhi_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "8946d03a67a565bf712403e730d6e750",
+      "html_url": "https://gist.github.com/saketkc/8946d03a67a565bf712403e730d6e750",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8946d03a67a565bf712403e730d6e750/raw/9618711decd2ace2358a549ade5b9973d5cf8942/bharatviz_1991_Goa_districts.geojson",
+      "filename": "bharatviz_1991_Goa_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "48bf06da8f2daffe4c9b18246c572d0e",
+      "html_url": "https://gist.github.com/saketkc/48bf06da8f2daffe4c9b18246c572d0e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/48bf06da8f2daffe4c9b18246c572d0e/raw/5562677be08ca3837b0138898c246acc2759fcfe/bharatviz_1991_Gujarat_districts.geojson",
+      "filename": "bharatviz_1991_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "37806571933ca74b6d85c1048cdbd5f3",
+      "html_url": "https://gist.github.com/saketkc/37806571933ca74b6d85c1048cdbd5f3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/37806571933ca74b6d85c1048cdbd5f3/raw/04a665e355be95f68c3d3584a5dd9c1411b823a6/bharatviz_1991_Haryana_districts.geojson",
+      "filename": "bharatviz_1991_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "57afc957df912efc7c535b0031d3f416",
+      "html_url": "https://gist.github.com/saketkc/57afc957df912efc7c535b0031d3f416",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/57afc957df912efc7c535b0031d3f416/raw/5c9f5b19e2dfccd2bb3b448ce703a6d5574116ab/bharatviz_1991_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_1991_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "6c86d09e2c386cd1bd466076aebca890",
+      "html_url": "https://gist.github.com/saketkc/6c86d09e2c386cd1bd466076aebca890",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6c86d09e2c386cd1bd466076aebca890/raw/fb79798ab59f211c89280e8b6d53629213f308e5/bharatviz_1991_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_1991_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "c568f8d25eafd16e09b87f128d4fe684",
+      "html_url": "https://gist.github.com/saketkc/c568f8d25eafd16e09b87f128d4fe684",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c568f8d25eafd16e09b87f128d4fe684/raw/7d435b6eba7d7ee714c77415c007f62c393e72e0/bharatviz_1991_Karnataka_districts.geojson",
+      "filename": "bharatviz_1991_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "d8bc321e7f0148c4b613f444559b0b5d",
+      "html_url": "https://gist.github.com/saketkc/d8bc321e7f0148c4b613f444559b0b5d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d8bc321e7f0148c4b613f444559b0b5d/raw/4f863fabf8d3c58deb7ec1fb95a92cc25a85b82d/bharatviz_1991_Kerala_districts.geojson",
+      "filename": "bharatviz_1991_Kerala_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "db5684e0ba413663e05c1242429fdb06",
+      "html_url": "https://gist.github.com/saketkc/db5684e0ba413663e05c1242429fdb06",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/db5684e0ba413663e05c1242429fdb06/raw/9852e52c7028b1a5a22c14d7b6c92538dd4f2bf9/bharatviz_1991_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_1991_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "df3f8531fdae0d7a49ca410e40bca6e0",
+      "html_url": "https://gist.github.com/saketkc/df3f8531fdae0d7a49ca410e40bca6e0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/df3f8531fdae0d7a49ca410e40bca6e0/raw/77e11f4d5556ae11470eed175a1f91f9b3e17285/bharatviz_1991_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_1991_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "cd228714ef2e37d0a03ab911fd185a6c",
+      "html_url": "https://gist.github.com/saketkc/cd228714ef2e37d0a03ab911fd185a6c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cd228714ef2e37d0a03ab911fd185a6c/raw/59ce60b8c1ba082844f382a3b2e0461292f144af/bharatviz_1991_Maharashtra_districts.geojson",
+      "filename": "bharatviz_1991_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "27a1ebfa24de819ef87bf646e84bd89a",
+      "html_url": "https://gist.github.com/saketkc/27a1ebfa24de819ef87bf646e84bd89a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/27a1ebfa24de819ef87bf646e84bd89a/raw/67cb9da7863a89f512f30caa375f52f230cc5470/bharatviz_1991_Manipur_districts.geojson",
+      "filename": "bharatviz_1991_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "caba4561bc511371f78f3c969212c1a9",
+      "html_url": "https://gist.github.com/saketkc/caba4561bc511371f78f3c969212c1a9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/caba4561bc511371f78f3c969212c1a9/raw/dd0a784ee67dc38446e14e911e3fcea46ce6efbd/bharatviz_1991_Meghalaya_districts.geojson",
+      "filename": "bharatviz_1991_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "b2c34a7899e04e60b6e1a8c23b963edd",
+      "html_url": "https://gist.github.com/saketkc/b2c34a7899e04e60b6e1a8c23b963edd",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b2c34a7899e04e60b6e1a8c23b963edd/raw/95c219e4a57d70af43fbfcfabd5bf2ebdd7e4c45/bharatviz_1991_Mizoram_districts.geojson",
+      "filename": "bharatviz_1991_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "190cc1504f611fc1f99a086f9d870101",
+      "html_url": "https://gist.github.com/saketkc/190cc1504f611fc1f99a086f9d870101",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/190cc1504f611fc1f99a086f9d870101/raw/c2d8bb1144cc4b803933296f0298b0de6ccb5ddb/bharatviz_1991_Nagaland_districts.geojson",
+      "filename": "bharatviz_1991_Nagaland_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "664d4759930e2f0f318b2cd200be3130",
+      "html_url": "https://gist.github.com/saketkc/664d4759930e2f0f318b2cd200be3130",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/664d4759930e2f0f318b2cd200be3130/raw/accae725e33c140ee2d56cc2d9ca9387e8bce96f/bharatviz_1991_Orissa_districts.geojson",
+      "filename": "bharatviz_1991_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "66a48e202011d310676a580b413f682c",
+      "html_url": "https://gist.github.com/saketkc/66a48e202011d310676a580b413f682c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/66a48e202011d310676a580b413f682c/raw/55d3592ed05a2ac3909f5cfc01adc33bb12e7422/bharatviz_1991_Pondicherry_districts.geojson",
+      "filename": "bharatviz_1991_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "bbb198c1da9d2a05c7a4413385d4a36f",
+      "html_url": "https://gist.github.com/saketkc/bbb198c1da9d2a05c7a4413385d4a36f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bbb198c1da9d2a05c7a4413385d4a36f/raw/63c3def7f22a872802e69bbcf09104cffcc5cf1f/bharatviz_1991_Punjab_districts.geojson",
+      "filename": "bharatviz_1991_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "aed00551a2170b6b5e90bae488ed26a1",
+      "html_url": "https://gist.github.com/saketkc/aed00551a2170b6b5e90bae488ed26a1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/aed00551a2170b6b5e90bae488ed26a1/raw/d17ec839889f1bc88893c50682fa7d9f5bdf96ff/bharatviz_1991_Rajasthan_districts.geojson",
+      "filename": "bharatviz_1991_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "9aca1fd48454ec19a7f542e35db2e182",
+      "html_url": "https://gist.github.com/saketkc/9aca1fd48454ec19a7f542e35db2e182",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9aca1fd48454ec19a7f542e35db2e182/raw/a162540fc3e763a26599b983be688ac6c66ef653/bharatviz_1991_Sikkim_districts.geojson",
+      "filename": "bharatviz_1991_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "68cc5cf451e338e36e786ccf5e0f4523",
+      "html_url": "https://gist.github.com/saketkc/68cc5cf451e338e36e786ccf5e0f4523",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/68cc5cf451e338e36e786ccf5e0f4523/raw/9c6e27be6aebbf8a411dd3939371d9704838c81b/bharatviz_1991_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_1991_Tamil_Nadu_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "4b2509da74ac7b329f86a5ae6628675d",
+      "html_url": "https://gist.github.com/saketkc/4b2509da74ac7b329f86a5ae6628675d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4b2509da74ac7b329f86a5ae6628675d/raw/bf556b25c66d6672514b05c1f2e082130f88edc0/bharatviz_1991_Tripura_districts.geojson",
+      "filename": "bharatviz_1991_Tripura_districts.geojson"
+    },
+    "Unknown": {
+      "gist_id": "0b4a91322f0989bf38abcca41c75ad00",
+      "html_url": "https://gist.github.com/saketkc/0b4a91322f0989bf38abcca41c75ad00",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0b4a91322f0989bf38abcca41c75ad00/raw/9d294d5e2047b1405687fc2fabd6bdd32a177195/bharatviz_1991_Unknown_districts.geojson",
+      "filename": "bharatviz_1991_Unknown_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "4956c73602956b5dab669c1a0c67b1ef",
+      "html_url": "https://gist.github.com/saketkc/4956c73602956b5dab669c1a0c67b1ef",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4956c73602956b5dab669c1a0c67b1ef/raw/1bd3e015669edc30bf473e0d3897e0e5ac8f7d18/bharatviz_1991_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_1991_Uttar_Pradesh_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "8487fdce0a7861907b5f8893a80bcd96",
+      "html_url": "https://gist.github.com/saketkc/8487fdce0a7861907b5f8893a80bcd96",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8487fdce0a7861907b5f8893a80bcd96/raw/374a73a9ce0051e51ff10b255057adc984c27b37/bharatviz_1991_West_Bengal_districts.geojson",
+      "filename": "bharatviz_1991_West_Bengal_districts.geojson"
+    }
+  },
+  "2001": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "e6e441a01ed48306a73535f3a35665ab",
+      "html_url": "https://gist.github.com/saketkc/e6e441a01ed48306a73535f3a35665ab",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e6e441a01ed48306a73535f3a35665ab/raw/2c5902996bc5281819e1f697815862a27f27e1cf/bharatviz_2001_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_2001_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "f182131449095a68a8094054f519ac45",
+      "html_url": "https://gist.github.com/saketkc/f182131449095a68a8094054f519ac45",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f182131449095a68a8094054f519ac45/raw/723c3f236b1894dc004c260bba3b4cd1160020c2/bharatviz_2001_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_2001_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "30dd6342dd2394964991c6cb8ca1d6bc",
+      "html_url": "https://gist.github.com/saketkc/30dd6342dd2394964991c6cb8ca1d6bc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/30dd6342dd2394964991c6cb8ca1d6bc/raw/423a6291acb0b5788573c385051af1267f0309ea/bharatviz_2001_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_2001_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "430a4c0254b36f47b0749b53e663144c",
+      "html_url": "https://gist.github.com/saketkc/430a4c0254b36f47b0749b53e663144c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/430a4c0254b36f47b0749b53e663144c/raw/aa75b4a966604aec2d3f37b3b37a9da33c4d4f0f/bharatviz_2001_Assam_districts.geojson",
+      "filename": "bharatviz_2001_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "f5233e176828cad71ce13b76bcd4dbf3",
+      "html_url": "https://gist.github.com/saketkc/f5233e176828cad71ce13b76bcd4dbf3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f5233e176828cad71ce13b76bcd4dbf3/raw/8589e965a660f5231f33333efc01e8bbbe2a22d5/bharatviz_2001_Bihar_districts.geojson",
+      "filename": "bharatviz_2001_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "1b1cb67e7934a31a8ce3d22eefb1b752",
+      "html_url": "https://gist.github.com/saketkc/1b1cb67e7934a31a8ce3d22eefb1b752",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1b1cb67e7934a31a8ce3d22eefb1b752/raw/d596f9f5ac91864fe9cfc1ce6fd5c21b00e026df/bharatviz_2001_Chandigarh_districts.geojson",
+      "filename": "bharatviz_2001_Chandigarh_districts.geojson"
+    },
+    "Chhattisgarh": {
+      "gist_id": "3218117392a7e8a0879a3648bb06f9e0",
+      "html_url": "https://gist.github.com/saketkc/3218117392a7e8a0879a3648bb06f9e0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3218117392a7e8a0879a3648bb06f9e0/raw/973ee887ec7262da2abf97f43603f16555bad22a/bharatviz_2001_Chhattisgarh_districts.geojson",
+      "filename": "bharatviz_2001_Chhattisgarh_districts.geojson"
+    },
+    "Dadra and Nagar Haveli": {
+      "gist_id": "3a4a8bd0b955bc3793387adb7bdca7a5",
+      "html_url": "https://gist.github.com/saketkc/3a4a8bd0b955bc3793387adb7bdca7a5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3a4a8bd0b955bc3793387adb7bdca7a5/raw/10c657f768beece4e2e644572b5878deed8b8a2f/bharatviz_2001_Dadra_and_Nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_2001_Dadra_and_Nagar_Haveli_districts.geojson"
+    },
+    "Daman and Diu": {
+      "gist_id": "66eebcc64de94a2c8b27b1fcc7da2c5d",
+      "html_url": "https://gist.github.com/saketkc/66eebcc64de94a2c8b27b1fcc7da2c5d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/66eebcc64de94a2c8b27b1fcc7da2c5d/raw/dc304486cdc18ddd038be059a13230abbf279435/bharatviz_2001_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_2001_Daman_and_Diu_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "7af4b63047c6015397eed9320ac68766",
+      "html_url": "https://gist.github.com/saketkc/7af4b63047c6015397eed9320ac68766",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7af4b63047c6015397eed9320ac68766/raw/cb30f8d7c0ca62034ec901b2b09713c8d93581ca/bharatviz_2001_Delhi_districts.geojson",
+      "filename": "bharatviz_2001_Delhi_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "930f3331e65d16cdc731dd50164f76d1",
+      "html_url": "https://gist.github.com/saketkc/930f3331e65d16cdc731dd50164f76d1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/930f3331e65d16cdc731dd50164f76d1/raw/94a5371ed73114e80c97c70713db68165217d04a/bharatviz_2001_Goa_districts.geojson",
+      "filename": "bharatviz_2001_Goa_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "7413e185985a502d7cf8fd6817ad49b3",
+      "html_url": "https://gist.github.com/saketkc/7413e185985a502d7cf8fd6817ad49b3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7413e185985a502d7cf8fd6817ad49b3/raw/4743327300c0c33fe15525f76101a3ceea6ea562/bharatviz_2001_Gujarat_districts.geojson",
+      "filename": "bharatviz_2001_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "77049b17002af8f6a3cf81bded90384b",
+      "html_url": "https://gist.github.com/saketkc/77049b17002af8f6a3cf81bded90384b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/77049b17002af8f6a3cf81bded90384b/raw/a20382648482ab6d5093e040f20c094ddd792df9/bharatviz_2001_Haryana_districts.geojson",
+      "filename": "bharatviz_2001_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "9f66c6e44f5a030cb5d3a44bcc219751",
+      "html_url": "https://gist.github.com/saketkc/9f66c6e44f5a030cb5d3a44bcc219751",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9f66c6e44f5a030cb5d3a44bcc219751/raw/f4f5ed19cf4dc55c444a5b04b59d322dc9b664a4/bharatviz_2001_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_2001_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu and Kashmir": {
+      "gist_id": "4ca8a7114a51ef0542a610a474664afe",
+      "html_url": "https://gist.github.com/saketkc/4ca8a7114a51ef0542a610a474664afe",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4ca8a7114a51ef0542a610a474664afe/raw/d189d3f82de3a140b8873027b7d10426c8f702ad/bharatviz_2001_Jammu_and_Kashmir_districts.geojson",
+      "filename": "bharatviz_2001_Jammu_and_Kashmir_districts.geojson"
+    },
+    "Jharkhand": {
+      "gist_id": "4d9455cd49a82dd6a2d351047f6b4a6e",
+      "html_url": "https://gist.github.com/saketkc/4d9455cd49a82dd6a2d351047f6b4a6e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4d9455cd49a82dd6a2d351047f6b4a6e/raw/d0fdcc0c9089cf0ecda8ad9f400945cb44575656/bharatviz_2001_Jharkhand_districts.geojson",
+      "filename": "bharatviz_2001_Jharkhand_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "b0f2b2bc31c4e0c081c7f61d4806d3f5",
+      "html_url": "https://gist.github.com/saketkc/b0f2b2bc31c4e0c081c7f61d4806d3f5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b0f2b2bc31c4e0c081c7f61d4806d3f5/raw/bf274bf567b3c347c485bdce4ad10f16cdb09f2c/bharatviz_2001_Karnataka_districts.geojson",
+      "filename": "bharatviz_2001_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "bdeebd5db9f2b715bb3ba472f9d5ae63",
+      "html_url": "https://gist.github.com/saketkc/bdeebd5db9f2b715bb3ba472f9d5ae63",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/bdeebd5db9f2b715bb3ba472f9d5ae63/raw/7dd73e6aaa025a4008ea45351e8d3258607c3e1b/bharatviz_2001_Kerala_districts.geojson",
+      "filename": "bharatviz_2001_Kerala_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "66715869152ed3c916dc14398727910b",
+      "html_url": "https://gist.github.com/saketkc/66715869152ed3c916dc14398727910b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/66715869152ed3c916dc14398727910b/raw/a89427d0a7b2d4804edd0c306577b285f0657607/bharatviz_2001_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_2001_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "3fbf375d746373ecbd57e06ea5a85fd0",
+      "html_url": "https://gist.github.com/saketkc/3fbf375d746373ecbd57e06ea5a85fd0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3fbf375d746373ecbd57e06ea5a85fd0/raw/b4820e8d29103f4cfb4add9ebd2bbae1bbd11407/bharatviz_2001_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_2001_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "e825e3a80c14438fef0a5b35767073b5",
+      "html_url": "https://gist.github.com/saketkc/e825e3a80c14438fef0a5b35767073b5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e825e3a80c14438fef0a5b35767073b5/raw/1208dd66b9538ef67425d80cdd72fb2eadcd5b15/bharatviz_2001_Maharashtra_districts.geojson",
+      "filename": "bharatviz_2001_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "204812cab2078c677473aa44329484bc",
+      "html_url": "https://gist.github.com/saketkc/204812cab2078c677473aa44329484bc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/204812cab2078c677473aa44329484bc/raw/3bc3acd68b41e07828e7afb10a33cbbd0d5f3fe8/bharatviz_2001_Manipur_districts.geojson",
+      "filename": "bharatviz_2001_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "45ca212d5141f3111b7a94de7487026a",
+      "html_url": "https://gist.github.com/saketkc/45ca212d5141f3111b7a94de7487026a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/45ca212d5141f3111b7a94de7487026a/raw/bc910b45c2a6284db293ff7e1b924bb708830a47/bharatviz_2001_Meghalaya_districts.geojson",
+      "filename": "bharatviz_2001_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "9f31c1d6ec3caf1a50fabae7fb10bf90",
+      "html_url": "https://gist.github.com/saketkc/9f31c1d6ec3caf1a50fabae7fb10bf90",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9f31c1d6ec3caf1a50fabae7fb10bf90/raw/4d0f6fe374c50fc3d06d710f2ccc4afec1a3329c/bharatviz_2001_Mizoram_districts.geojson",
+      "filename": "bharatviz_2001_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "ed89632374a67fd08f3037c9eb5948e8",
+      "html_url": "https://gist.github.com/saketkc/ed89632374a67fd08f3037c9eb5948e8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ed89632374a67fd08f3037c9eb5948e8/raw/2a113fa33d98ae8d4fc2d929c216b0a1d0dcf9ab/bharatviz_2001_Nagaland_districts.geojson",
+      "filename": "bharatviz_2001_Nagaland_districts.geojson"
+    },
+    "Orissa": {
+      "gist_id": "f915052bbd5e4c8d699e39431bca27a3",
+      "html_url": "https://gist.github.com/saketkc/f915052bbd5e4c8d699e39431bca27a3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f915052bbd5e4c8d699e39431bca27a3/raw/fdefaa530077d5f49fcc7b469f2aa03f759ee688/bharatviz_2001_Orissa_districts.geojson",
+      "filename": "bharatviz_2001_Orissa_districts.geojson"
+    },
+    "Pondicherry": {
+      "gist_id": "3d866d87c0efff0797dc27323e4a20c5",
+      "html_url": "https://gist.github.com/saketkc/3d866d87c0efff0797dc27323e4a20c5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3d866d87c0efff0797dc27323e4a20c5/raw/4a90874450e7edf99fc5a93abfe5c2c4af4123f1/bharatviz_2001_Pondicherry_districts.geojson",
+      "filename": "bharatviz_2001_Pondicherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "1323ca1453c0c978d55b033bdb7d354c",
+      "html_url": "https://gist.github.com/saketkc/1323ca1453c0c978d55b033bdb7d354c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1323ca1453c0c978d55b033bdb7d354c/raw/dbae091c32b06eda74ae5c74444c29936204bfe7/bharatviz_2001_Punjab_districts.geojson",
+      "filename": "bharatviz_2001_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "413efb2501f697fc9cdc88b50845efe4",
+      "html_url": "https://gist.github.com/saketkc/413efb2501f697fc9cdc88b50845efe4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/413efb2501f697fc9cdc88b50845efe4/raw/5d2206568983d55eded8cef6091299404e1a5f47/bharatviz_2001_Rajasthan_districts.geojson",
+      "filename": "bharatviz_2001_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "a0f108c918db944cc9fcbf452b03d809",
+      "html_url": "https://gist.github.com/saketkc/a0f108c918db944cc9fcbf452b03d809",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a0f108c918db944cc9fcbf452b03d809/raw/3c9a5a01be613de2c3e302df0b2d46be1804f2fd/bharatviz_2001_Sikkim_districts.geojson",
+      "filename": "bharatviz_2001_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "6f8f2fbdfa089d7ca69ec30fa63d5c1f",
+      "html_url": "https://gist.github.com/saketkc/6f8f2fbdfa089d7ca69ec30fa63d5c1f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6f8f2fbdfa089d7ca69ec30fa63d5c1f/raw/4c8b10546fabc5eb0085acb8364cd63724daa9fe/bharatviz_2001_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_2001_Tamil_Nadu_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "c68b259739eb9d3ba74125e0658e9308",
+      "html_url": "https://gist.github.com/saketkc/c68b259739eb9d3ba74125e0658e9308",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c68b259739eb9d3ba74125e0658e9308/raw/15f6e2458cb107f99986d8f34fa6ebf292be2cb6/bharatviz_2001_Tripura_districts.geojson",
+      "filename": "bharatviz_2001_Tripura_districts.geojson"
+    },
+    "Unknown": {
+      "gist_id": "e628e984bc5247b021bf079ece346afa",
+      "html_url": "https://gist.github.com/saketkc/e628e984bc5247b021bf079ece346afa",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e628e984bc5247b021bf079ece346afa/raw/d17ddefdf3a2b7cf9e36a3fbc8a5c695ed33799e/bharatviz_2001_Unknown_districts.geojson",
+      "filename": "bharatviz_2001_Unknown_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "782718566bd2cfb162186d8b9edefed5",
+      "html_url": "https://gist.github.com/saketkc/782718566bd2cfb162186d8b9edefed5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/782718566bd2cfb162186d8b9edefed5/raw/a5ab31c2853c831ffa5bc49915dfb94f9510a598/bharatviz_2001_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_2001_Uttar_Pradesh_districts.geojson"
+    },
+    "Uttaranchal": {
+      "gist_id": "4b785a2381a9dc0bd0ce1532fd43bfda",
+      "html_url": "https://gist.github.com/saketkc/4b785a2381a9dc0bd0ce1532fd43bfda",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4b785a2381a9dc0bd0ce1532fd43bfda/raw/dc2675a0ad6df75e95d5243e0b2a912eb6b52a60/bharatviz_2001_Uttaranchal_districts.geojson",
+      "filename": "bharatviz_2001_Uttaranchal_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "8f51c1b6d73839484a1bda3723c39a22",
+      "html_url": "https://gist.github.com/saketkc/8f51c1b6d73839484a1bda3723c39a22",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8f51c1b6d73839484a1bda3723c39a22/raw/50bba4ffd5f846c7ca51d2ff2b2de173df24deae/bharatviz_2001_West_Bengal_districts.geojson",
+      "filename": "bharatviz_2001_West_Bengal_districts.geojson"
+    }
+  },
+  "2011": {
+    "Andaman & Nicobar Island": {
+      "gist_id": "090cd8b765548ee606a203c58132a381",
+      "html_url": "https://gist.github.com/saketkc/090cd8b765548ee606a203c58132a381",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/090cd8b765548ee606a203c58132a381/raw/21a208ee6324ac7659aef8f1ea6167f3ada9ee2c/bharatviz_2011_Andaman_%26_Nicobar_Island_districts.geojson",
+      "filename": "bharatviz_2011_Andaman_&_Nicobar_Island_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "e08820203134b90b0ba557f2192554d0",
+      "html_url": "https://gist.github.com/saketkc/e08820203134b90b0ba557f2192554d0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e08820203134b90b0ba557f2192554d0/raw/ab481a534a8b32acac98a01cf60ce18a039bbd2d/bharatviz_2011_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_2011_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunanchal Pradesh": {
+      "gist_id": "630a46f9e38a45ad06c0f3c46328e863",
+      "html_url": "https://gist.github.com/saketkc/630a46f9e38a45ad06c0f3c46328e863",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/630a46f9e38a45ad06c0f3c46328e863/raw/01eaf37e29df5faa523566ee6ec81f5cf2685408/bharatviz_2011_Arunanchal_Pradesh_districts.geojson",
+      "filename": "bharatviz_2011_Arunanchal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "11dfa3b0667a2f7fe4baf757d45847d0",
+      "html_url": "https://gist.github.com/saketkc/11dfa3b0667a2f7fe4baf757d45847d0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/11dfa3b0667a2f7fe4baf757d45847d0/raw/4205c9d4bbe66f1e5ddb4d151bee954216b6c1b8/bharatviz_2011_Assam_districts.geojson",
+      "filename": "bharatviz_2011_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "95fed3303b96d7153a2fcb804ce389f3",
+      "html_url": "https://gist.github.com/saketkc/95fed3303b96d7153a2fcb804ce389f3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/95fed3303b96d7153a2fcb804ce389f3/raw/7040679d98ee4573414eb1514237268110197f0f/bharatviz_2011_Bihar_districts.geojson",
+      "filename": "bharatviz_2011_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "257511fbbbad81834de05d763545f2c1",
+      "html_url": "https://gist.github.com/saketkc/257511fbbbad81834de05d763545f2c1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/257511fbbbad81834de05d763545f2c1/raw/465ee14dd3ac16781082515053ea95476dca4e79/bharatviz_2011_Chandigarh_districts.geojson",
+      "filename": "bharatviz_2011_Chandigarh_districts.geojson"
+    },
+    "Chhattisgarh": {
+      "gist_id": "3f064278295a09d9d2be4899fcc0e7ba",
+      "html_url": "https://gist.github.com/saketkc/3f064278295a09d9d2be4899fcc0e7ba",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3f064278295a09d9d2be4899fcc0e7ba/raw/5fe74c6a1e80ac84b10b1766830c0a0ad29d6d24/bharatviz_2011_Chhattisgarh_districts.geojson",
+      "filename": "bharatviz_2011_Chhattisgarh_districts.geojson"
+    },
+    "Dadara & Nagar Havelli": {
+      "gist_id": "cbc785f91a88bba5798191d6a934f531",
+      "html_url": "https://gist.github.com/saketkc/cbc785f91a88bba5798191d6a934f531",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cbc785f91a88bba5798191d6a934f531/raw/cd927efd918f19e7ba9a58771abbde672f9b0627/bharatviz_2011_Dadara_%26_Nagar_Havelli_districts.geojson",
+      "filename": "bharatviz_2011_Dadara_&_Nagar_Havelli_districts.geojson"
+    },
+    "Daman & Diu": {
+      "gist_id": "def6dad6f57a2dbb0b4b6ef28256c5d9",
+      "html_url": "https://gist.github.com/saketkc/def6dad6f57a2dbb0b4b6ef28256c5d9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/def6dad6f57a2dbb0b4b6ef28256c5d9/raw/1d2bea908466895688cd2937ee762bcefa8f931c/bharatviz_2011_Daman_%26_Diu_districts.geojson",
+      "filename": "bharatviz_2011_Daman_&_Diu_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "d0ba7ef6aa70304750778a8c50177c15",
+      "html_url": "https://gist.github.com/saketkc/d0ba7ef6aa70304750778a8c50177c15",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d0ba7ef6aa70304750778a8c50177c15/raw/c870c7a5f6355a20ef8e802260b259ddd6fafd23/bharatviz_2011_Goa_districts.geojson",
+      "filename": "bharatviz_2011_Goa_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "d96d2be1a3f802625a347ff8d39cf799",
+      "html_url": "https://gist.github.com/saketkc/d96d2be1a3f802625a347ff8d39cf799",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d96d2be1a3f802625a347ff8d39cf799/raw/a784742f185aa951761577f1e679b6609f6b79d3/bharatviz_2011_Gujarat_districts.geojson",
+      "filename": "bharatviz_2011_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "498129975b37c193dfb4c77d90a08f9b",
+      "html_url": "https://gist.github.com/saketkc/498129975b37c193dfb4c77d90a08f9b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/498129975b37c193dfb4c77d90a08f9b/raw/0844eb93afe4486cca63aaf608a46772f04793d5/bharatviz_2011_Haryana_districts.geojson",
+      "filename": "bharatviz_2011_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "f7570de484a1879517da8b0d8c8ddd58",
+      "html_url": "https://gist.github.com/saketkc/f7570de484a1879517da8b0d8c8ddd58",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f7570de484a1879517da8b0d8c8ddd58/raw/8a000e3e6e70a8f5050c6463969e411bd4dbcf4c/bharatviz_2011_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_2011_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu & Kashmir": {
+      "gist_id": "c9d5468dc9223dc35800924f289ab892",
+      "html_url": "https://gist.github.com/saketkc/c9d5468dc9223dc35800924f289ab892",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c9d5468dc9223dc35800924f289ab892/raw/8a52c76ffbe669827504c6c609833acd99b5f6f2/bharatviz_2011_Jammu_%26_Kashmir_districts.geojson",
+      "filename": "bharatviz_2011_Jammu_&_Kashmir_districts.geojson"
+    },
+    "Jharkhand": {
+      "gist_id": "1d6f506259f4b2b8ecefbc13f2d4eff9",
+      "html_url": "https://gist.github.com/saketkc/1d6f506259f4b2b8ecefbc13f2d4eff9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1d6f506259f4b2b8ecefbc13f2d4eff9/raw/2c91b455e069bc0663b18ed96d07da1464cdfd16/bharatviz_2011_Jharkhand_districts.geojson",
+      "filename": "bharatviz_2011_Jharkhand_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "ff2d7039dda637d29de814bc54f818e9",
+      "html_url": "https://gist.github.com/saketkc/ff2d7039dda637d29de814bc54f818e9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ff2d7039dda637d29de814bc54f818e9/raw/26d0807f286dede9354db75dbb77d260ddcf6aff/bharatviz_2011_Karnataka_districts.geojson",
+      "filename": "bharatviz_2011_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "58546c4b6b6f1204eaf92db6d33973c3",
+      "html_url": "https://gist.github.com/saketkc/58546c4b6b6f1204eaf92db6d33973c3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/58546c4b6b6f1204eaf92db6d33973c3/raw/60cf5680a13ff9e7152258e8bded80e8959f0469/bharatviz_2011_Kerala_districts.geojson",
+      "filename": "bharatviz_2011_Kerala_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "009e262531f0b1acc5c31c6ff5038925",
+      "html_url": "https://gist.github.com/saketkc/009e262531f0b1acc5c31c6ff5038925",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/009e262531f0b1acc5c31c6ff5038925/raw/75a11cda4908e6db65d0cdaa0d5fe1a3b43d3418/bharatviz_2011_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_2011_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "cec0d9624eb516ad8c2e49c5d10b7b7e",
+      "html_url": "https://gist.github.com/saketkc/cec0d9624eb516ad8c2e49c5d10b7b7e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/cec0d9624eb516ad8c2e49c5d10b7b7e/raw/fff2bf3a46a66a3b9abb031b99adb7e6c84ca77a/bharatviz_2011_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_2011_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "1cce614d282afb10d20a1f50c793d56f",
+      "html_url": "https://gist.github.com/saketkc/1cce614d282afb10d20a1f50c793d56f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1cce614d282afb10d20a1f50c793d56f/raw/a6a6c4ac8e573d78e1be77c1f3c64a2f9d70b9b7/bharatviz_2011_Maharashtra_districts.geojson",
+      "filename": "bharatviz_2011_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "90cc1df1d4b67ef119ed289a4a71c58d",
+      "html_url": "https://gist.github.com/saketkc/90cc1df1d4b67ef119ed289a4a71c58d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/90cc1df1d4b67ef119ed289a4a71c58d/raw/6b16e455bfb735d39f4a31583d8013bae12879a1/bharatviz_2011_Manipur_districts.geojson",
+      "filename": "bharatviz_2011_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "f8a54bca60b46a69688f4646817485b0",
+      "html_url": "https://gist.github.com/saketkc/f8a54bca60b46a69688f4646817485b0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f8a54bca60b46a69688f4646817485b0/raw/a6ccae8425c337002ea6aebb1f200a36d8678617/bharatviz_2011_Meghalaya_districts.geojson",
+      "filename": "bharatviz_2011_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "fa2705455d2687b189c0dcb401ae713e",
+      "html_url": "https://gist.github.com/saketkc/fa2705455d2687b189c0dcb401ae713e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fa2705455d2687b189c0dcb401ae713e/raw/cb3b85257700ad356d100f21c74db80fe287e0f9/bharatviz_2011_Mizoram_districts.geojson",
+      "filename": "bharatviz_2011_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "72e42c29d58f7e88d2a9d35a9b37ba10",
+      "html_url": "https://gist.github.com/saketkc/72e42c29d58f7e88d2a9d35a9b37ba10",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/72e42c29d58f7e88d2a9d35a9b37ba10/raw/6742b532d4d56b3c12ad046886f98cea6ceac832/bharatviz_2011_Nagaland_districts.geojson",
+      "filename": "bharatviz_2011_Nagaland_districts.geojson"
+    },
+    "NCT of Delhi": {
+      "gist_id": "eaaa58fa1562d2aef94e97e994a8e302",
+      "html_url": "https://gist.github.com/saketkc/eaaa58fa1562d2aef94e97e994a8e302",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/eaaa58fa1562d2aef94e97e994a8e302/raw/dc8e4e49e2e73630b839c4bc6b5b5819e5184f3d/bharatviz_2011_NCT_of_Delhi_districts.geojson",
+      "filename": "bharatviz_2011_NCT_of_Delhi_districts.geojson"
+    },
+    "Odisha": {
+      "gist_id": "c0910148f4fba4959401861a01f2f8bc",
+      "html_url": "https://gist.github.com/saketkc/c0910148f4fba4959401861a01f2f8bc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c0910148f4fba4959401861a01f2f8bc/raw/42e278f8c9466283801f643995fc2279cedfc388/bharatviz_2011_Odisha_districts.geojson",
+      "filename": "bharatviz_2011_Odisha_districts.geojson"
+    },
+    "Puducherry": {
+      "gist_id": "2da13336e9200381126d9b2634143f53",
+      "html_url": "https://gist.github.com/saketkc/2da13336e9200381126d9b2634143f53",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2da13336e9200381126d9b2634143f53/raw/9fd6d1c3c638718f325e8211248bc1ba0a468dcf/bharatviz_2011_Puducherry_districts.geojson",
+      "filename": "bharatviz_2011_Puducherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "64c97dc7ee646af7ea2802afc0a4613d",
+      "html_url": "https://gist.github.com/saketkc/64c97dc7ee646af7ea2802afc0a4613d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/64c97dc7ee646af7ea2802afc0a4613d/raw/d1a4d41fd842412ee9f8fe0990e23629a4ef6459/bharatviz_2011_Punjab_districts.geojson",
+      "filename": "bharatviz_2011_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "45e4d5b0d98c6002a28fa9de34192da9",
+      "html_url": "https://gist.github.com/saketkc/45e4d5b0d98c6002a28fa9de34192da9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/45e4d5b0d98c6002a28fa9de34192da9/raw/d907c2f44fd9e84929a91363a94d28c059c9d1bf/bharatviz_2011_Rajasthan_districts.geojson",
+      "filename": "bharatviz_2011_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "5921212fd7bba6aa87e5745adc1bd5b4",
+      "html_url": "https://gist.github.com/saketkc/5921212fd7bba6aa87e5745adc1bd5b4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5921212fd7bba6aa87e5745adc1bd5b4/raw/0890b4bfed91ced5731dea1ee2253d28eec4174c/bharatviz_2011_Sikkim_districts.geojson",
+      "filename": "bharatviz_2011_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "918f1fa7d3f1e96d7986a7f10464e38f",
+      "html_url": "https://gist.github.com/saketkc/918f1fa7d3f1e96d7986a7f10464e38f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/918f1fa7d3f1e96d7986a7f10464e38f/raw/7d75af99e6a173ee6a554a4ea27ff7c9cfde119c/bharatviz_2011_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_2011_Tamil_Nadu_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "76c305024044a8544b9f26557d37e222",
+      "html_url": "https://gist.github.com/saketkc/76c305024044a8544b9f26557d37e222",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/76c305024044a8544b9f26557d37e222/raw/5f283c5204df8e760237607d295c5382c904cdd9/bharatviz_2011_Tripura_districts.geojson",
+      "filename": "bharatviz_2011_Tripura_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "8c0220b8191c6d58ebe4ecf7ba9752fa",
+      "html_url": "https://gist.github.com/saketkc/8c0220b8191c6d58ebe4ecf7ba9752fa",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8c0220b8191c6d58ebe4ecf7ba9752fa/raw/7517ad8d2d94845cd49f6d9c69a351e860ad2c5e/bharatviz_2011_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_2011_Uttar_Pradesh_districts.geojson"
+    },
+    "Uttarakhand": {
+      "gist_id": "492d9ef21a2ada0b3f5fcede366fc659",
+      "html_url": "https://gist.github.com/saketkc/492d9ef21a2ada0b3f5fcede366fc659",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/492d9ef21a2ada0b3f5fcede366fc659/raw/7f44e163e38575b5da756ed8ffc33d6f40a92e50/bharatviz_2011_Uttarakhand_districts.geojson",
+      "filename": "bharatviz_2011_Uttarakhand_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "58859434758cd71dd69648b6500077b6",
+      "html_url": "https://gist.github.com/saketkc/58859434758cd71dd69648b6500077b6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/58859434758cd71dd69648b6500077b6/raw/40ecc4120522f8c31102e3a0d5e16f8a22c81792/bharatviz_2011_West_Bengal_districts.geojson",
+      "filename": "bharatviz_2011_West_Bengal_districts.geojson"
+    }
+  },
+  "LGD": {
+    "ANDAMAN & NICOBAR": {
+      "gist_id": "6b5257668ac51a872aaeba512ad0e840",
+      "html_url": "https://gist.github.com/saketkc/6b5257668ac51a872aaeba512ad0e840",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6b5257668ac51a872aaeba512ad0e840/raw/bfe250c76f9d6c79d546f2a21cfb63ec0c14fd89/bharatviz_LGD_ANDAMAN_%26_NICOBAR_districts.geojson",
+      "filename": "bharatviz_LGD_ANDAMAN_&_NICOBAR_districts.geojson"
+    },
+    "ANDHRA PRADESH": {
+      "gist_id": "e028fd86209b9af994ca561a9bc01e1b",
+      "html_url": "https://gist.github.com/saketkc/e028fd86209b9af994ca561a9bc01e1b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e028fd86209b9af994ca561a9bc01e1b/raw/65d275e1fc24d849461fbeae691743ff0dc95161/bharatviz_LGD_ANDHRA_PRADESH_districts.geojson",
+      "filename": "bharatviz_LGD_ANDHRA_PRADESH_districts.geojson"
+    },
+    "ARUNACHAL PRADESH": {
+      "gist_id": "f00afe6aa4832ded38174b2316dad67e",
+      "html_url": "https://gist.github.com/saketkc/f00afe6aa4832ded38174b2316dad67e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f00afe6aa4832ded38174b2316dad67e/raw/d7976a1d1c1b02c3507aadfa3c3c7c29d37995cd/bharatviz_LGD_ARUNACHAL_PRADESH_districts.geojson",
+      "filename": "bharatviz_LGD_ARUNACHAL_PRADESH_districts.geojson"
+    },
+    "ASSAM": {
+      "gist_id": "c93910c7b03608a72f77abb15ab4b062",
+      "html_url": "https://gist.github.com/saketkc/c93910c7b03608a72f77abb15ab4b062",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c93910c7b03608a72f77abb15ab4b062/raw/33b7530b2a754365ef883d08f19f9adca57fbe19/bharatviz_LGD_ASSAM_districts.geojson",
+      "filename": "bharatviz_LGD_ASSAM_districts.geojson"
+    },
+    "BIHAR": {
+      "gist_id": "c518acededbe757425f86d34a03cc863",
+      "html_url": "https://gist.github.com/saketkc/c518acededbe757425f86d34a03cc863",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c518acededbe757425f86d34a03cc863/raw/17c267d2e19845a07bec198cb65512e96edd63a3/bharatviz_LGD_BIHAR_districts.geojson",
+      "filename": "bharatviz_LGD_BIHAR_districts.geojson"
+    },
+    "CHANDIGARH": {
+      "gist_id": "e975c08d86103fa79f4c973010a865c5",
+      "html_url": "https://gist.github.com/saketkc/e975c08d86103fa79f4c973010a865c5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e975c08d86103fa79f4c973010a865c5/raw/1168930a9d7f208685eb8eacaf4f17f86de26fc5/bharatviz_LGD_CHANDIGARH_districts.geojson",
+      "filename": "bharatviz_LGD_CHANDIGARH_districts.geojson"
+    },
+    "CHHATTISGARH": {
+      "gist_id": "370473c183b56e825a13781a7149db84",
+      "html_url": "https://gist.github.com/saketkc/370473c183b56e825a13781a7149db84",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/370473c183b56e825a13781a7149db84/raw/637da8c776f04a1bbd5694e502042d330ac70314/bharatviz_LGD_CHHATTISGARH_districts.geojson",
+      "filename": "bharatviz_LGD_CHHATTISGARH_districts.geojson"
+    },
+    "DADRA,NAGAR HAVELI,DAMAN & DIU": {
+      "gist_id": "3f888ac6cd73d9d0102bd8be2e92e707",
+      "html_url": "https://gist.github.com/saketkc/3f888ac6cd73d9d0102bd8be2e92e707",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3f888ac6cd73d9d0102bd8be2e92e707/raw/0a4fd9ab9880ae15fcc2436201e9e667ed5999bb/bharatviz_LGD_DADRA%2CNAGAR_HAVELI%2CDAMAN_%26_DIU_districts.geojson",
+      "filename": "bharatviz_LGD_DADRA,NAGAR_HAVELI,DAMAN_&_DIU_districts.geojson"
+    },
+    "DELHI": {
+      "gist_id": "394ad85b74138e46592d52d8253bc4f6",
+      "html_url": "https://gist.github.com/saketkc/394ad85b74138e46592d52d8253bc4f6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/394ad85b74138e46592d52d8253bc4f6/raw/f6c9798b730567667094d3fa4fbd9914b3e6c15d/bharatviz_LGD_DELHI_districts.geojson",
+      "filename": "bharatviz_LGD_DELHI_districts.geojson"
+    },
+    "GOA": {
+      "gist_id": "863053c9eab4408fc319ba7252bdb278",
+      "html_url": "https://gist.github.com/saketkc/863053c9eab4408fc319ba7252bdb278",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/863053c9eab4408fc319ba7252bdb278/raw/f501ec9c564aafcb941eda5126d75876a703c86d/bharatviz_LGD_GOA_districts.geojson",
+      "filename": "bharatviz_LGD_GOA_districts.geojson"
+    },
+    "GUJARAT": {
+      "gist_id": "2413eeb01b909fc2d5736c12c1e071e1",
+      "html_url": "https://gist.github.com/saketkc/2413eeb01b909fc2d5736c12c1e071e1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2413eeb01b909fc2d5736c12c1e071e1/raw/a5470d021ecfeac34cf8999f736c810961faa32c/bharatviz_LGD_GUJARAT_districts.geojson",
+      "filename": "bharatviz_LGD_GUJARAT_districts.geojson"
+    },
+    "HARYANA": {
+      "gist_id": "194b43285812778fce864ac652c615b6",
+      "html_url": "https://gist.github.com/saketkc/194b43285812778fce864ac652c615b6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/194b43285812778fce864ac652c615b6/raw/5cabee62327922a1093bc2c96d09aa9129c3275e/bharatviz_LGD_HARYANA_districts.geojson",
+      "filename": "bharatviz_LGD_HARYANA_districts.geojson"
+    },
+    "HIMACHAL PRADESH": {
+      "gist_id": "ebf847b29838387abc4af10bd8e42384",
+      "html_url": "https://gist.github.com/saketkc/ebf847b29838387abc4af10bd8e42384",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ebf847b29838387abc4af10bd8e42384/raw/caed75e41eec1ced323c359e54a168779c0f4ace/bharatviz_LGD_HIMACHAL_PRADESH_districts.geojson",
+      "filename": "bharatviz_LGD_HIMACHAL_PRADESH_districts.geojson"
+    },
+    "JAMMU & KASHMIR": {
+      "gist_id": "1e47f18e4aa46bca9ec130b1d78cbc51",
+      "html_url": "https://gist.github.com/saketkc/1e47f18e4aa46bca9ec130b1d78cbc51",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1e47f18e4aa46bca9ec130b1d78cbc51/raw/8b053770adb228d77bf23ef50ec1cbdad2b79839/bharatviz_LGD_JAMMU_%26_KASHMIR_districts.geojson",
+      "filename": "bharatviz_LGD_JAMMU_&_KASHMIR_districts.geojson"
+    },
+    "JHARKHAND": {
+      "gist_id": "e524df77daf721f0ac6dab479e485492",
+      "html_url": "https://gist.github.com/saketkc/e524df77daf721f0ac6dab479e485492",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e524df77daf721f0ac6dab479e485492/raw/be918a9a6d64653d16e48fc69782f404b38d9da9/bharatviz_LGD_JHARKHAND_districts.geojson",
+      "filename": "bharatviz_LGD_JHARKHAND_districts.geojson"
+    },
+    "KARNATAKA": {
+      "gist_id": "a8a77cfd6239b50cee4096a3b298b105",
+      "html_url": "https://gist.github.com/saketkc/a8a77cfd6239b50cee4096a3b298b105",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a8a77cfd6239b50cee4096a3b298b105/raw/fe5ada89ada6c93e80767263f7ac52388d417473/bharatviz_LGD_KARNATAKA_districts.geojson",
+      "filename": "bharatviz_LGD_KARNATAKA_districts.geojson"
+    },
+    "KERALA": {
+      "gist_id": "fffdfa54ac1bde9309cf3886529dce32",
+      "html_url": "https://gist.github.com/saketkc/fffdfa54ac1bde9309cf3886529dce32",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fffdfa54ac1bde9309cf3886529dce32/raw/dca831e75f915902c850a795b1cefb3fb73a5893/bharatviz_LGD_KERALA_districts.geojson",
+      "filename": "bharatviz_LGD_KERALA_districts.geojson"
+    },
+    "LADAKH": {
+      "gist_id": "669deb2436fba70318d9826e296a77fe",
+      "html_url": "https://gist.github.com/saketkc/669deb2436fba70318d9826e296a77fe",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/669deb2436fba70318d9826e296a77fe/raw/462f1959d6bdacf2d256051b4cc5213fc318e517/bharatviz_LGD_LADAKH_districts.geojson",
+      "filename": "bharatviz_LGD_LADAKH_districts.geojson"
+    },
+    "LAKSHADWEEP": {
+      "gist_id": "33b6bc0213f42d527981b35b1f66eb24",
+      "html_url": "https://gist.github.com/saketkc/33b6bc0213f42d527981b35b1f66eb24",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/33b6bc0213f42d527981b35b1f66eb24/raw/b085a25958a5a19f28dd9c27faabf335297477c1/bharatviz_LGD_LAKSHADWEEP_districts.geojson",
+      "filename": "bharatviz_LGD_LAKSHADWEEP_districts.geojson"
+    },
+    "MADHYA PRADESH": {
+      "gist_id": "59eac9ad763474ce29b90c2f8a1d6040",
+      "html_url": "https://gist.github.com/saketkc/59eac9ad763474ce29b90c2f8a1d6040",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/59eac9ad763474ce29b90c2f8a1d6040/raw/d0d6adc5e190844f6c7d7b6c3f93519aea835099/bharatviz_LGD_MADHYA_PRADESH_districts.geojson",
+      "filename": "bharatviz_LGD_MADHYA_PRADESH_districts.geojson"
+    },
+    "MAHARASHTRA": {
+      "gist_id": "d23453879d5a25cef0823534edd9d18d",
+      "html_url": "https://gist.github.com/saketkc/d23453879d5a25cef0823534edd9d18d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d23453879d5a25cef0823534edd9d18d/raw/df7f54a8c46e9beb046379927e6ff28dea3f18e5/bharatviz_LGD_MAHARASHTRA_districts.geojson",
+      "filename": "bharatviz_LGD_MAHARASHTRA_districts.geojson"
+    },
+    "MANIPUR": {
+      "gist_id": "e6f7f1bf4b74c58a851a43e8917f6112",
+      "html_url": "https://gist.github.com/saketkc/e6f7f1bf4b74c58a851a43e8917f6112",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e6f7f1bf4b74c58a851a43e8917f6112/raw/76b6314c03b942d1739d17917365d24ab3ddfcc8/bharatviz_LGD_MANIPUR_districts.geojson",
+      "filename": "bharatviz_LGD_MANIPUR_districts.geojson"
+    },
+    "MEGHALAYA": {
+      "gist_id": "f8b2f37727e368730e15a3d83d64ee31",
+      "html_url": "https://gist.github.com/saketkc/f8b2f37727e368730e15a3d83d64ee31",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f8b2f37727e368730e15a3d83d64ee31/raw/6edf71fb5b384b20a8e990a41df38e4160bd555d/bharatviz_LGD_MEGHALAYA_districts.geojson",
+      "filename": "bharatviz_LGD_MEGHALAYA_districts.geojson"
+    },
+    "MIZORAM": {
+      "gist_id": "fd44f98654f709cd279d6d5dea279c81",
+      "html_url": "https://gist.github.com/saketkc/fd44f98654f709cd279d6d5dea279c81",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fd44f98654f709cd279d6d5dea279c81/raw/7fcdc66aa96e83363244ad07d7cc6dc9cd063951/bharatviz_LGD_MIZORAM_districts.geojson",
+      "filename": "bharatviz_LGD_MIZORAM_districts.geojson"
+    },
+    "NAGALAND": {
+      "gist_id": "c0bc4890f903b0df7d51e6bafe2d3049",
+      "html_url": "https://gist.github.com/saketkc/c0bc4890f903b0df7d51e6bafe2d3049",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c0bc4890f903b0df7d51e6bafe2d3049/raw/4edd244efb0b75fced8dbee0f179653825b43aa6/bharatviz_LGD_NAGALAND_districts.geojson",
+      "filename": "bharatviz_LGD_NAGALAND_districts.geojson"
+    },
+    "ODISHA": {
+      "gist_id": "9adf9e4bf0859990763e53f4966c4502",
+      "html_url": "https://gist.github.com/saketkc/9adf9e4bf0859990763e53f4966c4502",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9adf9e4bf0859990763e53f4966c4502/raw/ff5ef62a01379bc12190ca519859d4068b453151/bharatviz_LGD_ODISHA_districts.geojson",
+      "filename": "bharatviz_LGD_ODISHA_districts.geojson"
+    },
+    "PUDUCHERRY": {
+      "gist_id": "eafd2fde75f90f9925fcbd354daabdcf",
+      "html_url": "https://gist.github.com/saketkc/eafd2fde75f90f9925fcbd354daabdcf",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/eafd2fde75f90f9925fcbd354daabdcf/raw/8e9b65d8f20c03155a555463decaa9312905086a/bharatviz_LGD_PUDUCHERRY_districts.geojson",
+      "filename": "bharatviz_LGD_PUDUCHERRY_districts.geojson"
+    },
+    "PUNJAB": {
+      "gist_id": "58fa262a6500620a701d80dca47157b8",
+      "html_url": "https://gist.github.com/saketkc/58fa262a6500620a701d80dca47157b8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/58fa262a6500620a701d80dca47157b8/raw/86beb4b60e35228e9e0f8716a4015bc9ce58c01c/bharatviz_LGD_PUNJAB_districts.geojson",
+      "filename": "bharatviz_LGD_PUNJAB_districts.geojson"
+    },
+    "RAJASTHAN": {
+      "gist_id": "68f4e0b5596ba5696f77487f03998d1c",
+      "html_url": "https://gist.github.com/saketkc/68f4e0b5596ba5696f77487f03998d1c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/68f4e0b5596ba5696f77487f03998d1c/raw/a1782f117043590d19fa52bbbf57b56852cb11bf/bharatviz_LGD_RAJASTHAN_districts.geojson",
+      "filename": "bharatviz_LGD_RAJASTHAN_districts.geojson"
+    },
+    "SIKKIM": {
+      "gist_id": "8b5fdf5265fae900570cda031e289c5c",
+      "html_url": "https://gist.github.com/saketkc/8b5fdf5265fae900570cda031e289c5c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8b5fdf5265fae900570cda031e289c5c/raw/033ead41fab438c424a64d28fae5bef0c125c48e/bharatviz_LGD_SIKKIM_districts.geojson",
+      "filename": "bharatviz_LGD_SIKKIM_districts.geojson"
+    },
+    "TAMIL NADU": {
+      "gist_id": "2111dc20e561aee9dcee979494673436",
+      "html_url": "https://gist.github.com/saketkc/2111dc20e561aee9dcee979494673436",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2111dc20e561aee9dcee979494673436/raw/65254f792409bd1b40b7c2b5492b62408f5721e2/bharatviz_LGD_TAMIL_NADU_districts.geojson",
+      "filename": "bharatviz_LGD_TAMIL_NADU_districts.geojson"
+    },
+    "TELANGANA": {
+      "gist_id": "9333a6d4cdc2c34fb52b88d293c991b8",
+      "html_url": "https://gist.github.com/saketkc/9333a6d4cdc2c34fb52b88d293c991b8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9333a6d4cdc2c34fb52b88d293c991b8/raw/6ba6df3cbcd5ef18a7cf2e7bdac6816029e507c9/bharatviz_LGD_TELANGANA_districts.geojson",
+      "filename": "bharatviz_LGD_TELANGANA_districts.geojson"
+    },
+    "TRIPURA": {
+      "gist_id": "3dcd94e1048cdf6bc299a54497086c33",
+      "html_url": "https://gist.github.com/saketkc/3dcd94e1048cdf6bc299a54497086c33",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3dcd94e1048cdf6bc299a54497086c33/raw/e53ebf5c085d6bd0ad90b77d63b752949cd0f9c7/bharatviz_LGD_TRIPURA_districts.geojson",
+      "filename": "bharatviz_LGD_TRIPURA_districts.geojson"
+    },
+    "UTTAR PRADESH": {
+      "gist_id": "b44be8052814e1cc24785bd9c15c9a7f",
+      "html_url": "https://gist.github.com/saketkc/b44be8052814e1cc24785bd9c15c9a7f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/b44be8052814e1cc24785bd9c15c9a7f/raw/13744e86fdd345bac2503d648d4e7c000dcc4e36/bharatviz_LGD_UTTAR_PRADESH_districts.geojson",
+      "filename": "bharatviz_LGD_UTTAR_PRADESH_districts.geojson"
+    },
+    "UTTARAKHAND": {
+      "gist_id": "113d5c38706291672bb64620744bffe0",
+      "html_url": "https://gist.github.com/saketkc/113d5c38706291672bb64620744bffe0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/113d5c38706291672bb64620744bffe0/raw/830a7ff0ea01b6f6e16e4ce306adbe10dae50dcd/bharatviz_LGD_UTTARAKHAND_districts.geojson",
+      "filename": "bharatviz_LGD_UTTARAKHAND_districts.geojson"
+    },
+    "WEST BENGAL": {
+      "gist_id": "7bd5b7fcbe29880f48356ea8a33d0691",
+      "html_url": "https://gist.github.com/saketkc/7bd5b7fcbe29880f48356ea8a33d0691",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7bd5b7fcbe29880f48356ea8a33d0691/raw/5845b84fbf5e33c8b653f921ede76ade2fd29e73/bharatviz_LGD_WEST_BENGAL_districts.geojson",
+      "filename": "bharatviz_LGD_WEST_BENGAL_districts.geojson"
+    }
+  },
+  "NFHS4": {
+    "Andaman and Nicobar Islands": {
+      "gist_id": "eaa194d4e10882b79444a764fe61fcf9",
+      "html_url": "https://gist.github.com/saketkc/eaa194d4e10882b79444a764fe61fcf9",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/eaa194d4e10882b79444a764fe61fcf9/raw/9c162221f88fb57dbe6638c70a64dbfbc6278294/bharatviz_NFHS4_Andaman_and_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_NFHS4_Andaman_and_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "a2d71fde322f7a9e440a8703fdae5727",
+      "html_url": "https://gist.github.com/saketkc/a2d71fde322f7a9e440a8703fdae5727",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a2d71fde322f7a9e440a8703fdae5727/raw/a633131d63dc0705483750921d8338355adc018a/bharatviz_NFHS4_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "06eb215d50dba7703253152bbba9c817",
+      "html_url": "https://gist.github.com/saketkc/06eb215d50dba7703253152bbba9c817",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/06eb215d50dba7703253152bbba9c817/raw/286ce082e5f9e4fc94fd043d515bbef60bfa1830/bharatviz_NFHS4_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "219952cfe6b92b3743522fa697656f9d",
+      "html_url": "https://gist.github.com/saketkc/219952cfe6b92b3743522fa697656f9d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/219952cfe6b92b3743522fa697656f9d/raw/3c925552a8b8552432f9523f78bece4339968f23/bharatviz_NFHS4_Assam_districts.geojson",
+      "filename": "bharatviz_NFHS4_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "85f54ebf16f82a9bef358d5d18a0ae76",
+      "html_url": "https://gist.github.com/saketkc/85f54ebf16f82a9bef358d5d18a0ae76",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/85f54ebf16f82a9bef358d5d18a0ae76/raw/0680384231b08ec60b2dd8522b8da8e256bae516/bharatviz_NFHS4_Bihar_districts.geojson",
+      "filename": "bharatviz_NFHS4_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "56ad6c19bda75be70a237c6c6d1f813c",
+      "html_url": "https://gist.github.com/saketkc/56ad6c19bda75be70a237c6c6d1f813c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/56ad6c19bda75be70a237c6c6d1f813c/raw/60def3173b169c23f9c24d11259df5ca2f981d38/bharatviz_NFHS4_Chandigarh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Chandigarh_districts.geojson"
+    },
+    "Chhattisgarh": {
+      "gist_id": "ecdf0b0de7806531363e3d8c376659a0",
+      "html_url": "https://gist.github.com/saketkc/ecdf0b0de7806531363e3d8c376659a0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ecdf0b0de7806531363e3d8c376659a0/raw/1ae3933936e1ff71cb7738f73d6986065a2b9924/bharatviz_NFHS4_Chhattisgarh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Chhattisgarh_districts.geojson"
+    },
+    "Dadra and Nagar Haveli": {
+      "gist_id": "005a71b3999e097e0144506b4cfb31b5",
+      "html_url": "https://gist.github.com/saketkc/005a71b3999e097e0144506b4cfb31b5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/005a71b3999e097e0144506b4cfb31b5/raw/d11af48f7f4ade8b92b55abe4fc1e116c6f7c33e/bharatviz_NFHS4_Dadra_and_Nagar_Haveli_districts.geojson",
+      "filename": "bharatviz_NFHS4_Dadra_and_Nagar_Haveli_districts.geojson"
+    },
+    "Daman and Diu": {
+      "gist_id": "54cb4005f23ad4f8625b913249c192db",
+      "html_url": "https://gist.github.com/saketkc/54cb4005f23ad4f8625b913249c192db",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/54cb4005f23ad4f8625b913249c192db/raw/06edc5e01f7afcaa0f1e2173bd3aa4228c11c48c/bharatviz_NFHS4_Daman_and_Diu_districts.geojson",
+      "filename": "bharatviz_NFHS4_Daman_and_Diu_districts.geojson"
+    },
+    "Delhi": {
+      "gist_id": "500d0b86b98482cbdb64e5f6fa1750ce",
+      "html_url": "https://gist.github.com/saketkc/500d0b86b98482cbdb64e5f6fa1750ce",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/500d0b86b98482cbdb64e5f6fa1750ce/raw/621bb1c2f607d36d36d640064eba2315961fc572/bharatviz_NFHS4_Delhi_districts.geojson",
+      "filename": "bharatviz_NFHS4_Delhi_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "4fadbbaa6c7d244d79fae086bc328d3c",
+      "html_url": "https://gist.github.com/saketkc/4fadbbaa6c7d244d79fae086bc328d3c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4fadbbaa6c7d244d79fae086bc328d3c/raw/f16e23b1ed253d2144e73a6d5e74d3bd5d9f9008/bharatviz_NFHS4_Goa_districts.geojson",
+      "filename": "bharatviz_NFHS4_Goa_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "9e265a6652379f45d79aabc8176318a8",
+      "html_url": "https://gist.github.com/saketkc/9e265a6652379f45d79aabc8176318a8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9e265a6652379f45d79aabc8176318a8/raw/63205581714b8cdac6fc2ba6056069668725be16/bharatviz_NFHS4_Gujarat_districts.geojson",
+      "filename": "bharatviz_NFHS4_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "450747bfde808aa03da7692d6f4a121a",
+      "html_url": "https://gist.github.com/saketkc/450747bfde808aa03da7692d6f4a121a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/450747bfde808aa03da7692d6f4a121a/raw/774cb15e20dd3ae668fe3d29e3ca23aabc1868d2/bharatviz_NFHS4_Haryana_districts.geojson",
+      "filename": "bharatviz_NFHS4_Haryana_districts.geojson"
+    },
+    "Himanchal Pradesh": {
+      "gist_id": "9c2d642e4c98835b6dd26568dd53d4b8",
+      "html_url": "https://gist.github.com/saketkc/9c2d642e4c98835b6dd26568dd53d4b8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/9c2d642e4c98835b6dd26568dd53d4b8/raw/1a1f6cb58f278a2361638da437a2f1008855ccbc/bharatviz_NFHS4_Himanchal_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Himanchal_Pradesh_districts.geojson"
+    },
+    "Jammu & Kashmir": {
+      "gist_id": "1741ac7a7b82de874c37f2c90f4a2979",
+      "html_url": "https://gist.github.com/saketkc/1741ac7a7b82de874c37f2c90f4a2979",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/1741ac7a7b82de874c37f2c90f4a2979/raw/e978972a245335b76a166d8b09b4ac6dcbcb298d/bharatviz_NFHS4_Jammu_%26_Kashmir_districts.geojson",
+      "filename": "bharatviz_NFHS4_Jammu_&_Kashmir_districts.geojson"
+    },
+    "Jharkhand": {
+      "gist_id": "6645b89335c73f831f182f59003e9a5e",
+      "html_url": "https://gist.github.com/saketkc/6645b89335c73f831f182f59003e9a5e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6645b89335c73f831f182f59003e9a5e/raw/166028f34642c3b07b0874005f4487b9bbcd0c31/bharatviz_NFHS4_Jharkhand_districts.geojson",
+      "filename": "bharatviz_NFHS4_Jharkhand_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "e3994764ca7dab3d7a082b3ecc224c3e",
+      "html_url": "https://gist.github.com/saketkc/e3994764ca7dab3d7a082b3ecc224c3e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e3994764ca7dab3d7a082b3ecc224c3e/raw/c486adc7e174b88bb4e719dd041cff13fd45ebca/bharatviz_NFHS4_Karnataka_districts.geojson",
+      "filename": "bharatviz_NFHS4_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "c466afc8c845a7c0b39ed2a011d3bb8f",
+      "html_url": "https://gist.github.com/saketkc/c466afc8c845a7c0b39ed2a011d3bb8f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c466afc8c845a7c0b39ed2a011d3bb8f/raw/b574e9b934a8670b581ca5b8830a8fc82cc08b04/bharatviz_NFHS4_Kerala_districts.geojson",
+      "filename": "bharatviz_NFHS4_Kerala_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "d82c29fe39deca0da3b9963fcb434e42",
+      "html_url": "https://gist.github.com/saketkc/d82c29fe39deca0da3b9963fcb434e42",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/d82c29fe39deca0da3b9963fcb434e42/raw/f819664ca0bf1ab439d5939dcb7b0e9ab36e552e/bharatviz_NFHS4_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_NFHS4_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "3cc8b4a8cf8de2cdef6bab362f7bb433",
+      "html_url": "https://gist.github.com/saketkc/3cc8b4a8cf8de2cdef6bab362f7bb433",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3cc8b4a8cf8de2cdef6bab362f7bb433/raw/31f0b94d4af0d2d2a147fd0276bbb7fd0b35edb9/bharatviz_NFHS4_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "3092ca66b0ff499c50cf0986bfe5c10f",
+      "html_url": "https://gist.github.com/saketkc/3092ca66b0ff499c50cf0986bfe5c10f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3092ca66b0ff499c50cf0986bfe5c10f/raw/1a7dfe7e21c08ac54a58e2c3641105277d607698/bharatviz_NFHS4_Maharashtra_districts.geojson",
+      "filename": "bharatviz_NFHS4_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "8addd840d6296d691b2fae7223ad73f5",
+      "html_url": "https://gist.github.com/saketkc/8addd840d6296d691b2fae7223ad73f5",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/8addd840d6296d691b2fae7223ad73f5/raw/5c423a453bac1b26ea4484a0455ae5c3c18e71a3/bharatviz_NFHS4_Manipur_districts.geojson",
+      "filename": "bharatviz_NFHS4_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "63f86cc8ae0f74d2423b63f3c93245b2",
+      "html_url": "https://gist.github.com/saketkc/63f86cc8ae0f74d2423b63f3c93245b2",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/63f86cc8ae0f74d2423b63f3c93245b2/raw/f3e27619a59e62a180b6999038864c1ff77ad603/bharatviz_NFHS4_Meghalaya_districts.geojson",
+      "filename": "bharatviz_NFHS4_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "97dee862606b9424341f8ded6794fd4d",
+      "html_url": "https://gist.github.com/saketkc/97dee862606b9424341f8ded6794fd4d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/97dee862606b9424341f8ded6794fd4d/raw/8bdd6e3b868608722501537904028cd93871b1c8/bharatviz_NFHS4_Mizoram_districts.geojson",
+      "filename": "bharatviz_NFHS4_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "6f77fceb191546d65d4d872525ecfcc6",
+      "html_url": "https://gist.github.com/saketkc/6f77fceb191546d65d4d872525ecfcc6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6f77fceb191546d65d4d872525ecfcc6/raw/60ab004ea68a0d6edc107b24772ebc1fa00da1c4/bharatviz_NFHS4_Nagaland_districts.geojson",
+      "filename": "bharatviz_NFHS4_Nagaland_districts.geojson"
+    },
+    "Odisha": {
+      "gist_id": "95505319c0ba49ed121b75b684059ed4",
+      "html_url": "https://gist.github.com/saketkc/95505319c0ba49ed121b75b684059ed4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/95505319c0ba49ed121b75b684059ed4/raw/7f4eb01e0b7c4fdec2ca3820dbe2127ca35efe97/bharatviz_NFHS4_Odisha_districts.geojson",
+      "filename": "bharatviz_NFHS4_Odisha_districts.geojson"
+    },
+    "Puducherry": {
+      "gist_id": "970a89f49cc3131e0a71d712d5808043",
+      "html_url": "https://gist.github.com/saketkc/970a89f49cc3131e0a71d712d5808043",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/970a89f49cc3131e0a71d712d5808043/raw/5807a4e449c6cbf56325da8fa4df6867ce685701/bharatviz_NFHS4_Puducherry_districts.geojson",
+      "filename": "bharatviz_NFHS4_Puducherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "3ede99229eb1550c60fc2cb59202b40b",
+      "html_url": "https://gist.github.com/saketkc/3ede99229eb1550c60fc2cb59202b40b",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3ede99229eb1550c60fc2cb59202b40b/raw/8973693d7cbd1cf51f6879786a48332d581d9579/bharatviz_NFHS4_Punjab_districts.geojson",
+      "filename": "bharatviz_NFHS4_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "ff97dc5c7db953ebe454bbf9bb8623c6",
+      "html_url": "https://gist.github.com/saketkc/ff97dc5c7db953ebe454bbf9bb8623c6",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/ff97dc5c7db953ebe454bbf9bb8623c6/raw/892d2d483ec2d02018cea2778f3969c90faedbd2/bharatviz_NFHS4_Rajasthan_districts.geojson",
+      "filename": "bharatviz_NFHS4_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "225b4c71f1717908e34533bd60b7cb67",
+      "html_url": "https://gist.github.com/saketkc/225b4c71f1717908e34533bd60b7cb67",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/225b4c71f1717908e34533bd60b7cb67/raw/39e1577939bd476cc3ae5d2a371c15b69e7bfad8/bharatviz_NFHS4_Sikkim_districts.geojson",
+      "filename": "bharatviz_NFHS4_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "a9d63f266b30ae0f68b2355182f6fcd8",
+      "html_url": "https://gist.github.com/saketkc/a9d63f266b30ae0f68b2355182f6fcd8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a9d63f266b30ae0f68b2355182f6fcd8/raw/d41f68f6a48c559b5dda4af303de7e9b9868c696/bharatviz_NFHS4_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_NFHS4_Tamil_Nadu_districts.geojson"
+    },
+    "Telangana": {
+      "gist_id": "80d19ad00da4ac4eaee8f62a9b624ede",
+      "html_url": "https://gist.github.com/saketkc/80d19ad00da4ac4eaee8f62a9b624ede",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/80d19ad00da4ac4eaee8f62a9b624ede/raw/d054af1d02942b037c971d14cc396c8941b6633b/bharatviz_NFHS4_Telangana_districts.geojson",
+      "filename": "bharatviz_NFHS4_Telangana_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "e51084fd1bb2cb20ae5555d9e3573229",
+      "html_url": "https://gist.github.com/saketkc/e51084fd1bb2cb20ae5555d9e3573229",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e51084fd1bb2cb20ae5555d9e3573229/raw/3a0aa2cfde2e2af1589bc9369818746abf42e554/bharatviz_NFHS4_Tripura_districts.geojson",
+      "filename": "bharatviz_NFHS4_Tripura_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "0e07f126e19f428238d57a924cd81269",
+      "html_url": "https://gist.github.com/saketkc/0e07f126e19f428238d57a924cd81269",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0e07f126e19f428238d57a924cd81269/raw/fc7e92dc8d275231f730d83172aab03a96f7633d/bharatviz_NFHS4_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS4_Uttar_Pradesh_districts.geojson"
+    },
+    "Uttarakhand": {
+      "gist_id": "5349cf59c99ea8e587cb850ff1601376",
+      "html_url": "https://gist.github.com/saketkc/5349cf59c99ea8e587cb850ff1601376",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5349cf59c99ea8e587cb850ff1601376/raw/3b114ff37bf1eb36813b57a12a5a1733906eee7e/bharatviz_NFHS4_Uttarakhand_districts.geojson",
+      "filename": "bharatviz_NFHS4_Uttarakhand_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "fe513f7c97460c509918394a269c8f53",
+      "html_url": "https://gist.github.com/saketkc/fe513f7c97460c509918394a269c8f53",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fe513f7c97460c509918394a269c8f53/raw/d9e1f3959bab5e611603219121cfc5a0033c71eb/bharatviz_NFHS4_West_Bengal_districts.geojson",
+      "filename": "bharatviz_NFHS4_West_Bengal_districts.geojson"
+    }
+  },
+  "NFHS5": {
+    "Andaman & Nicobar Islands": {
+      "gist_id": "2a25c07d01d064e23df7bbf8aba74fd7",
+      "html_url": "https://gist.github.com/saketkc/2a25c07d01d064e23df7bbf8aba74fd7",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2a25c07d01d064e23df7bbf8aba74fd7/raw/bf4376fbd857607d777d9bd1633d1dc16a76798d/bharatviz_NFHS5_Andaman_%26_Nicobar_Islands_districts.geojson",
+      "filename": "bharatviz_NFHS5_Andaman_&_Nicobar_Islands_districts.geojson"
+    },
+    "Andhra Pradesh": {
+      "gist_id": "35b48b91fca68749316b038e4b7ec17e",
+      "html_url": "https://gist.github.com/saketkc/35b48b91fca68749316b038e4b7ec17e",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/35b48b91fca68749316b038e4b7ec17e/raw/c5de4910852cb32a3461de3d017c56d3f1d11c89/bharatviz_NFHS5_Andhra_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Andhra_Pradesh_districts.geojson"
+    },
+    "Arunachal Pradesh": {
+      "gist_id": "032d679e289465f8c0b3e3c6129808e4",
+      "html_url": "https://gist.github.com/saketkc/032d679e289465f8c0b3e3c6129808e4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/032d679e289465f8c0b3e3c6129808e4/raw/8f1c0ad4ddb076cd5144302be27dac2cf1aac02c/bharatviz_NFHS5_Arunachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Arunachal_Pradesh_districts.geojson"
+    },
+    "Assam": {
+      "gist_id": "279832caf07dd27fa9e03ad734ab0cfc",
+      "html_url": "https://gist.github.com/saketkc/279832caf07dd27fa9e03ad734ab0cfc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/279832caf07dd27fa9e03ad734ab0cfc/raw/2aeb4ca7ce2c1f8d4a7f12aff5fd86e51f254af2/bharatviz_NFHS5_Assam_districts.geojson",
+      "filename": "bharatviz_NFHS5_Assam_districts.geojson"
+    },
+    "Bihar": {
+      "gist_id": "3da2034237777eafbc651084b5a1c968",
+      "html_url": "https://gist.github.com/saketkc/3da2034237777eafbc651084b5a1c968",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/3da2034237777eafbc651084b5a1c968/raw/37cf8d7626daef1c04ea106e89c1b644e9e72c06/bharatviz_NFHS5_Bihar_districts.geojson",
+      "filename": "bharatviz_NFHS5_Bihar_districts.geojson"
+    },
+    "Chandigarh": {
+      "gist_id": "00781046c5606ac4275d0c5a5c26e603",
+      "html_url": "https://gist.github.com/saketkc/00781046c5606ac4275d0c5a5c26e603",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/00781046c5606ac4275d0c5a5c26e603/raw/237185b702cbd6ecc08ec267d71c5f0d55070c8a/bharatviz_NFHS5_Chandigarh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Chandigarh_districts.geojson"
+    },
+    "Chhattisgarh": {
+      "gist_id": "0ff426f88c866b72628b710aa3ea3c41",
+      "html_url": "https://gist.github.com/saketkc/0ff426f88c866b72628b710aa3ea3c41",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/0ff426f88c866b72628b710aa3ea3c41/raw/0d09a9b19d1ad555981409b75e6ba282a07e34e3/bharatviz_NFHS5_Chhattisgarh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Chhattisgarh_districts.geojson"
+    },
+    "Dadra & Nagar Haveli & Daman & Diu": {
+      "gist_id": "fdaceec364004ac2fa9c33d769fb0996",
+      "html_url": "https://gist.github.com/saketkc/fdaceec364004ac2fa9c33d769fb0996",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/fdaceec364004ac2fa9c33d769fb0996/raw/cbd29e0c9fc1fc2d885254d50cae18270554ca0c/bharatviz_NFHS5_Dadra_%26_Nagar_Haveli_%26_Daman_%26_Diu_districts.geojson",
+      "filename": "bharatviz_NFHS5_Dadra_&_Nagar_Haveli_&_Daman_&_Diu_districts.geojson"
+    },
+    "Goa": {
+      "gist_id": "45be728fdd89a2adc3144e9a693f4b7f",
+      "html_url": "https://gist.github.com/saketkc/45be728fdd89a2adc3144e9a693f4b7f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/45be728fdd89a2adc3144e9a693f4b7f/raw/9dd9c45d1d19a7e19efeb1ef347307556a495c16/bharatviz_NFHS5_Goa_districts.geojson",
+      "filename": "bharatviz_NFHS5_Goa_districts.geojson"
+    },
+    "Gujarat": {
+      "gist_id": "daa8bac54455856f0dcd8d96f27e3447",
+      "html_url": "https://gist.github.com/saketkc/daa8bac54455856f0dcd8d96f27e3447",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/daa8bac54455856f0dcd8d96f27e3447/raw/e9807244a8c666da1238c4bffe50ac8574b55e97/bharatviz_NFHS5_Gujarat_districts.geojson",
+      "filename": "bharatviz_NFHS5_Gujarat_districts.geojson"
+    },
+    "Haryana": {
+      "gist_id": "57ec2800a47af92d46d81070087ca413",
+      "html_url": "https://gist.github.com/saketkc/57ec2800a47af92d46d81070087ca413",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/57ec2800a47af92d46d81070087ca413/raw/5013a053781fa5425fcd21ef2c84ee094c24d640/bharatviz_NFHS5_Haryana_districts.geojson",
+      "filename": "bharatviz_NFHS5_Haryana_districts.geojson"
+    },
+    "Himachal Pradesh": {
+      "gist_id": "df7e489749cef35fbd863274e9c80f94",
+      "html_url": "https://gist.github.com/saketkc/df7e489749cef35fbd863274e9c80f94",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/df7e489749cef35fbd863274e9c80f94/raw/88b472e7c204d687690d47ad7fc608da5a0be80d/bharatviz_NFHS5_Himachal_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Himachal_Pradesh_districts.geojson"
+    },
+    "Jammu & Kashmir": {
+      "gist_id": "7b266f0d3e20b482a26748ff4bd39a3d",
+      "html_url": "https://gist.github.com/saketkc/7b266f0d3e20b482a26748ff4bd39a3d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7b266f0d3e20b482a26748ff4bd39a3d/raw/eed3a00d907b81355e9e2f2fb4dc67f7af3997ef/bharatviz_NFHS5_Jammu_%26_Kashmir_districts.geojson",
+      "filename": "bharatviz_NFHS5_Jammu_&_Kashmir_districts.geojson"
+    },
+    "Jharkhand": {
+      "gist_id": "796ce6c6ff62a7b7989eb751ab06e024",
+      "html_url": "https://gist.github.com/saketkc/796ce6c6ff62a7b7989eb751ab06e024",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/796ce6c6ff62a7b7989eb751ab06e024/raw/d8cf8a7d13bb6dea71b0b97595f80d68a701a9db/bharatviz_NFHS5_Jharkhand_districts.geojson",
+      "filename": "bharatviz_NFHS5_Jharkhand_districts.geojson"
+    },
+    "Karnataka": {
+      "gist_id": "af0fb76bd0492a4bf495fa9e7138667c",
+      "html_url": "https://gist.github.com/saketkc/af0fb76bd0492a4bf495fa9e7138667c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/af0fb76bd0492a4bf495fa9e7138667c/raw/de39cbb81b0ef4549c08448e62e3ab8cf3c52d2e/bharatviz_NFHS5_Karnataka_districts.geojson",
+      "filename": "bharatviz_NFHS5_Karnataka_districts.geojson"
+    },
+    "Kerala": {
+      "gist_id": "52a7b6b8ff4e5c82d682440bc5410692",
+      "html_url": "https://gist.github.com/saketkc/52a7b6b8ff4e5c82d682440bc5410692",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/52a7b6b8ff4e5c82d682440bc5410692/raw/d7112ae5b3a35a74df2c3d12622a8ddfcb7e7cd1/bharatviz_NFHS5_Kerala_districts.geojson",
+      "filename": "bharatviz_NFHS5_Kerala_districts.geojson"
+    },
+    "Ladakh": {
+      "gist_id": "6070a9102cd928536c9f90d319044892",
+      "html_url": "https://gist.github.com/saketkc/6070a9102cd928536c9f90d319044892",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/6070a9102cd928536c9f90d319044892/raw/5a595f98b03673669b546eacb43803ca5ef8be12/bharatviz_NFHS5_Ladakh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Ladakh_districts.geojson"
+    },
+    "Lakshadweep": {
+      "gist_id": "a0954fcf647c16a1ee669b227da9df3f",
+      "html_url": "https://gist.github.com/saketkc/a0954fcf647c16a1ee669b227da9df3f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a0954fcf647c16a1ee669b227da9df3f/raw/220ba16a73c74444458dae934e5caa4055c87c93/bharatviz_NFHS5_Lakshadweep_districts.geojson",
+      "filename": "bharatviz_NFHS5_Lakshadweep_districts.geojson"
+    },
+    "Madhya Pradesh": {
+      "gist_id": "5ed06e08c89e4eb02eab08874655eb1c",
+      "html_url": "https://gist.github.com/saketkc/5ed06e08c89e4eb02eab08874655eb1c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5ed06e08c89e4eb02eab08874655eb1c/raw/a105b4c0162685b95907aa575e1385f3b18b1770/bharatviz_NFHS5_Madhya_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Madhya_Pradesh_districts.geojson"
+    },
+    "Maharashtra": {
+      "gist_id": "db714e84be0d540b0d4333803bf85590",
+      "html_url": "https://gist.github.com/saketkc/db714e84be0d540b0d4333803bf85590",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/db714e84be0d540b0d4333803bf85590/raw/03cb3c07994af161b9d7973a7367db175f3fbedc/bharatviz_NFHS5_Maharashtra_districts.geojson",
+      "filename": "bharatviz_NFHS5_Maharashtra_districts.geojson"
+    },
+    "Manipur": {
+      "gist_id": "c8aa06ae1b41b42b027ca270f70802e8",
+      "html_url": "https://gist.github.com/saketkc/c8aa06ae1b41b42b027ca270f70802e8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c8aa06ae1b41b42b027ca270f70802e8/raw/bb6ce6be9bb6ca45b319a0ea9ad901d00ced310a/bharatviz_NFHS5_Manipur_districts.geojson",
+      "filename": "bharatviz_NFHS5_Manipur_districts.geojson"
+    },
+    "Meghalaya": {
+      "gist_id": "2f6659f9af765bfe10372d70f48a7b0d",
+      "html_url": "https://gist.github.com/saketkc/2f6659f9af765bfe10372d70f48a7b0d",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/2f6659f9af765bfe10372d70f48a7b0d/raw/a13f06040180cde9e2e2e4b151ad8dae6149aa96/bharatviz_NFHS5_Meghalaya_districts.geojson",
+      "filename": "bharatviz_NFHS5_Meghalaya_districts.geojson"
+    },
+    "Mizoram": {
+      "gist_id": "652b0d4aa1e10a1a0ba7b799bff3998f",
+      "html_url": "https://gist.github.com/saketkc/652b0d4aa1e10a1a0ba7b799bff3998f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/652b0d4aa1e10a1a0ba7b799bff3998f/raw/1847745b18cbd2bc55207a77c2692c3ab47bcb06/bharatviz_NFHS5_Mizoram_districts.geojson",
+      "filename": "bharatviz_NFHS5_Mizoram_districts.geojson"
+    },
+    "Nagaland": {
+      "gist_id": "269ef9567dd8851f5902b08bb9cb9f45",
+      "html_url": "https://gist.github.com/saketkc/269ef9567dd8851f5902b08bb9cb9f45",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/269ef9567dd8851f5902b08bb9cb9f45/raw/70d43c2cbdebc1f3b32210335f54fcb9eacb4bc6/bharatviz_NFHS5_Nagaland_districts.geojson",
+      "filename": "bharatviz_NFHS5_Nagaland_districts.geojson"
+    },
+    "Nct Of Delhi": {
+      "gist_id": "e50cec1dc1d5f686eae3179dd6550ea0",
+      "html_url": "https://gist.github.com/saketkc/e50cec1dc1d5f686eae3179dd6550ea0",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/e50cec1dc1d5f686eae3179dd6550ea0/raw/77da66c34a54db1c1fe36d4dd612e9fbd4de5ea2/bharatviz_NFHS5_Nct_Of_Delhi_districts.geojson",
+      "filename": "bharatviz_NFHS5_Nct_Of_Delhi_districts.geojson"
+    },
+    "Odisha": {
+      "gist_id": "21c687147ec1fcb52975fba3269238ea",
+      "html_url": "https://gist.github.com/saketkc/21c687147ec1fcb52975fba3269238ea",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/21c687147ec1fcb52975fba3269238ea/raw/b36a69ed9ec291a4f3052fcc3cfb7da638f94c6c/bharatviz_NFHS5_Odisha_districts.geojson",
+      "filename": "bharatviz_NFHS5_Odisha_districts.geojson"
+    },
+    "Puducherry": {
+      "gist_id": "f96083963eb18f91e9947296c690c1a3",
+      "html_url": "https://gist.github.com/saketkc/f96083963eb18f91e9947296c690c1a3",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/f96083963eb18f91e9947296c690c1a3/raw/7530a51c7888a0928ce922016dffbba133d1f115/bharatviz_NFHS5_Puducherry_districts.geojson",
+      "filename": "bharatviz_NFHS5_Puducherry_districts.geojson"
+    },
+    "Punjab": {
+      "gist_id": "c80f9dad49ef72bb8391762259ce9fe1",
+      "html_url": "https://gist.github.com/saketkc/c80f9dad49ef72bb8391762259ce9fe1",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/c80f9dad49ef72bb8391762259ce9fe1/raw/2a0b9721309caa65c1584fc5450c29647fe1a77d/bharatviz_NFHS5_Punjab_districts.geojson",
+      "filename": "bharatviz_NFHS5_Punjab_districts.geojson"
+    },
+    "Rajasthan": {
+      "gist_id": "4dc8800ad677e06366f8fc0f29d4eba8",
+      "html_url": "https://gist.github.com/saketkc/4dc8800ad677e06366f8fc0f29d4eba8",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/4dc8800ad677e06366f8fc0f29d4eba8/raw/986bf5d7e040bf530971d65539659bf36cf70a6f/bharatviz_NFHS5_Rajasthan_districts.geojson",
+      "filename": "bharatviz_NFHS5_Rajasthan_districts.geojson"
+    },
+    "Sikkim": {
+      "gist_id": "5a1ab5db088775d7ed52b89eeebc0d9a",
+      "html_url": "https://gist.github.com/saketkc/5a1ab5db088775d7ed52b89eeebc0d9a",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5a1ab5db088775d7ed52b89eeebc0d9a/raw/c3f52430db122d34f3641390f5a3293ea9ccba49/bharatviz_NFHS5_Sikkim_districts.geojson",
+      "filename": "bharatviz_NFHS5_Sikkim_districts.geojson"
+    },
+    "Tamil Nadu": {
+      "gist_id": "580f48954d749182ed6861845d24d5cc",
+      "html_url": "https://gist.github.com/saketkc/580f48954d749182ed6861845d24d5cc",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/580f48954d749182ed6861845d24d5cc/raw/db1f9876524e33b6050a0019318626302a2a7364/bharatviz_NFHS5_Tamil_Nadu_districts.geojson",
+      "filename": "bharatviz_NFHS5_Tamil_Nadu_districts.geojson"
+    },
+    "Telangana": {
+      "gist_id": "996daa965ea47f064636abf201faf08f",
+      "html_url": "https://gist.github.com/saketkc/996daa965ea47f064636abf201faf08f",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/996daa965ea47f064636abf201faf08f/raw/93196334a07823e3b45e97dd354af2a0eec30030/bharatviz_NFHS5_Telangana_districts.geojson",
+      "filename": "bharatviz_NFHS5_Telangana_districts.geojson"
+    },
+    "Tripura": {
+      "gist_id": "5db1eb744ddbacbfb0163f26faaf6fa4",
+      "html_url": "https://gist.github.com/saketkc/5db1eb744ddbacbfb0163f26faaf6fa4",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5db1eb744ddbacbfb0163f26faaf6fa4/raw/a05017945433c78a3e8ee968b712e3d2c4dcbe23/bharatviz_NFHS5_Tripura_districts.geojson",
+      "filename": "bharatviz_NFHS5_Tripura_districts.geojson"
+    },
+    "Uttar Pradesh": {
+      "gist_id": "5e81c5bdb5dede11ae8e57ba39d4189c",
+      "html_url": "https://gist.github.com/saketkc/5e81c5bdb5dede11ae8e57ba39d4189c",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/5e81c5bdb5dede11ae8e57ba39d4189c/raw/9001ef212f3c99857ab9bf61df6cd463ae5fe77c/bharatviz_NFHS5_Uttar_Pradesh_districts.geojson",
+      "filename": "bharatviz_NFHS5_Uttar_Pradesh_districts.geojson"
+    },
+    "Uttarakhand": {
+      "gist_id": "a8fb6c51737149dcfe686ecc16ac2f46",
+      "html_url": "https://gist.github.com/saketkc/a8fb6c51737149dcfe686ecc16ac2f46",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/a8fb6c51737149dcfe686ecc16ac2f46/raw/4cd677938635b96a8384cb543c6b668a956d7411/bharatviz_NFHS5_Uttarakhand_districts.geojson",
+      "filename": "bharatviz_NFHS5_Uttarakhand_districts.geojson"
+    },
+    "West Bengal": {
+      "gist_id": "7cbe7e343cce3c301de1949a43bc4b06",
+      "html_url": "https://gist.github.com/saketkc/7cbe7e343cce3c301de1949a43bc4b06",
+      "raw_url": "https://gist.githubusercontent.com/saketkc/7cbe7e343cce3c301de1949a43bc4b06/raw/0bd9856a9729eaf3fc12668360915cf9aaa97314/bharatviz_NFHS5_West_Bengal_districts.geojson",
+      "filename": "bharatviz_NFHS5_West_Bengal_districts.geojson"
+    }
+  }
+}
