@@ -111,6 +111,8 @@ const PincodePath = React.memo(({
 ));
 PincodePath.displayName = 'PincodePath';
 
+const ALL_INDIA_STATE = 'All India';
+
 export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMapProps>(({
   data,
   colorScale,
@@ -220,12 +222,14 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
         const allData = await fetchGeoJSON(geojsonPath);
         if (cancelled) return;
 
-        const filteredData = {
-          ...allData,
-          features: allData.features.filter(
-            (feature) => (feature.properties as GeoJSONFeature['properties'])?.state_name === selectedState
-          )
-        };
+        const filteredData = selectedState === ALL_INDIA_STATE
+          ? allData
+          : {
+              ...allData,
+              features: allData.features.filter(
+                (feature) => (feature.properties as GeoJSONFeature['properties'])?.state_name === selectedState
+              )
+            };
 
         setGeojsonData(filteredData as { features: GeoJSONFeature[] });
         calculateBounds(filteredData as { features: GeoJSONFeature[] });

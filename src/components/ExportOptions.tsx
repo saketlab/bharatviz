@@ -156,7 +156,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
               <Button
                 onClick={handleCopy}
                 disabled={disabled}
-                variant={copyFeedback.copied ? "default" : "outline"}
+                variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -171,7 +171,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
                 </Button>
                 <Button
                   onClick={handleCopyGeoJSONUrl}
-                  variant={geojsonUrlCopyFeedback.copied ? "default" : "outline"}
+                  variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
                 >

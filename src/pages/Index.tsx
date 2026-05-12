@@ -182,7 +182,7 @@ const Index = () => {
   const [pincodeDataType, setPincodeDataType] = useState<DataType>('numerical');
   const [pincodeCategoryColors, setPincodeCategoryColors] = useState<CategoryColorMapping>({});
   const [pincodeNAInfo, setPincodeNAInfo] = useState<NAInfo | undefined>(undefined);
-  const [selectedPincodeState, setSelectedPincodeState] = useState<string>('Maharashtra');
+  const [selectedPincodeState, setSelectedPincodeState] = useState<string>('All India');
   const [pincodeStateSearchQuery, setPincodeStateSearchQuery] = useState<string>('');
   const [pincodeAvailableStates, setPincodeAvailableStates] = useState<string[]>([]);
 
@@ -543,10 +543,11 @@ const Index = () => {
   useEffect(() => {
     if (activeTab !== 'pincodes') return;
     getUniqueStatesFromGeoJSON(DATA_FILES.PINCODES_GEOJSON).then(states => {
-      setPincodeAvailableStates(states);
-      if (!states.includes(selectedPincodeState) && states.length > 0) {
-        setSelectedPincodeState(states[0]);
-      }
+      const statesWithAllIndia = ['All India', ...states];
+      setPincodeAvailableStates(statesWithAllIndia);
+      setSelectedPincodeState(current =>
+        statesWithAllIndia.includes(current) ? current : 'All India'
+      );
     });
   }, [activeTab]);
 
