@@ -2596,6 +2596,8 @@ POST /api/v1/districts/map
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
                     disabled={pincodeMapData.length === 0}
+                    geojsonDownloadUrl={DATA_FILES.PINCODES_GEOJSON}
+                    geojsonDownloadName="India_pincodes_simplified.geojson"
                   />
                 </div>
               </div>
