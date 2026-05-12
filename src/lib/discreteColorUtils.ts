@@ -232,6 +232,63 @@ export function getD3ColorInterpolator(scale: ColorScale) {
   return interpolators[scale] || d3.interpolateBlues;
 }
 
+export function createColorMapper(
+  values: number[],
+  colorScale: ColorScale,
+  invertColors: boolean = false,
+  colorBarSettings?: ColorBarSettings
+): (value: number | undefined) => string {
+  if (values.length === 0) {
+    return () => 'white';
+  }
+
+  const interpolator = getD3ColorInterpolator(colorScale);
+
+  if (colorScale === 'aqi') {
+    const fn = invertColors
+      ? (v: number) => interpolator(1 - (v / 500))
+      : (v: number) => getAQIColor(v);
+    return (value) => {
+      if (value === undefined) return 'white';
+      if (isNaN(value)) return '#d1d5db';
+      return fn(value);
+    };
+  }
+
+  let minValue = values[0], maxValue = values[0];
+  for (let i = 1; i < values.length; i++) {
+    if (values[i] < minValue) minValue = values[i];
+    if (values[i] > maxValue) maxValue = values[i];
+  }
+
+  if (minValue === maxValue) {
+    const midColor = interpolator(0.5);
+    return (value) => {
+      if (value === undefined) return 'white';
+      if (isNaN(value)) return '#d1d5db';
+      return midColor;
+    };
+  }
+
+  if (colorBarSettings?.isDiscrete) {
+    const { boundaries, dataAnalysis } = createDiscreteBins(values, colorBarSettings);
+    return (value) => {
+      if (value === undefined) return 'white';
+      if (isNaN(value)) return '#d1d5db';
+      return getDiscreteColorInfo(value, boundaries, colorScale, invertColors, dataAnalysis).color;
+    };
+  }
+
+  const range = maxValue - minValue;
+  return (value) => {
+    if (value === undefined) return 'white';
+    if (isNaN(value)) return '#d1d5db';
+    let t = (value - minValue) / range;
+    if (invertColors) t = 1 - t;
+    return interpolator(t);
+  };
+}
+
 export function getDiscreteLegendStops(
   values: number[],
   colorScale: ColorScale,

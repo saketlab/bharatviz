@@ -65,6 +65,10 @@ export const DATA_FILES = {
   DISTRICTS_DEMO_CSV: '/districts_demo.csv'
 };
 
+// Default state selections
+export const DEFAULT_FALLBACK_STATE = 'Maharashtra';
+export const ALL_INDIA_STATE = 'All India';
+
 // Export file names
 export const EXPORT_FILENAMES = {
   PNG: 'bharatviz.png',

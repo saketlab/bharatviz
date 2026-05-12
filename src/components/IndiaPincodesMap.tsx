@@ -7,14 +7,14 @@ import { interpolateBlues } from 'd3-scale-chromatic';
 import { saveAs } from 'file-saver';
 import { type ColorScale, ColorBarSettings } from './ColorMapChooser';
 import { roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
-import { getColorForValue } from '@/lib/discreteColorUtils';
+import { getColorForValue, createColorMapper } from '@/lib/discreteColorUtils';
 import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
 import { svgToHighDpiBlob } from '@/lib/exportUtils';
 import { colorScales } from '@/lib/colorScales';
 import { fetchGeoJSON } from '@/lib/geoJsonCache';
-import { DATA_FILES } from '@/lib/constants';
+import { DATA_FILES, ALL_INDIA_STATE } from '@/lib/constants';
 
 export interface PincodeMapData {
   pincode: string;
@@ -34,6 +34,7 @@ interface IndiaPincodesMapProps {
   selectedState: string;
   colorBarSettings?: ColorBarSettings;
   geojsonPath?: string;
+  preFiltered?: boolean;
   dataType?: DataType;
   categoryColors?: CategoryColorMapping;
   naInfo?: NAInfo;
@@ -111,8 +112,6 @@ const PincodePath = React.memo(({
 ));
 PincodePath.displayName = 'PincodePath';
 
-const ALL_INDIA_STATE = 'All India';
-
 export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMapProps>(({
   data,
   colorScale,
@@ -121,6 +120,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
   selectedState,
   colorBarSettings,
   geojsonPath = DATA_FILES.PINCODES_GEOJSON,
+  preFiltered = false,
   dataType = 'numerical',
   categoryColors = {},
   naInfo,
@@ -222,7 +222,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
         const allData = await fetchGeoJSON(geojsonPath);
         if (cancelled) return;
 
-        const filteredData = selectedState === ALL_INDIA_STATE
+        const filteredData = (preFiltered || selectedState === ALL_INDIA_STATE)
           ? allData
           : {
               ...allData,
@@ -252,7 +252,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
       const timeoutId = setTimeout(() => setRenderingData(false), 200);
       return () => clearTimeout(timeoutId);
     }
-  }, [data, geojsonData, bounds, colorScale, invertColors, colorBarSettings, dataType, darkMode, data.length]);
+  }, [data, geojsonData, bounds, colorScale, invertColors, colorBarSettings, dataType, darkMode]);
 
   const calculateBounds = (data: { features: GeoJSONFeature[] }) => {
     let minLng = Infinity, maxLng = -Infinity;
@@ -295,7 +295,6 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
 
   const handlePincodeLeave = useCallback(() => setHoveredPincode(null), []);
 
-  // Legend drag handlers
   const handleLegendMouseDown = (e: React.MouseEvent) => {
     setDragging(true);
     const svgRect = svgRef.current?.getBoundingClientRect();
@@ -332,7 +331,6 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     }
   }, [dragging, dragOffset, handleLegendMouseMove]);
 
-  // Title drag handlers
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDraggingTitle(true);
@@ -374,7 +372,6 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     }
   }, [draggingTitle, titleDragOffset, handleTitleMouseMove]);
 
-  // Setup legend gradient
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
@@ -407,14 +404,13 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     }
   }, [colorScale, invertColors, dataExtent, colorBarSettings, dataType, data.length]);
 
-  // Build pincode data map for quick lookup
   const pincodeDataMap = useMemo(() => {
     const map = new Map<string, number | string | undefined>();
     data.forEach(d => map.set(d.pincode, d.value));
     return map;
   }, [data]);
 
-  // Memoize path computation — must be before any early returns to satisfy Rules of Hooks
+  // Must be before any early returns to satisfy Rules of Hooks
   const computedPaths = useMemo(() => {
     if (!geojsonData || !bounds) return [];
     const mapWidth = isMobile ? 320 : 760;
@@ -472,9 +468,10 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
     return geojsonData.features.map((feature) => convertCoordinatesToPath(feature.geometry.coordinates));
   }, [geojsonData, bounds, isMobile]);
 
-  const dataExtentTuple = useMemo<[number, number] | undefined>(() => (
-    numericValues.length > 0 ? [dataExtent.min, dataExtent.max] : undefined
-  ), [numericValues.length, dataExtent.min, dataExtent.max]);
+  const colorMapper = useMemo(
+    () => createColorMapper(numericValues, colorScale, invertColors, colorBarSettings),
+    [numericValues, colorScale, invertColors, colorBarSettings]
+  );
 
   const pincodeRenderFeatures = useMemo<PincodeRenderFeature[]>(() => {
     if (!geojsonData || !bounds) return [];
@@ -488,10 +485,8 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
 
       if (dataType === 'categorical' && typeof value === 'string') {
         fillColor = getCategoryColor(value, categoryColors, categoricalFallback);
-      } else if (typeof value === 'number' && !isNaN(value) && dataExtentTuple) {
-        fillColor = dataExtentTuple[0] === dataExtentTuple[1]
-          ? colorScales[colorScale](0.5)
-          : getColorForValue(value, numericValues, colorScale, invertColors, colorBarSettings);
+      } else if (typeof value === 'number') {
+        fillColor = colorMapper(value);
       } else if (value !== undefined) {
         fillColor = categoricalFallback;
       }
@@ -512,9 +507,8 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
         title,
       };
     });
-  }, [geojsonData, bounds, computedPaths, pincodeDataMap, darkMode, dataType, categoryColors, dataExtentTuple, colorScale, numericValues, invertColors, colorBarSettings, data.length, boundaryStroke, boundaryColor]);
+  }, [geojsonData, bounds, computedPaths, pincodeDataMap, darkMode, dataType, categoryColors, colorMapper, data.length, boundaryStroke, boundaryColor]);
 
-  // Fix legend gradient for PDF export
   const fixLegendGradient = (svgClone: SVGSVGElement) => {
     if (data.length === 0) return;
 

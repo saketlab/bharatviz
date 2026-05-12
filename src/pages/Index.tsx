@@ -20,6 +20,7 @@ import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
 import { getUniqueStatesFromGeoJSON } from '@/lib/stateUtils';
 import { loadStateGistMapping, getAvailableStates, getStateGeoJSONUrl, type StateGistMapping } from '@/lib/stateGistMapping';
+import { getPincodeGeoJSONUrl, getPincodeGistStates, hasPincodeGists } from '@/lib/pincodeGistMapping';
 import { fetchWithCorsFallback } from '@/lib/corsProxy';
 import showcaseDemoUrls from '@/lib/showcase-demo-urls.json';
 import { Github, Moon, Sun, Check, ChevronsUpDown } from 'lucide-react';
@@ -29,7 +30,7 @@ import { STATES_CITATION, NSSO_CITATION, getDistrictsCitationInfo, getCityCitati
 const ChatPanel = lazy(() => import('@/components/chat/ChatPanel').then(m => ({ default: m.ChatPanel })));
 const buildDynamicContext = (...args: Parameters<typeof import('@/lib/chat/contextBuilder').buildDynamicContext>) =>
   import('@/lib/chat/contextBuilder').then(m => m.buildDynamicContext(...args));
-import { DATA_FILES, MAP_DIMENSIONS } from '@/lib/constants';
+import { DATA_FILES, MAP_DIMENSIONS, DEFAULT_FALLBACK_STATE, ALL_INDIA_STATE } from '@/lib/constants';
 import type { DynamicChatContext, DataPoint } from '@/lib/chat/types';
 
 const IndiaMap = lazy(() => import('@/components/IndiaMap').then(m => ({ default: m.IndiaMap })));
@@ -182,7 +183,7 @@ const Index = () => {
   const [pincodeDataType, setPincodeDataType] = useState<DataType>('numerical');
   const [pincodeCategoryColors, setPincodeCategoryColors] = useState<CategoryColorMapping>({});
   const [pincodeNAInfo, setPincodeNAInfo] = useState<NAInfo | undefined>(undefined);
-  const [selectedPincodeState, setSelectedPincodeState] = useState<string>('All India');
+  const [selectedPincodeState, setSelectedPincodeState] = useState<string>(ALL_INDIA_STATE);
   const [pincodeStateSearchQuery, setPincodeStateSearchQuery] = useState<string>('');
   const [pincodeAvailableStates, setPincodeAvailableStates] = useState<string[]>([]);
 
@@ -542,13 +543,17 @@ const Index = () => {
 
   useEffect(() => {
     if (activeTab !== 'pincodes') return;
-    getUniqueStatesFromGeoJSON(DATA_FILES.PINCODES_GEOJSON).then(states => {
-      const statesWithAllIndia = ['All India', ...states];
-      setPincodeAvailableStates(statesWithAllIndia);
+    const reconcile = (states: string[]) => {
+      setPincodeAvailableStates(states);
       setSelectedPincodeState(current =>
-        statesWithAllIndia.includes(current) ? current : 'All India'
+        states.includes(current) ? current : states[0] || DEFAULT_FALLBACK_STATE
       );
-    });
+    };
+    if (hasPincodeGists()) {
+      reconcile(getPincodeGistStates());
+    } else {
+      getUniqueStatesFromGeoJSON(DATA_FILES.PINCODES_GEOJSON).then(reconcile);
+    }
   }, [activeTab]);
 
   const handleTabChange = (value: string) => {
@@ -2581,6 +2586,8 @@ POST /api/v1/districts/map
                   dataTitle={pincodeDataTitle}
                   selectedState={selectedPincodeState}
                   colorBarSettings={pincodeColorBarSettings}
+                  geojsonPath={getPincodeGeoJSONUrl(selectedPincodeState) || DATA_FILES.PINCODES_GEOJSON}
+                  preFiltered={!!getPincodeGeoJSONUrl(selectedPincodeState)}
                   dataType={pincodeDataType}
                   categoryColors={pincodeCategoryColors}
                   naInfo={pincodeNAInfo}
@@ -2596,8 +2603,8 @@ POST /api/v1/districts/map
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
                     disabled={pincodeMapData.length === 0}
-                    geojsonDownloadUrl={DATA_FILES.PINCODES_GEOJSON}
-                    geojsonDownloadName="India_pincodes_simplified.geojson"
+                    geojsonDownloadUrl={getPincodeGeoJSONUrl(selectedPincodeState) || DATA_FILES.PINCODES_GEOJSON}
+                    geojsonDownloadName={`pincodes_${selectedPincodeState.replace(/\s+/g, '_')}.geojson`}
                   />
                 </div>
               </div>
