@@ -10,12 +10,10 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { McpMapService } from './mcpMapService.js';
+import { ColorScales } from './types/index.js';
+import { ALL_INDIA_STATE } from './utils/constants.js';
 
-const COLOR_SCALES = [
-  'aqi', 'spectral', 'rdylbu', 'rdylgn', 'brbg', 'piyg', 'puor',
-  'blues', 'greens', 'reds', 'oranges', 'purples', 'pinks',
-  'viridis', 'plasma', 'inferno', 'magma'
-];
+const COLOR_SCALES = [...ColorScales];
 
 const mapService = new McpMapService();
 
@@ -261,25 +259,24 @@ export function createMcpServer(): Server {
         {
           name: 'list_pincodes',
           description:
-            'Lists all pincodes (postal codes) for a given Indian state. ' +
+            'Lists all pincodes (postal codes) for a given Indian state or all of India. ' +
             'Returns pincode, post office name, and district for each entry. ' +
-            'Use list_pincode_states first to see available state names.',
+            'Defaults to all-India if state is omitted.',
           inputSchema: {
             type: 'object' as const,
             properties: {
               state: {
                 type: 'string',
-                description: 'State name (e.g. "Maharashtra", "Delhi"). Case-insensitive.',
+                description: 'State name (e.g. "Maharashtra", "Delhi"). Default: "All India". Case-insensitive.',
               },
             },
-            required: ['state'],
           },
         },
         {
           name: 'render_pincodes_map',
           description:
-            'Renders a pincode-level choropleth map for a single Indian state. ' +
-            'Provide an array of {pincode, value} data and a state name. ' +
+            'Renders a pincode-level choropleth map of India. Defaults to all-India view using simplified boundaries. ' +
+            'Optionally specify a state for detailed per-state rendering. ' +
             'Supports 17 color scales, dark mode, and PNG/SVG output. ' +
             'Pincode matching is exact (6-digit string).',
           inputSchema: {
@@ -300,7 +297,7 @@ export function createMcpServer(): Server {
               },
               state: {
                 type: 'string',
-                description: 'State name (required). Use list_pincode_states to see options.',
+                description: 'State name. Default: "All India" (simplified boundaries). Use list_pincode_states to see options.',
               },
               colorScale: {
                 type: 'string',
@@ -319,7 +316,7 @@ export function createMcpServer(): Server {
                 description: 'Output format. Default: "png".',
               },
             },
-            required: ['data', 'state'],
+            required: ['data'],
           },
         },
 
@@ -550,9 +547,7 @@ export function createMcpServer(): Server {
         }
 
         case 'list_pincodes': {
-          const state = args?.state as string;
-          if (!state) throw new Error('state is required');
-          const pincodes = await mapService.listPincodes(state);
+          const pincodes = await mapService.listPincodes(args?.state as string | undefined);
           return {
             content: [{ type: 'text', text: JSON.stringify(pincodes, null, 2) }],
           };
@@ -563,12 +558,9 @@ export function createMcpServer(): Server {
           if (!data || !Array.isArray(data) || data.length === 0) {
             throw new Error('data is required and must be a non-empty array of {pincode, value} objects');
           }
-          const state = args?.state as string;
-          if (!state) throw new Error('state is required');
-
           const result = await mapService.renderPincodesMap({
             data,
-            state,
+            state: (args?.state as string) || ALL_INDIA_STATE,
             colorScale: args?.colorScale as string | undefined,
             title: args?.title as string | undefined,
             legendTitle: args?.legendTitle as string | undefined,

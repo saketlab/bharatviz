@@ -9,6 +9,7 @@ import type { ColorScale } from './types/index.js';
 import { ExportService } from './services/exportService.js';
 import { queryEvolution, getDistrictGeoJSON, getDistrictNames, ensureLoaded as ensureEvolutionLoaded } from './services/districtEvolutionService.js';
 import type { FeatureCollection } from 'geojson';
+import { LRUCache } from './utils/lruCache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,7 +86,7 @@ function getPublicDir(): string {
 }
 
 /** GeoJSON cache to avoid reloading large files */
-const geojsonCache = new Map<string, FeatureCollection>();
+const geojsonCache = new LRUCache<string, FeatureCollection>(50);
 
 async function loadGeoJSON(filename: string): Promise<FeatureCollection> {
   if (geojsonCache.has(filename)) {
@@ -368,13 +369,13 @@ export class McpMapService {
     return this.pincodeRenderer.getAvailableStates();
   }
 
-  async listPincodes(state: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
+  async listPincodes(state?: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
     return this.pincodeRenderer.listPincodes(state);
   }
 
   async renderPincodesMap(options: {
     data: Array<{ pincode: string; value: number }>;
-    state: string;
+    state?: string;
     colorScale?: string;
     title?: string;
     legendTitle?: string;

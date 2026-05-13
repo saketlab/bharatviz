@@ -203,11 +203,11 @@ Lists all pincodes for a given Indian state with post office and district info.
 
 ### Tool: render_pincodes_map
 
-Renders a pincode-level choropleth map for a single Indian state. Returns 300 DPI PNG by default.
+Renders a pincode-level choropleth map of India. Defaults to all-India view using simplified boundaries. Optionally specify a state for detailed per-state rendering. Returns 300 DPI PNG by default.
 
 **Input:**
 - `data` (array, required) - Array of `{pincode: string, value: number}` objects. Pincode matching is exact (6-digit string).
-- `state` (string, required) - State name. Use list_pincode_states to see options.
+- `state` (string, optional) - State name. Default: "All India" (simplified boundaries). Use list_pincode_states to see options.
 - `colorScale` (string, optional) - Default: "spectral"
 - `title` (string, optional) - Default: "BharatViz"
 - `legendTitle` (string, optional) - Default: "Values"

@@ -1,3 +1,8 @@
+import { ColorScales, DistrictMapTypes } from './types/index.js';
+
+const colorScaleEnum = [...ColorScales];
+const mapTypeEnum = [...DistrictMapTypes];
+
 export const openApiSpec = {
   openapi: '3.0.3',
   info: {
@@ -188,8 +193,8 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                     items: { type: 'object', properties: { state: { type: 'string' }, value: { type: 'number' } }, required: ['state', 'value'] },
                     description: 'State-value pairs',
                   },
-                  mapType: { type: 'string', enum: ['1872','1881','1891','1901','1911','1921','1931','1941','1951','1961','1971','1981','1991','2001','2011','LGD','BHUVAN','SOI','NFHS5','NFHS4','NSSO'], default: 'LGD' },
-                  colorScale: { type: 'string', default: 'spectral', enum: ['spectral','rdylbu','rdylgn','brbg','piyg','puor','blues','greens','reds','oranges','purples','viridis','plasma','inferno','magma'] },
+                  mapType: { type: 'string', enum: mapTypeEnum, default: 'LGD' },
+                  colorScale: { type: 'string', default: 'spectral', enum: colorScaleEnum },
                   invertColors: { type: 'boolean', default: false },
                   hideStateNames: { type: 'boolean', default: false },
                   hideValues: { type: 'boolean', default: false },
@@ -233,8 +238,8 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                       required: ['state', 'district', 'value'],
                     },
                   },
-                  mapType: { type: 'string', enum: ['1872','1881','1891','1901','1911','1921','1931','1941','1951','1961','1971','1981','1991','2001','2011','LGD','BHUVAN','SOI','NFHS5','NFHS4','NSSO'], default: 'LGD' },
-                  colorScale: { type: 'string', default: 'spectral' },
+                  mapType: { type: 'string', enum: mapTypeEnum, default: 'LGD' },
+                  colorScale: { type: 'string', default: 'spectral', enum: colorScaleEnum },
                   invertColors: { type: 'boolean', default: false },
                   hideValues: { type: 'boolean', default: false },
                   showStateBoundaries: { type: 'boolean', default: true },
@@ -293,11 +298,11 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['data', 'state'],
+                required: ['data'],
                 properties: {
                   data: { type: 'array', items: { type: 'object', properties: { pincode: { type: 'string' }, value: { type: 'number' } }, required: ['pincode', 'value'] } },
-                  state: { type: 'string', description: 'State name (required)' },
-                  colorScale: { type: 'string', default: 'spectral' },
+                  state: { type: 'string', description: 'State name. Default: "All India" (simplified boundaries).' },
+                  colorScale: { type: 'string', default: 'spectral', enum: colorScaleEnum },
                   invertColors: { type: 'boolean', default: false },
                   hidePincodeLabels: { type: 'boolean', default: true },
                   hideValues: { type: 'boolean', default: true },
@@ -337,8 +342,8 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                 properties: {
                   data: { type: 'array', items: { type: 'object', properties: { state: { type: 'string' }, district: { type: 'string' }, value: { type: 'number' } } } },
                   state: { type: 'string', description: 'Which state to display' },
-                  mapType: { type: 'string', enum: ['1872','1881','1891','1901','1911','1921','1931','1941','1951','1961','1971','1981','1991','2001','2011','LGD','BHUVAN','SOI','NFHS5','NFHS4','NSSO'], default: 'LGD' },
-                  colorScale: { type: 'string', default: 'spectral' },
+                  mapType: { type: 'string', enum: mapTypeEnum, default: 'LGD' },
+                  colorScale: { type: 'string', default: 'spectral', enum: colorScaleEnum },
                   formats: { type: 'array', items: { type: 'string', enum: ['png','svg','pdf'] }, default: ['png'] },
                 },
               },

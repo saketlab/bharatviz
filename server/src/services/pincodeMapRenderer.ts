@@ -1,9 +1,19 @@
 import { JSDOM } from 'jsdom';
 import * as d3 from 'd3';
+import { readFile } from 'fs/promises';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { ColorScale } from '../types/index.js';
 import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson';
 import { getD3ColorInterpolator } from '../utils/discreteColorUtils.js';
 import { isColorDark, roundToSignificantDigits, escapeHtml } from '../utils/colorUtils.js';
+import { calculateBounds, projectCoordinate, convertCoordinatesToPath, calculateVisualCenter } from '../utils/geoProjection.js';
+import { ALL_INDIA_STATE } from '../utils/constants.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const ALL_INDIA_GEOJSON = 'India_pincodes_simplified.geojson';
 
 export interface PincodeMapRequest {
   data: Array<{ pincode: string; value: number }>;
@@ -16,10 +26,6 @@ export interface PincodeMapRequest {
   legendTitle?: string;
   darkMode?: boolean;
   formats?: Array<'png' | 'svg' | 'pdf'>;
-}
-
-interface Bounds {
-  minX: number; maxX: number; minY: number; maxY: number;
 }
 
 const PINCODE_GIST_MAP: Record<string, string> = {
@@ -62,79 +68,46 @@ const PINCODE_GIST_MAP: Record<string, string> = {
   "West Bengal": "https://gist.githubusercontent.com/saketkc/2bcfff1265cfba1d49e017b68724a566/raw/682f7de271e79d7a61334b0552ecdc19d66f3caa/bharatviz_pincodes_West_Bengal.geojson",
 };
 
-const geojsonCache = new Map<string, FeatureCollection>();
+import { LRUCache } from '../utils/lruCache.js';
 
-async function fetchGeoJSON(url: string): Promise<FeatureCollection> {
-  if (geojsonCache.has(url)) return geojsonCache.get(url)!;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.status}`);
-  const data = await response.json() as FeatureCollection;
-  geojsonCache.set(url, data);
+const geojsonCache = new LRUCache<string, FeatureCollection>(15);
+
+function getPublicDir(): string {
+  return join(__dirname, '../../public');
+}
+
+async function loadGeoJSON(key: string): Promise<FeatureCollection> {
+  if (geojsonCache.has(key)) return geojsonCache.get(key)!;
+  let data: FeatureCollection;
+  if (key.startsWith('http')) {
+    const response = await fetch(key);
+    if (!response.ok) throw new Error(`Failed to fetch GeoJSON from ${key}: ${response.status}`);
+    data = await response.json() as FeatureCollection;
+  } else {
+    const raw = await readFile(join(getPublicDir(), key), 'utf-8');
+    data = JSON.parse(raw) as FeatureCollection;
+  }
+  geojsonCache.set(key, data);
   return data;
-}
-
-function calculateBounds(geojson: FeatureCollection): Bounds {
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  const processCoord = (coord: number[]) => {
-    minX = Math.min(minX, coord[0]);
-    maxX = Math.max(maxX, coord[0]);
-    minY = Math.min(minY, coord[1]);
-    maxY = Math.max(maxY, coord[1]);
-  };
-  const processCoords = (coords: unknown): void => {
-    if (Array.isArray(coords[0])) {
-      (coords as unknown[][]).forEach(c => processCoords(c));
-    } else {
-      processCoord(coords as number[]);
-    }
-  };
-  for (const feature of geojson.features) {
-    if (feature.geometry) {
-      processCoords((feature.geometry as { coordinates: unknown }).coordinates);
-    }
-  }
-  return { minX, maxX, minY, maxY };
-}
-
-function projectCoordinate(lon: number, lat: number, bounds: Bounds, width: number, height: number, padding = 40): [number, number] {
-  const mapWidth = width - padding * 2;
-  const mapHeight = height - padding * 2 - 60;
-  const scale = Math.min(mapWidth / (bounds.maxX - bounds.minX), mapHeight / (bounds.maxY - bounds.minY));
-  const offsetX = padding + (mapWidth - (bounds.maxX - bounds.minX) * scale) / 2;
-  const offsetY = padding + 40 + (mapHeight - (bounds.maxY - bounds.minY) * scale) / 2;
-  return [
-    offsetX + (lon - bounds.minX) * scale,
-    offsetY + (bounds.maxY - lat) * scale,
-  ];
-}
-
-function convertCoordinatesToPath(coordinates: unknown, bounds: Bounds, width: number, height: number): string {
-  const convertRing = (ring: number[][]): string =>
-    ring.map((coord, i) => {
-      const [x, y] = projectCoordinate(coord[0], coord[1], bounds, width, height);
-      return `${i === 0 ? '' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
-    }).join(' ');
-
-  if (Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0]) && Array.isArray(coordinates[0][0][0])) {
-    return (coordinates as number[][][][]).map(polygon =>
-      polygon.map(ring => `M ${convertRing(ring)} Z`).join(' ')
-    ).join(' ');
-  } else if (Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0])) {
-    return (coordinates as number[][][]).map(ring => `M ${convertRing(ring)} Z`).join(' ');
-  }
-  return '';
 }
 
 export class PincodeMapRenderer {
 
   getAvailableStates(): string[] {
-    return Object.keys(PINCODE_GIST_MAP).sort();
+    return [ALL_INDIA_STATE, ...Object.keys(PINCODE_GIST_MAP).sort()];
   }
 
-  async listPincodes(state: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
+  private async loadForState(state?: string): Promise<FeatureCollection> {
+    if (!state || state.toLowerCase().trim() === ALL_INDIA_STATE.toLowerCase()) {
+      return loadGeoJSON(ALL_INDIA_GEOJSON);
+    }
     const url = this.resolveGistUrl(state);
     if (!url) throw new Error(`Unknown state: "${state}". Use list_pincode_states to see available states.`);
-    const geojson = await fetchGeoJSON(url);
+    return loadGeoJSON(url);
+  }
+
+  async listPincodes(state?: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
+    const geojson = await this.loadForState(state);
     const results: Array<{ pincode: string; office_name: string; district: string }> = [];
     for (const feature of geojson.features) {
       const props = feature.properties || {};
@@ -162,11 +135,7 @@ export class PincodeMapRenderer {
       darkMode = false,
     } = request;
 
-    if (!state) throw new Error('state is required for pincode maps. Use list_pincode_states to see available states.');
-    const url = this.resolveGistUrl(state);
-    if (!url) throw new Error(`Unknown state: "${state}". Use list_pincode_states to see available states.`);
-
-    const geojson = await fetchGeoJSON(url);
+    const geojson = await this.loadForState(state);
 
     let minValue = Infinity;
     let maxValue = -Infinity;
@@ -252,19 +221,9 @@ export class PincodeMapRenderer {
         const geom = feature.geometry as Polygon | MultiPolygon;
         if (!geom?.coordinates) continue;
 
-        // Simple centroid
-        const coords: number[][] = [];
-        const collect = (c: unknown) => {
-          if (!Array.isArray(c)) return;
-          if (typeof c[0] === 'number') { coords.push(c as number[]); return; }
-          for (const sub of c) collect(sub);
-        };
-        collect(geom.coordinates);
-        if (coords.length === 0) continue;
-
-        let sumX = 0, sumY = 0;
-        for (const [x, y] of coords) { sumX += x; sumY += y; }
-        const [cx, cy] = projectCoordinate(sumX / coords.length, sumY / coords.length, bounds, width, height);
+        const center = calculateVisualCenter(geom.coordinates, feature.geometry.type);
+        if (!center) continue;
+        const [cx, cy] = projectCoordinate(center[0], center[1], bounds, width, height);
 
         const t = (value - minValue) / range;
         const fillColor = interpolator(invertColors ? 1 - t : t);

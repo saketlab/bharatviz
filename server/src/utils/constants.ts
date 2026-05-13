@@ -51,3 +51,5 @@ export const DEFAULT_LEGEND_POSITION = {
   STATES: { x: 390, y: 200 },
   DISTRICTS: { x: 390, y: 200 }
 };
+
+export const ALL_INDIA_STATE = 'All India';

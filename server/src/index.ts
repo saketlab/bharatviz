@@ -16,6 +16,7 @@ import embedRoutes from './routes/embedRoutes.js';
 import proxyRoutes from './routes/proxyRoutes.js';
 import districtEvolutionRoutes from './routes/districtEvolutionRoutes.js';
 import { openApiSpec } from './openapi.js';
+import { ColorScales } from './types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -243,10 +244,7 @@ app.get('/', (req, res) => {
           '1872-2011': 'Historical Census boundaries (pass the year as the value)'
         }
       },
-      availableColorScales: [
-        'spectral', 'rdylbu', 'rdylgn', 'brbg', 'piyg', 'puor',
-        'blues', 'greens', 'reds', 'oranges', 'purples', 'pinks',
-        'viridis', 'plasma', 'inferno', 'magma'
+      availableColorScales: [...ColorScales
       ]
     },
     examples: {

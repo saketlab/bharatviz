@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { PincodeMapRenderer } from '../services/pincodeMapRenderer.js';
 import { ExportService } from '../services/exportService.js';
 import { ColorScales } from '../types/index.js';
+import { ALL_INDIA_STATE } from '../utils/constants.js';
 
 const router = Router();
 const renderer = new PincodeMapRenderer();
@@ -13,7 +14,7 @@ const PincodeMapRequestSchema = z.object({
     pincode: z.string(),
     value: z.number(),
   })).min(1, 'At least one pincode data point is required'),
-  state: z.string().min(1, 'State is required for pincode maps'),
+  state: z.string().optional().default(ALL_INDIA_STATE),
   colorScale: z.enum(ColorScales).optional().default('spectral'),
   invertColors: z.boolean().optional().default(false),
   hidePincodeLabels: z.boolean().optional().default(true),

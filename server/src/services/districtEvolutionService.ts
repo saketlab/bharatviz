@@ -42,7 +42,9 @@ type GeoJSON = { type: string; features: Array<{ properties: Record<string, stri
 let transitions: Transition[] = [];
 let csvCache: string | null = null;
 const stateIndexes = new Map<string, StateIndex>();
-const geojsonCache = new Map<number, GeoJSON>();
+import { LRUCache } from '../utils/lruCache.js';
+
+const geojsonCache = new LRUCache<number, GeoJSON>(10);
 let loadPromise: Promise<void> | null = null;
 
 function normalize(s: string): string {
