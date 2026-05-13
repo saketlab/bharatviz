@@ -3,8 +3,11 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { StatesMapRenderer } from './services/mapRenderer.js';
 import { DistrictsMapRenderer } from './services/districtsMapRenderer.js';
+import { PincodeMapRenderer } from './services/pincodeMapRenderer.js';
+import { CityMapRenderer } from './services/cityMapRenderer.js';
 import type { ColorScale } from './types/index.js';
 import { ExportService } from './services/exportService.js';
+import { queryEvolution, getDistrictGeoJSON, getDistrictNames, ensureLoaded as ensureEvolutionLoaded } from './services/districtEvolutionService.js';
 import type { FeatureCollection } from 'geojson';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -136,6 +139,18 @@ function fuzzyMatchName(input: string, candidates: string[]): string | null {
 
 export class McpMapService {
   private exportService = new ExportService();
+  private pincodeRenderer = new PincodeMapRenderer();
+  private cityRenderer = new CityMapRenderer();
+
+  private async formatOutput(
+    svgString: string,
+    outputFormat: 'png' | 'svg' | 'both' = 'png',
+  ): Promise<{ svg?: string; png?: string }> {
+    const result: { svg?: string; png?: string } = {};
+    if (outputFormat === 'svg' || outputFormat === 'both') result.svg = svgString;
+    if (outputFormat === 'png' || outputFormat === 'both') result.png = await this.exportService.svgToPNG(svgString);
+    return result;
+  }
 
   /** List all available maps with metadata */
   async listMaps(): Promise<Array<MapEntry & { featureCount: number }>> {
@@ -246,17 +261,7 @@ export class McpMapService {
       formats: ['svg'],
     });
 
-    const result: { svg?: string; png?: string } = {};
-    const format = options.outputFormat || 'png';
-
-    if (format === 'svg' || format === 'both') {
-      result.svg = svgString;
-    }
-    if (format === 'png' || format === 'both') {
-      result.png = await this.exportService.svgToPNG(svgString);
-    }
-
-    return result;
+    return this.formatOutput(svgString, options.outputFormat);
   }
 
   /** Render a district-level map */
@@ -315,17 +320,7 @@ export class McpMapService {
       formats: ['svg'],
     });
 
-    const result: { svg?: string; png?: string } = {};
-    const format = options.outputFormat || 'png';
-
-    if (format === 'svg' || format === 'both') {
-      result.svg = svgString;
-    }
-    if (format === 'png' || format === 'both') {
-      result.png = await this.exportService.svgToPNG(svgString);
-    }
-
-    return result;
+    return this.formatOutput(svgString, options.outputFormat);
   }
 
   /** Load showcase demo URLs JSON */
@@ -365,5 +360,127 @@ export class McpMapService {
       title: demo.title,
       csvUrl: demo.url,
     };
+  }
+
+  // ── Pincode Tools ──────────────────────────────────────────────────────
+
+  listPincodeStates(): string[] {
+    return this.pincodeRenderer.getAvailableStates();
+  }
+
+  async listPincodes(state: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
+    return this.pincodeRenderer.listPincodes(state);
+  }
+
+  async renderPincodesMap(options: {
+    data: Array<{ pincode: string; value: number }>;
+    state: string;
+    colorScale?: string;
+    title?: string;
+    legendTitle?: string;
+    darkMode?: boolean;
+    invertColors?: boolean;
+    hidePincodeLabels?: boolean;
+    hideValues?: boolean;
+    outputFormat?: 'png' | 'svg' | 'both';
+  }): Promise<{ svg?: string; png?: string }> {
+    const svgString = await this.pincodeRenderer.renderMap({
+      data: options.data,
+      state: options.state,
+      colorScale: (options.colorScale as ColorScale) || 'spectral',
+      invertColors: options.invertColors ?? false,
+      hidePincodeLabels: options.hidePincodeLabels ?? true,
+      hideValues: options.hideValues ?? true,
+      mainTitle: options.title || 'BharatViz',
+      legendTitle: options.legendTitle || 'Values',
+      darkMode: options.darkMode ?? false,
+    });
+
+    return this.formatOutput(svgString, options.outputFormat);
+  }
+
+  // ── City/Ward Tools ────────────────────────────────────────────────────
+
+  private citiesManifestCache: Array<{ id: string; displayName: string; state: string; type: string; featureCount: number }> | null = null;
+
+  async listCities(): Promise<Array<{ id: string; displayName: string; state: string; type: string; featureCount: number }>> {
+    if (!this.citiesManifestCache) {
+      const manifestPath = join(__dirname, '../public/city-datasets-manifest.json');
+      const raw = await readFile(manifestPath, 'utf-8');
+      this.citiesManifestCache = JSON.parse(raw);
+    }
+    return this.citiesManifestCache!;
+  }
+
+  async listWards(cityId: string): Promise<string[]> {
+    return this.cityRenderer.listWards(cityId);
+  }
+
+  async renderCityMap(options: {
+    cityId: string;
+    data: Array<{ ward: string; value: number }>;
+    colorScale?: string;
+    title?: string;
+    legendTitle?: string;
+    darkMode?: boolean;
+    invertColors?: boolean;
+    hideWardNames?: boolean;
+    hideValues?: boolean;
+    outputFormat?: 'png' | 'svg' | 'both';
+  }): Promise<{ svg?: string; png?: string }> {
+    const svgString = await this.cityRenderer.renderMap({
+      cityId: options.cityId,
+      data: options.data,
+      colorScale: (options.colorScale as ColorScale) || 'spectral',
+      invertColors: options.invertColors ?? false,
+      hideWardNames: options.hideWardNames ?? true,
+      hideValues: options.hideValues ?? true,
+      mainTitle: options.title || 'BharatViz',
+      legendTitle: options.legendTitle || 'Values',
+      darkMode: options.darkMode ?? false,
+    });
+
+    return this.formatOutput(svgString, options.outputFormat);
+  }
+
+  // ── District Evolution Tools ───────────────────────────────────────────
+
+  async listHistoricalDistrictNames(): Promise<Array<{ district: string; state: string }>> {
+    await ensureEvolutionLoaded();
+    return getDistrictNames();
+  }
+
+  async traceDistrictEvolution(params: {
+    district: string;
+    state?: string;
+    year?: number;
+    includeGeojson?: boolean;
+  }) {
+    const result = await queryEvolution({
+      district: params.district,
+      state: params.state,
+      year: params.year,
+    });
+
+    if (!params.includeGeojson) return result;
+
+    const enriched = {
+      ...result,
+      matches: await Promise.all(result.matches.map(async (match) => {
+        const evolution: Record<string, Array<{ state: string; district: string; geojson?: object | null }>> = {};
+        for (const [yearStr, entries] of Object.entries(match.evolution)) {
+          const year = parseInt(yearStr, 10);
+          evolution[yearStr] = await Promise.all(
+            entries.map(async (entry) => ({
+              ...entry,
+              geojson: await getDistrictGeoJSON({ district: entry.district, state: entry.state, year }),
+            }))
+          );
+        }
+        return { ...match, evolution };
+      })),
+    };
+
+    return enriched;
   }
 }

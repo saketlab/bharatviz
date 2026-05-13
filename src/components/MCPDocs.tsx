@@ -207,6 +207,46 @@ npm run build`;
       description: 'Generates a shareable BharatViz URL that loads a demo dataset in the browser',
       input: 'demoId (string), baseUrl? (string)',
     },
+    {
+      name: 'list_pincode_states',
+      description: 'Lists all 38 states/UTs with pincode boundary data (~19,000 pincodes)',
+      input: 'None',
+    },
+    {
+      name: 'list_pincodes',
+      description: 'Lists all pincodes for a state with post office name and district',
+      input: 'state (string)',
+    },
+    {
+      name: 'render_pincodes_map',
+      description: 'Renders a pincode-level choropleth for a single state as 300 DPI PNG',
+      input: 'data [{pincode, value}], state, colorScale?, ...',
+    },
+    {
+      name: 'list_cities',
+      description: 'Lists 130+ cities with ward/zone boundary data (2,900+ datasets)',
+      input: 'None',
+    },
+    {
+      name: 'list_wards',
+      description: 'Lists all ward names for a given city',
+      input: 'cityId (string)',
+    },
+    {
+      name: 'render_city_map',
+      description: 'Renders a ward-level choropleth for an Indian city as 300 DPI PNG',
+      input: 'cityId, data [{ward, value}], colorScale?, ...',
+    },
+    {
+      name: 'trace_district_evolution',
+      description: 'Traces how a district evolved across Census years 1951-2011 (splits, merges, renames)',
+      input: 'district (string), state?, year?, includeGeojson?',
+    },
+    {
+      name: 'list_historical_district_names',
+      description: 'Lists all district names in the Census transition data (1951-2011)',
+      input: 'None',
+    },
   ];
 
   return (
@@ -219,9 +259,9 @@ npm run build`;
         </h2>
         <p className={`${textClass} text-lg`}>
           Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate
-          India maps through natural language. The MCP server exposes 8 tools for listing maps,
-          querying boundaries, rendering high-quality choropleth images, and generating shareable URLs.
-          City ward maps for 2,900+ datasets across 1,000+ cities are available via the web UI.
+          India maps through natural language. The MCP server exposes 15 tools for listing maps,
+          querying boundaries, rendering high-quality choropleth images at state, district, pincode,
+          and city ward levels, tracing historical district evolution, and generating shareable URLs.
         </p>
       </div>
 
@@ -289,7 +329,9 @@ npm run build`;
             <li>"Create a dark mode map of literacy rates using the viridis color scale"</li>
             <li>"What maps are available for the 1971 Census boundaries?"</li>
             <li>"Give me a CSV template for LGD district boundaries"</li>
-            <li>"Show ward-level data for Mumbai" (via web UI - 130+ cities available)</li>
+            <li>"Show pincode-level data for Delhi using viridis colors"</li>
+            <li>"Show ward-level data for Mumbai"</li>
+            <li>"How did Coimbatore district evolve across Census years?"</li>
           </ul>
         </div>
       </div>

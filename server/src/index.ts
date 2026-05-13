@@ -11,6 +11,7 @@ import { createMcpServer } from './mcpTools.js';
 import mapRoutes from './routes/mapRoutes.js';
 import districtsMapRoutes from './routes/districtsMapRoutes.js';
 import cityMapRoutes from './routes/cityMapRoutes.js';
+import pincodeMapRoutes from './routes/pincodeMapRoutes.js';
 import embedRoutes from './routes/embedRoutes.js';
 import proxyRoutes from './routes/proxyRoutes.js';
 import districtEvolutionRoutes from './routes/districtEvolutionRoutes.js';
@@ -149,6 +150,7 @@ app.delete('/api/mcp', async (req, res) => {
 app.use('/api/v1/states', mapRoutes);
 app.use('/api/v1/districts', districtsMapRoutes);
 app.use('/api/v1/cities', cityMapRoutes);
+app.use('/api/v1/pincodes', pincodeMapRoutes);
 app.use('/api/v1/embed', embedRoutes);
 app.use('/api/v1/proxy', proxyRoutes);
 app.use('/api/v1/district-evolution', districtEvolutionRoutes);

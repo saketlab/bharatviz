@@ -29,7 +29,7 @@ export interface YearEntry {
   district: string;
 }
 
-interface EvolutionResult {
+export interface EvolutionResult {
   query: { district: string; state?: string };
   matches: Array<{
     modern_state: string;

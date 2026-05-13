@@ -5,7 +5,7 @@
 > GitHub: https://github.com/saketlab/bharatviz
 > License: MIT
 
-BharatViz generates publication-ready choropleth maps of India at state and district levels. It supports 27 different administrative boundary sets spanning Census years 1941-2011, LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions. Output formats: PNG (300 DPI), SVG, PDF.
+BharatViz generates publication-ready choropleth maps of India at state, district, pincode, and city ward levels. It supports 41 different administrative boundary sets spanning Census years 1872-2011, LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions. Pincode maps cover 38 states with ~19,000 pincodes. City ward maps cover 130+ cities with 2,900+ datasets. Output formats: PNG (300 DPI), SVG, PDF.
 
 ---
 
@@ -56,11 +56,11 @@ Then add to your MCP client configuration:
 
 ---
 
-## MCP Tools Reference
+## MCP Tools Reference (15 tools)
 
 ### Tool: list_available_maps
 
-Lists all 27 available India map boundary sets with metadata.
+Lists all 41 available India map boundary sets with metadata.
 
 **Input:** None required
 
@@ -180,12 +180,144 @@ Returns a CSV template with all entity names pre-filled for a given boundary typ
 
 ---
 
+### Tool: list_pincode_states
+
+Lists all 38 Indian states/UTs that have pincode boundary data.
+
+**Input:** None required
+
+**Output:** JSON array of state name strings
+
+---
+
+### Tool: list_pincodes
+
+Lists all pincodes for a given Indian state with post office and district info.
+
+**Input:**
+- `state` (string, required) - State name (case-insensitive)
+
+**Output:** JSON array of `{pincode, office_name, district}` objects
+
+---
+
+### Tool: render_pincodes_map
+
+Renders a pincode-level choropleth map for a single Indian state. Returns 300 DPI PNG by default.
+
+**Input:**
+- `data` (array, required) - Array of `{pincode: string, value: number}` objects. Pincode matching is exact (6-digit string).
+- `state` (string, required) - State name. Use list_pincode_states to see options.
+- `colorScale` (string, optional) - Default: "spectral"
+- `title` (string, optional) - Default: "BharatViz"
+- `legendTitle` (string, optional) - Default: "Values"
+- `darkMode` (boolean, optional) - Default: false
+- `invertColors` (boolean, optional) - Default: false
+- `hidePincodeLabels` (boolean, optional) - Default: true
+- `hideValues` (boolean, optional) - Default: true
+- `outputFormat` (string, optional) - "png", "svg", or "both". Default: "png"
+
+**Output:** Image content (PNG) and/or text content (SVG string)
+
+**Example:**
+```json
+{
+  "data": [
+    {"pincode": "110001", "value": 45.2},
+    {"pincode": "110002", "value": 38.5},
+    {"pincode": "110003", "value": 62.1}
+  ],
+  "state": "Delhi",
+  "title": "Delhi Pincode Analysis",
+  "colorScale": "viridis"
+}
+```
+
+---
+
+### Tool: list_cities
+
+Lists all available Indian cities with ward/zone boundary data (130+ cities, 2900+ datasets).
+
+**Input:** None required
+
+**Output:** JSON array of `{id, displayName, state, type, featureCount}` objects
+
+---
+
+### Tool: list_wards
+
+Lists all ward names for a given city.
+
+**Input:**
+- `cityId` (string, required) - City ID from list_cities
+
+**Output:** JSON array of ward name strings
+
+---
+
+### Tool: render_city_map
+
+Renders a ward-level choropleth map for an Indian city.
+
+**Input:**
+- `cityId` (string, required) - City ID from list_cities
+- `data` (array, required) - Array of `{ward: string, value: number}` objects
+- `colorScale` (string, optional) - Default: "spectral"
+- `title` (string, optional) - Default: "BharatViz"
+- `legendTitle` (string, optional) - Default: "Values"
+- `darkMode` (boolean, optional) - Default: false
+- `invertColors` (boolean, optional) - Default: false
+- `hideWardNames` (boolean, optional) - Default: true
+- `hideValues` (boolean, optional) - Default: true
+- `outputFormat` (string, optional) - "png", "svg", or "both". Default: "png"
+
+---
+
+### Tool: trace_district_evolution
+
+Traces how a district's administrative boundaries evolved across Census years (1951-2011). Shows splits, merges, and renames.
+
+**Input:**
+- `district` (string, required) - District name (case-insensitive)
+- `state` (string, optional) - State name to narrow results
+- `year` (number, optional) - Census year: 1951, 1961, 1971, 1981, 1991, 2001, 2011
+- `includeGeojson` (boolean, optional) - Include GeoJSON boundary polygons. Default: false
+
+**Output:** JSON with query, matches containing evolution chains per state
+
+---
+
+### Tool: list_historical_district_names
+
+Lists all district names in the Census transition data (1951-2011).
+
+**Input:** None required
+
+**Output:** JSON array of `{district, state}` objects
+
+---
+
 ## Available Map IDs
 
-### Census Boundaries (1941-2011)
+### Census Boundaries (1872-2011)
 
 | Map ID | Level | Source | Year | Description |
 |--------|-------|--------|------|-------------|
+| census-1872-states | states | Census 1872 (Jolad et al.) | 1872 | State boundaries from the 1872 Census |
+| census-1872-districts | districts | Census 1872 (Jolad et al.) | 1872 | District boundaries from the 1872 Census |
+| census-1881-states | states | Census 1881 (Jolad et al.) | 1881 | State boundaries from the 1881 Census |
+| census-1881-districts | districts | Census 1881 (Jolad et al.) | 1881 | District boundaries from the 1881 Census |
+| census-1891-states | states | Census 1891 (Jolad et al.) | 1891 | State boundaries from the 1891 Census |
+| census-1891-districts | districts | Census 1891 (Jolad et al.) | 1891 | District boundaries from the 1891 Census |
+| census-1901-states | states | Census 1901 (Jolad et al.) | 1901 | State boundaries from the 1901 Census |
+| census-1901-districts | districts | Census 1901 (Jolad et al.) | 1901 | District boundaries from the 1901 Census |
+| census-1911-states | states | Census 1911 (Jolad et al.) | 1911 | State boundaries from the 1911 Census |
+| census-1911-districts | districts | Census 1911 (Jolad et al.) | 1911 | District boundaries from the 1911 Census |
+| census-1921-states | states | Census 1921 (Jolad et al.) | 1921 | State boundaries from the 1921 Census |
+| census-1921-districts | districts | Census 1921 (Jolad et al.) | 1921 | District boundaries from the 1921 Census |
+| census-1931-states | states | Census 1931 (Jolad et al.) | 1931 | State boundaries from the 1931 Census |
+| census-1931-districts | districts | Census 1931 (Jolad et al.) | 1931 | District boundaries from the 1931 Census |
 | census-1941-states | states | Census 1941 | 1941 | State boundaries from the 1941 Census |
 | census-1941-districts | districts | Census 1941 | 1941 | District boundaries from the 1941 Census |
 | census-1951-states | states | Census 1951 | 1951 | State boundaries from the 1951 Census |
@@ -329,6 +461,35 @@ Generate a single-state district map (zoomed view).
   "state": "Kerala",
   "mapType": "LGD",
   "colorScale": "blues",
+  "formats": ["png"]
+}
+```
+
+---
+
+### GET /pincodes/states
+
+List all states with pincode boundary data.
+
+**Response:** `{"success": true, "states": ["Andhra Pradesh", "Bihar", ...]}`
+
+### GET /pincodes/states/:state/pincodes
+
+List all pincodes for a state.
+
+**Response:** `{"success": true, "state": "Delhi", "count": 110, "pincodes": [{"pincode": "110001", "office_name": "New Delhi GPO", "district": "New Delhi"}, ...]}`
+
+### POST /pincodes/map
+
+Generate a pincode-level choropleth map for a single state.
+
+**Request body:**
+```json
+{
+  "data": [{"pincode": "110001", "value": 45.2}],
+  "state": "Delhi",
+  "colorScale": "viridis",
+  "mainTitle": "Delhi Pincodes",
   "formats": ["png"]
 }
 ```

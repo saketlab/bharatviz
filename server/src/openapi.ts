@@ -17,6 +17,7 @@ export const openApiSpec = {
   tags: [
     { name: 'District Evolution', description: 'Trace how districts changed across census years (1951–2011)' },
     { name: 'Maps', description: 'Generate choropleth maps as PNG / SVG / PDF' },
+    { name: 'Pincodes', description: 'Pincode-level maps for 38 Indian states (~19,000 pincodes)' },
   ],
   paths: {
     '/api/v1/district-evolution': {
@@ -248,6 +249,77 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
         responses: {
           '200': { description: 'Map image(s)' },
           '400': { description: 'Validation error' },
+        },
+      },
+    },
+    '/api/v1/pincodes/states': {
+      get: {
+        tags: ['Pincodes'],
+        summary: 'List states with pincode data',
+        description: 'Returns all 38 Indian states and union territories that have pincode boundary data available.',
+        responses: {
+          '200': {
+            description: 'List of state names',
+            content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean' }, states: { type: 'array', items: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+    '/api/v1/pincodes/states/{state}/pincodes': {
+      get: {
+        tags: ['Pincodes'],
+        summary: 'List pincodes for a state',
+        description: 'Returns all pincodes for a given state with post office name and district.',
+        parameters: [
+          { name: 'state', in: 'path', required: true, schema: { type: 'string' }, description: 'State name (case-insensitive)', example: 'Delhi' },
+        ],
+        responses: {
+          '200': {
+            description: 'List of pincodes',
+            content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean' }, state: { type: 'string' }, count: { type: 'number' }, pincodes: { type: 'array', items: { type: 'object', properties: { pincode: { type: 'string' }, office_name: { type: 'string' }, district: { type: 'string' } } } } } } } },
+          },
+          '404': { description: 'State not found' },
+        },
+      },
+    },
+    '/api/v1/pincodes/map': {
+      post: {
+        tags: ['Pincodes'],
+        summary: 'Generate pincode-level choropleth map',
+        description: 'Renders a pincode-level choropleth map for a single Indian state. Pincode matching is exact (6-digit string).',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['data', 'state'],
+                properties: {
+                  data: { type: 'array', items: { type: 'object', properties: { pincode: { type: 'string' }, value: { type: 'number' } }, required: ['pincode', 'value'] } },
+                  state: { type: 'string', description: 'State name (required)' },
+                  colorScale: { type: 'string', default: 'spectral' },
+                  invertColors: { type: 'boolean', default: false },
+                  hidePincodeLabels: { type: 'boolean', default: true },
+                  hideValues: { type: 'boolean', default: true },
+                  mainTitle: { type: 'string', default: 'BharatViz' },
+                  legendTitle: { type: 'string', default: 'Values' },
+                  darkMode: { type: 'boolean', default: false },
+                  formats: { type: 'array', items: { type: 'string', enum: ['png', 'svg', 'pdf'] }, default: ['png'] },
+                },
+              },
+              example: {
+                data: [{ pincode: '110001', value: 45.2 }, { pincode: '110002', value: 38.5 }],
+                state: 'Delhi',
+                colorScale: 'viridis',
+                legendTitle: 'Score',
+              },
+            },
+          },
+        },
+        responses: {
+          '200': { description: 'Map image(s) as base64-encoded JSON' },
+          '400': { description: 'Validation error' },
+          '404': { description: 'State not found' },
         },
       },
     },

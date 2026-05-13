@@ -19,6 +19,13 @@ const COLOR_SCALES = [
 
 const mapService = new McpMapService();
 
+function mapResultToContent(result: { svg?: string; png?: string }) {
+  const content: Array<{ type: string; text?: string; data?: string; mimeType?: string }> = [];
+  if (result.png) content.push({ type: 'image', data: result.png, mimeType: 'image/png' });
+  if (result.svg) content.push({ type: 'text', text: result.svg });
+  return { content };
+}
+
 /**
  * Creates a new MCP Server instance with all BharatViz tools registered.
  */
@@ -239,6 +246,190 @@ export function createMcpServer(): Server {
             required: ['demoId'],
           },
         },
+
+        // ── Pincode Tools ──────────────────────────────────────────────────
+        {
+          name: 'list_pincode_states',
+          description:
+            'Lists all 38 Indian states and union territories that have pincode boundary data. ' +
+            'Use the returned state names with list_pincodes and render_pincodes_map.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {},
+          },
+        },
+        {
+          name: 'list_pincodes',
+          description:
+            'Lists all pincodes (postal codes) for a given Indian state. ' +
+            'Returns pincode, post office name, and district for each entry. ' +
+            'Use list_pincode_states first to see available state names.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              state: {
+                type: 'string',
+                description: 'State name (e.g. "Maharashtra", "Delhi"). Case-insensitive.',
+              },
+            },
+            required: ['state'],
+          },
+        },
+        {
+          name: 'render_pincodes_map',
+          description:
+            'Renders a pincode-level choropleth map for a single Indian state. ' +
+            'Provide an array of {pincode, value} data and a state name. ' +
+            'Supports 17 color scales, dark mode, and PNG/SVG output. ' +
+            'Pincode matching is exact (6-digit string).',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    pincode: { type: 'string', description: '6-digit pincode (e.g. "110001")' },
+                    value: { type: 'number', description: 'Numeric value for this pincode' },
+                  },
+                  required: ['pincode', 'value'],
+                },
+                minItems: 1,
+                description: 'Array of {pincode, value} data points.',
+              },
+              state: {
+                type: 'string',
+                description: 'State name (required). Use list_pincode_states to see options.',
+              },
+              colorScale: {
+                type: 'string',
+                enum: COLOR_SCALES,
+                description: 'Color scale. Default: "spectral".',
+              },
+              title: { type: 'string', description: 'Map title. Default: "BharatViz".' },
+              legendTitle: { type: 'string', description: 'Legend title. Default: "Values".' },
+              darkMode: { type: 'boolean', description: 'Dark background. Default: false.' },
+              invertColors: { type: 'boolean', description: 'Invert color scale. Default: false.' },
+              hidePincodeLabels: { type: 'boolean', description: 'Hide pincode labels. Default: true.' },
+              hideValues: { type: 'boolean', description: 'Hide value labels. Default: true.' },
+              outputFormat: {
+                type: 'string',
+                enum: ['png', 'svg', 'both'],
+                description: 'Output format. Default: "png".',
+              },
+            },
+            required: ['data', 'state'],
+          },
+        },
+
+        // ── City/Ward Tools ────────────────────────────────────────────────
+        {
+          name: 'list_cities',
+          description:
+            'Lists all available Indian cities with ward/zone boundary data. ' +
+            'Returns city ID, display name, state, boundary type, and feature count. ' +
+            'Over 130 cities with 2900+ datasets available.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {},
+          },
+        },
+        {
+          name: 'list_wards',
+          description:
+            'Lists all ward names for a given city. Use the cityId from list_cities.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              cityId: {
+                type: 'string',
+                description: 'City ID from list_cities (e.g. "mumbai_admin_wards").',
+              },
+            },
+            required: ['cityId'],
+          },
+        },
+        {
+          name: 'render_city_map',
+          description:
+            'Renders a ward-level choropleth map for an Indian city. ' +
+            'Provide a cityId and array of {ward, value} data. ' +
+            'Supports 17 color scales, dark mode, and PNG/SVG output.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              cityId: {
+                type: 'string',
+                description: 'City ID from list_cities.',
+              },
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    ward: { type: 'string', description: 'Ward name' },
+                    value: { type: 'number', description: 'Numeric value' },
+                  },
+                  required: ['ward', 'value'],
+                },
+                minItems: 1,
+                description: 'Array of {ward, value} data points.',
+              },
+              colorScale: { type: 'string', enum: COLOR_SCALES, description: 'Color scale. Default: "spectral".' },
+              title: { type: 'string', description: 'Map title. Default: "BharatViz".' },
+              legendTitle: { type: 'string', description: 'Legend title. Default: "Values".' },
+              darkMode: { type: 'boolean', description: 'Dark background. Default: false.' },
+              invertColors: { type: 'boolean', description: 'Invert color scale. Default: false.' },
+              hideWardNames: { type: 'boolean', description: 'Hide ward labels. Default: true.' },
+              hideValues: { type: 'boolean', description: 'Hide value labels. Default: true.' },
+              outputFormat: { type: 'string', enum: ['png', 'svg', 'both'], description: 'Output format. Default: "png".' },
+            },
+            required: ['cityId', 'data'],
+          },
+        },
+
+        // ── District Evolution Tools ───────────────────────────────────────
+        {
+          name: 'trace_district_evolution',
+          description:
+            'Traces how a district\'s administrative boundaries evolved across Census years (1951-2011). ' +
+            'Shows splits, merges, and renames. For example, "Coimbatore" split into multiple districts over time. ' +
+            'Optionally includes GeoJSON boundary polygons for each year.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              district: {
+                type: 'string',
+                description: 'District name to trace (case-insensitive).',
+              },
+              state: {
+                type: 'string',
+                description: 'Optional state name to narrow results.',
+              },
+              year: {
+                type: 'number',
+                enum: [1951, 1961, 1971, 1981, 1991, 2001, 2011],
+                description: 'Optional: return only this census year.',
+              },
+              includeGeojson: {
+                type: 'boolean',
+                description: 'Include GeoJSON boundary polygons. Default: false.',
+              },
+            },
+            required: ['district'],
+          },
+        },
+        {
+          name: 'list_historical_district_names',
+          description:
+            'Lists all district names that appear in the Census transition data (1951-2011). ' +
+            'Returns {district, state} pairs. Useful for discovering exact names to use with trace_district_evolution.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {},
+          },
+        },
       ],
     };
   });
@@ -296,14 +487,7 @@ export function createMcpServer(): Server {
             outputFormat: args?.outputFormat as 'png' | 'svg' | 'both' | undefined,
           });
 
-          const content: Array<{ type: string; text?: string; data?: string; mimeType?: string }> = [];
-          if (result.png) {
-            content.push({ type: 'image', data: result.png, mimeType: 'image/png' });
-          }
-          if (result.svg) {
-            content.push({ type: 'text', text: result.svg });
-          }
-          return { content };
+          return mapResultToContent(result);
         }
 
         case 'render_districts_map': {
@@ -327,14 +511,7 @@ export function createMcpServer(): Server {
             outputFormat: args?.outputFormat as 'png' | 'svg' | 'both' | undefined,
           });
 
-          const content: Array<{ type: string; text?: string; data?: string; mimeType?: string }> = [];
-          if (result.png) {
-            content.push({ type: 'image', data: result.png, mimeType: 'image/png' });
-          }
-          if (result.svg) {
-            content.push({ type: 'text', text: result.svg });
-          }
-          return { content };
+          return mapResultToContent(result);
         }
 
         case 'get_csv_template': {
@@ -360,6 +537,113 @@ export function createMcpServer(): Server {
           const result = await mapService.getDemoUrl(demoId, args?.baseUrl as string | undefined);
           return {
             content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          };
+        }
+
+        // ── Pincode Tools ──────────────────────────────────────────────
+
+        case 'list_pincode_states': {
+          const states = mapService.listPincodeStates();
+          return {
+            content: [{ type: 'text', text: JSON.stringify(states, null, 2) }],
+          };
+        }
+
+        case 'list_pincodes': {
+          const state = args?.state as string;
+          if (!state) throw new Error('state is required');
+          const pincodes = await mapService.listPincodes(state);
+          return {
+            content: [{ type: 'text', text: JSON.stringify(pincodes, null, 2) }],
+          };
+        }
+
+        case 'render_pincodes_map': {
+          const data = args?.data as Array<{ pincode: string; value: number }>;
+          if (!data || !Array.isArray(data) || data.length === 0) {
+            throw new Error('data is required and must be a non-empty array of {pincode, value} objects');
+          }
+          const state = args?.state as string;
+          if (!state) throw new Error('state is required');
+
+          const result = await mapService.renderPincodesMap({
+            data,
+            state,
+            colorScale: args?.colorScale as string | undefined,
+            title: args?.title as string | undefined,
+            legendTitle: args?.legendTitle as string | undefined,
+            darkMode: args?.darkMode as boolean | undefined,
+            invertColors: args?.invertColors as boolean | undefined,
+            hidePincodeLabels: args?.hidePincodeLabels as boolean | undefined,
+            hideValues: args?.hideValues as boolean | undefined,
+            outputFormat: args?.outputFormat as 'png' | 'svg' | 'both' | undefined,
+          });
+
+          return mapResultToContent(result);
+        }
+
+        // ── City/Ward Tools ────────────────────────────────────────────
+
+        case 'list_cities': {
+          const cities = await mapService.listCities();
+          return {
+            content: [{ type: 'text', text: JSON.stringify(cities, null, 2) }],
+          };
+        }
+
+        case 'list_wards': {
+          const cityId = args?.cityId as string;
+          if (!cityId) throw new Error('cityId is required');
+          const wards = await mapService.listWards(cityId);
+          return {
+            content: [{ type: 'text', text: JSON.stringify(wards, null, 2) }],
+          };
+        }
+
+        case 'render_city_map': {
+          const cityId = args?.cityId as string;
+          const data = args?.data as Array<{ ward: string; value: number }>;
+          if (!cityId) throw new Error('cityId is required');
+          if (!data || !Array.isArray(data) || data.length === 0) {
+            throw new Error('data is required and must be a non-empty array of {ward, value} objects');
+          }
+
+          const result = await mapService.renderCityMap({
+            cityId,
+            data,
+            colorScale: args?.colorScale as string | undefined,
+            title: args?.title as string | undefined,
+            legendTitle: args?.legendTitle as string | undefined,
+            darkMode: args?.darkMode as boolean | undefined,
+            invertColors: args?.invertColors as boolean | undefined,
+            hideWardNames: args?.hideWardNames as boolean | undefined,
+            hideValues: args?.hideValues as boolean | undefined,
+            outputFormat: args?.outputFormat as 'png' | 'svg' | 'both' | undefined,
+          });
+
+          return mapResultToContent(result);
+        }
+
+        // ── District Evolution Tools ───────────────────────────────────
+
+        case 'trace_district_evolution': {
+          const district = args?.district as string;
+          if (!district) throw new Error('district is required');
+          const result = await mapService.traceDistrictEvolution({
+            district,
+            state: args?.state as string | undefined,
+            year: args?.year as number | undefined,
+            includeGeojson: args?.includeGeojson as boolean | undefined,
+          });
+          return {
+            content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          };
+        }
+
+        case 'list_historical_district_names': {
+          const names = await mapService.listHistoricalDistrictNames();
+          return {
+            content: [{ type: 'text', text: JSON.stringify(names, null, 2) }],
           };
         }
 
