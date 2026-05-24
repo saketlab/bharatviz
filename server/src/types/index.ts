@@ -81,7 +81,9 @@ export const DistrictsMapRequestSchema = z.object({
     customBoundaries: z.array(z.number()).optional()
   }).optional(),
 
-  formats: z.array(z.enum(['png', 'svg', 'pdf'])).optional().default(['png'])
+  formats: z.array(z.enum(['png', 'svg', 'pdf'])).optional().default(['png']),
+
+  featureNameProp: z.string().optional().default('district_name'),
 });
 
 export type DistrictsMapRequest = z.infer<typeof DistrictsMapRequestSchema>;

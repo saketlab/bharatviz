@@ -13,7 +13,7 @@ import { ALL_INDIA_STATE } from '../utils/constants.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const ALL_INDIA_GEOJSON = 'India_pincodes_simplified.geojson';
+const ALL_INDIA_GEOJSON = 'https://geo.bharatviz.org/geojsons/pincodes/India_pincodes_simplified.geojson';
 
 export interface PincodeMapRequest {
   data: Array<{ pincode: string; value: number }>;

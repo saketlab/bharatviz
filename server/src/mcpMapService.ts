@@ -1,6 +1,6 @@
-import { readFile } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { readFile } from 'fs/promises';
 import { StatesMapRenderer } from './services/mapRenderer.js';
 import { DistrictsMapRenderer } from './services/districtsMapRenderer.js';
 import { PincodeMapRenderer } from './services/pincodeMapRenderer.js';
@@ -23,79 +23,93 @@ export interface MapEntry {
   description: string;
   /** For district maps, the corresponding states GeoJSON for boundary overlays */
   statesFile?: string;
+  /** GeoJSON property name for the sub-unit label (defaults to "district_name") */
+  featureNameProp?: string;
 }
+
+const R2 = 'https://geo.bharatviz.org';
+const CENSUS = `${R2}/geojsons/census`;
+const DIST = `${R2}/geojsons/districts`;
 
 export const MAP_REGISTRY: Record<string, MapEntry> = {
   // Census boundaries
-  'census-1872-states': { id: 'census-1872-states', file: 'India-1872-states.geojson', level: 'states', source: 'Census 1872', year: 1872, description: 'State boundaries from the 1872 Census of India' },
-  'census-1872-districts': { id: 'census-1872-districts', file: 'India-1872-districts.geojson', level: 'districts', source: 'Census 1872', year: 1872, description: 'District boundaries from the 1872 Census of India', statesFile: 'India-1872-states.geojson' },
-  'census-1881-states': { id: 'census-1881-states', file: 'India-1881-states.geojson', level: 'states', source: 'Census 1881', year: 1881, description: 'State boundaries from the 1881 Census of India' },
-  'census-1881-districts': { id: 'census-1881-districts', file: 'India-1881-districts.geojson', level: 'districts', source: 'Census 1881', year: 1881, description: 'District boundaries from the 1881 Census of India', statesFile: 'India-1881-states.geojson' },
-  'census-1891-states': { id: 'census-1891-states', file: 'India-1891-states.geojson', level: 'states', source: 'Census 1891', year: 1891, description: 'State boundaries from the 1891 Census of India' },
-  'census-1891-districts': { id: 'census-1891-districts', file: 'India-1891-districts.geojson', level: 'districts', source: 'Census 1891', year: 1891, description: 'District boundaries from the 1891 Census of India', statesFile: 'India-1891-states.geojson' },
-  'census-1901-states': { id: 'census-1901-states', file: 'India-1901-states.geojson', level: 'states', source: 'Census 1901', year: 1901, description: 'State boundaries from the 1901 Census of India' },
-  'census-1901-districts': { id: 'census-1901-districts', file: 'India-1901-districts.geojson', level: 'districts', source: 'Census 1901', year: 1901, description: 'District boundaries from the 1901 Census of India', statesFile: 'India-1901-states.geojson' },
-  'census-1911-states': { id: 'census-1911-states', file: 'India-1911-states.geojson', level: 'states', source: 'Census 1911', year: 1911, description: 'State boundaries from the 1911 Census of India' },
-  'census-1911-districts': { id: 'census-1911-districts', file: 'India-1911-districts.geojson', level: 'districts', source: 'Census 1911', year: 1911, description: 'District boundaries from the 1911 Census of India', statesFile: 'India-1911-states.geojson' },
-  'census-1921-states': { id: 'census-1921-states', file: 'India-1921-states.geojson', level: 'states', source: 'Census 1921', year: 1921, description: 'State boundaries from the 1921 Census of India' },
-  'census-1921-districts': { id: 'census-1921-districts', file: 'India-1921-districts.geojson', level: 'districts', source: 'Census 1921', year: 1921, description: 'District boundaries from the 1921 Census of India', statesFile: 'India-1921-states.geojson' },
-  'census-1931-states': { id: 'census-1931-states', file: 'India-1931-states.geojson', level: 'states', source: 'Census 1931', year: 1931, description: 'State boundaries from the 1931 Census of India' },
-  'census-1931-districts': { id: 'census-1931-districts', file: 'India-1931-districts.geojson', level: 'districts', source: 'Census 1931', year: 1931, description: 'District boundaries from the 1931 Census of India', statesFile: 'India-1931-states.geojson' },
-  'census-1941-states': { id: 'census-1941-states', file: 'India-1941-states.geojson', level: 'states', source: 'Census 1941', year: 1941, description: 'State boundaries from the 1941 Census of India' },
-  'census-1941-districts': { id: 'census-1941-districts', file: 'India-1941-districts.geojson', level: 'districts', source: 'Census 1941', year: 1941, description: 'District boundaries from the 1941 Census of India', statesFile: 'India-1941-states.geojson' },
-  'census-1951-states': { id: 'census-1951-states', file: 'India-1951-states.geojson', level: 'states', source: 'Census 1951', year: 1951, description: 'State boundaries from the 1951 Census of India' },
-  'census-1951-districts': { id: 'census-1951-districts', file: 'India-1951-districts.geojson', level: 'districts', source: 'Census 1951', year: 1951, description: 'District boundaries from the 1951 Census of India', statesFile: 'India-1951-states.geojson' },
-  'census-1961-states': { id: 'census-1961-states', file: 'India-1961-states.geojson', level: 'states', source: 'Census 1961', year: 1961, description: 'State boundaries from the 1961 Census of India' },
-  'census-1961-districts': { id: 'census-1961-districts', file: 'India-1961-districts.geojson', level: 'districts', source: 'Census 1961', year: 1961, description: 'District boundaries from the 1961 Census of India', statesFile: 'India-1961-states.geojson' },
-  'census-1971-states': { id: 'census-1971-states', file: 'India-1971-states.geojson', level: 'states', source: 'Census 1971', year: 1971, description: 'State boundaries from the 1971 Census of India' },
-  'census-1971-districts': { id: 'census-1971-districts', file: 'India-1971-districts.geojson', level: 'districts', source: 'Census 1971', year: 1971, description: 'District boundaries from the 1971 Census of India', statesFile: 'India-1971-states.geojson' },
-  'census-1981-states': { id: 'census-1981-states', file: 'India-1981-states.geojson', level: 'states', source: 'Census 1981', year: 1981, description: 'State boundaries from the 1981 Census of India' },
-  'census-1981-districts': { id: 'census-1981-districts', file: 'India-1981-districts.geojson', level: 'districts', source: 'Census 1981', year: 1981, description: 'District boundaries from the 1981 Census of India', statesFile: 'India-1981-states.geojson' },
-  'census-1991-states': { id: 'census-1991-states', file: 'India-1991-states.geojson', level: 'states', source: 'Census 1991', year: 1991, description: 'State boundaries from the 1991 Census of India' },
-  'census-1991-districts': { id: 'census-1991-districts', file: 'India-1991-districts.geojson', level: 'districts', source: 'Census 1991', year: 1991, description: 'District boundaries from the 1991 Census of India', statesFile: 'India-1991-states.geojson' },
-  'census-2001-states': { id: 'census-2001-states', file: 'India-2001-states.geojson', level: 'states', source: 'Census 2001', year: 2001, description: 'State boundaries from the 2001 Census of India' },
-  'census-2001-districts': { id: 'census-2001-districts', file: 'India-2001-districts.geojson', level: 'districts', source: 'Census 2001', year: 2001, description: 'District boundaries from the 2001 Census of India', statesFile: 'India-2001-states.geojson' },
-  'census-2011-states': { id: 'census-2011-states', file: 'India-2011-states.geojson', level: 'states', source: 'Census 2011', year: 2011, description: 'State boundaries from the 2011 Census of India' },
-  'census-2011-districts': { id: 'census-2011-districts', file: 'India-2011-districts.geojson', level: 'districts', source: 'Census 2011', year: 2011, description: 'District boundaries from the 2011 Census of India', statesFile: 'India-2011-states.geojson' },
+  'census-1872-states': { id: 'census-1872-states', file: `${CENSUS}/India-1872-states.geojson`, level: 'states', source: 'Census 1872', year: 1872, description: 'State boundaries from the 1872 Census of India' },
+  'census-1872-districts': { id: 'census-1872-districts', file: `${CENSUS}/India-1872-districts.geojson`, level: 'districts', source: 'Census 1872', year: 1872, description: 'District boundaries from the 1872 Census of India', statesFile: `${CENSUS}/India-1872-states.geojson` },
+  'census-1881-states': { id: 'census-1881-states', file: `${CENSUS}/India-1881-states.geojson`, level: 'states', source: 'Census 1881', year: 1881, description: 'State boundaries from the 1881 Census of India' },
+  'census-1881-districts': { id: 'census-1881-districts', file: `${CENSUS}/India-1881-districts.geojson`, level: 'districts', source: 'Census 1881', year: 1881, description: 'District boundaries from the 1881 Census of India', statesFile: `${CENSUS}/India-1881-states.geojson` },
+  'census-1891-states': { id: 'census-1891-states', file: `${CENSUS}/India-1891-states.geojson`, level: 'states', source: 'Census 1891', year: 1891, description: 'State boundaries from the 1891 Census of India' },
+  'census-1891-districts': { id: 'census-1891-districts', file: `${CENSUS}/India-1891-districts.geojson`, level: 'districts', source: 'Census 1891', year: 1891, description: 'District boundaries from the 1891 Census of India', statesFile: `${CENSUS}/India-1891-states.geojson` },
+  'census-1901-states': { id: 'census-1901-states', file: `${CENSUS}/India-1901-states.geojson`, level: 'states', source: 'Census 1901', year: 1901, description: 'State boundaries from the 1901 Census of India' },
+  'census-1901-districts': { id: 'census-1901-districts', file: `${CENSUS}/India-1901-districts.geojson`, level: 'districts', source: 'Census 1901', year: 1901, description: 'District boundaries from the 1901 Census of India', statesFile: `${CENSUS}/India-1901-states.geojson` },
+  'census-1911-states': { id: 'census-1911-states', file: `${CENSUS}/India-1911-states.geojson`, level: 'states', source: 'Census 1911', year: 1911, description: 'State boundaries from the 1911 Census of India' },
+  'census-1911-districts': { id: 'census-1911-districts', file: `${CENSUS}/India-1911-districts.geojson`, level: 'districts', source: 'Census 1911', year: 1911, description: 'District boundaries from the 1911 Census of India', statesFile: `${CENSUS}/India-1911-states.geojson` },
+  'census-1921-states': { id: 'census-1921-states', file: `${CENSUS}/India-1921-states.geojson`, level: 'states', source: 'Census 1921', year: 1921, description: 'State boundaries from the 1921 Census of India' },
+  'census-1921-districts': { id: 'census-1921-districts', file: `${CENSUS}/India-1921-districts.geojson`, level: 'districts', source: 'Census 1921', year: 1921, description: 'District boundaries from the 1921 Census of India', statesFile: `${CENSUS}/India-1921-states.geojson` },
+  'census-1931-states': { id: 'census-1931-states', file: `${CENSUS}/India-1931-states.geojson`, level: 'states', source: 'Census 1931', year: 1931, description: 'State boundaries from the 1931 Census of India' },
+  'census-1931-districts': { id: 'census-1931-districts', file: `${CENSUS}/India-1931-districts.geojson`, level: 'districts', source: 'Census 1931', year: 1931, description: 'District boundaries from the 1931 Census of India', statesFile: `${CENSUS}/India-1931-states.geojson` },
+  'census-1941-states': { id: 'census-1941-states', file: `${CENSUS}/India-1941-states.geojson`, level: 'states', source: 'Census 1941', year: 1941, description: 'State boundaries from the 1941 Census of India' },
+  'census-1941-districts': { id: 'census-1941-districts', file: `${CENSUS}/India-1941-districts.geojson`, level: 'districts', source: 'Census 1941', year: 1941, description: 'District boundaries from the 1941 Census of India', statesFile: `${CENSUS}/India-1941-states.geojson` },
+  'census-1951-states': { id: 'census-1951-states', file: `${CENSUS}/India-1951-states.geojson`, level: 'states', source: 'Census 1951', year: 1951, description: 'State boundaries from the 1951 Census of India' },
+  'census-1951-districts': { id: 'census-1951-districts', file: `${CENSUS}/India-1951-districts.geojson`, level: 'districts', source: 'Census 1951', year: 1951, description: 'District boundaries from the 1951 Census of India', statesFile: `${CENSUS}/India-1951-states.geojson` },
+  'census-1961-states': { id: 'census-1961-states', file: `${CENSUS}/India-1961-states.geojson`, level: 'states', source: 'Census 1961', year: 1961, description: 'State boundaries from the 1961 Census of India' },
+  'census-1961-districts': { id: 'census-1961-districts', file: `${CENSUS}/India-1961-districts.geojson`, level: 'districts', source: 'Census 1961', year: 1961, description: 'District boundaries from the 1961 Census of India', statesFile: `${CENSUS}/India-1961-states.geojson` },
+  'census-1971-states': { id: 'census-1971-states', file: `${CENSUS}/India-1971-states.geojson`, level: 'states', source: 'Census 1971', year: 1971, description: 'State boundaries from the 1971 Census of India' },
+  'census-1971-districts': { id: 'census-1971-districts', file: `${CENSUS}/India-1971-districts.geojson`, level: 'districts', source: 'Census 1971', year: 1971, description: 'District boundaries from the 1971 Census of India', statesFile: `${CENSUS}/India-1971-states.geojson` },
+  'census-1981-states': { id: 'census-1981-states', file: `${CENSUS}/India-1981-states.geojson`, level: 'states', source: 'Census 1981', year: 1981, description: 'State boundaries from the 1981 Census of India' },
+  'census-1981-districts': { id: 'census-1981-districts', file: `${CENSUS}/India-1981-districts.geojson`, level: 'districts', source: 'Census 1981', year: 1981, description: 'District boundaries from the 1981 Census of India', statesFile: `${CENSUS}/India-1981-states.geojson` },
+  'census-1991-states': { id: 'census-1991-states', file: `${CENSUS}/India-1991-states.geojson`, level: 'states', source: 'Census 1991', year: 1991, description: 'State boundaries from the 1991 Census of India' },
+  'census-1991-districts': { id: 'census-1991-districts', file: `${CENSUS}/India-1991-districts.geojson`, level: 'districts', source: 'Census 1991', year: 1991, description: 'District boundaries from the 1991 Census of India', statesFile: `${CENSUS}/India-1991-states.geojson` },
+  'census-2001-states': { id: 'census-2001-states', file: `${CENSUS}/India-2001-states.geojson`, level: 'states', source: 'Census 2001', year: 2001, description: 'State boundaries from the 2001 Census of India' },
+  'census-2001-districts': { id: 'census-2001-districts', file: `${CENSUS}/India-2001-districts.geojson`, level: 'districts', source: 'Census 2001', year: 2001, description: 'District boundaries from the 2001 Census of India', statesFile: `${CENSUS}/India-2001-states.geojson` },
+  'census-2011-states': { id: 'census-2011-states', file: `${CENSUS}/India-2011-states.geojson`, level: 'states', source: 'Census 2011', year: 2011, description: 'State boundaries from the 2011 Census of India' },
+  'census-2011-districts': { id: 'census-2011-districts', file: `${CENSUS}/India-2011-districts.geojson`, level: 'districts', source: 'Census 2011', year: 2011, description: 'District boundaries from the 2011 Census of India', statesFile: `${CENSUS}/India-2011-states.geojson` },
 
   // Official boundaries (LGD - Local Government Directory)
-  'lgd-states': { id: 'lgd-states', file: 'India_LGD_states.geojson', level: 'states', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official state boundaries from the Local Government Directory' },
-  'lgd-districts': { id: 'lgd-districts', file: 'India_LGD_districts.geojson', level: 'districts', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official district boundaries from the Local Government Directory', statesFile: 'India_LGD_states.geojson' },
+  'lgd-states': { id: 'lgd-states', file: `${DIST}/India_LGD_states.geojson`, level: 'states', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official state boundaries from the Local Government Directory' },
+  'lgd-districts': { id: 'lgd-districts', file: `${DIST}/India_LGD_districts.geojson`, level: 'districts', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official district boundaries from the Local Government Directory', statesFile: `${DIST}/India_LGD_states.geojson` },
 
   // Survey boundaries (NFHS)
-  'nfhs4-states': { id: 'nfhs4-states', file: 'India_NFHS4_states_simplified.geojson', level: 'states', source: 'NFHS-4 (2015-16)', year: 2016, description: 'State boundaries from NFHS-4 survey (2015-16)' },
-  'nfhs4-districts': { id: 'nfhs4-districts', file: 'India_NFHS4_districts_simplified.geojson', level: 'districts', source: 'NFHS-4 (2015-16)', year: 2016, description: 'District boundaries from NFHS-4 survey (2015-16)', statesFile: 'India_NFHS4_states_simplified.geojson' },
-  'nfhs5-states': { id: 'nfhs5-states', file: 'India_NFHS5_states_simplified.geojson', level: 'states', source: 'NFHS-5 (2019-21)', year: 2021, description: 'State boundaries from NFHS-5 survey (2019-21)' },
-  'nfhs5-districts': { id: 'nfhs5-districts', file: 'India_NFHS5_districts_simplified.geojson', level: 'districts', source: 'NFHS-5 (2019-21)', year: 2021, description: 'District boundaries from NFHS-5 survey (2019-21)', statesFile: 'India_NFHS5_states_simplified.geojson' },
+  'nfhs4-states': { id: 'nfhs4-states', file: `${DIST}/India_NFHS4_states_simplified.geojson`, level: 'states', source: 'NFHS-4 (2015-16)', year: 2016, description: 'State boundaries from NFHS-4 survey (2015-16)' },
+  'nfhs4-districts': { id: 'nfhs4-districts', file: `${DIST}/India_NFHS4_districts_simplified.geojson`, level: 'districts', source: 'NFHS-4 (2015-16)', year: 2016, description: 'District boundaries from NFHS-4 survey (2015-16)', statesFile: `${DIST}/India_NFHS4_states_simplified.geojson` },
+  'nfhs5-states': { id: 'nfhs5-states', file: `${DIST}/India_NFHS5_states_simplified.geojson`, level: 'states', source: 'NFHS-5 (2019-21)', year: 2021, description: 'State boundaries from NFHS-5 survey (2019-21)' },
+  'nfhs5-districts': { id: 'nfhs5-districts', file: `${DIST}/India_NFHS5_districts_simplified.geojson`, level: 'districts', source: 'NFHS-5 (2019-21)', year: 2021, description: 'District boundaries from NFHS-5 survey (2019-21)', statesFile: `${DIST}/India_NFHS5_states_simplified.geojson` },
 
   // Survey of India
-  'soi-states': { id: 'soi-states', file: 'India-soi-states.geojson', level: 'states', source: 'Survey of India', year: 2020, description: 'State boundaries from the Survey of India' },
-  'soi-districts': { id: 'soi-districts', file: 'India-soi-districts.geojson', level: 'districts', source: 'Survey of India', year: 2020, description: 'District boundaries from the Survey of India', statesFile: 'India-soi-states.geojson' },
+  'soi-states': { id: 'soi-states', file: `${DIST}/India-soi-states.geojson`, level: 'states', source: 'Survey of India', year: 2020, description: 'State boundaries from the Survey of India' },
+  'soi-districts': { id: 'soi-districts', file: `${DIST}/India-soi-districts.geojson`, level: 'districts', source: 'Survey of India', year: 2020, description: 'District boundaries from the Survey of India', statesFile: `${DIST}/India-soi-states.geojson` },
 
   // ISRO Bhuvan
-  'bhuvan-states': { id: 'bhuvan-states', file: 'India-bhuvan-states.geojson', level: 'states', source: 'ISRO Bhuvan', year: 2020, description: 'State boundaries from ISRO Bhuvan satellite data' },
-  'bhuvan-districts': { id: 'bhuvan-districts', file: 'India-bhuvan-districts.geojson', level: 'districts', source: 'ISRO Bhuvan', year: 2020, description: 'District boundaries from ISRO Bhuvan satellite data', statesFile: 'India-bhuvan-states.geojson' },
+  'bhuvan-states': { id: 'bhuvan-states', file: `${DIST}/India-bhuvan-states.geojson`, level: 'states', source: 'ISRO Bhuvan', year: 2020, description: 'State boundaries from ISRO Bhuvan satellite data' },
+  'bhuvan-districts': { id: 'bhuvan-districts', file: `${DIST}/India-bhuvan-districts.geojson`, level: 'districts', source: 'ISRO Bhuvan', year: 2020, description: 'District boundaries from ISRO Bhuvan satellite data', statesFile: `${DIST}/India-bhuvan-states.geojson` },
 
   // NSSO Regions
-  'nsso-regions': { id: 'nsso-regions', file: 'India_NFHS5_NSSO_regions_boundaries.geojson', level: 'regions', source: 'NSSO', year: 2021, description: 'NSSO regional boundaries based on NFHS-5' },
-};
+  'nsso-regions': { id: 'nsso-regions', file: `${DIST}/India_NFHS5_NSSO_regions_boundaries.geojson`, level: 'regions', source: 'NSSO', year: 2021, description: 'NSSO regional boundaries based on NFHS-5', featureNameProp: 'nss_region' },
 
-/** Resolve the public/ directory containing GeoJSON files */
-function getPublicDir(): string {
-  return join(__dirname, '../public');
-}
+  // Sub-administrative boundaries
+  'lgd-subdistricts': { id: 'lgd-subdistricts', file: `${R2}/geojsons/admin/India-geodata-lgd-subdistricts.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'LGD subdistrict (tehsil/taluka) boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'subdistrict_name' },
+  'soi-subdistricts': { id: 'soi-subdistricts', file: `${R2}/geojsons/admin/India-geodata-soi-subdistricts.geojson`, level: 'districts', source: 'Survey of India', year: 2020, description: 'Survey of India subdistrict boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-soi-states.geojson`, featureNameProp: 'subdistrict_name' },
+  'lgd-blocks': { id: 'lgd-blocks', file: `${R2}/geojsons/admin/India-geodata-lgd-blocks.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'LGD block-level boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'block_name' },
+  'bhuvan-blocks': { id: 'bhuvan-blocks', file: `${R2}/geojsons/admin/India-geodata-bhuvan-blocks.geojson`, level: 'districts', source: 'ISRO Bhuvan', year: 2020, description: 'NRSC Bhuvan block-level boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-bhuvan-states.geojson`, featureNameProp: 'block_name' },
+  'pmgsy-blocks': { id: 'pmgsy-blocks', file: `${R2}/geojsons/admin/India-geodata-pmgsy-blocks.geojson`, level: 'districts', source: 'PMGSY', year: 2024, description: 'PMGSY (Pradhan Mantri Gram Sadak Yojana) block boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'block_name' },
+
+  // Electoral boundaries
+  'lgd-parliament': { id: 'lgd-parliament', file: `${R2}/geojsons/electoral/India-geodata-lgd-parliament.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Lok Sabha parliamentary constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
+  'lgd-assembly': { id: 'lgd-assembly', file: `${R2}/geojsons/electoral/India-geodata-lgd-assembly.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Vidhan Sabha assembly constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
+
+  // Environment boundaries
+  'gs-wildlife': { id: 'gs-wildlife', file: `${R2}/geojsons/environment/India-geodata-wildlife.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Protected wildlife sanctuaries and national parks', featureNameProp: 'area_name' },
+  'bm-eco-zones': { id: 'bm-eco-zones', file: `${R2}/geojsons/environment/India-geodata-eco-zones.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Biological / eco-sensitive zone boundaries', featureNameProp: 'area_name' },
+};
 
 /** GeoJSON cache to avoid reloading large files */
 const geojsonCache = new LRUCache<string, FeatureCollection>(50);
 
-async function loadGeoJSON(filename: string): Promise<FeatureCollection> {
-  if (geojsonCache.has(filename)) {
-    return geojsonCache.get(filename)!;
-  }
-  const filePath = join(getPublicDir(), filename);
-  const content = await readFile(filePath, 'utf-8');
-  const data = JSON.parse(content) as FeatureCollection;
-  geojsonCache.set(filename, data);
+async function loadGeoJSON(url: string): Promise<FeatureCollection> {
+  if (geojsonCache.has(url)) return geojsonCache.get(url)!;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.status}`);
+  const data = await response.json() as FeatureCollection;
+  geojsonCache.set(url, data);
   return data;
 }
 
@@ -187,11 +201,12 @@ export class McpMapService {
     if (!entry) throw new Error(`Unknown map ID: ${mapId}. Use list_available_maps to see valid IDs.`);
     if (entry.level === 'states') throw new Error(`Map ${mapId} is a state-level map. Use a district-level map ID instead.`);
 
+    const nameProp = entry.featureNameProp || 'district_name';
     const data = await loadGeoJSON(entry.file);
     const results: Array<{ state: string; district: string }> = [];
     for (const feature of data.features) {
       const stateName = String(feature.properties?.state_name || '').trim();
-      const districtName = String(feature.properties?.district_name || '').trim();
+      const districtName = String(feature.properties?.[nameProp] || '').trim();
       if (!districtName) continue;
       if (state && stateName.toLowerCase() !== state.toLowerCase()) continue;
       results.push({ state: stateName, district: districtName });
@@ -212,10 +227,12 @@ export class McpMapService {
       }
       return lines.join('\n');
     } else {
+      const nameProp = entry.featureNameProp || 'district_name';
       const districts = await this.listDistricts(mapId);
-      const lines = ['state,district,value'];
+      const hasState = districts.some(d => d.state);
+      const lines = [hasState ? `state,${nameProp},value` : `${nameProp},value`];
       for (const d of districts) {
-        lines.push(`${d.state},${d.district},`);
+        lines.push(hasState ? `${d.state},${d.district},` : `${d.district},`);
       }
       return lines.join('\n');
     }
@@ -240,8 +257,7 @@ export class McpMapService {
     if (entry.level !== 'states') throw new Error(`Map ${mapId} is not a state-level map.`);
 
     const renderer = new StatesMapRenderer();
-    const geojsonPath = join(getPublicDir(), entry.file);
-    await renderer.loadGeoJSONFromPath(geojsonPath);
+    await renderer.loadGeoJSONFromPath(entry.file);
 
     // Fuzzy-match user-provided state names to GeoJSON names
     const geojsonStates = await this.listStates(mapId);
@@ -286,21 +302,27 @@ export class McpMapService {
     if (entry.level === 'states') throw new Error(`Map ${mapId} is a state-level map. Use a district-level map ID.`);
 
     const renderer = new DistrictsMapRenderer();
-    const districtsPath = join(getPublicDir(), entry.file);
-    const statesPath = entry.statesFile ? join(getPublicDir(), entry.statesFile) : undefined;
-    await renderer.loadGeoJSONFromPaths(districtsPath, statesPath);
+    await renderer.loadGeoJSONFromPaths(entry.file, entry.statesFile);
 
     // Fuzzy-match user-provided names to GeoJSON names
     const allDistricts = await this.listDistricts(mapId);
-    const geojsonStates = [...new Set(allDistricts.map(d => d.state))];
+    const geojsonStates = [...new Set(allDistricts.map(d => d.state).filter(Boolean))];
+    const isStateless = geojsonStates.length === 0; // layers like eco-zones have no state_name
+    const allFeatureNames = isStateless ? allDistricts.map(d => d.district) : [];
     const districtsByState = new Map<string, string[]>();
-    for (const d of allDistricts) {
-      const key = d.state.toLowerCase().trim();
-      if (!districtsByState.has(key)) districtsByState.set(key, []);
-      districtsByState.get(key)!.push(d.district);
+    if (!isStateless) {
+      for (const d of allDistricts) {
+        const key = d.state.toLowerCase().trim();
+        if (!districtsByState.has(key)) districtsByState.set(key, []);
+        districtsByState.get(key)!.push(d.district);
+      }
     }
 
     const resolvedData = options.data.map(d => {
+      if (isStateless) {
+        const matchedDistrict = fuzzyMatchName(d.district, allFeatureNames) || d.district;
+        return { state: '', district: matchedDistrict, value: d.value };
+      }
       const matchedState = fuzzyMatchName(d.state, geojsonStates) || d.state;
       const stateDistricts = districtsByState.get(matchedState.toLowerCase().trim()) || [];
       const matchedDistrict = fuzzyMatchName(d.district, stateDistricts) || d.district;
@@ -319,6 +341,7 @@ export class McpMapService {
       state: options.state ? (fuzzyMatchName(options.state, geojsonStates) || options.state) : undefined,
       darkMode: options.darkMode ?? false,
       formats: ['svg'],
+      featureNameProp: entry.featureNameProp || 'district_name',
     });
 
     return this.formatOutput(svgString, options.outputFormat);

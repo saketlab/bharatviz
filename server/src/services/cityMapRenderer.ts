@@ -1,16 +1,10 @@
 import { JSDOM } from 'jsdom';
 import * as d3 from 'd3';
-import { readFile } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { ColorScale } from '../types/index.js';
 import type { FeatureCollection, Polygon, MultiPolygon } from 'geojson';
 import { getD3ColorInterpolator } from '../utils/discreteColorUtils.js';
 import { isColorDark, roundToSignificantDigits, escapeHtml } from '../utils/colorUtils.js';
 import { calculateBounds, projectCoordinate, convertCoordinatesToPath, calculateVisualCenter } from '../utils/geoProjection.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export interface CityMapRequest {
   cityId: string;
@@ -36,19 +30,11 @@ const geojsonCache = new LRUCache<string, FeatureCollection>(20);
 
 async function loadCityGeoJSON(cityId: string): Promise<FeatureCollection> {
   if (geojsonCache.has(cityId)) return geojsonCache.get(cityId)!;
-  const filePath = join(__dirname, '../../public/cities', `${cityId}.geojson`);
-  try {
-    const content = await readFile(filePath, 'utf-8');
-    const data = JSON.parse(content) as FeatureCollection;
-    geojsonCache.set(cityId, data);
-    return data;
-  } catch {
-    const response = await fetch(`https://bharatviz.org/cities/${cityId}.geojson`);
-    if (!response.ok) throw new Error(`City not found: "${cityId}". Use GET /api/v1/cities to list available city IDs.`);
-    const data = await response.json() as FeatureCollection;
-    geojsonCache.set(cityId, data);
-    return data;
-  }
+  const response = await fetch(`https://geo.bharatviz.org/geojsons/cities/${cityId}.geojson`);
+  if (!response.ok) throw new Error(`City not found: "${cityId}". Use GET /api/v1/cities to list available city IDs.`);
+  const data = await response.json() as FeatureCollection;
+  geojsonCache.set(cityId, data);
+  return data;
 }
 
 export class CityMapRenderer {

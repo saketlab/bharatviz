@@ -86,8 +86,14 @@ export class StatesMapRenderer {
   }
 
   async loadGeoJSONFromPath(geojsonPath: string): Promise<void> {
-    const geojsonContent = await readFile(geojsonPath, 'utf-8');
-    this.geojsonData = JSON.parse(geojsonContent);
+    if (geojsonPath.startsWith('http')) {
+      const r = await fetch(geojsonPath);
+      if (!r.ok) throw new Error(`Failed to fetch ${geojsonPath}: ${r.status}`);
+      this.geojsonData = await r.json() as StateFeatureCollection;
+    } else {
+      const geojsonContent = await readFile(geojsonPath, 'utf-8');
+      this.geojsonData = JSON.parse(geojsonContent);
+    }
   }
 
   async renderMap(request: StatesMapRequest): Promise<string> {

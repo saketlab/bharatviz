@@ -77,15 +77,17 @@ export class DistrictsMapRenderer {
   }
 
   async loadGeoJSONFromPaths(districtsPath: string, statesPath?: string): Promise<void> {
-    const districtsContent = await readFile(districtsPath, 'utf-8');
-    this.districtsGeojson = JSON.parse(districtsContent);
+    const load = async (p: string): Promise<GeoJSON.FeatureCollection> => {
+      if (p.startsWith('http')) {
+        const r = await fetch(p);
+        if (!r.ok) throw new Error(`Failed to fetch ${p}: ${r.status}`);
+        return r.json() as Promise<GeoJSON.FeatureCollection>;
+      }
+      return JSON.parse(await readFile(p, 'utf-8'));
+    };
 
-    if (statesPath) {
-      const statesContent = await readFile(statesPath, 'utf-8');
-      this.statesGeojson = JSON.parse(statesContent);
-    } else {
-      this.statesGeojson = null;
-    }
+    this.districtsGeojson = await load(districtsPath);
+    this.statesGeojson = statesPath ? await load(statesPath) : null;
   }
 
   private calculateBounds(geojson: GeoJSON.FeatureCollection): { minLng: number; maxLng: number; minLat: number; maxLat: number } {
@@ -196,7 +198,8 @@ export class DistrictsMapRenderer {
       legendTitle = 'Values',
       showStateBoundaries = true,
       state,
-      darkMode = false
+      darkMode = false,
+      featureNameProp = 'district_name',
     } = request;
 
     const values = data.map(d => d.value);
@@ -251,8 +254,10 @@ export class DistrictsMapRenderer {
 
     const getDistrictValue = (properties: Record<string, unknown>): number | undefined => {
       const stateName = String(properties.state_name || properties.STATE || '').toLowerCase().trim();
-      const districtName = String(properties.district_name || properties.DISTRICT || '').toLowerCase().trim();
-      const key = `${stateName}|${districtName}`;
+      const rawName = featureNameProp !== 'district_name'
+        ? String(properties[featureNameProp] || '').toLowerCase().trim()
+        : String(properties.district_name || properties.DISTRICT || '').toLowerCase().trim();
+      const key = `${stateName}|${rawName}`;
       return valueMap.get(key);
     };
 

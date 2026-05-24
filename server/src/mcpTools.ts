@@ -44,8 +44,9 @@ export function createMcpServer(): Server {
           description:
             'Lists all available India map boundary sets. Returns metadata for each map including ' +
             'the map ID (used in other tools), data source, year, administrative level (states/districts/regions), ' +
-            'and number of features. BharatViz supports 41 different boundary sets spanning Census years 1872-2011, ' +
-            'LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions.',
+            'and number of features. BharatViz supports 50+ boundary sets: Census years 1872-2011 (states + districts), ' +
+            'LGD (latest official districts and subdistricts), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, NSSO regions, ' +
+            'PMGSY blocks, Lok Sabha and Vidhan Sabha constituencies, wildlife sanctuaries, and eco-sensitive zones.',
           inputSchema: {
             type: 'object' as const,
             properties: {},
@@ -139,9 +140,11 @@ export function createMcpServer(): Server {
         {
           name: 'render_districts_map',
           description:
-            'Renders a choropleth map of India at the district level. Provide an array of ' +
+            'Renders a choropleth map of India at the district or sub-district level. Provide an array of ' +
             '{state, district, value} data points. Can render all-India districts or zoom into a single state. ' +
-            'Supports 17 color scales, dark mode, state boundary overlays, and multiple boundary sets. ' +
+            'Supports 17 color scales, dark mode, state boundary overlays, and multiple boundary sets including ' +
+            'districts (lgd-districts, census-*-districts), subdistricts (lgd-subdistricts, soi-subdistricts), ' +
+            'blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), and constituencies (lgd-parliament, lgd-assembly). ' +
             'Default output is 300 DPI PNG.',
           inputSchema: {
             type: 'object' as const,
@@ -151,18 +154,18 @@ export function createMcpServer(): Server {
                 items: {
                   type: 'object',
                   properties: {
-                    state: { type: 'string', description: 'State name containing this district' },
-                    district: { type: 'string', description: 'District name' },
-                    value: { type: 'number', description: 'Numeric value for this district' },
+                    state: { type: 'string', description: 'State name (omit for stateless layers like eco-zones)' },
+                    district: { type: 'string', description: 'Feature name (district, subdistrict, block, constituency, or area name depending on mapId)' },
+                    value: { type: 'number', description: 'Numeric value for this feature' },
                   },
-                  required: ['state', 'district', 'value'],
+                  required: ['district', 'value'],
                 },
                 minItems: 1,
-                description: 'Array of {state, district, value} data points to visualize.',
+                description: 'Array of {state, district, value} data points. For stateless layers (gs-wildlife, bm-eco-zones) omit state and use the area name as district.',
               },
               mapId: {
                 type: 'string',
-                description: 'Map boundary ID. Default: "lgd-districts". Use list_available_maps to see options.',
+                description: 'Map boundary ID. Default: "lgd-districts". Also supports subdistricts (lgd-subdistricts, soi-subdistricts), blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), constituencies (lgd-parliament, lgd-assembly). Use list_available_maps to see all options.',
               },
               state: {
                 type: 'string',
@@ -326,7 +329,7 @@ export function createMcpServer(): Server {
           description:
             'Lists all available Indian cities with ward/zone boundary data. ' +
             'Returns city ID, display name, state, boundary type, and feature count. ' +
-            'Over 130 cities with 2900+ datasets available.',
+            '3005 city datasets available across India.',
           inputSchema: {
             type: 'object' as const,
             properties: {},

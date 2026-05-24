@@ -153,7 +153,7 @@ const Index = () => {
 
   const [subAdminLayerId, setSubAdminLayerId] = useState<string>(DEFAULT_SUB_ADMIN_LAYER);
   const [subAdminLayerOpen, setSubAdminLayerOpen] = useState(false);
-  const [subAdminSelectedState, setSubAdminSelectedState] = useState<string>('All India');
+  const [subAdminSelectedState, setSubAdminSelectedState] = useState<string>('Maharashtra');
   const [subAdminStateOpen, setSubAdminStateOpen] = useState(false);
   const [subAdminStates, setSubAdminStates] = useState<string[]>([]);
   const [subAdminStatesLoading, setSubAdminStatesLoading] = useState(false);
@@ -173,7 +173,7 @@ const Index = () => {
 
   const [electoralLayerId, setElectoralLayerId] = useState<string>(DEFAULT_ELECTORAL_LAYER);
   const [electoralLayerOpen, setElectoralLayerOpen] = useState(false);
-  const [electoralSelectedState, setElectoralSelectedState] = useState<string>('All India');
+  const [electoralSelectedState, setElectoralSelectedState] = useState<string>('Maharashtra');
   const [electoralStateOpen, setElectoralStateOpen] = useState(false);
   const [electoralStates, setElectoralStates] = useState<string[]>([]);
   const [electoralStatesLoading, setElectoralStatesLoading] = useState(false);
@@ -825,7 +825,7 @@ const Index = () => {
   }, [activeTab, subAdminLayerId]);
 
   useEffect(() => {
-    setSubAdminSelectedState('All India');
+    setSubAdminSelectedState('Maharashtra');
     setSubAdminStates([]);
   }, [subAdminLayerId]);
 
@@ -843,7 +843,7 @@ const Index = () => {
   }, [activeTab, electoralLayerId]);
 
   useEffect(() => {
-    setElectoralSelectedState('All India');
+    setElectoralSelectedState('Maharashtra');
     setElectoralStates([]);
   }, [electoralLayerId]);
 
