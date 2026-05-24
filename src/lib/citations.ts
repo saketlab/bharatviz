@@ -152,6 +152,24 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
 }`,
     apa: 'ramSeraph. (2024). West Bengal AMRUT City Ward Boundaries. https://github.com/ramSeraph/opendata',
   },
+  GatiShakti: {
+    bibtex: `@misc{gatishakti,
+  author = {{PM GatiShakti National Master Plan, Government of India}},
+  title  = {Spatial Layers: Wildlife Sanctuaries and Eco-sensitive Zones},
+  year   = {2024},
+  url    = {https://pmgatishakti.gov.in}
+}`,
+    apa: 'PM GatiShakti National Master Plan, Government of India. (2024). Spatial Layers: Wildlife Sanctuaries and Eco-sensitive Zones. https://pmgatishakti.gov.in',
+  },
+  'OpenCity/Oorvani': {
+    bibtex: `@misc{opencity_oorvani,
+  author = {{OpenCity and Oorvani Foundation}},
+  title  = {India City Ward Boundaries},
+  year   = {2024},
+  url    = {https://opencity.in}
+}`,
+    apa: 'OpenCity and Oorvani Foundation. (2024). India City Ward Boundaries. https://opencity.in',
+  },
   'MCGM/MPCB': {
     bibtex: `@misc{mcgm_mpcb,
   author = {{Municipal Corporation of Greater Mumbai (MCGM) and Maharashtra Pollution Control Board (MPCB)}},

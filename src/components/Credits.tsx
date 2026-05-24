@@ -17,7 +17,7 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://mapservice.gov.in/gismapservice/rest/services/BharatMapService/Admin_Boundary_GramPanchayat/MapServer/0',
       usedFor: ['States map boundaries'],
       geojsonFiles: [
-        { name: 'States (2011)', path: '/India-2011-states.geojson' }
+        { name: 'States (2011)', path: 'https://geo.bharatviz.org/geojsons/census/India-2011-states.geojson' }
       ]
     },
     {
@@ -26,8 +26,8 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://mapservice.gov.in/gismapservice/rest/login?redirect=https%3A//mapservice.gov.in/gismapservice/rest/services/BharatMapService/Admin_Boundary_Village/MapServer/1',
       usedFor: ['LGD district boundaries'],
       geojsonFiles: [
-        { name: 'LGD Districts', path: '/India_LGD_districts.geojson' },
-        { name: 'LGD States', path: '/India_LGD_states.geojson' }
+        { name: 'LGD Districts', path: 'https://geo.bharatviz.org/geojsons/districts/India_LGD_districts.geojson' },
+        { name: 'LGD States', path: 'https://geo.bharatviz.org/geojsons/districts/India_LGD_states.geojson' }
       ]
     },
     {
@@ -36,8 +36,8 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://bhuvan.nrsc.gov.in/ngmaps',
       usedFor: ['Bhuvan district boundaries'],
       geojsonFiles: [
-        { name: 'Bhuvan Districts', path: '/India-bhuvan-districts.geojson' },
-        { name: 'Bhuvan States', path: '/India-bhuvan-states.geojson' }
+        { name: 'Bhuvan Districts', path: 'https://geo.bharatviz.org/geojsons/districts/India-bhuvan-districts.geojson' },
+        { name: 'Bhuvan States', path: 'https://geo.bharatviz.org/geojsons/districts/India-bhuvan-states.geojson' }
       ]
     },
     {
@@ -46,8 +46,8 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://www.surveyofindia.gov.in/',
       usedFor: ['Survey of India district boundaries'],
       geojsonFiles: [
-        { name: 'SOI Districts', path: '/India-soi-districts.geojson' },
-        { name: 'SOI States', path: '/India-soi-states.geojson' }
+        { name: 'SOI Districts', path: 'https://geo.bharatviz.org/geojsons/districts/India-soi-districts.geojson' },
+        { name: 'SOI States', path: 'https://geo.bharatviz.org/geojsons/districts/India-soi-states.geojson' }
       ]
     },
     {
@@ -56,22 +56,22 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://www.indiastatestory.in/datadownloads',
       usedFor: ['Census 1941', 'Census 1951', 'Census 1961', 'Census 1971', 'Census 1981', 'Census 1991', 'Census 2001', 'Census 2011'],
       geojsonFiles: [
-        { name: '1941 Districts', path: '/India-1941-districts.geojson' },
-        { name: '1941 States', path: '/India-1941-states.geojson' },
-        { name: '1951 Districts', path: '/India-1951-districts.geojson' },
-        { name: '1951 States', path: '/India-1951-states.geojson' },
-        { name: '1961 Districts', path: '/India-1961-districts.geojson' },
-        { name: '1961 States', path: '/India-1961-states.geojson' },
-        { name: '1971 Districts', path: '/India-1971-districts.geojson' },
-        { name: '1971 States', path: '/India-1971-states.geojson' },
-        { name: '1981 Districts', path: '/India-1981-districts.geojson' },
-        { name: '1981 States', path: '/India-1981-states.geojson' },
-        { name: '1991 Districts', path: '/India-1991-districts.geojson' },
-        { name: '1991 States', path: '/India-1991-states.geojson' },
-        { name: '2001 Districts', path: '/India-2001-districts.geojson' },
-        { name: '2001 States', path: '/India-2001-states.geojson' },
-        { name: '2011 Districts', path: '/India-2011-districts.geojson' },
-        { name: '2011 States', path: '/India-2011-states.geojson' }
+        { name: '1941 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1941-districts.geojson' },
+        { name: '1941 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1941-states.geojson' },
+        { name: '1951 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1951-districts.geojson' },
+        { name: '1951 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1951-states.geojson' },
+        { name: '1961 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1961-districts.geojson' },
+        { name: '1961 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1961-states.geojson' },
+        { name: '1971 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1971-districts.geojson' },
+        { name: '1971 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1971-states.geojson' },
+        { name: '1981 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1981-districts.geojson' },
+        { name: '1981 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1981-states.geojson' },
+        { name: '1991 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-1991-districts.geojson' },
+        { name: '1991 States', path: 'https://geo.bharatviz.org/geojsons/census/India-1991-states.geojson' },
+        { name: '2001 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-2001-districts.geojson' },
+        { name: '2001 States', path: 'https://geo.bharatviz.org/geojsons/census/India-2001-states.geojson' },
+        { name: '2011 Districts', path: 'https://geo.bharatviz.org/geojsons/census/India-2011-districts.geojson' },
+        { name: '2011 States', path: 'https://geo.bharatviz.org/geojsons/census/India-2011-states.geojson' }
       ]
     },
     {
@@ -80,11 +80,11 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://spatialdata.dhsprogram.com/home/',
       usedFor: ['NFHS-4 district boundaries', 'NFHS-5 district boundaries', 'NSSO regions'],
       geojsonFiles: [
-        { name: 'NFHS-4 Districts', path: '/India_NFHS4_districts_simplified.geojson' },
-        { name: 'NFHS-4 States', path: '/India_NFHS4_states_simplified.geojson' },
-        { name: 'NFHS-5 Districts', path: '/India_NFHS5_districts_simplified.geojson' },
-        { name: 'NFHS-5 States', path: '/India_NFHS5_states_simplified.geojson' },
-        { name: 'NSSO Regions', path: '/India_NFHS5_NSSO_regions_boundaries.geojson' }
+        { name: 'NFHS-4 Districts', path: 'https://geo.bharatviz.org/geojsons/districts/India_NFHS4_districts_simplified.geojson' },
+        { name: 'NFHS-4 States', path: 'https://geo.bharatviz.org/geojsons/districts/India_NFHS4_states_simplified.geojson' },
+        { name: 'NFHS-5 Districts', path: 'https://geo.bharatviz.org/geojsons/districts/India_NFHS5_districts_simplified.geojson' },
+        { name: 'NFHS-5 States', path: 'https://geo.bharatviz.org/geojsons/districts/India_NFHS5_states_simplified.geojson' },
+        { name: 'NSSO Regions', path: 'https://geo.bharatviz.org/geojsons/districts/India_NFHS5_NSSO_regions_boundaries.geojson' }
       ]
     },
     {

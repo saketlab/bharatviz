@@ -85,6 +85,8 @@ interface IndiaDistrictsMapProps {
   darkMode?: boolean;
   boundaryColor?: BoundaryColor;
   boundaryWidth?: number;
+  featureNameProp?: string; // GeoJSON property to match against d.district (defaults to district_name)
+  csvTemplateHeader?: string; // Column header for CSV template download (defaults to "district")
 }
 
 export interface IndiaDistrictsMapRef {
@@ -104,6 +106,7 @@ interface GeoJSONFeature {
     NAME_1?: string;
     name?: string;
     ST_NM?: string;
+    [key: string]: string | undefined;
   };
   geometry: {
     type: 'Polygon' | 'MultiPolygon';
@@ -145,8 +148,8 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   dataTitle,
   showStateBoundaries = true,
   colorBarSettings,
-  geojsonPath = '/India_LGD_Districts_simplified.geojson',
-  statesGeojsonPath = '/India_LGD_states.geojson',
+  geojsonPath = 'https://geo.bharatviz.org/geojsons/districts/India_LGD_districts.geojson',
+  statesGeojsonPath = 'https://geo.bharatviz.org/geojsons/districts/India_LGD_states.geojson',
   selectedState,
   gistUrlProvider,
   hideDistrictNames = true,
@@ -161,6 +164,8 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   darkMode: darkModeProp,
   boundaryColor = 'auto',
   boundaryWidth = 0.3,
+  featureNameProp = 'district_name',
+  csvTemplateHeader = 'district',
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -651,8 +656,8 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
   };
 
   const handleDistrictHover = (feature: GeoJSONFeature) => {
-    const { district_name, nss_region, state_name } = feature.properties;
-    const districtOrRegion = district_name || nss_region || '';
+    const { state_name } = feature.properties;
+    const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
     const districtData = data.find(d =>
       d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
       d.state.toLowerCase().trim() === (state_name || '').toLowerCase().trim()
@@ -812,7 +817,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       const newPosition = { x: cx - svgRect.left - draggingLabel.offset.x, y: cy - svgRect.top - draggingLabel.offset.y };
       const [stateName, districtName] = draggingLabel.districtKey.split("|");
       const feature = geojsonData?.features.find((f) => {
-        const dn = f.properties.district_name || f.properties.nss_region || "";
+        const dn = f.properties[featureNameProp] || f.properties.district_name || f.properties.nss_region || "";
         const sn = f.properties.state_name || "";
         return dn === districtName && sn === stateName;
       });
@@ -822,7 +827,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       setLabelPositions(newPositions);
     });
   },
-  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
+  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState, featureNameProp]
 );
 const handleLabelMouseUp = () => {
   setDraggingLabel(null);
@@ -855,7 +860,7 @@ const handleLabelTouchMove = useCallback(
       const newPosition = { x: tx - svgRect.left - draggingLabel.offset.x, y: ty - svgRect.top - draggingLabel.offset.y };
       const [stateName, districtName] = draggingLabel.districtKey.split("|");
       const feature = geojsonData?.features.find((f) => {
-        const dn = f.properties.district_name || f.properties.nss_region || "";
+        const dn = f.properties[featureNameProp] || f.properties.district_name || f.properties.nss_region || "";
         const sn = f.properties.state_name || "";
         return dn === districtName && sn === stateName;
       });
@@ -865,7 +870,7 @@ const handleLabelTouchMove = useCallback(
       setLabelPositions(newPositions);
     });
   },
-  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState]
+  [draggingLabel, labelPositions, geojsonData, bounds, isMobile, selectedState, featureNameProp]
 );
 
 
@@ -1128,15 +1133,10 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
       }
     },
     downloadCSVTemplate: () => {
-      const template = `district,value
-Nicobars,10
-North And Middle Andaman,20
-South Andaman,30
-Anantapur,40
-Chittoor,50`;
-      
+      const col = csvTemplateHeader;
+      const template = `state_name,${col},value\nAndaman And Nicobar Islands,Nicobars,10\nAndaman And Nicobar Islands,North And Middle Andaman,20\nAndhra Pradesh,Anantapur,40\nAndhra Pradesh,Chittoor,50`;
       const blob = new Blob([template], { type: 'text/csv' });
-      saveAs(blob, 'districts-template.csv');
+      saveAs(blob, `${col}-template.csv`);
     }
   }));
 
@@ -1164,7 +1164,7 @@ Chittoor,50`;
   if (!geojsonData || !bounds) {
     return (
       <div className="w-full h-96 flex items-center justify-center border border-border rounded bg-background">
-        <div className="text-xl text-muted-foreground">Loading districts map...</div>
+        <div className="text-xl text-muted-foreground">Loading map...</div>
       </div>
     );
   }
@@ -1204,7 +1204,7 @@ Chittoor,50`;
                 const mapWidth = isMobile ? 320 : 760;
                 const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
                 const path = convertCoordinatesToPath(feature.geometry.coordinates, mapWidth, mapHeight, isMobile ? 55 : 45, isMobile ? 15 : 20);
-                const districtOrRegion = feature.properties.district_name || feature.properties.nss_region || '';
+                const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
                 const districtData = data.find(d =>
                   d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
                   d.state.toLowerCase().trim() === (feature.properties.state_name || '').toLowerCase().trim()
@@ -1237,7 +1237,7 @@ Chittoor,50`;
   districtLabelData.length > 0 && (
     <g className="district-labels">
       {districtLabelData.map(({ feature, area }, index) => {
-        const districtName = feature.properties.district_name || feature.properties.nss_region || '';
+        const districtName = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
         const stateName = feature.properties.state_name || '';
         if (!districtName) return null;
 
