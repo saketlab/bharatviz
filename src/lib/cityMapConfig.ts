@@ -2967,6 +2967,29 @@ export const CITY_DATASETS: CityDataset[] = [
   geojsonPath: gistUrls[ds.id] || ds.geojsonPath,
 }));
 
+const R2 = 'https://geo.bharatviz.org';
+
+// R2-hosted geodata ward layers (higher-quality / alternative boundaries from geodata catalog)
+const R2_CITY_DATASETS: CityDataset[] = [
+  { id: 'r2_bengaluru_gba',        displayName: 'Bengaluru',  state: 'Karnataka',      type: 'wards', source: 'OpenCity/Oorvani', label: 'GBA Wards (geodata)',          featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-bengaluru-gba.geojson` },
+  { id: 'r2_bengaluru_bbmp_2022',  displayName: 'Bengaluru',  state: 'Karnataka',      type: 'wards', source: 'OpenCity/Oorvani', label: 'BBMP 2022 Wards (geodata)',    featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-bengaluru-bbmp2022.geojson` },
+  { id: 'r2_chennai',              displayName: 'Chennai',    state: 'Tamil Nadu',     type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-chennai.geojson` },
+  { id: 'r2_hyderabad',            displayName: 'Hyderabad',  state: 'Telangana',      type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-hyderabad.geojson` },
+  { id: 'r2_mumbai',               displayName: 'Mumbai',     state: 'Maharashtra',    type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-mumbai.geojson` },
+  { id: 'r2_mumbai_electoral2017', displayName: 'Mumbai',     state: 'Maharashtra',    type: 'wards', source: 'OpenCity/Oorvani', label: 'Electoral Wards 2017 (geodata)',featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-mumbai-electoral2017.geojson` },
+  { id: 'r2_kolkata',              displayName: 'Kolkata',    state: 'West Bengal',    type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-kolkata.geojson` },
+  { id: 'r2_pune',                 displayName: 'Pune',       state: 'Maharashtra',    type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-pune.geojson` },
+  { id: 'r2_ahmedabad',            displayName: 'Ahmedabad',  state: 'Gujarat',        type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-ahmedabad.geojson` },
+  { id: 'r2_jaipur',               displayName: 'Jaipur',     state: 'Rajasthan',      type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-jaipur.geojson` },
+  { id: 'r2_gurugram',             displayName: 'Gurugram',   state: 'Haryana',        type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-gurugram.geojson` },
+  { id: 'r2_kochi',                displayName: 'Kochi',      state: 'Kerala',         type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-kochi.geojson` },
+  { id: 'r2_bhubaneswar',          displayName: 'Bhubaneswar',state: 'Odisha',         type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-bhubaneswar.geojson` },
+  { id: 'r2_vizag',                displayName: 'Visakhapatnam', state: 'Andhra Pradesh', type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',           featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-vizag.geojson` },
+  { id: 'r2_thane',                displayName: 'Thane',      state: 'Maharashtra',    type: 'wards', source: 'OpenCity/Oorvani', label: 'Wards (geodata)',              featureCount: 0, geojsonPath: `${R2}/geojsons/wards/India-geodata-wards-thane.geojson` },
+];
+
+CITY_DATASETS.push(...R2_CITY_DATASETS);
+
 /**
  * Get all cities grouped by display name, each with their available datasets.
  * Cities are sorted alphabetically. Multi-dataset cities show all variants.

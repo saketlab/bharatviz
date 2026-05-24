@@ -15,6 +15,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
+import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer } from '@/lib/geodataLayerConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
@@ -84,7 +85,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -149,6 +150,46 @@ const Index = () => {
   const [stateGistMapping, setStateGistMapping] = useState<StateGistMapping | null>(null);
   const [stateSearchQuery, setStateSearchQuery] = useState<string>('');
   const [stateDistrictNAInfo, setStateDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
+
+  const [subAdminLayerId, setSubAdminLayerId] = useState<string>(DEFAULT_SUB_ADMIN_LAYER);
+  const [subAdminLayerOpen, setSubAdminLayerOpen] = useState(false);
+  const [subAdminSelectedState, setSubAdminSelectedState] = useState<string>('All India');
+  const [subAdminStateOpen, setSubAdminStateOpen] = useState(false);
+  const [subAdminStates, setSubAdminStates] = useState<string[]>([]);
+  const [subAdminStatesLoading, setSubAdminStatesLoading] = useState(false);
+  const [subAdminMapData, setSubAdminMapData] = useState<DistrictMapData[]>([]);
+  const [subAdminColorScale, setSubAdminColorScale] = useState<ColorScale>('spectral');
+  const [subAdminInvertColors, setSubAdminInvertColors] = useState(false);
+  const [subAdminDataTitle, setSubAdminDataTitle] = useState<string>('');
+  const [subAdminColorBarSettings, setSubAdminColorBarSettings] = useState<ColorBarSettings>({
+    isDiscrete: false,
+    binCount: 5,
+    customBoundaries: [],
+    useCustomBoundaries: false,
+  });
+  const [subAdminDataType, setSubAdminDataType] = useState<DataType>('numerical');
+  const [subAdminCategoryColors, setSubAdminCategoryColors] = useState<CategoryColorMapping>({});
+  const [subAdminNAInfo, setSubAdminNAInfo] = useState<NAInfo | undefined>(undefined);
+
+  const [electoralLayerId, setElectoralLayerId] = useState<string>(DEFAULT_ELECTORAL_LAYER);
+  const [electoralLayerOpen, setElectoralLayerOpen] = useState(false);
+  const [electoralSelectedState, setElectoralSelectedState] = useState<string>('All India');
+  const [electoralStateOpen, setElectoralStateOpen] = useState(false);
+  const [electoralStates, setElectoralStates] = useState<string[]>([]);
+  const [electoralStatesLoading, setElectoralStatesLoading] = useState(false);
+  const [electoralMapData, setElectoralMapData] = useState<DistrictMapData[]>([]);
+  const [electoralColorScale, setElectoralColorScale] = useState<ColorScale>('spectral');
+  const [electoralInvertColors, setElectoralInvertColors] = useState(false);
+  const [electoralDataTitle, setElectoralDataTitle] = useState<string>('');
+  const [electoralColorBarSettings, setElectoralColorBarSettings] = useState<ColorBarSettings>({
+    isDiscrete: false, binCount: 5, customBoundaries: [], useCustomBoundaries: false,
+  });
+  const [electoralDataType, setElectoralDataType] = useState<DataType>('numerical');
+  const [electoralCategoryColors, setElectoralCategoryColors] = useState<CategoryColorMapping>({});
+  const [electoralNAInfo, setElectoralNAInfo] = useState<NAInfo | undefined>(undefined);
+
+  const [environmentLayerId, setEnvironmentLayerId] = useState<string>(DEFAULT_ENVIRONMENT_LAYER);
+  const [environmentLayerOpen, setEnvironmentLayerOpen] = useState(false);
 
   const [cityMapData, setCityMapData] = useState<CityWardData[]>([]);
   const [cityColorScale, setCityColorScale] = useState<ColorScale>('spectral');
@@ -566,7 +607,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp', 'sub-admin', 'electoral', 'environment'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -771,6 +812,82 @@ const Index = () => {
       fetchStates();
     }
   }, [activeTab, selectedStateMapType]);
+
+  useEffect(() => {
+    if (activeTab !== 'sub-admin') return;
+    if (subAdminStates.length > 0) return;
+    const layer = getSubAdminLayer(subAdminLayerId);
+    setSubAdminStatesLoading(true);
+    getUniqueStatesFromGeoJSON(layer.url).then(states => {
+      setSubAdminStates(states);
+      setSubAdminStatesLoading(false);
+    }).catch(() => setSubAdminStatesLoading(false));
+  }, [activeTab, subAdminLayerId]);
+
+  useEffect(() => {
+    setSubAdminSelectedState('All India');
+    setSubAdminStates([]);
+  }, [subAdminLayerId]);
+
+  const subAdminMapRef = useRef<IndiaDistrictsMapRef>(null);
+
+  useEffect(() => {
+    if (activeTab !== 'electoral') return;
+    if (electoralStates.length > 0) return;
+    const layer = getElectoralLayer(electoralLayerId);
+    setElectoralStatesLoading(true);
+    getUniqueStatesFromGeoJSON(layer.url).then(states => {
+      setElectoralStates(states);
+      setElectoralStatesLoading(false);
+    }).catch(() => setElectoralStatesLoading(false));
+  }, [activeTab, electoralLayerId]);
+
+  useEffect(() => {
+    setElectoralSelectedState('All India');
+    setElectoralStates([]);
+  }, [electoralLayerId]);
+
+  const electoralMapRef = useRef<IndiaDistrictsMapRef>(null);
+
+  const handleElectoralDataLoad = (rawData: Array<{ state: string; district: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
+    const featureKey = getElectoralLayer(electoralLayerId).featureNameProp;
+    const data: DistrictMapData[] = (rawData as Array<Record<string, string | number>>).map(row => ({
+      state: String(row.state || row.state_name || ''),
+      district: String(row[featureKey] || row.district || row.district_name || ''),
+      value: row.value === '' || row.value === 'NA' ? null : row.value,
+    }));
+    setElectoralMapData(data);
+    setElectoralDataTitle(title || '');
+    setElectoralNAInfo(naInfo);
+    const values = data.map(d => d.value);
+    const dataType = detectDataType(values);
+    setElectoralDataType(dataType);
+    if (dataType === 'categorical') {
+      setElectoralCategoryColors(generateDefaultCategoryColors(getUniqueCategories(values)));
+      setElectoralColorBarSettings(prev => ({ ...prev, isDiscrete: true }));
+    }
+  };
+
+  const environmentMapRef = useRef<IndiaDistrictsMapRef>(null);
+
+  const handleSubAdminDataLoad = (rawData: Array<{ state: string; district: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
+    const featureKey = getSubAdminLayer(subAdminLayerId).featureNameProp;
+    const data: DistrictMapData[] = (rawData as Array<Record<string, string | number>>).map(row => ({
+      state: String(row.state || row.state_name || ''),
+      district: String(row[featureKey] || row.district || row.district_name || ''),
+      value: row.value === '' || row.value === 'NA' ? null : row.value,
+    }));
+    setSubAdminMapData(data);
+    setSubAdminDataTitle(title || '');
+    setSubAdminNAInfo(naInfo);
+    const values = data.map(d => d.value);
+    const dataType = detectDataType(values);
+    setSubAdminDataType(dataType);
+    if (dataType === 'categorical') {
+      setSubAdminCategoryColors(generateDefaultCategoryColors(getUniqueCategories(values)));
+      setSubAdminColorBarSettings(prev => ({ ...prev, isDiscrete: true }));
+    }
+  };
 
   useEffect(() => {
     async function updateChatContext() {
@@ -1052,6 +1169,9 @@ const Index = () => {
     if (activeTab === 'districts' || activeTab === 'regions') return districtMapRef.current;
     if (activeTab === 'cities') return cityMapRef.current;
     if (activeTab === 'pincodes') return pincodeMapRef.current;
+    if (activeTab === 'sub-admin') return subAdminMapRef.current;
+    if (activeTab === 'electoral') return electoralMapRef.current;
+    if (activeTab === 'environment') return environmentMapRef.current;
     return stateDistrictMapRef.current;
   };
 
@@ -1520,6 +1640,9 @@ const Index = () => {
               <TabsTrigger value="districts" className={primaryTabClass}>Districts</TabsTrigger>
               <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
               <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
+              <TabsTrigger value="sub-admin" className={primaryTabClass}>Sub-Admin</TabsTrigger>
+              <TabsTrigger value="electoral" className={primaryTabClass}>Electoral</TabsTrigger>
+              <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
               <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
               <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
             </TabsList>
@@ -2084,6 +2207,448 @@ const Index = () => {
                     boundaryWidth={boundaryWidth}
                     onBoundaryWidthChange={setBoundaryWidth}
                   />
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'sub-admin'}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <IndiaDistrictsMap
+                  ref={subAdminMapRef}
+                  data={subAdminMapData}
+                  colorScale={subAdminColorScale}
+                  invertColors={subAdminInvertColors}
+                  dataTitle={subAdminDataTitle}
+                  showStateBoundaries={subAdminSelectedState === 'All India'}
+                  colorBarSettings={subAdminColorBarSettings}
+                  geojsonPath={getSubAdminLayer(subAdminLayerId).url}
+                  statesGeojsonPath={getSubAdminLayer(subAdminLayerId).statesUrl}
+                  selectedState={subAdminSelectedState === 'All India' ? undefined : subAdminSelectedState}
+                  dataType={subAdminDataType}
+                  categoryColors={subAdminCategoryColors}
+                  naInfo={subAdminNAInfo}
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                  featureNameProp={getSubAdminLayer(subAdminLayerId).featureNameProp}
+                  csvTemplateHeader={getSubAdminLayer(subAdminLayerId).featureNameProp}
+                />
+                <div className="mt-4">
+                  <ExportOptions
+                    onExportPNG={handleExportPNG}
+                    onExportSVG={handleExportSVG}
+                    onExportPDF={handleExportPDF}
+                    onCopyToClipboard={handleCopyToClipboard}
+                    disabled={subAdminMapData.length === 0}
+                    geojsonDownloadUrl={getSubAdminLayer(subAdminLayerId).url}
+                    geojsonDownloadName={`India-${subAdminLayerId}${subAdminSelectedState !== 'All India' ? '-' + subAdminSelectedState : ''}.geojson`}
+                    citationInfo={{ source: getSubAdminLayer(subAdminLayerId).source, mapLabel: getSubAdminLayer(subAdminLayerId).displayName }}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Sub-district & Block Boundaries</h3>
+                  <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    Fine-grained administrative boundaries below district level. Select a layer, then optionally zoom into a single state.
+                  </p>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Layer
+                  </Label>
+                  <Popover open={subAdminLayerOpen} onOpenChange={setSubAdminLayerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={subAdminLayerOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getSubAdminLayer(subAdminLayerId).displayName}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search layer…" className="h-9" />
+                        <CommandList className="max-h-60">
+                          <CommandEmpty>No layer found.</CommandEmpty>
+                          <CommandGroup>
+                            {SUB_ADMIN_LAYERS.map(layer => (
+                              <CommandItem
+                                key={layer.id}
+                                value={`${layer.displayName} ${layer.description}`}
+                                onSelect={() => {
+                                  setSubAdminLayerId(layer.id);
+                                  setSubAdminLayerOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', subAdminLayerId === layer.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{layer.displayName}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{layer.description}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    State
+                  </Label>
+                  <Popover open={subAdminStateOpen} onOpenChange={setSubAdminStateOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={subAdminStateOpen}
+                        disabled={subAdminStatesLoading}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
+                      >
+                        <span className="truncate text-left">
+                          {subAdminStatesLoading ? 'Loading states…' : subAdminSelectedState}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search state…" className="h-9" />
+                        <CommandList className="max-h-72">
+                          <CommandEmpty>No state found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="All India"
+                              onSelect={() => {
+                                setSubAdminSelectedState('All India');
+                                setSubAdminStateOpen(false);
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <Check className={cn('h-4 w-4 shrink-0', subAdminSelectedState === 'All India' ? 'opacity-100' : 'opacity-0')} />
+                              All India
+                            </CommandItem>
+                            {subAdminStates.map(state => (
+                              <CommandItem
+                                key={state}
+                                value={state}
+                                onSelect={() => {
+                                  setSubAdminSelectedState(state);
+                                  setSubAdminStateOpen(false);
+                                }}
+                                className="flex items-center gap-2"
+                              >
+                                <Check className={cn('h-4 w-4 shrink-0', subAdminSelectedState === state ? 'opacity-100' : 'opacity-0')} />
+                                {state}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <FileUpload
+                  onDataLoad={handleSubAdminDataLoad}
+                  mode="districts"
+                  templateCsvPath={undefined}
+                  googleSheetLink={undefined}
+                  geojsonPath={getSubAdminLayer(subAdminLayerId).url}
+                  selectedState={subAdminSelectedState !== 'All India' ? subAdminSelectedState : undefined}
+                />
+                <div className="mt-6">
+                  <ColorMapChooser
+                    selectedScale={subAdminColorScale}
+                    onScaleChange={setSubAdminColorScale}
+                    invertColors={subAdminInvertColors}
+                    onInvertColorsChange={setSubAdminInvertColors}
+                    showStateBoundaries={subAdminSelectedState === 'All India'}
+                    colorBarSettings={subAdminColorBarSettings}
+                    onColorBarSettingsChange={setSubAdminColorBarSettings}
+                    dataType={subAdminDataType}
+                    categories={getUniqueCategories(subAdminMapData.map(d => d.value))}
+                    categoryColors={subAdminCategoryColors}
+                    onCategoryColorChange={(category, color) => {
+                      setSubAdminCategoryColors(prev => ({ ...prev, [category]: color }));
+                    }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
+                  />
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'electoral'}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <IndiaDistrictsMap
+                  ref={electoralMapRef}
+                  data={electoralMapData}
+                  colorScale={electoralColorScale}
+                  invertColors={electoralInvertColors}
+                  dataTitle={electoralDataTitle}
+                  showStateBoundaries={electoralSelectedState === 'All India'}
+                  colorBarSettings={electoralColorBarSettings}
+                  geojsonPath={getElectoralLayer(electoralLayerId).url}
+                  statesGeojsonPath={getElectoralLayer(electoralLayerId).statesUrl}
+                  selectedState={electoralSelectedState === 'All India' ? undefined : electoralSelectedState}
+                  dataType={electoralDataType}
+                  categoryColors={electoralCategoryColors}
+                  naInfo={electoralNAInfo}
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                  featureNameProp={getElectoralLayer(electoralLayerId).featureNameProp}
+                  csvTemplateHeader={getElectoralLayer(electoralLayerId).featureNameProp}
+                />
+                <div className="mt-4">
+                  <ExportOptions
+                    onExportPNG={handleExportPNG}
+                    onExportSVG={handleExportSVG}
+                    onExportPDF={handleExportPDF}
+                    onCopyToClipboard={handleCopyToClipboard}
+                    disabled={electoralMapData.length === 0}
+                    geojsonDownloadUrl={getElectoralLayer(electoralLayerId).url}
+                    geojsonDownloadName={`India-${electoralLayerId}${electoralSelectedState !== 'All India' ? '-' + electoralSelectedState : ''}.geojson`}
+                    citationInfo={{ source: getElectoralLayer(electoralLayerId).source, mapLabel: getElectoralLayer(electoralLayerId).displayName }}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Electoral Boundaries</h3>
+                  <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    Parliamentary and assembly constituency boundaries from the Local Government Directory.
+                  </p>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Layer
+                  </Label>
+                  <Popover open={electoralLayerOpen} onOpenChange={setElectoralLayerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={electoralLayerOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getElectoralLayer(electoralLayerId).displayName}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandList className="max-h-60">
+                          <CommandGroup>
+                            {ELECTORAL_LAYERS.map(layer => (
+                              <CommandItem
+                                key={layer.id}
+                                value={layer.displayName}
+                                onSelect={() => {
+                                  setElectoralLayerId(layer.id);
+                                  setElectoralLayerOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', electoralLayerId === layer.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{layer.displayName}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{layer.description}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    State
+                  </Label>
+                  <Popover open={electoralStateOpen} onOpenChange={setElectoralStateOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={electoralStateOpen}
+                        disabled={electoralStatesLoading}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
+                      >
+                        <span className="truncate text-left">
+                          {electoralStatesLoading ? 'Loading states…' : electoralSelectedState}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search state…" className="h-9" />
+                        <CommandList className="max-h-72">
+                          <CommandEmpty>No state found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="All India"
+                              onSelect={() => { setElectoralSelectedState('All India'); setElectoralStateOpen(false); }}
+                              className="flex items-center gap-2"
+                            >
+                              <Check className={cn('h-4 w-4 shrink-0', electoralSelectedState === 'All India' ? 'opacity-100' : 'opacity-0')} />
+                              All India
+                            </CommandItem>
+                            {electoralStates.map(state => (
+                              <CommandItem
+                                key={state}
+                                value={state}
+                                onSelect={() => { setElectoralSelectedState(state); setElectoralStateOpen(false); }}
+                                className="flex items-center gap-2"
+                              >
+                                <Check className={cn('h-4 w-4 shrink-0', electoralSelectedState === state ? 'opacity-100' : 'opacity-0')} />
+                                {state}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <FileUpload
+                  onDataLoad={handleElectoralDataLoad}
+                  mode="districts"
+                  geojsonPath={getElectoralLayer(electoralLayerId).url}
+                  selectedState={electoralSelectedState !== 'All India' ? electoralSelectedState : undefined}
+                />
+                <div className="mt-6">
+                  <ColorMapChooser
+                    selectedScale={electoralColorScale}
+                    onScaleChange={setElectoralColorScale}
+                    invertColors={electoralInvertColors}
+                    onInvertColorsChange={setElectoralInvertColors}
+                    showStateBoundaries={electoralSelectedState === 'All India'}
+                    colorBarSettings={electoralColorBarSettings}
+                    onColorBarSettingsChange={setElectoralColorBarSettings}
+                    dataType={electoralDataType}
+                    categories={getUniqueCategories(electoralMapData.map(d => d.value))}
+                    categoryColors={electoralCategoryColors}
+                    onCategoryColorChange={(category, color) => {
+                      setElectoralCategoryColors(prev => ({ ...prev, [category]: color }));
+                    }}
+                    boundaryColor={boundaryColor}
+                    onBoundaryColorChange={setBoundaryColor}
+                    boundaryWidth={boundaryWidth}
+                    onBoundaryWidthChange={setBoundaryWidth}
+                  />
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'environment'}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <IndiaDistrictsMap
+                  ref={environmentMapRef}
+                  data={[]}
+                  colorScale="spectral"
+                  invertColors={false}
+                  dataTitle=""
+                  showStateBoundaries={true}
+                  geojsonPath={getEnvironmentLayer(environmentLayerId).url}
+                  statesGeojsonPath={getEnvironmentLayer(environmentLayerId).statesUrl}
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                />
+                <div className="mt-4">
+                  <ExportOptions
+                    onExportPNG={handleExportPNG}
+                    onExportSVG={handleExportSVG}
+                    onExportPDF={handleExportPDF}
+                    onCopyToClipboard={handleCopyToClipboard}
+                    disabled={false}
+                    geojsonDownloadUrl={getEnvironmentLayer(environmentLayerId).url}
+                    geojsonDownloadName={`India-${environmentLayerId}.geojson`}
+                    citationInfo={{ source: getEnvironmentLayer(environmentLayerId).source, mapLabel: getEnvironmentLayer(environmentLayerId).displayName }}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Environment Boundaries</h3>
+                  <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    Reference boundaries for wildlife sanctuaries and eco-sensitive zones. Download the GeoJSON to use in your own analysis.
+                  </p>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Layer
+                  </Label>
+                  <Popover open={environmentLayerOpen} onOpenChange={setEnvironmentLayerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={environmentLayerOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getEnvironmentLayer(environmentLayerId).displayName}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandList className="max-h-60">
+                          <CommandGroup>
+                            {ENVIRONMENT_LAYERS.map(layer => (
+                              <CommandItem
+                                key={layer.id}
+                                value={layer.displayName}
+                                onSelect={() => {
+                                  setEnvironmentLayerId(layer.id);
+                                  setEnvironmentLayerOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', environmentLayerId === layer.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{layer.displayName}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{layer.description}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="p-3 rounded-md bg-[hsl(38,30%,96%)] dark:bg-[hsl(25,8%,10%)] border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                  These are reference-only layers. The map renders boundaries without choropleth colouring. Use the Export button to download the GeoJSON for your own analysis.
                 </div>
               </div>
             </div>

@@ -56,11 +56,13 @@ export const DEFAULT_LEGEND_POSITION = {
   DISTRICTS: { x: 390, y: 200 }
 };
 
+const R2 = 'https://geo.bharatviz.org';
+
 // File paths
 export const DATA_FILES = {
-  STATES_GEOJSON: '/India_LGD_states.geojson',
-  DISTRICTS_GEOJSON: '/India_LGD_Districts_simplified.geojson',
-  PINCODES_GEOJSON: '/India_pincodes_simplified.geojson',
+  STATES_GEOJSON: `${R2}/geojsons/districts/India_LGD_states.geojson`,
+  DISTRICTS_GEOJSON: `${R2}/geojsons/districts/India_LGD_districts.geojson`,
+  PINCODES_GEOJSON: `${R2}/geojsons/pincodes/India_pincodes_simplified.geojson`,
   STATES_DEMO_CSV: '/nfhs5_protein_consumption_eggs.csv',
   DISTRICTS_DEMO_CSV: '/districts_demo.csv'
 };

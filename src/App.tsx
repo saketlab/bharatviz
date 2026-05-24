@@ -13,6 +13,9 @@ const App = () => (
         <Route path="/districts" element={<Index />} />
         <Route path="/regions" element={<Index />} />
         <Route path="/state-districts" element={<Index />} />
+        <Route path="/sub-admin" element={<Index />} />
+        <Route path="/electoral" element={<Index />} />
+        <Route path="/environment" element={<Index />} />
         <Route path="/district-stats" element={<Index />} />
         <Route path="/help" element={<Index />} />
         <Route path="/credits" element={<Index />} />
