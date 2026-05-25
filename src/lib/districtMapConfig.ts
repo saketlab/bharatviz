@@ -251,6 +251,19 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     description: 'NFHS-4 survey district boundaries'
   },
 
+  // SHRUG Census 2011
+  SHRUG: {
+    id: 'SHRUG',
+    name: 'SHRUG',
+    displayName: 'SHRUG (Census 2011)',
+    geojsonPath: `${DISTRICTS}/India-shrug-district-pc11_simplified.geojson`,
+    states: `${DISTRICTS}/India_LGD_states.geojson`,
+    templateCsvPath: '/bharatviz-shrug-district-template.csv',
+    demoDataPath: '/districts_demo.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing',
+    description: 'Census 2011 district polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad 2021). Includes pc11 census identifiers. License: CC BY-NC-SA 4.0.'
+  },
+
   // NSSO Regions
   NSSO: {
     id: 'NSSO',

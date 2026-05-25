@@ -161,6 +161,53 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
 }`,
     apa: 'PM GatiShakti National Master Plan, Government of India. (2024). Spatial Layers: Wildlife Sanctuaries and Eco-sensitive Zones. https://pmgatishakti.gov.in',
   },
+
+  FSI: {
+    bibtex: `@misc{fsi_india,
+  author = {{Forest Survey of India, Ministry of Environment, Forest and Climate Change}},
+  title  = {Forest Administrative Boundaries: Circles, Divisions and Ranges},
+  year   = {2024},
+  url    = {https://fsi.nic.in}
+}`,
+    apa: 'Forest Survey of India, Ministry of Environment, Forest and Climate Change. (2024). Forest Administrative Boundaries: Circles, Divisions and Ranges. https://fsi.nic.in',
+  },
+
+  Susewind: {
+    bibtex: `@misc{susewind_2014,
+  author = {Susewind, Raphael},
+  title  = {Where to Vote: Indian Lok Sabha and Vidhan Sabha Constituency Boundaries (2014)},
+  year   = {2014},
+  url    = {https://github.com/ramSeraph/indian_admin_boundaries},
+  note   = {License: CC BY-NC-SA 4.0. Digitised and harmonised by ramSeraph.}
+}`,
+    apa: 'Susewind, R. (2014). Where to Vote: Indian Lok Sabha and Vidhan Sabha Constituency Boundaries (2014). https://github.com/ramSeraph/indian_admin_boundaries (License: CC BY-NC-SA 4.0)',
+  },
+
+  SHRUG: {
+    bibtex: `@article{asher2021,
+  author  = {Asher, Sam and Lunt, Tobias and Matsuura, Ryu and Novosad, Paul},
+  title   = {Development Research at High Geographic Resolution: An Analysis of Night-Lights, Firms, and Poverty in India Using the SHRUG Open Data Platform},
+  journal = {The World Bank Economic Review},
+  year    = {2021},
+  volume  = {35},
+  number  = {4},
+  pages   = {845--871},
+  doi     = {10.1093/wber/lhab003},
+  note    = {Boundary data: CC BY-NC-SA 4.0. Harmonised for BharatViz by ramSeraph (https://github.com/ramSeraph/indian_admin_boundaries).}
+}`,
+    apa: 'Asher, S., Lunt, T., Matsuura, R., & Novosad, P. (2021). Development Research at High Geographic Resolution: An Analysis of Night-Lights, Firms, and Poverty in India Using the SHRUG Open Data Platform. The World Bank Economic Review, 35(4), 845–871. https://doi.org/10.1093/wber/lhab003 (License: CC BY-NC-SA 4.0)',
+  },
+
+  SBM: {
+    bibtex: `@misc{sbm_ulbs,
+  author = {{Ministry of Housing and Urban Affairs, Government of India}},
+  title  = {Swachh Bharat Mission: Urban Local Body Boundaries},
+  year   = {2023},
+  url    = {https://sbm.gov.in},
+  note   = {Boundaries harmonised and published by ramSeraph (https://github.com/ramSeraph/indian_admin_boundaries).}
+}`,
+    apa: 'Ministry of Housing and Urban Affairs, Government of India. (2023). Swachh Bharat Mission: Urban Local Body Boundaries. https://sbm.gov.in',
+  },
   'OpenCity/Oorvani': {
     bibtex: `@misc{opencity_oorvani,
   author = {{OpenCity and Oorvani Foundation}},
@@ -211,6 +258,7 @@ const DISTRICT_SOURCE_KEYS: Record<string, string> = {
   NFHS5: 'NFHS-5',
   NFHS4: 'NFHS-4',
   NSSO: 'NSSO',
+  SHRUG: 'SHRUG',
 };
 
 export interface StructuredCitation {

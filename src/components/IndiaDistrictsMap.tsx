@@ -316,7 +316,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
           filteredDistrictsData = {
             ...districtsData,
             features: districtsData.features.filter(
-              (feature: GeoJSONFeature) => feature.properties.state_name === selectedState
+              (feature: GeoJSONFeature) => (feature.properties.state_name || '').toLowerCase() === selectedState.toLowerCase()
             )
           };
         }

@@ -1,3 +1,7 @@
+function toTitleCase(s: string): string {
+  return s.toLowerCase().replace(/(?:^|\s|-|&)\S/g, c => c.toUpperCase());
+}
+
 export function reconcileSelectedState(current: string, states: string[]): string {
   if (states.includes(current)) return current;
   const ci = states.find(s => s.toLowerCase() === current.toLowerCase());
@@ -37,7 +41,6 @@ export async function getUniqueStatesFromGeoJSON(geojsonPath: string): Promise<s
     if (geojsonData.features) {
       geojsonData.features.forEach((feature) => {
         const props = feature.properties;
-        // Try different property names for state
         const stateName =
           props.state_name ||
           props.NAME_1 ||
@@ -45,12 +48,11 @@ export async function getUniqueStatesFromGeoJSON(geojsonPath: string): Promise<s
           props.ST_NM;
 
         if (stateName) {
-          stateSet.add(stateName);
+          stateSet.add(toTitleCase(stateName));
         }
       });
     }
 
-    // Return sorted array of unique state names
     return Array.from(stateSet).sort();
   } catch (error) {
     console.error('Error loading GeoJSON:', error);
