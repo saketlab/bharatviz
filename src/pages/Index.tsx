@@ -15,7 +15,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
-import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer } from '@/lib/geodataLayerConfig';
+import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
@@ -85,7 +85,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -192,6 +192,9 @@ const Index = () => {
 
   const [environmentLayerId, setEnvironmentLayerId] = useState<string>(DEFAULT_ENVIRONMENT_LAYER);
   const [environmentLayerOpen, setEnvironmentLayerOpen] = useState(false);
+
+  const [urbanLayerId, setUrbanLayerId] = useState<string>(DEFAULT_URBAN_LAYER);
+  const [urbanLayerOpen, setUrbanLayerOpen] = useState(false);
 
   const [cityMapData, setCityMapData] = useState<CityWardData[]>([]);
   const [cityColorScale, setCityColorScale] = useState<ColorScale>('spectral');
@@ -609,7 +612,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp', 'sub-admin', 'electoral', 'environment'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp', 'sub-admin', 'electoral', 'environment', 'urban'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -873,6 +876,7 @@ const Index = () => {
   };
 
   const environmentMapRef = useRef<IndiaDistrictsMapRef>(null);
+  const urbanMapRef = useRef<IndiaDistrictsMapRef>(null);
 
   const handleSubAdminDataLoad = (rawData: Array<{ state: string; district: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
     const featureKey = getSubAdminLayer(subAdminLayerId).featureNameProp;
@@ -1176,6 +1180,7 @@ const Index = () => {
     if (activeTab === 'sub-admin') return subAdminMapRef.current;
     if (activeTab === 'electoral') return electoralMapRef.current;
     if (activeTab === 'environment') return environmentMapRef.current;
+    if (activeTab === 'urban') return urbanMapRef.current;
     return stateDistrictMapRef.current;
   };
 
@@ -1647,6 +1652,7 @@ const Index = () => {
               <TabsTrigger value="sub-admin" className={primaryTabClass}>Sub-Admin</TabsTrigger>
               <TabsTrigger value="electoral" className={primaryTabClass}>Electoral</TabsTrigger>
               <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
+              <TabsTrigger value="urban" className={primaryTabClass}>Urban</TabsTrigger>
               <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
               <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
             </TabsList>
@@ -2663,6 +2669,96 @@ const Index = () => {
 
                 <div className="p-3 rounded-md bg-[hsl(38,30%,96%)] dark:bg-[hsl(25,8%,10%)] border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                   These are reference-only layers. The map renders boundaries without choropleth colouring. Use the Export button to download the GeoJSON for your own analysis.
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'urban'}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <IndiaDistrictsMap
+                  ref={urbanMapRef}
+                  data={[]}
+                  colorScale="spectral"
+                  invertColors={false}
+                  dataTitle=""
+                  showStateBoundaries={true}
+                  geojsonPath={getUrbanLayer(urbanLayerId).url}
+                  statesGeojsonPath={getUrbanLayer(urbanLayerId).statesUrl}
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                />
+                <div className="mt-4">
+                  <ExportOptions
+                    onExportPNG={handleExportPNG}
+                    onExportSVG={handleExportSVG}
+                    onExportPDF={handleExportPDF}
+                    onCopyToClipboard={handleCopyToClipboard}
+                    disabled={false}
+                    geojsonDownloadUrl={getUrbanLayer(urbanLayerId).url}
+                    geojsonDownloadName={`India-${urbanLayerId}.geojson`}
+                    citationInfo={{ source: getUrbanLayer(urbanLayerId).source, mapLabel: getUrbanLayer(urbanLayerId).displayName }}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Urban Boundaries</h3>
+                  <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    Municipal body boundaries at the Urban Local Body (ULB) level. Distinct from ward-level city maps. Download the GeoJSON for your own analysis.
+                  </p>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Layer
+                  </Label>
+                  <Popover open={urbanLayerOpen} onOpenChange={setUrbanLayerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        role="combobox"
+                        aria-expanded={urbanLayerOpen}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                      >
+                        <span className="truncate text-left">
+                          {getUrbanLayer(urbanLayerId).displayName}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandList className="max-h-60">
+                          <CommandGroup>
+                            {URBAN_LAYERS.map(layer => (
+                              <CommandItem
+                                key={layer.id}
+                                value={layer.displayName}
+                                onSelect={() => {
+                                  setUrbanLayerId(layer.id);
+                                  setUrbanLayerOpen(false);
+                                }}
+                                className="flex items-start gap-2"
+                              >
+                                <Check className={cn('mt-0.5 h-4 w-4 shrink-0', urbanLayerId === layer.id ? 'opacity-100' : 'opacity-0')} />
+                                <div className="flex flex-col min-w-0">
+                                  <span>{layer.displayName}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{layer.description}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="p-3 rounded-md bg-[hsl(38,30%,96%)] dark:bg-[hsl(25,8%,10%)] border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                  Reference-only layer. SBM coverage is national but excludes Tripura, Mizoram, and Manipur. Use the Export button to download the GeoJSON for your own analysis.
                 </div>
               </div>
             </div>

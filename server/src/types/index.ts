@@ -11,7 +11,7 @@ export type ColorScale = typeof ColorScales[number];
 export const DistrictMapTypes = [
   '1872', '1881', '1891', '1901', '1911', '1921', '1931', '1941',
   '1951', '1961', '1971', '1981', '1991', '2001', '2011',
-  'LGD', 'BHUVAN', 'SOI', 'NFHS5', 'NFHS4', 'NSSO'
+  'LGD', 'BHUVAN', 'SOI', 'NFHS5', 'NFHS4', 'NSSO', 'SHRUG'
 ] as const;
 export type DistrictMapType = typeof DistrictMapTypes[number];
 

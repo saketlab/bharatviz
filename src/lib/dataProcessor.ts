@@ -35,7 +35,8 @@ const STATE_ALIASES: Record<string, string[]> = {
   'delhi': ['nct of delhi', 'national capital territory of delhi'],
   'dadra and nagar haveli': ['dadra and nagar haveli and daman and diu'],
   'daman and diu': ['dadra and nagar haveli and daman and diu'],
-  'jammu and kashmir': ['ladakh'],
+  'jammu and kashmir': ['ladakh', 'jammu and kashmir', 'j and k'],
+  'odisha': ['orissa'],
 };
 
 function resolveStateAlias(normalized: string, referenceList: string[]): string | null {
