@@ -1,6 +1,8 @@
-/**
- * State utility functions for extracting state information from GeoJSON
- */
+export function reconcileSelectedState(current: string, states: string[]): string {
+  if (states.includes(current)) return current;
+  const ci = states.find(s => s.toLowerCase() === current.toLowerCase());
+  return ci ?? states[0] ?? current;
+}
 
 interface GeoJSONFeature {
   properties: {

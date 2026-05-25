@@ -19,7 +19,7 @@ import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
-import { getUniqueStatesFromGeoJSON } from '@/lib/stateUtils';
+import { getUniqueStatesFromGeoJSON, reconcileSelectedState } from '@/lib/stateUtils';
 import { loadStateGistMapping, getAvailableStates, getStateGeoJSONUrl, type StateGistMapping } from '@/lib/stateGistMapping';
 import { getPincodeGeoJSONUrl, getPincodeGistStates, hasPincodeGists } from '@/lib/pincodeGistMapping';
 import { fetchWithCorsFallback } from '@/lib/corsProxy';
@@ -821,6 +821,7 @@ const Index = () => {
     getUniqueStatesFromGeoJSON(layer.url).then(states => {
       setSubAdminStates(states);
       setSubAdminStatesLoading(false);
+      setSubAdminSelectedState(current => reconcileSelectedState(current, states));
     }).catch(() => setSubAdminStatesLoading(false));
   }, [activeTab, subAdminLayerId]);
 
@@ -839,6 +840,7 @@ const Index = () => {
     getUniqueStatesFromGeoJSON(layer.url).then(states => {
       setElectoralStates(states);
       setElectoralStatesLoading(false);
+      setElectoralSelectedState(current => reconcileSelectedState(current, states));
     }).catch(() => setElectoralStatesLoading(false));
   }, [activeTab, electoralLayerId]);
 
@@ -2221,11 +2223,12 @@ const Index = () => {
                   colorScale={subAdminColorScale}
                   invertColors={subAdminInvertColors}
                   dataTitle={subAdminDataTitle}
-                  showStateBoundaries={subAdminSelectedState === 'All India'}
+                  showStateBoundaries={subAdminSelectedState === ALL_INDIA_STATE}
                   colorBarSettings={subAdminColorBarSettings}
                   geojsonPath={getSubAdminLayer(subAdminLayerId).url}
                   statesGeojsonPath={getSubAdminLayer(subAdminLayerId).statesUrl}
-                  selectedState={subAdminSelectedState === 'All India' ? undefined : subAdminSelectedState}
+                  selectedState={subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState}
+                  hideDistrictNames={subAdminSelectedState === ALL_INDIA_STATE}
                   dataType={subAdminDataType}
                   categoryColors={subAdminCategoryColors}
                   naInfo={subAdminNAInfo}
@@ -2402,11 +2405,12 @@ const Index = () => {
                   colorScale={electoralColorScale}
                   invertColors={electoralInvertColors}
                   dataTitle={electoralDataTitle}
-                  showStateBoundaries={electoralSelectedState === 'All India'}
+                  showStateBoundaries={electoralSelectedState === ALL_INDIA_STATE}
                   colorBarSettings={electoralColorBarSettings}
                   geojsonPath={getElectoralLayer(electoralLayerId).url}
                   statesGeojsonPath={getElectoralLayer(electoralLayerId).statesUrl}
-                  selectedState={electoralSelectedState === 'All India' ? undefined : electoralSelectedState}
+                  selectedState={electoralSelectedState === ALL_INDIA_STATE ? undefined : electoralSelectedState}
+                  hideDistrictNames={electoralSelectedState === ALL_INDIA_STATE}
                   dataType={electoralDataType}
                   categoryColors={electoralCategoryColors}
                   naInfo={electoralNAInfo}
