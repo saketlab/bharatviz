@@ -41,6 +41,7 @@ export const DISTRICT_MAP_TYPES: Record<string, { id: string; name: string; geoj
   NFHS5: { id: 'NFHS5', name: 'NFHS-5',        geojsonPath: 'India_NFHS5_districts_simplified.geojson', statesPath: 'India_LGD_states.geojson' },
   NFHS4: { id: 'NFHS4', name: 'NFHS-4',        geojsonPath: 'India_NFHS4_districts_simplified.geojson', statesPath: 'India_NFHS4_states_simplified.geojson' },
   NSSO:  { id: 'NSSO',  name: 'NSSO Regions',  geojsonPath: 'India_NFHS5_NSSO_regions_boundaries.geojson', statesPath: 'India_LGD_states.geojson' },
+  SHRUG: { id: 'SHRUG', name: 'SHRUG (Census 2011)', geojsonPath: 'https://geo.bharatviz.org/geojsons/districts/India-shrug-district-pc11_simplified.geojson', statesPath: 'India_LGD_states.geojson' },
 };
 
 export type DistrictMapType = string;
@@ -60,6 +61,11 @@ export class DistrictsMapRenderer {
     this.currentMapType = mapType;
 
     const loadOne = async (filename: string): Promise<GeoJSON.FeatureCollection> => {
+      if (filename.startsWith('http')) {
+        const response = await fetch(filename);
+        if (!response.ok) throw new Error(`Failed to fetch ${filename}: ${response.status} ${response.statusText}`);
+        return response.json() as Promise<GeoJSON.FeatureCollection>;
+      }
       const filePath = join(__dirname, '../../public', filename);
       try {
         return JSON.parse(await readFile(filePath, 'utf-8'));

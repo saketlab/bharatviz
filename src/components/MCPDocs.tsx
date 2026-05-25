@@ -164,12 +164,20 @@ npm run build`;
     { id: 'bhuvan-states', level: 'States', source: 'ISRO Bhuvan', year: '2020' },
     { id: 'bhuvan-districts', level: 'Districts', source: 'ISRO Bhuvan', year: '2020' },
     { id: 'nsso-regions', level: 'Regions', source: 'NSSO', year: '2021' },
+    { id: 'shrug-districts', level: 'Districts', source: 'SHRUG (Census 2011)', year: '2011' },
+    { id: 'shrug-subdistricts', level: 'Sub-districts', source: 'SHRUG (Census 2011)', year: '2011' },
+    { id: 'susewind-parliament-2014', level: 'Constituencies', source: 'Susewind (2014)', year: '2014' },
+    { id: 'susewind-assembly-2014', level: 'Constituencies', source: 'Susewind (2014)', year: '2014' },
+    { id: 'fsi-circles', level: 'Regions', source: 'FSI', year: '2024' },
+    { id: 'fsi-divisions', level: 'Regions', source: 'FSI', year: '2024' },
+    { id: 'fsi-ranges', level: 'Regions', source: 'FSI', year: '2024' },
+    { id: 'sbm-ulbs', level: 'Urban', source: 'SBM', year: '2024' },
   ];
 
   const tools = [
     {
       name: 'list_available_maps',
-      description: 'Lists all 41 boundary sets with metadata (id, source, year, level, feature count)',
+      description: 'Lists all 49 boundary sets with metadata (id, source, year, level, feature count)',
       input: 'None',
     },
     {
@@ -189,7 +197,7 @@ npm run build`;
     },
     {
       name: 'render_districts_map',
-      description: 'Renders a district-level choropleth (all-India or single state)',
+      description: 'Renders a district-level choropleth, all-India or zoomed to one state. Works for any sub-state boundary: districts, subdistricts, blocks, constituencies, FSI forest units, ULBs. Pass the mapId to choose the boundary set.',
       input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...',
     },
     {
@@ -204,7 +212,7 @@ npm run build`;
     },
     {
       name: 'get_demo_url',
-      description: 'Generates a shareable BharatViz URL that loads a demo dataset in the browser',
+      description: 'Returns a shareable URL that opens a demo dataset in the browser',
       input: 'demoId (string), baseUrl? (string)',
     },
     {
@@ -259,9 +267,10 @@ npm run build`;
         </h2>
         <p className={`${textClass} text-lg`}>
           Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate
-          India maps through natural language. The MCP server exposes 15 tools for listing maps,
-          querying boundaries, rendering high-quality choropleth images at state, district, pincode,
-          and city ward levels, tracing historical district evolution, and generating shareable URLs.
+          India maps from natural language. The server exposes 15 tools: listing boundary sets,
+          querying state and district names, rendering choropleth maps at state, district, pincode,
+          and city ward levels across 49 boundary sets, tracing how districts split and merged
+          between 1951 and 2011, and generating shareable URLs.
         </p>
       </div>
 
@@ -321,7 +330,7 @@ npm run build`;
             2. Start asking for maps
           </h4>
           <p className={`${textClass} mb-2`}>
-            Once connected, simply ask your AI assistant to draw maps of India:
+            Once connected, ask your AI assistant:
           </p>
           <ul className={`list-disc list-inside space-y-1 ${textClass}`}>
             <li>"Draw a map of India showing GDP by state"</li>
@@ -332,6 +341,9 @@ npm run build`;
             <li>"Show pincode-level data for Delhi using viridis colors"</li>
             <li>"Show ward-level data for Mumbai"</li>
             <li>"How did Coimbatore district evolve across Census years?"</li>
+            <li>"Map forest divisions in Maharashtra using FSI boundaries"</li>
+            <li>"Show 2014 parliamentary constituencies colored by winning margin"</li>
+            <li>"Map urban local bodies in Gujarat"</li>
           </ul>
         </div>
       </div>
@@ -400,7 +412,7 @@ npm run build`;
 
         <div className={cardClass}>
           <p className={`${textClass} mb-3`}>
-            Every view in BharatViz is fully RESTful - all settings are persisted in the URL so you can bookmark, share, or embed any configuration.
+            All settings are in the URL — bookmark any view, share it, or load it in an iframe.
           </p>
 
           <div className="overflow-x-auto">
@@ -500,9 +512,9 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
 
         <div className={cardClass}>
           <p className={`${textClass} mb-4`}>
-            Trace how a district's name and boundaries changed across Indian Census years (1951–2011).
-            Districts can split, merge, or be renamed — the API traces these changes forward and backward.
-            An interactive Swagger UI is available at{' '}
+            Trace how a district's name and boundaries changed across Census years (1951–2011).
+            Districts split, merge, and get renamed; the API follows those changes in both directions.
+            Swagger UI at{' '}
             <a
               href="/api-docs"
               className="text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)] underline underline-offset-2"
@@ -696,7 +708,7 @@ head(df)`}
       <div className="space-y-4">
         <h3 id="map-boundaries" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Map className="h-5 w-5" />
-          All 41 Available Map Boundaries
+          All 49 Available Map Boundaries
           <SectionAnchor id="map-boundaries" />
         </h3>
 
