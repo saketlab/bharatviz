@@ -35,6 +35,7 @@ interface ColorMapChooserProps {
   onBoundaryWidthChange?: (width: number) => void;
   hideDistrictNames?: boolean;
   onHideDistrictNamesChange?: (hide: boolean) => void;
+  districtNamesLabel?: string;
   hideDistrictValues?: boolean;
   onHideDistrictValuesChange?: (hide: boolean) => void;
   colorBarSettings?: ColorBarSettings;
@@ -72,7 +73,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
   showStateBoundaries, onShowStateBoundariesChange,
   boundaryColor, onBoundaryColorChange,
   boundaryWidth, onBoundaryWidthChange,
-  hideDistrictNames, onHideDistrictNamesChange,
+  hideDistrictNames, onHideDistrictNamesChange, districtNamesLabel,
   hideDistrictValues, onHideDistrictValuesChange,
   colorBarSettings, onColorBarSettingsChange,
   dataType = 'numerical', categories = [], categoryColors = {}, onCategoryColorChange,
@@ -307,7 +308,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
                 {hideDistrictNames !== undefined && onHideDistrictNamesChange && (
                   <label className={checkboxClass}>
                     <input type="checkbox" checked={hideDistrictNames} onChange={e => onHideDistrictNamesChange(e.target.checked)} className="accent-[hsl(28,62%,48%)]" />
-                    Hide district names
+                    {districtNamesLabel || 'Hide district names'}
                   </label>
                 )}
                 {hideDistrictValues !== undefined && onHideDistrictValuesChange && (

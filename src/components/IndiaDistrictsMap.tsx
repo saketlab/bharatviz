@@ -87,6 +87,7 @@ interface IndiaDistrictsMapProps {
   boundaryWidth?: number;
   featureNameProp?: string; // GeoJSON property to match against d.district (defaults to district_name)
   csvTemplateHeader?: string; // Column header for CSV template download (defaults to "district")
+  labelScale?: number; // Optional: multiplier on label font size (defaults to 1)
 }
 
 export interface IndiaDistrictsMapRef {
@@ -141,6 +142,11 @@ const colorScales: Record<ColorScale, (t: number) => string> = {
   puor: interpolatePuOr,
 };
 
+const toDisplayName = (name: string): string =>
+  name === name.toUpperCase()
+    ? name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+    : name;
+
 export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistrictsMapProps>(({
   data,
   colorScale,
@@ -166,6 +172,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   boundaryWidth = 0.3,
   featureNameProp = 'district_name',
   csvTemplateHeader = 'district',
+  labelScale = 1,
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -1252,7 +1259,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
         const scaledArea = Math.sqrt(normalizedArea);
         const baseFinalFontSize = minFontSize + scaledArea * (maxFontSize - minFontSize);
         const fontSizingFactor = selectedState ? 0.75 : 0.65;
-        const finalFontSize = baseFinalFontSize * fontSizingFactor;
+        const finalFontSize = baseFinalFontSize * fontSizingFactor * labelScale;
 
         const districtKey = `${stateName}|${districtName}`;
         const customPosition = labelPositions.get(districtKey);
@@ -1297,7 +1304,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 handleLabelTouchStart(e, districtKey, labelPosition.x, labelPosition.y)
               }
             >
-              {districtName}
+              {toDisplayName(districtName)}
             </text>
 
             {districtValue !== undefined && (

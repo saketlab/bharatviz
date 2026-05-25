@@ -170,6 +170,7 @@ const Index = () => {
   const [subAdminDataType, setSubAdminDataType] = useState<DataType>('numerical');
   const [subAdminCategoryColors, setSubAdminCategoryColors] = useState<CategoryColorMapping>({});
   const [subAdminNAInfo, setSubAdminNAInfo] = useState<NAInfo | undefined>(undefined);
+  const [subAdminHideNames, setSubAdminHideNames] = useState(false);
 
   const [electoralLayerId, setElectoralLayerId] = useState<string>(DEFAULT_ELECTORAL_LAYER);
   const [electoralLayerOpen, setElectoralLayerOpen] = useState(false);
@@ -187,6 +188,7 @@ const Index = () => {
   const [electoralDataType, setElectoralDataType] = useState<DataType>('numerical');
   const [electoralCategoryColors, setElectoralCategoryColors] = useState<CategoryColorMapping>({});
   const [electoralNAInfo, setElectoralNAInfo] = useState<NAInfo | undefined>(undefined);
+  const [electoralHideNames, setElectoralHideNames] = useState(false);
 
   const [environmentLayerId, setEnvironmentLayerId] = useState<string>(DEFAULT_ENVIRONMENT_LAYER);
   const [environmentLayerOpen, setEnvironmentLayerOpen] = useState(false);
@@ -2228,7 +2230,8 @@ const Index = () => {
                   geojsonPath={getSubAdminLayer(subAdminLayerId).url}
                   statesGeojsonPath={getSubAdminLayer(subAdminLayerId).statesUrl}
                   selectedState={subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState}
-                  hideDistrictNames={subAdminSelectedState === ALL_INDIA_STATE}
+                  hideDistrictNames={subAdminHideNames}
+                  labelScale={0.7}
                   dataType={subAdminDataType}
                   categoryColors={subAdminCategoryColors}
                   naInfo={subAdminNAInfo}
@@ -2377,6 +2380,9 @@ const Index = () => {
                     onScaleChange={setSubAdminColorScale}
                     invertColors={subAdminInvertColors}
                     onInvertColorsChange={setSubAdminInvertColors}
+                    hideDistrictNames={subAdminHideNames}
+                    onHideDistrictNamesChange={setSubAdminHideNames}
+                    districtNamesLabel="Hide names"
                     showStateBoundaries={subAdminSelectedState === 'All India'}
                     colorBarSettings={subAdminColorBarSettings}
                     onColorBarSettingsChange={setSubAdminColorBarSettings}
@@ -2410,7 +2416,8 @@ const Index = () => {
                   geojsonPath={getElectoralLayer(electoralLayerId).url}
                   statesGeojsonPath={getElectoralLayer(electoralLayerId).statesUrl}
                   selectedState={electoralSelectedState === ALL_INDIA_STATE ? undefined : electoralSelectedState}
-                  hideDistrictNames={electoralSelectedState === ALL_INDIA_STATE}
+                  hideDistrictNames={electoralHideNames}
+                  labelScale={0.7}
                   dataType={electoralDataType}
                   categoryColors={electoralCategoryColors}
                   naInfo={electoralNAInfo}
@@ -2549,6 +2556,9 @@ const Index = () => {
                     onScaleChange={setElectoralColorScale}
                     invertColors={electoralInvertColors}
                     onInvertColorsChange={setElectoralInvertColors}
+                    hideDistrictNames={electoralHideNames}
+                    onHideDistrictNamesChange={setElectoralHideNames}
+                    districtNamesLabel="Hide names"
                     showStateBoundaries={electoralSelectedState === 'All India'}
                     colorBarSettings={electoralColorBarSettings}
                     onColorBarSettingsChange={setElectoralColorBarSettings}
