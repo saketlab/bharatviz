@@ -30,7 +30,33 @@ function mapResultToContent(result: { svg?: string; png?: string }) {
 export function createMcpServer(): Server {
   const server = new Server(
     { name: 'bharatviz', version: '1.0.0' },
-    { capabilities: { tools: {} } }
+    {
+      capabilities: { tools: {} },
+      instructions:
+        'India geospatial data, socioeconomic analytics, and map rendering for 641 districts.\n\n' +
+        'DATA LAYERS:\n' +
+        '• Census 2011 demographics: literacy, SC/ST share, population, workers ' +
+        '  (mapId: shrug-census; columns: pca11__lit_total, pca11__sc_share, pca11__st_share, pca11__tot_p)\n' +
+        '• SECC 2012 rural poverty: education, housing, income sources, deprivation ' +
+        '  (mapId: shrug-secc)\n' +
+        '• Economic Census 1990-2013: employment, firm counts, sector breakdown ' +
+        '  (mapId: shrug-economic)\n' +
+        '• Environment: NDVI, nightlights, rainfall, road access ' +
+        '  (mapId: shrug-environment, shrug-roads)\n' +
+        '• NFHS-4 and NFHS-5 health survey indicators by district ' +
+        '  (mapId: nfhs4-districts, nfhs5-districts)\n' +
+        '• Health facilities: 10 datasets (hospitals, blood banks, anganwadis 1.2M, PHCs, dispensaries)\n' +
+        '• 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, ' +
+        '  Lok Sabha/Vidhan Sabha constituencies, wildlife sanctuaries\n\n' +
+        'TOOLS:\n' +
+        '• rank_features: rank districts by any column (literacy, SC%, stunting, poverty, nightlights)\n' +
+        '• correlate: Pearson/Spearman between two columns across districts or states\n' +
+        '• summarize_layer: statistics grouped by state or region\n' +
+        '• render_map: choropleth PNG/SVG for any district-level dataset\n' +
+        '• spatial queries: facility counts per district/block, point-in-boundary\n' +
+        '• trace_district_evolution: boundary changes across Census years\n\n' +
+        'Start with list_available_maps or layer_schema("shrug-census") to see columns.',
+    }
   );
 
   // -------------------------------------------------------------------------
@@ -42,11 +68,19 @@ export function createMcpServer(): Server {
         {
           name: 'list_available_maps',
           description:
-            'Lists all available India map boundary sets. Returns metadata for each map including ' +
-            'the map ID (used in other tools), data source, year, administrative level (states/districts/regions), ' +
-            'and number of features. BharatViz supports 50+ boundary sets: Census years 1872-2011 (states + districts), ' +
-            'LGD (latest official districts and subdistricts), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, NSSO regions, ' +
-            'PMGSY blocks, Lok Sabha and Vidhan Sabha constituencies, wildlife sanctuaries, and eco-sensitive zones.',
+            'Lists all available India map layers — boundaries AND data layers. Returns metadata for each layer ' +
+            'including the map ID (used in all other tools), data source, year, level (states/districts/regions/points), ' +
+            'and number of features.\n\n' +
+            'KEY DATA LAYERS FOR ANALYTICS (use mapId with rank_features / correlate / summarize_layer):\n' +
+            '• shrug-census   — Census 2011 district demographics: literacy (pca11__lit_total, pca11__lit_f), ' +
+            'SC/ST share (pca11__sc_share, pca11__st_share), population (pca11__tot_p), workers. Also 1991/2001.\n' +
+            '• shrug-secc     — SECC 2012 rural poverty: education, housing, income sources, land ownership.\n' +
+            '• shrug-economic — Economic Census 1990-2013: employment, firm counts, sector breakdown.\n' +
+            '• shrug-environment — NDVI, nightlights, rainfall, distance to roads/towns.\n' +
+            '• shrug-roads    — Road density and quality by district.\n' +
+            '• census2011     — Census 2011 districts with population and basic demographics.\n' +
+            'BOUNDARY SETS: Census years 1872-2011, LGD, NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, NSSO regions, ' +
+            'PMGSY blocks, Lok Sabha/Vidhan Sabha constituencies, wildlife sanctuaries, eco-sensitive zones.',
           inputSchema: {
             type: 'object' as const,
             properties: {},
@@ -641,8 +675,9 @@ export function createMcpServer(): Server {
             'for one or more numeric columns in any registered map layer. ' +
             'Use groupBy to break down stats by a categorical column (e.g. state_name). ' +
             'Use columns:["*"] to summarize all numeric columns at once. ' +
-            'Examples: "Mean literacy rate per state in Census 2011", ' +
-            '"Distribution of SC% across all districts", "Sum of population by state".',
+            'Examples: "Mean literacy rate per state" → mapId="shrug-census", columns=["pca11__lit_total"], groupBy="state_name". ' +
+            '"Distribution of SC% across all districts" → mapId="shrug-census", columns=["pca11__sc_share"]. ' +
+            '"Sum of population by state" → mapId="shrug-census", columns=["pca11__tot_p"], groupBy="state_name".',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -678,8 +713,11 @@ export function createMcpServer(): Server {
           description:
             'Sort features in any map layer by a numeric column and return the top or bottom N. ' +
             'Use filters to restrict to a state or other subset. ' +
-            'Examples: "10 districts with lowest literacy in Bihar", ' +
-            '"Top 20 ST-majority districts nationwide", "Airports by elevation".',
+            'Examples: ' +
+            '"20 districts with lowest literacy" → mapId="shrug-census", column="pca11__lit_total", order="asc". ' +
+            '"Top 20 ST-majority districts" → mapId="shrug-census", column="pca11__st_share", order="desc". ' +
+            '"Airports by elevation" → mapId="airports", column="elevation_ft", order="desc". ' +
+            '"Lowest literacy in Bihar" → mapId="shrug-census", column="pca11__lit_total", order="asc", filters={"state_name":"Bihar"}.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -704,9 +742,10 @@ export function createMcpServer(): Server {
             'Compute Pearson and Spearman correlation between two numeric columns across features. ' +
             'Use groupBy to compute correlation separately per group (e.g. per state). ' +
             'Use sampleRows to get scatter-plot data points. ' +
-            'Examples: "Correlation between SC% and literacy rate", ' +
-            '"Does language diversity predict lower literacy?", ' +
-            '"State-level breakdown of SC% vs literacy correlation".',
+            'Examples: ' +
+            '"Correlation between SC% and literacy" → mapId="shrug-census", x="pca11__sc_share", y="pca11__lit_total". ' +
+            '"State-level SC% vs literacy" → same mapId, groupBy="state_name". ' +
+            '"NFHS stunting vs poverty" → mapId="shrug-secc", x/y from secc columns.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -983,15 +1022,16 @@ export function createMcpServer(): Server {
           name: 'list_categories',
           description:
             'Lists all available BharatViz map layers grouped by category. ' +
-            'Categories: admin (Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, SHRUG), ' +
+            'Categories: admin (Census 1872-2011 boundaries, LGD, SOI, Bhuvan, blocks, subdistricts; ' +
+            'SHRUG data layers: shrug-census/shrug-secc/shrug-economic/shrug-environment/shrug-roads/shrug-facebook), ' +
             'electoral (Lok Sabha, Vidhan Sabha constituencies), ' +
             'survey (NFHS-4, NFHS-5, NSSO regions), ' +
             'environment (wildlife sanctuaries, eco-sensitive zones, FSI forests), ' +
             'urban (SBM urban local bodies), ' +
-            'health (NHP health facilities 166k, hospital directory 10k, blood banks 897, anganwadis 1.2M, ' +
-            'BharatMaps health centers 148k, GatiShakti child care 4k, SOI hospitals 14k, SOI dispensaries 34k, ' +
-            'Living Atlas 227k, HOTOSM 143k), ' +
+            'health (NHP facilities, hospital directory, blood banks, anganwadis, BharatMaps, GatiShakti, SOI, Living Atlas, HOTOSM), ' +
             'points (airports, dams, water bodies, pincodes). ' +
+            'SHRUG layers carry Census/economic/SECC data columns queryable via rank_features/correlate/summarize_layer — ' +
+            'e.g. literacy: shrug-census pca11__lit_total; SC share: pca11__sc_share. ' +
             'Each entry includes id, level, source, year, description, and aggregatedByDistrictUrl ' +
             '(pre-computed per-district count parquet — available for all health/facility layers). ' +
             'Faster than list_available_maps — does not fetch GeoJSON.',
