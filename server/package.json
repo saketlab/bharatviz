@@ -30,6 +30,8 @@
     "express": "^4.21.1",
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",
+    "hyparquet": "^1.26.0",
+    "hyparquet-compressors": "^1.1.1",
     "jsdom": "^25.0.1",
     "jspdf": "^4.0.0",
     "papaparse": "^5.4.1",

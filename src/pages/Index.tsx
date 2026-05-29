@@ -45,6 +45,8 @@ const Credits = lazy(() => import('@/components/Credits'));
 const MCPDocs = lazy(() => import('@/components/MCPDocs'));
 const APIDocs = lazy(() => import('@/components/APIDocs'));
 const MapsGallery = lazy(() => import('@/components/MapsGallery'));
+const HealthPanel = lazy(() => import('@/components/HealthPanel').then(m => ({ default: m.HealthPanel })));
+const HealthMap = lazy(() => import('@/components/HealthMap').then(m => ({ default: m.HealthMap })));
 const CensusMap = lazy(() => import('@/components/CensusMap').then(m => ({ default: m.CensusMap })));
 
 const TabPanel = ({ active, children }: { active: boolean; children: React.ReactNode }) => {
@@ -88,7 +90,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -199,6 +201,8 @@ const Index = () => {
   const [urbanLayerId, setUrbanLayerId] = useState<string>(DEFAULT_URBAN_LAYER);
   const [urbanLayerOpen, setUrbanLayerOpen] = useState(false);
 
+  const [healthDatasetId, setHealthDatasetId] = useState<string>('nhp-hospital-directory');
+
   const [cityMapData, setCityMapData] = useState<CityWardData[]>([]);
   const [cityColorScale, setCityColorScale] = useState<ColorScale>('spectral');
   const [cityInvertColors, setCityInvertColors] = useState(false);
@@ -274,6 +278,12 @@ const Index = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  // Scroll the active primary tab into view when it changes (needed on mobile where bar scrolls)
+  useEffect(() => {
+    const trigger = document.querySelector(`[data-state="active"].primary-tab`) as HTMLElement | null;
+    trigger?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  }, [activeTab]);
 
   useEffect(() => {
     if (hasReadInitialUrl.current.has('states')) return;
@@ -605,17 +615,40 @@ const Index = () => {
     }
   }, [activeTab]);
 
-  const handleTabChange = (value: string) => {
+  const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);
     const basePath = value === 'states' ? '' : value;
     const globalParams = new URLSearchParams();
     if (darkMode) globalParams.set('darkMode', 'true');
     const search = globalParams.toString();
     navigate(`/${basePath}${search ? '?' + search : ''}`);
-  };
+  }, [darkMode, navigate]);
+
+  // ── Health tab: read initial URL state ──────────────────────────────────
+  useEffect(() => {
+    if (hasReadInitialUrl.current.has('health')) return;
+    if (activeTab !== 'health') return;
+    const params = new URLSearchParams(location.search);
+    const dataset = params.get('dataset');
+    if (dataset) setHealthDatasetId(dataset);
+    hasReadInitialUrl.current.add('health');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  // ── Health tab: persist URL state ───────────────────────────────────────
+  useEffect(() => {
+    if (activeTab !== 'health') return;
+    const params = new URLSearchParams(location.search);
+    params.set('dataset', healthDatasetId);
+    if (darkMode) params.set('darkMode', 'true'); else params.delete('darkMode');
+    const newUrl = `/health?${params.toString()}`;
+    if (location.pathname + location.search !== newUrl) {
+      navigate(newUrl, { replace: true });
+    }
+  }, [activeTab, healthDatasetId, darkMode, location.pathname, location.search, navigate]);
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban', 'health'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -1189,37 +1222,42 @@ const Index = () => {
     return stateDistrictMapRef.current;
   };
 
-  const handleExportPNG = () => {
+  const handleExportPNG = useCallback(() => {
     if (activeTab === 'states' && stateMultiYearSeries.length > 0) {
       exportMultiYearStatesAsPNG();
     } else {
       getActiveMapRef()?.exportPNG();
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, stateMultiYearSeries.length]);
 
-  const handleExportSVG = () => {
+  const handleExportSVG = useCallback(() => {
     if (activeTab === 'states' && stateMultiYearSeries.length > 0) {
       exportMultiYearStatesAsSVG();
     } else {
       getActiveMapRef()?.exportSVG();
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, stateMultiYearSeries.length]);
 
-  const handleExportPDF = () => {
+  const handleExportPDF = useCallback(() => {
     if (activeTab === 'states' && stateMultiYearSeries.length > 0) {
       exportMultiYearStatesAsPDF();
     } else {
       getActiveMapRef()?.exportPDF();
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, stateMultiYearSeries.length]);
 
-  const handleCopyToClipboard = () => {
+  const handleCopyToClipboard = useCallback(() => {
     getActiveMapRef()?.copyToClipboard();
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
-  const handleDownloadCSVTemplate = () => {
+  const handleDownloadCSVTemplate = useCallback(() => {
     getActiveMapRef()?.downloadCSVTemplate();
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   const getOrderedMultiYearMapRefs = () => {
     return stateMultiYearSeries
@@ -1555,11 +1593,17 @@ const Index = () => {
 
   const seoContent = getSEOContent();
 
-  const primaryTabClass = 'primary-tab flex-1 rounded-none px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
+  const primaryTabClass = 'primary-tab shrink-0 rounded-none px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
   const secondaryTabClass = 'shrink-0 rounded px-2.5 py-1.5 sm:px-4 sm:py-2 font-medium text-xs sm:text-sm transition-all duration-150 border border-[hsl(35,16%,87%)] bg-transparent text-[hsl(28,8%,50%)] hover:border-[hsl(28,25%,72%)] hover:text-[hsl(28,18%,30%)] data-[state=active]:border-[hsl(28,42%,52%)] data-[state=active]:text-[hsl(28,38%,24%)] data-[state=active]:bg-[hsl(35,28%,92%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)] dark:text-[hsl(30,8%,50%)] dark:hover:border-[hsl(28,30%,40%)] dark:hover:text-[hsl(30,8%,68%)] dark:data-[state=active]:border-[hsl(28,45%,42%)] dark:data-[state=active]:text-[hsl(35,10%,82%)] dark:data-[state=active]:bg-[hsl(28,14%,20%)]';
 
   return (
     <div className="min-h-screen p-3 sm:p-6 bg-[hsl(38,30%,97%)] dark:bg-[hsl(25,8%,6%)]">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-3 focus:left-3 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:rounded-md focus:bg-[hsl(28,55%,42%)] focus:text-white focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <Helmet>
         <title>{seoContent.title}</title>
         <meta name="title" content={seoContent.title} />
@@ -1644,23 +1688,28 @@ const Index = () => {
           </button>
         </div>
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" id="main-content">
           <div className="mb-6 sm:mb-10">
             <div className="mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Maps</span>
             </div>
-            <TabsList className="flex w-full gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-              <TabsTrigger value="states" className={primaryTabClass}>States</TabsTrigger>
-              <TabsTrigger value="districts" className={primaryTabClass}>Districts</TabsTrigger>
-              <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
-              <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
-              <TabsTrigger value="sub-admin" className={primaryTabClass}>Sub-Admin</TabsTrigger>
-              <TabsTrigger value="electoral" className={primaryTabClass}>Electoral</TabsTrigger>
-              <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
-              <TabsTrigger value="urban" className={primaryTabClass}>Urban</TabsTrigger>
-              <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
-              <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
-            </TabsList>
+            <div className="relative">
+              <TabsList className="flex flex-nowrap overflow-x-auto scrollbar-none gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] w-full">
+                <TabsTrigger value="states" className={primaryTabClass}>States</TabsTrigger>
+                <TabsTrigger value="districts" className={primaryTabClass}>Districts</TabsTrigger>
+                <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
+                <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
+                <TabsTrigger value="sub-admin" className={primaryTabClass}>Sub-Admin</TabsTrigger>
+                <TabsTrigger value="electoral" className={primaryTabClass}>Electoral</TabsTrigger>
+                <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
+                <TabsTrigger value="urban" className={primaryTabClass}>Urban</TabsTrigger>
+                <TabsTrigger value="health" className={primaryTabClass}>Health</TabsTrigger>
+                <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
+                <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
+              </TabsList>
+              {/* Scroll-fade indicator — visible only when bar is scrollable (sm and below) */}
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)] sm:hidden" aria-hidden="true" />
+            </div>
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
             </div>
@@ -1908,6 +1957,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={districtMapTypeOpen}
+                        aria-label={`District boundary type: ${getDistrictMapConfig(selectedDistrictMapType)?.displayName ?? 'Select boundary type'}`}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
                       >
                         <span className="truncate text-left">
@@ -2019,7 +2069,7 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                <div className="mb-5">
                   <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">NSSO Regions</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     National Sample Survey Organization regions used for survey sampling and statistical analysis across India.
@@ -2111,6 +2161,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={stateMapTypeOpen}
+                        aria-label={`State boundary type: ${getDistrictMapConfig(selectedStateMapType)?.displayName ?? 'Select boundary type'}`}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
                       >
                         <span className="truncate text-left">
@@ -2270,7 +2321,7 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                <div className="mb-5">
                   <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Sub-district & Block Boundaries</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     Fine-grained administrative boundaries below district level. Select a layer, then optionally zoom into a single state.
@@ -2286,6 +2337,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={subAdminLayerOpen}
+                        aria-label={`Sub-admin layer: ${getSubAdminLayer(subAdminLayerId).displayName}`}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
                       >
                         <span className="truncate text-left">
@@ -2333,6 +2385,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={subAdminStateOpen}
+                        aria-label={`Filter by state: ${subAdminStatesLoading ? 'Loading' : subAdminSelectedState}`}
                         disabled={subAdminStatesLoading}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
                       >
@@ -2456,7 +2509,7 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                <div className="mb-5">
                   <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Electoral Boundaries</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     Parliamentary and assembly constituency boundaries from the Local Government Directory.
@@ -2472,6 +2525,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={electoralLayerOpen}
+                        aria-label={`Electoral layer: ${getElectoralLayer(electoralLayerId).displayName}`}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
                       >
                         <span className="truncate text-left">
@@ -2517,6 +2571,7 @@ const Index = () => {
                       <button
                         role="combobox"
                         aria-expanded={electoralStateOpen}
+                        aria-label={`Filter by state: ${electoralStatesLoading ? 'Loading' : electoralSelectedState}`}
                         disabled={electoralStatesLoading}
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
                       >
@@ -2623,7 +2678,7 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                <div className="mb-5">
                   <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Environment Boundaries</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     Reference boundaries for wildlife sanctuaries and eco-sensitive zones. Download the GeoJSON to use in your own analysis.
@@ -2713,7 +2768,7 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
-                <div className="mb-5 pl-3 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)]">
+                <div className="mb-5">
                   <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Urban Boundaries</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     Municipal body boundaries at the Urban Local Body (ULB) level. Distinct from ward-level city maps. Download the GeoJSON for your own analysis.
@@ -2772,9 +2827,24 @@ const Index = () => {
             </div>
           </TabPanel>
 
+          <TabPanel active={activeTab === 'health'}>
+            <div className="space-y-10">
+              <HealthMap
+                darkMode={darkMode}
+                boundaryColor={boundaryColor}
+                boundaryWidth={boundaryWidth}
+                selectedDatasetId={healthDatasetId}
+                onDatasetChange={setHealthDatasetId}
+              />
+              <div className="border-t border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] pt-8">
+                <HealthPanel darkMode={darkMode} />
+              </div>
+            </div>
+          </TabPanel>
+
           <TabPanel active={activeTab === 'help'}>
             <div className="max-w-4xl mx-auto p-6 space-y-10">
-              <div className="pl-4 border-l-2 border-[hsl(28,42%,52%)] dark:border-[hsl(28,35%,38%)] py-1">
+              <div className="px-4 py-3 rounded-md bg-[hsl(35,20%,95%)] dark:bg-[hsl(25,8%,10%)]">
                 <h2 className="text-sm font-semibold text-[hsl(28,20%,30%)] dark:text-[hsl(35,10%,80%)] mb-1">Privacy & data security</h2>
                 <p className="text-sm text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,58%)]">
                   <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,88%)]">Your data is never stored.</strong> All processing happens in your browser or transiently on our servers. We do not collect, store, or share any of your uploaded data.
@@ -2866,7 +2936,7 @@ const Index = () => {
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Python</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`# Install dependencies
 pip install requests pillow pandas
 
@@ -2892,7 +2962,7 @@ bv.generate_districts_map(dist_data, map_type="NFHS5", show=True)`}
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">R</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`# Install dependencies
 install.packages(c("R6", "httr", "jsonlite", "base64enc", "png"))
 
@@ -2920,7 +2990,7 @@ bv$show_map(result_nfhs5)`}
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">R: Side-by-side maps (high resolution)</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`library(R6)
 library(grid)
 library(gridExtra)
@@ -2960,7 +3030,7 @@ dev.off()`}
                       <p className="text-sm mb-3 text-muted-foreground dark:text-[hsl(30,8%,65%)]">
                         For custom implementations without the client libraries:
                       </p>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`# States Map Endpoint
 POST /api/v1/states/map
 {
@@ -3011,7 +3081,7 @@ POST /api/v1/districts/map
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">iframe embed</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`<iframe
   src="https://bharatviz.org/api/v1/embed?dataUrl=https://yoursite.com/data.csv&colorScale=viridis&title=My%20Map"
   width="800"
@@ -3023,7 +3093,7 @@ POST /api/v1/districts/map
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">JavaScript widget</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`<div id="my-map"></div>
 <script src="https://bharatviz.org/api/embed.js"></script>
 <script>
@@ -3039,14 +3109,14 @@ POST /api/v1/districts/map
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Direct SVG</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`<img src="https://bharatviz.org/api/v1/embed/svg?dataUrl=https://yoursite.com/data.csv&colorScale=viridis" />`}
                       </pre>
                     </div>
 
                     <div className="p-4 border rounded-lg dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
                       <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">GitHub Pages example</h3>
-                      <pre className="bg-muted p-3 rounded text-xs overflow-x-auto">
+                      <pre className="bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)] p-3 rounded text-xs overflow-x-auto">
 {`# 1. Create data.csv in your GitHub repo
 # 2. Enable GitHub Pages in repo settings
 # 3. Embed using your GitHub Pages URL:
@@ -3379,6 +3449,17 @@ POST /api/v1/districts/map
             <Suspense fallback={<div className="h-32 flex items-center justify-center text-[hsl(28,8%,40%)]">Loading…</div>}>
               <CensusMap ref={censusMapRef} darkMode={darkMode} />
             </Suspense>
+            <div className="mt-4">
+              <ExportOptions
+                onExportPNG={handleExportPNG}
+                onExportSVG={handleExportSVG}
+                onExportPDF={handleExportPDF}
+                onCopyToClipboard={handleCopyToClipboard}
+                disabled={false}
+                geojsonDownloadUrl="https://geo.bharatviz.org/geojsons/census2011/india_census2011_districts.geojson"
+                geojsonDownloadName="india_census2011_districts.geojson"
+              />
+            </div>
           </TabPanel>
 
           <TabPanel active={activeTab === 'credits'}>

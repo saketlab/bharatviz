@@ -413,21 +413,24 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     return { x, y };
   };
 
+  const mapEmptyFill = darkMode ? 'hsl(25,8%,9%)' : 'hsl(38,30%,97%)';
+  const mapNoDataFill = darkMode ? 'hsl(25,8%,14%)' : 'hsl(35,18%,92%)';
+
   const getWardColorForValue = (value: number | string | undefined, dataExtent: [number, number] | undefined, numericVals: number[]): string => {
-    if (value === undefined) return darkMode ? '#1a1a1a' : 'white';
+    if (value === undefined) return mapEmptyFill;
 
     if (dataType === 'categorical' && typeof value === 'string') {
-      return getCategoryColor(value, categoryColors, darkMode ? '#1a1a1a' : '#e5e7eb');
+      return getCategoryColor(value, categoryColors, mapNoDataFill);
     }
 
     if (typeof value === 'number') {
-      if (!dataExtent) return darkMode ? '#1a1a1a' : 'white';
-      if (isNaN(value)) return darkMode ? '#1a1a1a' : 'white';
+      if (!dataExtent) return mapEmptyFill;
+      if (isNaN(value)) return mapEmptyFill;
 
       return getColorForValue(value, numericVals, colorScale, invertColors, colorBarSettings);
     }
 
-    return darkMode ? '#1a1a1a' : '#e5e7eb';
+    return mapNoDataFill;
   };
 
   const handleWardHover = (feature: GeoJSONFeature) => {
@@ -970,7 +973,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
               fill={fillColor}
               stroke={
                 data.length === 0
-                  ? resolveBoundaryStroke(boundaryColor, darkMode ? '#1a1a1a' : 'white', darkMode)
+                  ? resolveBoundaryStroke(boundaryColor, mapEmptyFill, darkMode)
                   : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)
               }
               strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
@@ -1016,7 +1019,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
                 : '';
 
               const fillColor = getWardColorForValue(wardValue, dataExtent, numericValues);
-              const textColor = fillColor === 'white' || fillColor === '#1a1a1a' || !isColorDark(fillColor) ? (darkMode ? '#ffffff' : '#0f172a') : '#ffffff';
+              const textColor = fillColor === mapEmptyFill || fillColor === mapNoDataFill || !isColorDark(fillColor) ? (darkMode ? '#ffffff' : '#0f172a') : '#ffffff';
 
               return (
                 <g key={`label-${index}`}>

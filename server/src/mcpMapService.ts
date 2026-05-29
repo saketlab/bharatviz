@@ -8,7 +8,7 @@ import { CityMapRenderer } from './services/cityMapRenderer.js';
 import type { ColorScale } from './types/index.js';
 import { ExportService } from './services/exportService.js';
 import { queryEvolution, getDistrictGeoJSON, getDistrictNames, ensureLoaded as ensureEvolutionLoaded } from './services/districtEvolutionService.js';
-import type { FeatureCollection } from 'geojson';
+import type { FeatureCollection, Feature, Geometry } from 'geojson';
 import { LRUCache } from './utils/lruCache.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -112,6 +112,86 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   // SHRUG districts
   'shrug-districts': { id: 'shrug-districts', file: `${R2}/geojsons/districts/India-shrug-district-pc11_simplified.geojson`, level: 'districts', source: 'SHRUG (Census 2011)', year: 2011, description: 'Census 2011 district polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad). License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson` },
 
+  // SHRUG thematic GeoParquet layers — 641 PC11 districts, data aggregated from shrid level
+  'shrug-census': {
+    id: 'shrug-census', level: 'districts', source: 'SHRUG 2.1 / Census of India', year: 2011,
+    file: `${R2}/geoparquet/shrug/shrug_districts_census.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_census.parquet`,
+    featureNameProp: 'district_name',
+    description: 'Population Census abstracts for 1991, 2001, 2011 aggregated to 641 PC11 districts. ' +
+      'Covers: total/male/female population, SC count & share, ST count & share, literacy count & share, ' +
+      'main/marginal/non-workers, worker categories (cultivators, agricultural labourers, household industry, ' +
+      'manufacturing, trade, transport, other). Prefixes: pca91__, pca01__, pca11__, vd91__, vd01__, vd11__, ' +
+      'td91__, td01__, td11__. License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-economic': {
+    id: 'shrug-economic', level: 'districts', source: 'SHRUG 2.1 / Economic Census of India', year: 2013,
+    file: `${R2}/geoparquet/shrug/shrug_districts_economic.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_economic.parquet`,
+    featureNameProp: 'district_name',
+    description: 'Economic Census 1990, 1998, 2005, 2013 aggregated to 641 PC11 districts. ' +
+      'Covers: total employment, female/male employment, hired vs own-account workers, ' +
+      'government vs private vs informal sector, firm counts by size (20+/50+/100+ employees), ' +
+      'SC/ST employment, manufacturing vs services split, employment by 45 industry codes (SHRIC). ' +
+      'Prefixes: ec90__, ec98__, ec05__, ec13__. License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-secc': {
+    id: 'shrug-secc', level: 'districts', source: 'SHRUG 2.1 / SECC 2011-12', year: 2012,
+    file: `${R2}/geoparquet/shrug/shrug_districts_secc.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_secc.parquet`,
+    featureNameProp: 'district_name',
+    description: 'Socio-Economic and Caste Census (SECC) 2011-12 rural household data aggregated to 641 PC11 districts. ' +
+      'Covers: SC share, ST share, disability share, education levels (primary/secondary/graduate), ' +
+      'housing type (kachha/pucca), income sources (cultivation/manual labour/domestic work/begging/enterprise), ' +
+      'land ownership, age pyramids (5-year bands). ' +
+      'Prefixes: secc-mord-rural__, secc-cons-rural__, secc-cons-urban__. License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-environment': {
+    id: 'shrug-environment', level: 'districts', source: 'SHRUG 2.1 / Remote sensing', year: 2020,
+    file: `${R2}/geoparquet/shrug/shrug_districts_environment.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_environment.parquet`,
+    featureNameProp: 'district_name',
+    description: 'Environmental and geographic indicators averaged to 641 PC11 districts. ' +
+      'Covers: Surface PM2.5 concentration (1998–2020, mean/min/max), ' +
+      'Vegetation Continuous Fields / forest cover (2001–2020), ' +
+      'Elevation from SRTM (mean, median, std, percentiles), ' +
+      'Terrain Ruggedness Index, ' +
+      'DMSP night lights 1992–2013 (mean/total/calibrated), ' +
+      'VIIRS annual night lights 2012–2021 (mean/sum). ' +
+      'Key columns: pm25__pm25_mean, vcf__vcf_mean, elevation__elevation_mean, ' +
+      'dmsp__dmsp_mean_light, viirs-annual__viirs_annual_mean, rugged__tri_mean. License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-facebook': {
+    id: 'shrug-facebook', level: 'districts', source: 'SHRUG 2.1 / Meta / Facebook', year: 2021,
+    file: `${R2}/geoparquet/shrug/shrug_districts_facebook.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_facebook.parquet`,
+    featureNameProp: 'district_name',
+    description: 'Facebook / Meta 2021 population and wealth estimates aggregated to 641 PC11 districts. ' +
+      'Covers: Facebook population estimates (facebook-pop__facebook_pop_sum), ' +
+      'Relative Wealth Index — RWI (facebook-rwi__facebook_mean_rwi, min, max). ' +
+      'RWI is a continuous index where higher = wealthier; derived from Facebook connectivity and satellite data. ' +
+      'License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-roads': {
+    id: 'shrug-roads', level: 'districts', source: 'SHRUG 2.1 / PMGSY', year: 2020,
+    file: `${R2}/geoparquet/shrug/shrug_districts_roads.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_roads.parquet`,
+    featureNameProp: 'district_name',
+    description: 'PMGSY (Pradhan Mantri Gram Sadak Yojana) rural road construction aggregated to 641 PC11 districts. ' +
+      'Covers: new road length and upgrades (km), construction cost, sanction year for new roads and upgrades. ' +
+      'Key columns: pmgsy__road_length_new, pmgsy__road_length_upg, pmgsy__road_cost_new. License: CC BY-NC-SA 4.0.',
+  },
+  'shrug-all': {
+    id: 'shrug-all', level: 'districts', source: 'SHRUG 2.1 (Pakora)', year: 2021,
+    file: `${R2}/geoparquet/shrug/shrug_districts_all.parquet`,
+    parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_all.parquet`,
+    featureNameProp: 'district_name',
+    description: 'All SHRUG modules joined into a single wide table for 641 PC11 districts (1,919 columns). ' +
+      'Combines census, economic census, SECC, environment, Facebook wealth/population, and PMGSY roads. ' +
+      'Use shrug-census / shrug-economic / shrug-secc / shrug-environment / shrug-facebook / shrug-roads ' +
+      'for faster, focused queries. License: CC BY-NC-SA 4.0.',
+  },
+
   // Environment boundaries
   'gs-wildlife': { id: 'gs-wildlife', file: `${R2}/geojsons/environment/India-geodata-wildlife.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Protected wildlife sanctuaries and national parks', featureNameProp: 'area_name' },
   'bm-eco-zones': { id: 'bm-eco-zones', file: `${R2}/geojsons/environment/India-geodata-eco-zones.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Biological / eco-sensitive zone boundaries', featureNameProp: 'area_name' },
@@ -121,6 +201,122 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
 
   // Urban boundaries
   'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission — national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
+
+  // Health facility point datasets (Indian Open Maps / ramSeraph)
+  'nhp-health-facilities': {
+    id: 'nhp-health-facilities',
+    file: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`,
+    level: 'points',
+    source: 'National Health Portal / NIN / data.gov.in (GODL)',
+    year: 2025,
+    featureNameProp: 'health_facility_name',
+    description: '166,462 health facilities from the National Institute of Health and Family Welfare / ' +
+      'National Health Portal via data.gov.in (2025). License: Government Open Data License India (GODL). ' +
+      'Attribution: National Health Portal, nhp.gov.in; data.gov.in. ' +
+      'Fields: health_facility_name, facility_type (SubCentre/PHC/CHC/Hospital/etc.), ' +
+      'state_name, district_name, taluka_name, block_name, address, pincode.',
+  },
+  'nhp-hospital-directory': {
+    id: 'nhp-hospital-directory',
+    file: `${R2}/geoparquet/health/nhp_hospital_directory_2025.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/nhp_hospital_directory_2025.parquet`,
+    level: 'points',
+    source: 'National Health Portal / data.gov.in (GODL)',
+    year: 2025,
+    featureNameProp: 'Hospital_Name',
+    description: '10,843 hospitals from the National Health Portal hospital directory (2025). ' +
+      'License: Government Open Data License India (GODL). Attribution: National Health Portal, nhp.gov.in. ' +
+      'Fields: Hospital_Name, Hospital_Category, Hospital_Care_Type, Specialties, Facilities, ' +
+      'Accreditation, Total_Num_Beds, Number_Doctor, Emergency_Services, State, District, Pincode.',
+  },
+  'nhp-blood-banks': {
+    id: 'nhp-blood-banks',
+    file: `${R2}/geoparquet/health/nhp_blood_banks_2015.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/nhp_blood_banks_2015.parquet`,
+    level: 'points',
+    source: 'National Health Portal / data.gov.in (GODL)',
+    year: 2015,
+    featureNameProp: 'h_name',
+    description: '897 blood banks from the National Health Portal (2015). ' +
+      'License: Government Open Data License India (GODL). Attribution: National Health Portal, nhp.gov.in. ' +
+      'Fields: h_name, category, state, district, city, blood_component, blood_group, service_time, contact.',
+  },
+  'anganwadis-icds': {
+    id: 'anganwadis-icds',
+    file: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`,
+    level: 'points',
+    source: 'GatiShakti / Ministry of Women and Child Development',
+    year: 2024,
+    featureNameProp: 'id',
+    description: '~1.4 million ICDS Anganwadi centres from GatiShakti / ' +
+      'Ministry of Women and Child Development (2024). ' +
+      'Attribution: Ministry of Women and Child Development, GatiShakti (pmgatishakti.gov.in). ' +
+      'Fields: id, geometry.',
+  },
+
+  // Additional health facility datasets from ramSeraph/indian_facilities
+  'bharatmaps-health-centers': {
+    id: 'bharatmaps-health-centers',
+    file: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
+    level: 'points',
+    source: 'BharatMaps (Government of India)',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Health centres from the BharatMaps government portal. Independent coverage useful for cross-verification with NHP data.',
+  },
+  'bhuvan-sisdp-anganwadis': {
+    id: 'bhuvan-sisdp-anganwadis',
+    file: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`,
+    level: 'points',
+    source: 'ISRO Bhuvan SISDP (GODL)',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Anganwadi centres from ISRO Bhuvan SISDP portal. Separate source from GatiShakti ICDS — useful for coverage comparison.',
+  },
+  'gatishakti-child-care': {
+    id: 'gatishakti-child-care',
+    file: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`,
+    level: 'points',
+    source: 'GatiShakti / MoWCD (GODL)',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Government-run creches and child development centres from GatiShakti portal (Ministry of Women and Child Development).',
+  },
+  'ncog-soi-dispensaries': {
+    id: 'ncog-soi-dispensaries',
+    file: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`,
+    level: 'points',
+    source: 'Survey of India NCOG (GODL)',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Dispensaries from the Survey of India NCOG dataset.',
+  },
+  'ncog-soi-hospitals': {
+    id: 'ncog-soi-hospitals',
+    file: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`,
+    level: 'points',
+    source: 'Survey of India NCOG (GODL)',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Hospitals from the Survey of India NCOG dataset.',
+  },
+  'livingatlas-health-facilities': {
+    id: 'livingatlas-health-facilities',
+    file: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`,
+    parquetUrl: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`,
+    level: 'points',
+    source: 'Esri Living Atlas',
+    year: 2024,
+    featureNameProp: 'name',
+    description: 'Health facilities across India from the Esri Living Atlas, aggregating multiple open government sources.',
+  },
 
   // Point datasets
   'hotosm-health-facilities': {
@@ -180,11 +376,32 @@ const geojsonCache = new LRUCache<string, FeatureCollection>(50);
 
 async function loadGeoJSON(url: string): Promise<FeatureCollection> {
   if (geojsonCache.has(url)) return geojsonCache.get(url)!;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.status}`);
-  const data = await response.json() as FeatureCollection;
+  let data: FeatureCollection;
+  if (url.endsWith('.parquet')) {
+    data = await loadParquetAsGeoJSON(url);
+  } else {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.status}`);
+    data = await response.json() as FeatureCollection;
+  }
   geojsonCache.set(url, data);
   return data;
+}
+
+async function loadParquetAsGeoJSON(url: string): Promise<FeatureCollection> {
+  const { asyncBufferFromUrl, parquetReadObjects } = await import('hyparquet');
+  const { compressors } = await import('hyparquet-compressors');
+  const file = await asyncBufferFromUrl({ url });
+  const rows = await parquetReadObjects({ file, compressors }) as Array<Record<string, unknown>>;
+  const features: Feature[] = rows.map(row => {
+    const { geometry, ...properties } = row;
+    return {
+      type: 'Feature',
+      geometry: geometry as Geometry,
+      properties: properties as Record<string, unknown>,
+    };
+  });
+  return { type: 'FeatureCollection', features };
 }
 
 function pointInRing(lng: number, lat: number, ring: number[][]): boolean {
@@ -295,6 +512,7 @@ export class McpMapService {
     if (id.startsWith('gs-') || id.startsWith('bm-') || id.startsWith('fsi-')) return 'environment';
     if (id.startsWith('sbm-')) return 'urban';
     if (id.startsWith('hotosm-') || id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-')) return 'points';
+    if (id.startsWith('nhp-') || id === 'anganwadis-icds' || id.startsWith('bharatmaps-') || id.startsWith('bhuvan-sisdp') || id.startsWith('gatishakti-child') || id.startsWith('ncog-') || id.startsWith('livingatlas-')) return 'health';
     return 'other';
   }
 
@@ -304,8 +522,18 @@ export class McpMapService {
     for (const entry of Object.values(MAP_REGISTRY)) {
       const category = McpMapService.categoryForId(entry.id);
       try {
-        const data = await loadGeoJSON(entry.file);
-        results.push({ ...entry, category, featureCount: data.features.length });
+        let featureCount = 0;
+        if (entry.file.endsWith('.parquet')) {
+          // Read only the parquet footer (cheap) to get row count
+          const { asyncBufferFromUrl, parquetMetadataAsync } = await import('hyparquet');
+          const file = await asyncBufferFromUrl({ url: entry.file });
+          const meta = await parquetMetadataAsync(file);
+          featureCount = Number(meta.num_rows);
+        } else {
+          const data = await loadGeoJSON(entry.file);
+          featureCount = data.features.length;
+        }
+        results.push({ ...entry, category, featureCount });
       } catch {
         results.push({ ...entry, category, featureCount: 0 });
       }
@@ -572,7 +800,7 @@ export class McpMapService {
 
   async listCities(): Promise<Array<{ id: string; displayName: string; state: string; type: string; featureCount: number }>> {
     if (!this.citiesManifestCache) {
-      const manifestPath = join(__dirname, '../public/city-datasets-manifest.json');
+      const manifestPath = join(__dirname, '../../public/city-datasets-manifest.json');
       const raw = await readFile(manifestPath, 'utf-8');
       this.citiesManifestCache = JSON.parse(raw);
     }
@@ -1462,6 +1690,231 @@ export class McpMapService {
     return { columns: options.columns, stats: statKeys, groups: groupResults };
   }
 
+  /**
+   * Aggregate features from a target layer into boundary polygons.
+   * Returns count, and optionally sum/mean of numeric columns, per boundary feature.
+   * Use this for: health facilities per district, pincodes per constituency, etc.
+   */
+  async aggregateByBoundary(options: {
+    boundaryMapId: string;
+    boundaryFilters?: Record<string, string>;
+    targetMapId: string;
+    targetFilters?: Record<string, string>;
+    aggColumns?: Array<{ column: string; stat: 'count' | 'sum' | 'mean' | 'min' | 'max' }>;
+    boundaryNameProp?: string;
+    limit?: number;
+  }): Promise<{
+    boundaryCount: number;
+    results: Array<Record<string, string | number>>;
+  }> {
+    const boundaryEntry = MAP_REGISTRY[options.boundaryMapId];
+    if (!boundaryEntry) throw new Error(`Unknown boundaryMapId: "${options.boundaryMapId}"`);
+    const targetEntry = MAP_REGISTRY[options.targetMapId];
+    if (!targetEntry) throw new Error(`Unknown targetMapId: "${options.targetMapId}"`);
+
+    const limit = Math.max(1, Math.min(options.limit ?? 500, 2000));
+
+    const boundaryData = await loadGeoJSON(boundaryEntry.file);
+    let boundaryFeatures = boundaryData.features.filter(f => f.geometry);
+    if (options.boundaryFilters) {
+      for (const [key, value] of Object.entries(options.boundaryFilters)) {
+        const lv = value.toLowerCase();
+        boundaryFeatures = boundaryFeatures.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+    }
+
+    const targetData = await loadGeoJSON(targetEntry.file);
+    let targetFeatures = targetData.features.filter(f => f.geometry);
+    if (options.targetFilters) {
+      for (const [key, value] of Object.entries(options.targetFilters)) {
+        const lv = value.toLowerCase();
+        targetFeatures = targetFeatures.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+    }
+
+    const nameProp = options.boundaryNameProp ?? boundaryEntry.featureNameProp ?? 'district_name';
+    const aggCols = options.aggColumns ?? [];
+    const totalBoundaryCount = boundaryFeatures.length;
+
+    // Guard against cartesian blowup: > 50M point-in-polygon tests is too slow for a synchronous request.
+    const ops = boundaryFeatures.length * targetFeatures.length;
+    if (ops > 50_000_000) {
+      throw new Error(
+        `aggregateByBoundary would require ~${Math.round(ops / 1e6)}M point-in-polygon tests ` +
+        `(${boundaryFeatures.length} boundaries × ${targetFeatures.length} target features). ` +
+        `Reduce scope: filter boundaries by state (boundaryFilters={"state_name":"..."}) ` +
+        `or filter target features (targetFilters) before running.`
+      );
+    }
+
+    const results: Array<Record<string, string | number>> = [];
+
+    // Process ALL boundaries to get correct global ranking, then slice to limit.
+    for (const boundary of boundaryFeatures) {
+      const boundaryGeom = boundary.geometry as { type: string; coordinates: unknown };
+      const bucketProps: Record<string, number[]> = {};
+      for (const { column } of aggCols) bucketProps[column] = [];
+      let count = 0;
+
+      for (const target of targetFeatures) {
+        const geom = target.geometry as { type: string; coordinates: unknown };
+        if (!geom?.type) continue;
+        let testLon: number, testLat: number;
+        if (geom.type === 'Point') {
+          [testLon, testLat] = geom.coordinates as number[];
+        } else {
+          const c = this.featureCentroid(geom);
+          if (!c) continue;
+          [testLon, testLat] = c;
+        }
+        if (!pointInGeometry(testLon, testLat, boundaryGeom)) continue;
+        count++;
+        for (const { column } of aggCols) {
+          const v = Number(target.properties?.[column]);
+          if (isFinite(v)) bucketProps[column].push(v);
+        }
+      }
+
+      const row: Record<string, string | number> = {
+        _boundary_name: String(boundary.properties?.[nameProp] ?? ''),
+        _count: count,
+      };
+      if (boundary.properties?.state_name) row._state = String(boundary.properties.state_name);
+
+      for (const { column, stat } of aggCols) {
+        const vals = bucketProps[column];
+        if (!vals.length) { row[`${column}_${stat}`] = 0; continue; }
+        if (stat === 'count') row[`${column}_count`] = vals.length;
+        else if (stat === 'sum') row[`${column}_sum`] = Math.round(vals.reduce((s, v) => s + v, 0) * 100) / 100;
+        else if (stat === 'mean') row[`${column}_mean`] = Math.round(vals.reduce((s, v) => s + v, 0) / vals.length * 10000) / 10000;
+        else if (stat === 'min') {
+          let m = vals[0];
+          for (let i = 1; i < vals.length; i++) if (vals[i] < m) m = vals[i];
+          row[`${column}_min`] = m;
+        } else if (stat === 'max') {
+          let m = vals[0];
+          for (let i = 1; i < vals.length; i++) if (vals[i] > m) m = vals[i];
+          row[`${column}_max`] = m;
+        }
+      }
+
+      results.push(row);
+    }
+
+    results.sort((a, b) => (b._count as number) - (a._count as number));
+    return { boundaryCount: totalBoundaryCount, results: results.slice(0, limit) };
+  }
+
+  /**
+   * Join numeric columns from two map layers on matching feature names.
+   * Returns one row per feature in the base layer, with columns from both.
+   * Use this for cross-layer analysis: SHRUG roads + NFHS-5 outcomes, etc.
+   */
+  async joinLayers(options: {
+    baseMapId: string;
+    joinMapId: string;
+    baseNameProp?: string;
+    joinNameProp?: string;
+    baseColumns?: string[];
+    joinColumns?: string[];
+    baseFilters?: Record<string, string>;
+    joinFilters?: Record<string, string>;
+    matchOn?: 'district_name' | 'state_name';
+    limit?: number;
+  }): Promise<{
+    joined: number;
+    unmatched_base: number;
+    results: Array<Record<string, string | number>>;
+  }> {
+    const baseEntry = MAP_REGISTRY[options.baseMapId];
+    if (!baseEntry) throw new Error(`Unknown baseMapId: "${options.baseMapId}"`);
+    const joinEntry = MAP_REGISTRY[options.joinMapId];
+    if (!joinEntry) throw new Error(`Unknown joinMapId: "${options.joinMapId}"`);
+
+    const limit = Math.max(1, Math.min(options.limit ?? 1000, 5000));
+
+    const baseData = await loadGeoJSON(baseEntry.file);
+    const joinData = await loadGeoJSON(joinEntry.file);
+
+    let baseFeatures = baseData.features;
+    if (options.baseFilters) {
+      for (const [key, value] of Object.entries(options.baseFilters)) {
+        const lv = value.toLowerCase();
+        baseFeatures = baseFeatures.filter(f => String(f.properties?.[key] ?? '').toLowerCase().includes(lv));
+      }
+    }
+
+    let joinFeatures = joinData.features;
+    if (options.joinFilters) {
+      for (const [key, value] of Object.entries(options.joinFilters)) {
+        const lv = value.toLowerCase();
+        joinFeatures = joinFeatures.filter(f => String(f.properties?.[key] ?? '').toLowerCase().includes(lv));
+      }
+    }
+
+    const matchOn = options.matchOn ?? 'district_name';
+    const baseNameProp = options.baseNameProp ?? baseEntry.featureNameProp ?? matchOn;
+    const joinNameProp = options.joinNameProp ?? joinEntry.featureNameProp ?? matchOn;
+
+    // Build join index: normalised name → feature (prefer state-scoped key when available)
+    const joinIndex = new Map<string, typeof joinData.features[0]>();
+    for (const f of joinFeatures) {
+      const name = String(f.properties?.[joinNameProp] ?? '').toLowerCase().trim();
+      const state = String(f.properties?.state_name ?? '').toLowerCase().trim();
+      if (state) joinIndex.set(`${state}::${name}`, f);
+      if (!joinIndex.has(name)) joinIndex.set(name, f);
+    }
+
+    const resolveJoinColumns = (f: typeof joinData.features[0]): string[] => {
+      if (options.joinColumns?.length) return options.joinColumns;
+      return Object.keys(f.properties || {}).filter(k => {
+        const v = f.properties?.[k];
+        return typeof v === 'number' || (typeof v === 'string' && v !== '' && isFinite(Number(v)));
+      });
+    };
+
+    const results: Array<Record<string, string | number>> = [];
+    let joined = 0;
+    let unmatched_base = 0;
+
+    for (const base of baseFeatures.slice(0, limit)) {
+      const baseName = String(base.properties?.[baseNameProp] ?? '').toLowerCase().trim();
+      const baseState = String(base.properties?.state_name ?? '').toLowerCase().trim();
+
+      const joinFeature = joinIndex.get(`${baseState}::${baseName}`) ?? joinIndex.get(baseName);
+
+      const row: Record<string, string | number> = {};
+
+      // Base columns
+      const baseCols = options.baseColumns?.length
+        ? options.baseColumns
+        : Object.keys(base.properties || {});
+      for (const k of baseCols) {
+        if (base.properties?.[k] != null) row[`base__${k}`] = base.properties[k] as string | number;
+      }
+
+      if (joinFeature) {
+        joined++;
+        const joinCols = resolveJoinColumns(joinFeature);
+        for (const k of joinCols) {
+          if (joinFeature.properties?.[k] != null) row[`join__${k}`] = joinFeature.properties[k] as string | number;
+        }
+        results.push(row);
+      } else {
+        unmatched_base++;
+        results.push(row);
+      }
+    }
+
+    return { joined, unmatched_base, results };
+  }
+
   /** Find K features most similar to a reference feature by Z-score normalized Euclidean distance. */
   async findSimilar(options: {
     mapId: string;
@@ -1471,9 +1924,11 @@ export class McpMapService {
     k?: number;
     filters?: Record<string, string>;
     numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+    secondaryMapId?: string;
+    secondaryColumns?: string[];
   }): Promise<{
     reference: { name: string; state?: string; values: Record<string, number> };
-    similar: Array<{ rank: number; name: string; state?: string; distance: number; values: Record<string, number> }>;
+    similar: Array<{ rank: number; name: string; state?: string; distance: number; values: Record<string, number>; secondary?: Record<string, number> }>;
   }> {
     const entry = MAP_REGISTRY[options.mapId];
     if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
@@ -1542,19 +1997,171 @@ export class McpMapService {
     }
     scored.sort((a, b) => a.dist - b.dist);
 
+    let secondaryIndex: Map<string, Record<string, number>> | null = null;
+    if (options.secondaryMapId) {
+      const secEntry = MAP_REGISTRY[options.secondaryMapId];
+      if (!secEntry) throw new Error(`Unknown secondaryMapId: "${options.secondaryMapId}"`);
+      const secData = await loadGeoJSON(secEntry.file);
+      const secNameProp = secEntry.featureNameProp ?? 'district_name';
+      secondaryIndex = new Map();
+      for (const f of secData.features) {
+        const secName = String(f.properties?.[secNameProp] ?? '').toLowerCase().trim();
+        const secState = String(f.properties?.state_name ?? '').toLowerCase().trim();
+        const secCols = options.secondaryColumns?.length
+          ? options.secondaryColumns
+          : Object.keys(f.properties || {}).filter(k => {
+              const v = f.properties?.[k];
+              return typeof v === 'number' || (typeof v === 'string' && v !== '' && isFinite(Number(v)));
+            });
+        const vals: Record<string, number> = {};
+        for (const c of secCols) {
+          const v = Number(f.properties?.[c]);
+          if (isFinite(v)) vals[c] = v;
+        }
+        if (secState) secondaryIndex.set(`${secState}::${secName}`, vals);
+        if (!secondaryIndex.has(secName)) secondaryIndex.set(secName, vals);
+      }
+    }
+
     return {
       reference: {
         name: String(refFeature.properties?.[nameProp] ?? ''),
         ...(refFeature.properties?.[stateProp] ? { state: String(refFeature.properties[stateProp]) } : {}),
         values: refVals,
       },
-      similar: scored.slice(0, k).map(({ f, dist, vals }, i) => ({
-        rank: i + 1,
-        name: String(f.properties?.[nameProp] ?? ''),
-        ...(f.properties?.[stateProp] ? { state: String(f.properties[stateProp]) } : {}),
-        distance: Math.round(dist * 10000) / 10000,
-        values: vals,
-      })),
+      similar: scored.slice(0, k).map(({ f, dist, vals }, i) => {
+        const featName = String(f.properties?.[nameProp] ?? '').toLowerCase().trim();
+        const featState = String(f.properties?.[stateProp] ?? '').toLowerCase().trim();
+        const secondary = secondaryIndex
+          ? (secondaryIndex.get(`${featState}::${featName}`) ?? secondaryIndex.get(featName))
+          : undefined;
+        return {
+          rank: i + 1,
+          name: String(f.properties?.[nameProp] ?? ''),
+          ...(f.properties?.[stateProp] ? { state: String(f.properties[stateProp]) } : {}),
+          distance: Math.round(dist * 10000) / 10000,
+          values: vals,
+          ...(secondary ? { secondary } : {}),
+        };
+      }),
     };
+  }
+
+  /**
+   * Load city ward GeoJSON into memory so analytics tools can reach it.
+   * City IDs come from listCities(); they live at the same R2 path the cityRenderer uses.
+   */
+  private async loadCityAsGeoJSON(cityId: string): Promise<FeatureCollection> {
+    const cities = await this.listCities();
+    const city = cities.find(c => c.id === cityId);
+    if (!city) throw new Error(`Unknown city ID: "${cityId}". Use list_cities to see valid IDs.`);
+    const url = `https://geo.bharatviz.org/geojsons/cities/${cityId}.geojson`;
+    return loadGeoJSON(url);
+  }
+
+  /**
+   * Run analytics (layer_schema / summarize / rank / correlate / find_similar) on a city ward layer.
+   * Loads the city GeoJSON into the shared cache so subsequent calls are fast.
+   */
+  async cityLayerSchema(cityId: string) {
+    const data = await this.loadCityAsGeoJSON(cityId);
+    const features = data.features;
+    if (!features.length) return { featureCount: 0, numeric: [], categorical: [], textId: [] };
+
+    const allKeys = new Set<string>();
+    for (const f of features) for (const k of Object.keys(f.properties || {})) allKeys.add(k);
+
+    const numeric: Array<{ column: string; nonNull: number; min: number; max: number; mean: number }> = [];
+    const categorical: Array<{ column: string; uniqueValues: number; sample: string[] }> = [];
+    const textId: string[] = [];
+
+    for (const col of allKeys) {
+      let firstNonNull: unknown;
+      for (const f of features) {
+        const v = f.properties?.[col];
+        if (v !== null && v !== undefined && v !== '') { firstNonNull = v; break; }
+      }
+      const isNum = typeof firstNonNull === 'number' ||
+        (typeof firstNonNull === 'string' && firstNonNull !== '' && isFinite(Number(firstNonNull)));
+      if (isNum) {
+        const vals = this.extractNumeric(features, col);
+        const s = this.computeStats(vals)!;
+        numeric.push({ column: col, nonNull: vals.length, min: s.min, max: s.max, mean: s.mean });
+      } else {
+        const uniq = new Set<string>();
+        for (const f of features) {
+          const v = f.properties?.[col];
+          if (v != null) uniq.add(String(v));
+        }
+        if (uniq.size <= 60) categorical.push({ column: col, uniqueValues: uniq.size, sample: [...uniq].slice(0, 8) });
+        else textId.push(col);
+      }
+    }
+    numeric.sort((a, b) => a.column.localeCompare(b.column));
+    categorical.sort((a, b) => a.column.localeCompare(b.column));
+    return { featureCount: features.length, numeric, categorical, textId };
+  }
+
+  async summarizeCityLayer(cityId: string, options: {
+    columns: string[];
+    groupBy?: string;
+    filters?: Record<string, string>;
+  }) {
+    const data = await this.loadCityAsGeoJSON(cityId);
+    let features = this.applyFilters(data.features, options.filters);
+
+    let cols = options.columns;
+    if (cols.length === 1 && cols[0] === '*') {
+      const allKeys = new Set<string>();
+      for (const f of features) for (const k of Object.keys(f.properties || {})) allKeys.add(k);
+      cols = [];
+      for (const col of allKeys) {
+        if (this.extractNumeric(features, col).length > 0) cols.push(col);
+      }
+    }
+
+    const columnStats: Record<string, ReturnType<McpMapService['computeStats']>> = {};
+    for (const col of cols) columnStats[col] = this.computeStats(this.extractNumeric(features, col));
+
+    if (!options.groupBy) return { featureCount: features.length, columns: columnStats };
+
+    const buckets = new Map<string, typeof features>();
+    for (const f of features) {
+      const key = String(f.properties?.[options.groupBy] ?? '(none)');
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key)!.push(f);
+    }
+    const groups: Record<string, Record<string, ReturnType<McpMapService['computeStats']>>> = {};
+    for (const [group, gFeatures] of buckets) {
+      groups[group] = {};
+      for (const col of cols) groups[group][col] = this.computeStats(this.extractNumeric(gFeatures, col));
+    }
+    return { featureCount: features.length, columns: columnStats, groups };
+  }
+
+  async rankCityFeatures(cityId: string, options: {
+    column: string;
+    order: 'asc' | 'desc';
+    limit?: number;
+    filters?: Record<string, string>;
+    properties?: string[];
+  }) {
+    const data = await this.loadCityAsGeoJSON(cityId);
+    const features = this.applyFilters(data.features, options.filters);
+    const limit = Math.max(1, Math.min(options.limit ?? 10, 100));
+
+    const ranked = features
+      .map(f => ({ f, v: Number(f.properties?.[options.column]) }))
+      .filter(({ v }) => isFinite(v))
+      .sort((a, b) => options.order === 'asc' ? a.v - b.v : b.v - a.v);
+
+    const results = ranked.slice(0, limit).map(({ f, v }, i) => {
+      const raw = f.properties || {};
+      const keys = options.properties?.length ? options.properties : Object.keys(raw);
+      const out: Record<string, string | number> = { _rank: i + 1, [options.column]: v };
+      for (const k of keys) if (k !== options.column && raw[k] != null) out[k] = raw[k] as string | number;
+      return out;
+    });
+    return { total: ranked.length, column: options.column, order: options.order, results };
   }
 }

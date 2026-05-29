@@ -62,12 +62,24 @@ interface NAInfo {
   count: number;
 }
 
+export interface PointFeature {
+  lon: number;
+  lat: number;
+  label?: string;
+  color?: string;
+  properties?: Record<string, string | number | null>;
+}
+
 interface IndiaDistrictsMapProps {
   data: DistrictMapData[];
   colorScale: ColorScale;
   invertColors: boolean;
   dataTitle: string;
   showStateBoundaries?: boolean;
+  pointsLayer?: PointFeature[];
+  pointRadius?: number;
+  pointColor?: string;
+  pointOpacity?: number;
   colorBarSettings?: ColorBarSettings;
   geojsonPath?: string;
   statesGeojsonPath?: string;
@@ -173,6 +185,10 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   featureNameProp = 'district_name',
   csvTemplateHeader = 'district',
   labelScale = 1,
+  pointsLayer,
+  pointRadius = 1.5,
+  pointColor = '#ef4444',
+  pointOpacity = 0.7,
 }, ref) => {
   const { dark: darkModeHook } = useDarkMode();
   const darkMode = darkModeProp !== undefined ? darkModeProp : darkModeHook;
@@ -184,6 +200,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [renderingData, setRenderingData] = useState(false);
   const [hoveredDistrict, setHoveredDistrict] = useState<{ district: string; state: string; value?: number | string } | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; feature: PointFeature } | null>(null);
   const [editingMainTitle, setEditingMainTitle] = useState(false);
   const [mainTitle, setMainTitle] = useState('BharatViz (double-click to edit)');
 
@@ -1567,6 +1584,55 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               )}
 
 
+              {pointsLayer && pointsLayer.length > 0 && bounds && (
+                <g className="points-layer">
+                  {pointsLayer.map((pt, i) => {
+                    const { x, y } = geoToScreen(pt.lon, pt.lat);
+                    if (x < 0 || y < 0) return null;
+                    return (
+                      <circle
+                        key={i}
+                        cx={x}
+                        cy={y}
+                        r={pointRadius}
+                        fill={pt.color ?? pointColor}
+                        opacity={hoveredPoint?.feature === pt ? 1 : pointOpacity}
+                        stroke={hoveredPoint?.feature === pt ? (darkMode ? '#fff' : '#000') : 'none'}
+                        strokeWidth={hoveredPoint?.feature === pt ? 0.8 : 0}
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={(e) => {
+                          const svgRect = svgRef.current?.getBoundingClientRect();
+                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
+                          const refRect = containerRect ?? svgRect;
+                          if (!refRect) return;
+                          setHoveredPoint({
+                            x: e.clientX - refRect.left,
+                            y: e.clientY - refRect.top,
+                            feature: pt,
+                          });
+                        }}
+                        onMouseLeave={() => setHoveredPoint(null)}
+                        onMouseMove={(e) => {
+                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
+                          if (!containerRect) return;
+                          setHoveredPoint(prev => prev ? { ...prev, x: e.clientX - containerRect.left, y: e.clientY - containerRect.top } : null);
+                        }}
+                        onClick={(e) => {
+                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
+                          if (!containerRect) return;
+                          setHoveredPoint({
+                            x: e.clientX - containerRect.left,
+                            y: e.clientY - containerRect.top,
+                            feature: pt,
+                          });
+                          e.stopPropagation();
+                        }}
+                      />
+                    );
+                  })}
+                </g>
+              )}
+
               {naInfo && naInfo.count > 0 && showNALegend && (
                 <g
                   className="na-legend"
@@ -1630,7 +1696,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
             </svg>
 
 
-            {hoveredDistrict && (
+            {hoveredDistrict && !hoveredPoint && (
               <div
                 className="absolute top-2 left-7 rounded-lg px-3 py-2 shadow-lg z-10 pointer-events-none"
                 style={{
@@ -1648,6 +1714,46 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 )}
               </div>
             )}
+
+            {hoveredPoint && (() => {
+              const pt = hoveredPoint.feature;
+              const props = pt.properties ?? {};
+              const entries = Object.entries(props).filter(([, v]) => v !== null && v !== '' && v !== undefined);
+              // Tooltip should not overflow right edge — flip if too close
+              const tooltipLeft = hoveredPoint.x + 12;
+              return (
+                <div
+                  className="absolute z-20 pointer-events-none rounded-lg shadow-xl max-w-xs"
+                  style={{
+                    left: tooltipLeft,
+                    top: Math.max(4, hoveredPoint.y - 8),
+                    backgroundColor: darkMode ? 'hsl(25, 8%, 10%)' : 'hsl(38, 30%, 99%)',
+                    border: `1px solid ${darkMode ? 'hsl(25, 8%, 20%)' : 'hsl(35, 18%, 82%)'}`,
+                    color: darkMode ? 'hsl(35, 12%, 90%)' : 'hsl(28, 20%, 14%)',
+                    minWidth: '180px',
+                  }}
+                >
+                  {pt.label && (
+                    <div className="px-3 pt-2.5 pb-1.5 border-b font-semibold text-sm leading-tight"
+                      style={{ borderColor: darkMode ? 'hsl(25, 8%, 18%)' : 'hsl(35, 18%, 88%)' }}>
+                      {pt.label}
+                    </div>
+                  )}
+                  {entries.length > 0 && (
+                    <div className="px-3 py-2 space-y-0.5 max-h-64 overflow-y-auto">
+                      {entries.map(([k, v]) => (
+                        <div key={k} className="flex gap-2 text-xs">
+                          <span className="shrink-0 font-medium" style={{ color: darkMode ? 'hsl(30, 8%, 52%)' : 'hsl(28, 8%, 46%)' }}>
+                            {k.replace(/_/g, ' ')}
+                          </span>
+                          <span className="truncate">{String(v)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
     </div>
   );

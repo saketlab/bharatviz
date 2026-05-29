@@ -770,12 +770,16 @@ export function createMcpServer(): Server {
             'Find the K features most similar to a reference feature using Z-score normalized ' +
             'Euclidean distance across a multi-column metric vector. ' +
             'Essential for identifying epidemiological comparators or policy-matched districts. ' +
-            'Examples: "10 districts demographically similar to Nandurbar (high ST, low literacy)", ' +
-            '"Districts like Washim on literacy + SC + language diversity".',
+            'Pass secondaryMapId to look up those similar districts in a second layer (e.g. find districts ' +
+            'demographically similar to Nandurbar, then show their NFHS-5 health outcomes).\n\n' +
+            'Examples:\n' +
+            '• "10 districts demographically similar to Nandurbar (high ST, low literacy)": mapId="census-2011-enriched"\n' +
+            '• "Districts like Washim on demography — show their NFHS-5 outcomes": mapId="census-2011-enriched", secondaryMapId="nfhs5-districts"\n' +
+            '• "SHRUG districts similar to Sitamarhi on poverty proxy — show road access": mapId="shrug-secc", secondaryMapId="shrug-roads"',
           inputSchema: {
             type: 'object' as const,
             properties: {
-              mapId: { type: 'string', description: 'Map layer ID.' },
+              mapId: { type: 'string', description: 'Map layer ID for the similarity search.' },
               referenceName: { type: 'string', description: 'Name of the reference feature (value of the layer\'s featureNameProp).' },
               referenceState: { type: 'string', description: 'State name to disambiguate when the district name is not unique.' },
               columns: { type: 'array', items: { type: 'string' }, description: 'Numeric columns forming the similarity metric vector.' },
@@ -785,20 +789,202 @@ export function createMcpServer(): Server {
                 type: 'array',
                 items: { type: 'object', properties: { column: { type: 'string' }, gt: { type: 'number' }, gte: { type: 'number' }, lt: { type: 'number' }, lte: { type: 'number' } }, required: ['column'] },
               },
+              secondaryMapId: {
+                type: 'string',
+                description: 'Optional second map layer. For each similar feature, its columns from this layer are included in the result under "secondary". Use to cross-reference: find similar districts on demography, show their health outcomes.',
+              },
+              secondaryColumns: {
+                type: 'array', items: { type: 'string' },
+                description: 'Specific columns to pull from secondaryMapId (default: all numeric columns).',
+              },
             },
             required: ['mapId', 'referenceName', 'columns'],
+          },
+        },
+        {
+          name: 'aggregate_by_boundary',
+          description:
+            'Count (and optionally sum/mean/min/max) target-layer features inside each boundary polygon. ' +
+            'The essential tool for facility-per-district counts, pincode density by constituency, hospital beds per block, etc.\n\n' +
+            'Examples:\n' +
+            '• Health facilities per district: boundaryMapId="lgd-districts", targetMapId="nhp-health-facilities"\n' +
+            '• Hospitals per state with total beds: boundaryMapId="lgd-states", targetMapId="nhp-hospital-directory", aggColumns=[{column:"Total_Num_Beds",stat:"sum"},{column:"Number_Doctor",stat:"sum"}]\n' +
+            '• Anganwadis per block: boundaryMapId="lgd-blocks", targetMapId="anganwadis-icds"\n' +
+            '• Airports per state: boundaryMapId="lgd-states", targetMapId="airports"\n' +
+            '• Dams per district in Rajasthan: boundaryMapId="lgd-districts", targetMapId="dams", boundaryFilters={"state_name":"Rajasthan"}\n\n' +
+            'Result rows are sorted by count descending. ' +
+            'For large point layers (anganwadis 1.4M, nhp-health-facilities 166k), filter boundaries to a single state first using boundaryFilters — all-India queries will be rejected to prevent timeout.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              boundaryMapId: {
+                type: 'string',
+                description: 'Polygon layer to aggregate into (any district/state/block/constituency layer). Use list_available_maps.',
+              },
+              boundaryFilters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Optional string filters on boundary features. E.g. {"state_name":"Bihar"} to aggregate only Bihar districts.',
+              },
+              targetMapId: {
+                type: 'string',
+                description: 'Layer whose features will be counted/aggregated inside each boundary.',
+              },
+              targetFilters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Optional filters on target features before aggregation. E.g. {"facility_type":"PHC"} or {"amenity":"hospital"}.',
+              },
+              aggColumns: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    column: { type: 'string', description: 'Numeric column in the target layer.' },
+                    stat: { type: 'string', enum: ['count', 'sum', 'mean', 'min', 'max'], description: 'Aggregation function.' },
+                  },
+                  required: ['column', 'stat'],
+                },
+                description: 'Optional numeric columns to aggregate beyond the default _count. E.g. total beds per district.',
+              },
+              boundaryNameProp: {
+                type: 'string',
+                description: 'Property to use as the boundary name in results. Defaults to the boundary layer\'s featureNameProp.',
+              },
+              limit: {
+                type: 'number',
+                description: 'Max results to return after ranking (default 500, max 2000). All boundaries matching boundaryFilters are still counted for correct ranking.',
+              },
+            },
+            required: ['boundaryMapId', 'targetMapId'],
+          },
+        },
+        {
+          name: 'join_layers',
+          description:
+            'Join numeric columns from two map layers by matching feature names. ' +
+            'Returns one row per base-layer feature with columns from both layers prefixed base__ and join__. ' +
+            'This is the tool for cross-layer analytics: e.g. SHRUG road density + census literacy, or NFHS-5 outcomes + census demography.\n\n' +
+            'Examples:\n' +
+            '• SHRUG roads + census literacy: baseMapId="shrug-roads", joinMapId="census-2011-enriched"\n' +
+            '• Facebook wealth index + SECC deprivation: baseMapId="shrug-facebook", joinMapId="shrug-secc"\n' +
+            '• PM2.5 pollution + literacy: baseMapId="shrug-environment", joinMapId="census-2011-enriched", baseColumns=["pm25__pm25_mean"], joinColumns=["literacy_pct","sc_pct"]\n' +
+            '• State-level join: baseMapId="lgd-states", joinMapId="nfhs5-states", matchOn="state_name"\n\n' +
+            'Matching is state-scoped by default (district_name). For state-level layers pass matchOn="state_name".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              baseMapId: {
+                type: 'string',
+                description: 'Primary map layer. Each feature appears once in the output.',
+              },
+              joinMapId: {
+                type: 'string',
+                description: 'Layer to join columns from.',
+              },
+              matchOn: {
+                type: 'string',
+                enum: ['district_name', 'state_name'],
+                description: 'Property name to join on. Use "state_name" for state-level layers, "district_name" (default) for district/sub-district layers.',
+              },
+              baseNameProp: {
+                type: 'string',
+                description: 'Override the join key property in the base layer (overrides matchOn).',
+              },
+              joinNameProp: {
+                type: 'string',
+                description: 'Override the join key property in the join layer (overrides matchOn).',
+              },
+              baseColumns: {
+                type: 'array', items: { type: 'string' },
+                description: 'Base-layer columns to include (default: all numeric columns).',
+              },
+              joinColumns: {
+                type: 'array', items: { type: 'string' },
+                description: 'Join-layer columns to include (default: all numeric columns).',
+              },
+              baseFilters: {
+                type: 'object', additionalProperties: { type: 'string' },
+                description: 'String filters on base features. E.g. {"state_name":"Kerala"}.',
+              },
+              joinFilters: {
+                type: 'object', additionalProperties: { type: 'string' },
+                description: 'String filters on join features.',
+              },
+              limit: {
+                type: 'number',
+                description: 'Max rows to return (default 1000, max 5000).',
+              },
+            },
+            required: ['baseMapId', 'joinMapId'],
+          },
+        },
+        {
+          name: 'city_layer_schema',
+          description:
+            'Describes the schema (columns, types, ranges) of a city ward dataset. ' +
+            'Works like layer_schema but for city/ward layers from list_cities. ' +
+            'Call this before summarize_city_layer or rank_city_features to discover column names.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              cityId: { type: 'string', description: 'City dataset ID from list_cities (e.g. "mumbai_admin_wards").' },
+            },
+            required: ['cityId'],
+          },
+        },
+        {
+          name: 'summarize_city_layer',
+          description:
+            'Compute descriptive statistics for numeric columns in a city ward dataset. ' +
+            'Use columns:["*"] to summarize all numeric columns. Supports groupBy and string filters. ' +
+            'Examples: "Mean population per ward in Bengaluru", "Literacy distribution across Mumbai wards".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              cityId: { type: 'string', description: 'City dataset ID from list_cities.' },
+              columns: {
+                type: 'array', items: { type: 'string' },
+                description: 'Numeric column names. Pass ["*"] for all numeric columns.',
+              },
+              groupBy: { type: 'string', description: 'Categorical column to group by.' },
+              filters: {
+                type: 'object', additionalProperties: { type: 'string' },
+                description: 'String property filters.',
+              },
+            },
+            required: ['cityId', 'columns'],
+          },
+        },
+        {
+          name: 'rank_city_features',
+          description:
+            'Sort ward features in a city dataset by a numeric column and return the top or bottom N. ' +
+            'Examples: "10 wards with lowest literacy in Mumbai", "Top 5 wards by area in Bengaluru".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              cityId: { type: 'string', description: 'City dataset ID from list_cities.' },
+              column: { type: 'string', description: 'Numeric column to rank by.' },
+              order: { type: 'string', enum: ['asc', 'desc'], description: '"asc" for lowest first, "desc" for highest first.' },
+              limit: { type: 'number', description: 'Number of results (default 10, max 100).' },
+              filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'String property filters.' },
+              properties: { type: 'array', items: { type: 'string' }, description: 'Properties to include in output.' },
+            },
+            required: ['cityId', 'column', 'order'],
           },
         },
         {
           name: 'list_categories',
           description:
             'Lists all available BharatViz map layers grouped by category. ' +
-            'Categories: admin (Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts), ' +
+            'Categories: admin (Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, SHRUG), ' +
             'electoral (Lok Sabha, Vidhan Sabha constituencies), ' +
             'survey (NFHS-4, NFHS-5, NSSO regions), ' +
             'environment (wildlife sanctuaries, eco-sensitive zones, FSI forests), ' +
             'urban (SBM urban local bodies), ' +
-            'points (health facilities, airports, dams, water bodies, pincodes). ' +
+            'health (NHP health facilities, hospital directory, blood banks, Anganwadis), ' +
+            'points (HOTOSM health facilities, airports, dams, water bodies, pincodes). ' +
             'Each entry includes id, level, source, year, and description. ' +
             'Faster than list_available_maps — does not fetch GeoJSON.',
           inputSchema: {
@@ -904,6 +1090,75 @@ export function createMcpServer(): Server {
             k: args?.k as number | undefined,
             filters: args?.filters as Record<string, string> | undefined,
             numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
+            secondaryMapId: args?.secondaryMapId as string | undefined,
+            secondaryColumns: Array.isArray(args?.secondaryColumns) ? args.secondaryColumns as string[] : undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'aggregate_by_boundary': {
+          const boundaryMapId = args?.boundaryMapId as string;
+          const targetMapId = args?.targetMapId as string;
+          if (!boundaryMapId || !targetMapId) throw new Error('boundaryMapId and targetMapId are required');
+          const result = await mapService.aggregateByBoundary({
+            boundaryMapId,
+            boundaryFilters: args?.boundaryFilters as Record<string, string> | undefined,
+            targetMapId,
+            targetFilters: args?.targetFilters as Record<string, string> | undefined,
+            aggColumns: args?.aggColumns as Array<{ column: string; stat: 'count' | 'sum' | 'mean' | 'min' | 'max' }> | undefined,
+            boundaryNameProp: args?.boundaryNameProp as string | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'join_layers': {
+          const baseMapId = args?.baseMapId as string;
+          const joinMapId = args?.joinMapId as string;
+          if (!baseMapId || !joinMapId) throw new Error('baseMapId and joinMapId are required');
+          const result = await mapService.joinLayers({
+            baseMapId, joinMapId,
+            matchOn: args?.matchOn as 'district_name' | 'state_name' | undefined,
+            baseNameProp: args?.baseNameProp as string | undefined,
+            joinNameProp: args?.joinNameProp as string | undefined,
+            baseColumns: Array.isArray(args?.baseColumns) ? args.baseColumns as string[] : undefined,
+            joinColumns: Array.isArray(args?.joinColumns) ? args.joinColumns as string[] : undefined,
+            baseFilters: args?.baseFilters as Record<string, string> | undefined,
+            joinFilters: args?.joinFilters as Record<string, string> | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'city_layer_schema': {
+          const cityId = args?.cityId as string;
+          if (!cityId) throw new Error('cityId is required');
+          const result = await mapService.cityLayerSchema(cityId);
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'summarize_city_layer': {
+          const cityId = args?.cityId as string;
+          const columns = Array.isArray(args?.columns) ? args.columns as string[] : ['*'];
+          if (!cityId) throw new Error('cityId is required');
+          const result = await mapService.summarizeCityLayer(cityId, {
+            columns,
+            groupBy: args?.groupBy as string | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'rank_city_features': {
+          const cityId = args?.cityId as string;
+          const column = args?.column as string;
+          const order = (args?.order as 'asc' | 'desc') ?? 'desc';
+          if (!cityId || !column) throw new Error('cityId and column are required');
+          const result = await mapService.rankCityFeatures(cityId, {
+            column, order,
+            limit: args?.limit as number | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+            properties: Array.isArray(args?.properties) ? args.properties as string[] : undefined,
           });
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }

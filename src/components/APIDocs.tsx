@@ -115,8 +115,8 @@ const APIDocs: React.FC<APIDocsProps> = () => {
           <SectionAnchor id="rest-api" />
         </h2>
         <p className={`${textClass} text-lg`}>
-          BharatViz exposes a REST API for district evolution queries, shareable URLs for embedding
-          maps, and static GeoJSON/GeoParquet boundary data. Use these from any language or browser.
+          BharatViz has a REST API for district evolution queries, shareable URLs for embedding
+          maps, and static GeoJSON/GeoParquet boundary data. Works from any language or browser.
           Swagger UI at{' '}
           <a href="/api-docs" className="text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)] underline underline-offset-2">/api-docs</a>.
         </p>
@@ -131,7 +131,7 @@ const APIDocs: React.FC<APIDocsProps> = () => {
 
         <div className={cardClass}>
           <p className={`${textClass} mb-3`}>
-            All settings are in the URL — bookmark any view, share it, or load it in an iframe.
+            All settings are in the URL. Bookmark any view, share it, or load it in an iframe.
           </p>
 
           <div className="overflow-x-auto">
@@ -417,7 +417,7 @@ head(df)`}
       <div className="space-y-4">
         <h3 id="map-boundaries" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Map className="h-5 w-5" />
-          All 49 Available Map Boundaries
+          All available map boundaries
           <SectionAnchor id="map-boundaries" />
         </h3>
 

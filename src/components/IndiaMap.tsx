@@ -1160,7 +1160,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
       )}
       {data.length === 0 && !renderingData && (
         <div className="absolute left-0 right-[28%] top-[12%] flex justify-end pointer-events-none z-10">
-          <div className="px-3 py-2 rounded-lg backdrop-blur-sm bg-[hsl(38,30%,97%)]/90 border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)]/90 dark:border-[hsl(25,8%,16%)]">
+          <div className="px-3 py-2 rounded-lg bg-[hsl(38,30%,97%)] border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,16%)]">
             <p className="text-xs font-medium mb-0.5 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
               Load data to colour the map
             </p>

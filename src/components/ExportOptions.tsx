@@ -84,7 +84,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
   geojsonDownloadUrl,
   geojsonDownloadName,
   citationInfo,
-  defaultOpen = false,
+  defaultOpen = true,
 }) => {
   const copyFeedback = useCopyFeedback();
   const geojsonUrlCopyFeedback = useCopyFeedback(1500);

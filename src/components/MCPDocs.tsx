@@ -70,73 +70,131 @@ const MCPDocs: React.FC<MCPDocsProps> = () => {
   const textClass = 'text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,60%)]';
   const tableHeaderClass = 'text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]';
 
-  const remoteConfig = `{
+  const MCP_URL = 'https://bharatviz.saketlab.org/api/mcp';
+
+  const claudeCodeCliCommand = `claude mcp add --transport http bharatviz ${MCP_URL}`;
+
+  const claudeCodeJsonConfig = `{
   "mcpServers": {
     "bharatviz": {
       "type": "url",
-      "url": "https://bharatviz.org/api/mcp"
+      "url": "${MCP_URL}"
     }
   }
 }`;
 
-  const localClaudeCodeConfig = `{
+  const claudeDesktopConfig = `{
   "mcpServers": {
     "bharatviz": {
-      "command": "node",
-      "args": ["/path/to/bharatviz/server/dist/mcp.js"]
+      "type": "url",
+      "url": "${MCP_URL}"
     }
   }
 }`;
 
-  const localClaudeDesktopConfig = `{
+  const cursorConfig = `{
   "mcpServers": {
     "bharatviz": {
-      "command": "node",
-      "args": ["/absolute/path/to/bharatviz/server/dist/mcp.js"]
+      "url": "${MCP_URL}"
     }
   }
 }`;
 
-  const installFromSource = `git clone https://github.com/saketlab/bharatviz.git
-cd bharatviz/server
-npm install
-npm run build`;
+  const continueConfig = `{
+  "experimental": {
+    "modelContextProtocolServers": [
+      {
+        "transport": {
+          "type": "http",
+          "url": "${MCP_URL}"
+        }
+      }
+    ]
+  }
+}`;
+
+  const codexCliConfig = `codex mcp add bharatviz ${MCP_URL}`;
+
+  const codexJsonConfig = `{
+  "mcpServers": {
+    "bharatviz": {
+      "url": "${MCP_URL}"
+    }
+  }
+}`;
+
+  const openaiAgentsConfig = `from agents import Agent, Runner
+from agents.mcp import MCPServerHTTP
+
+bharatviz = MCPServerHTTP(url="${MCP_URL}")
+
+agent = Agent(
+    name="BharatViz Agent",
+    mcp_servers=[bharatviz],
+)
+
+result = Runner.run_sync(agent, "Map literacy rates across Census 2011 districts")
+print(result.final_output)`;
+
+  const pythonSdkConfig = `import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.beta.messages.create(
+    model="claude-opus-4-5",
+    max_tokens=4096,
+    tools=[],  # tools come from the MCP server
+    mcp_servers=[
+        {
+            "type": "url",
+            "url": "${MCP_URL}",
+            "name": "bharatviz",
+        }
+    ],
+    messages=[{"role": "user", "content": "Rank Indian districts by literacy rate"}],
+    betas=["mcp-client-2025-04-04"],
+)`;
+
+  const genericHttpSnippet = `# Any HTTP MCP client — SSE endpoint
+MCP endpoint: ${MCP_URL}
+Transport:    HTTP / SSE (Streamable HTTP)
+Auth:         None required`;
 
   const mapTools = [
-    { name: 'list_available_maps', description: 'Lists all boundary sets with metadata (id, source, year, level, feature count)', input: 'None' },
-    { name: 'list_states', description: 'Lists state/UT names for a given boundary type', input: 'mapId (string)' },
-    { name: 'list_districts', description: 'Lists districts for a boundary type, optionally filtered by state', input: 'mapId, state?' },
-    { name: 'render_states_map', description: 'Renders a state-level choropleth map as 300 DPI PNG', input: 'data [{state, value}], mapId?, colorScale?, title?, ...' },
-    { name: 'render_districts_map', description: 'Renders a district-level choropleth. Works for any sub-state boundary: districts, subdistricts, constituencies, FSI forest units, ULBs.', input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...' },
-    { name: 'get_csv_template', description: 'Returns a CSV template with all entity names for a boundary type', input: 'mapId (string)' },
-    { name: 'list_demos', description: 'Lists all showcase demo datasets (NFHS-5 health indicators, IHME AMR estimates)', input: 'level? ("states" | "districts")' },
-    { name: 'get_demo_url', description: 'Returns a shareable URL that opens a demo dataset in the browser', input: 'demoId, baseUrl?' },
-    { name: 'list_pincode_states', description: 'Lists all 38 states/UTs with pincode boundary data (~19,000 pincodes)', input: 'None' },
-    { name: 'list_pincodes', description: 'Lists all pincodes for a state with post office name and district', input: 'state (string)' },
-    { name: 'render_pincodes_map', description: 'Renders a pincode-level choropleth for a single state as 300 DPI PNG', input: 'data [{pincode, value}], state, colorScale?, ...' },
-    { name: 'list_cities', description: 'Lists 130+ cities with ward/zone boundary data (2,900+ datasets)', input: 'None' },
-    { name: 'list_wards', description: 'Lists all ward names for a given city', input: 'cityId (string)' },
-    { name: 'render_city_map', description: 'Renders a ward-level choropleth for an Indian city as 300 DPI PNG', input: 'cityId, data [{ward, value}], colorScale?, ...' },
-    { name: 'trace_district_evolution', description: 'Traces how a district evolved across Census years 1951–2011 (splits, merges, renames)', input: 'district, state?, year?, includeGeojson?' },
-    { name: 'list_historical_district_names', description: 'Lists all district names in the Census transition data (1951–2011)', input: 'None' },
+    { name: 'list_available_maps', description: 'All boundary sets with id, source, year, level, and feature count', input: 'None' },
+    { name: 'list_states', description: 'State/UT names for a given boundary type', input: 'mapId (string)' },
+    { name: 'list_districts', description: 'Districts for a boundary type, optionally filtered by state', input: 'mapId, state?' },
+    { name: 'render_states_map', description: 'State-level choropleth as 300 DPI PNG', input: 'data [{state, value}], mapId?, colorScale?, title?, ...' },
+    { name: 'render_districts_map', description: 'District-level choropleth as 300 DPI PNG. Works for any sub-state boundary: districts, subdistricts, constituencies, FSI forest units, ULBs.', input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...' },
+    { name: 'get_csv_template', description: 'CSV template with all entity names for a boundary type — paste your values in column B', input: 'mapId (string)' },
+    { name: 'list_demos', description: 'Built-in demo datasets: NFHS-5 health indicators, IHME AMR estimates', input: 'level? ("states" | "districts")' },
+    { name: 'get_demo_url', description: 'Shareable URL that opens a demo dataset directly in the browser', input: 'demoId, baseUrl?' },
+    { name: 'list_pincode_states', description: '38 states/UTs with pincode boundary data (~19,000 pincodes total)', input: 'None' },
+    { name: 'list_pincodes', description: 'All pincodes for a state with post office name and district', input: 'state (string)' },
+    { name: 'render_pincodes_map', description: 'Pincode-level choropleth for a single state as 300 DPI PNG', input: 'data [{pincode, value}], state, colorScale?, ...' },
+    { name: 'list_cities', description: '130+ cities with ward/zone boundary data (2,900+ datasets)', input: 'None' },
+    { name: 'list_wards', description: 'All ward names for a given city', input: 'cityId (string)' },
+    { name: 'render_city_map', description: 'Ward-level choropleth for an Indian city as 300 DPI PNG', input: 'cityId, data [{ward, value}], colorScale?, ...' },
+    { name: 'trace_district_evolution', description: 'How a district changed across Census years 1951–2011: splits, merges, renames', input: 'district, state?, year?, includeGeojson?' },
+    { name: 'list_historical_district_names', description: 'All district names in the Census transition data (1951–2011)', input: 'None' },
   ];
 
   const spatialTools = [
-    { name: 'locate', description: 'Finds which boundary region(s) a point (lat/lon) falls inside, across one or more map layers simultaneously', input: 'lat, lon, mapIds? (array)' },
-    { name: 'query_layer', description: 'Filters features in any map layer by property values or name substring', input: 'mapId, filters?, numericFilters?, limit?' },
-    { name: 'spatial_join', description: 'Finds all features in a target layer that intersect features matched in a boundary layer', input: 'targetMapId, boundaryMapId, boundaryFilters?' },
-    { name: 'nearby', description: 'Finds the N nearest feature centroids to a given lat/lon point', input: 'lat, lon, mapId, n?' },
-    { name: 'get_area', description: 'Computes the geodetic area (km²) of any feature or set of features in a map layer', input: 'mapId, filters?, numericFilters?' },
-    { name: 'get_layer_detail', description: 'Returns metadata for a map layer: feature count, property names, GeoJSON and GeoParquet download URLs', input: 'mapId (string)' },
+    { name: 'locate', description: 'Which boundary region(s) a lat/lon point falls inside, across one or more layers at once', input: 'lat, lon, mapIds? (array)' },
+    { name: 'query_layer', description: 'Filter features by property values or name substring', input: 'mapId, filters?, numericFilters?, limit?' },
+    { name: 'spatial_join', description: 'All features in a target layer that intersect features matched in a boundary layer', input: 'targetMapId, boundaryMapId, boundaryFilters?' },
+    { name: 'nearby', description: 'N nearest feature centroids to a lat/lon point', input: 'lat, lon, mapId, n?' },
+    { name: 'get_area', description: 'Geodetic area (km²) of any feature or set of features', input: 'mapId, filters?, numericFilters?' },
+    { name: 'get_layer_detail', description: 'Feature count, property names, GeoJSON and GeoParquet download URLs for a layer', input: 'mapId (string)' },
   ];
 
   const analyticsTools = [
-    { name: 'layer_schema', description: 'Returns the full column schema of any enriched map layer, classified into numeric, categorical, and text-ID columns', input: 'mapId (string)' },
-    { name: 'summarize_layer', description: 'Computes descriptive statistics (min, max, mean, median, percentiles, stddev) for one or more numeric columns, with optional group-by and row filters', input: 'mapId, columns?, groupBy?, filters?, numericFilters?' },
-    { name: 'rank_features', description: 'Ranks all features in a layer by a numeric column, returning a sorted table', input: 'mapId, column, order?, limit?, filters?, numericFilters?' },
-    { name: 'correlate', description: 'Computes Pearson and Spearman correlations between two numeric columns, with optional scatter data and group breakdowns', input: 'mapId, x, y, filters?, numericFilters?, scatter?, groupBy?' },
-    { name: 'compare_groups', description: 'Compares summary statistics across groups defined by a categorical column (e.g. by state, by region)', input: 'mapId, groupBy, columns?, filters?, numericFilters?' },
-    { name: 'find_similar', description: 'Finds the N features most similar to a reference feature using Z-score normalized Euclidean distance across multiple numeric columns', input: 'mapId, referenceName, columns, n?, referenceState?, filters?' },
+    { name: 'layer_schema', description: 'Full column list for any enriched layer, split into numeric, categorical, and text-ID columns', input: 'mapId (string)' },
+    { name: 'summarize_layer', description: 'Min, max, mean, median, percentiles, stddev for one or more numeric columns — supports group-by and row filters', input: 'mapId, columns?, groupBy?, filters?, numericFilters?' },
+    { name: 'rank_features', description: 'All features sorted by a numeric column', input: 'mapId, column, order?, limit?, filters?, numericFilters?' },
+    { name: 'correlate', description: 'Pearson and Spearman correlations between two numeric columns, with optional scatter data and per-group breakdowns', input: 'mapId, x, y, filters?, numericFilters?, scatter?, groupBy?' },
+    { name: 'compare_groups', description: 'Summary stats for each group in a categorical column — e.g. compare districts by state', input: 'mapId, groupBy, columns?, filters?, numericFilters?' },
+    { name: 'find_similar', description: 'N features closest to a reference using Z-score normalized Euclidean distance across multiple columns', input: 'mapId, referenceName, columns, n?, referenceState?, filters?' },
   ];
 
   return (
@@ -144,68 +202,198 @@ npm run build`;
       <div>
         <h2 id="mcp-server" className={`text-2xl ${headingClass} mb-2 flex items-center gap-3 group`}>
           <Plug className="h-7 w-7" />
-          MCP Server for AI Assistants
+          BharatViz MCP Server
           <SectionAnchor id="mcp-server" />
         </h2>
-        <p className={`${textClass} text-lg`}>
-          Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate India maps,
-          query boundaries, and run demographic analytics from natural language. The server exposes
-          22 tools across four categories: map rendering, boundary discovery, spatial queries,
-          and in-memory analytics on 49 boundary layers.
+        <p className={`${textClass} text-lg mb-3`}>
+          BharatViz has a hosted MCP server. Point any MCP-compatible client at it and you can
+          generate India maps, query boundaries, and run demographic analytics from plain English.
+          28 tools: map rendering, boundary lookup, spatial queries, and in-memory analytics
+          across 60+ boundary layers.
         </p>
-      </div>
-
-      <div className="space-y-4">
-        <h3 id="quick-start" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <Terminal className="h-5 w-5" />
-          Quick Start
-          <SectionAnchor id="quick-start" />
-        </h3>
-
-        <div className={cardClass}>
-          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            1. Add to your AI assistant (Recommended — no install needed)
-          </h4>
-          <p className={`${textClass} mb-3`}>
-            Use the hosted MCP server at{' '}
-            <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.org/api/mcp</code>.
-            No cloning or building required.
-          </p>
-          <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
-            Claude Code / Claude Desktop / any MCP client (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
-          </p>
-          <CodeBlock code={remoteConfig} />
-        </div>
-
-        <div className={`${cardClass} opacity-80`}>
-          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            Alternative: Local install (stdio transport)
-          </h4>
-          <CodeBlock code={installFromSource} />
-          <div className="space-y-4 mt-4">
-            <div>
-              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
-                Claude Code (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
-              </p>
-              <CodeBlock code={localClaudeCodeConfig} />
-            </div>
-            <div>
-              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
-                Claude Desktop (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">claude_desktop_config.json</code>):
-              </p>
-              <CodeBlock code={localClaudeDesktopConfig} />
-            </div>
+        <div className={`${cardClass} flex items-center gap-3`}>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[hsl(28,8%,50%)] mb-1">MCP endpoint (HTTP / SSE)</p>
+            <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)] select-all">{MCP_URL}</code>
           </div>
         </div>
+      </div>
 
+      {/* ── Claude Code ─────────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-claude-code" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Claude Code (CLI)
+          <SectionAnchor id="setup-claude-code" />
+        </h3>
         <div className={cardClass}>
-          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            2. Start asking questions
-          </h4>
-          <p className={`${textClass} mb-2`}>
-            Once connected, ask your AI assistant anything about India's geography or demographics:
+          <p className={`${textClass} text-sm mb-2`}><strong>Option A — one command</strong> (saves globally):</p>
+          <CodeBlock code={claudeCodeCliCommand} />
+          <p className={`${textClass} text-sm mt-4 mb-2`}><strong>Option B — config file</strong>: add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code> in your project root, or <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.claude/claude.json</code> for global scope:</p>
+          <CodeBlock code={claudeCodeJsonConfig} />
+          <p className={`${textClass} text-sm mt-3`}>Run <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">/mcp</code> inside Claude Code to confirm <strong>bharatviz</strong> shows as connected.</p>
+        </div>
+      </div>
+
+      {/* ── Claude Desktop ───────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-claude-desktop" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Claude Desktop
+          <SectionAnchor id="setup-claude-desktop" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Open <strong>Settings → Developer → Edit Config</strong> and add the <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcpServers</code> block.
+            Config file location:
           </p>
-          <ul className={`list-disc list-inside space-y-1 ${textClass}`}>
+          <ul className={`text-xs mb-3 space-y-1 font-mono ${textClass}`}>
+            <li><span className="text-[hsl(28,20%,40%)] dark:text-[hsl(30,8%,55%)]">macOS  </span> ~/Library/Application Support/Claude/claude_desktop_config.json</li>
+            <li><span className="text-[hsl(28,20%,40%)] dark:text-[hsl(30,8%,55%)]">Windows</span> %APPDATA%\Claude\claude_desktop_config.json</li>
+          </ul>
+          <CodeBlock code={claudeDesktopConfig} />
+          <p className={`${textClass} text-sm mt-3`}>
+            <strong>Fully quit and relaunch</strong> Claude Desktop (Cmd+Q / Alt+F4, don't just close the window).
+            A <strong>hammer icon</strong> in the chat input confirms MCP tools are active.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Cursor ───────────────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-cursor" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Cursor
+          <SectionAnchor id="setup-cursor" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Go to <strong>Cursor Settings → MCP → Add new MCP server</strong>, or add manually to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.cursor/mcp.json</code>:
+          </p>
+          <CodeBlock code={cursorConfig} />
+          <p className={`${textClass} text-sm mt-3`}>
+            Restart Cursor. In Agent mode, the bharatviz tools appear in the tool picker automatically.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Windsurf ─────────────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-windsurf" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Windsurf (Codeium)
+          <SectionAnchor id="setup-windsurf" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Open <strong>Windsurf Settings → Cascade → MCP Servers → Add Server</strong>.
+            Choose <strong>Remote URL</strong> and paste the endpoint:
+          </p>
+          <CodeBlock code={MCP_URL} />
+          <p className={`${textClass} text-sm mt-3`}>
+            Name it <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">bharatviz</code>. Windsurf will discover all tools automatically the next time Cascade runs.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Continue.dev ─────────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-continue" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Continue.dev
+          <SectionAnchor id="setup-continue" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.continue/config.json</code>:
+          </p>
+          <CodeBlock code={continueConfig} />
+        </div>
+      </div>
+
+      {/* ── OpenAI Codex CLI ─────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-codex" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          OpenAI Codex (CLI)
+          <SectionAnchor id="setup-codex" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}><strong>Option A — one command:</strong></p>
+          <CodeBlock code={codexCliConfig} />
+          <p className={`${textClass} text-sm mt-4 mb-2`}>
+            <strong>Option B — config file.</strong> Add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.codex/config.json</code>:
+          </p>
+          <CodeBlock code={codexJsonConfig} />
+          <p className={`${textClass} text-sm mt-3`}>
+            Codex discovers tools automatically on the next run. Use <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">--approval-mode auto-edit</code> so it can call BharatViz tools without prompting on each step.
+          </p>
+        </div>
+      </div>
+
+      {/* ── OpenAI Agents SDK ─────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-openai-agents" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          OpenAI Agents SDK (Python)
+          <SectionAnchor id="setup-openai-agents" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Pass the MCP server to any <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">Agent</code> via <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">MCPServerHTTP</code>:
+          </p>
+          <CodeBlock code={openaiAgentsConfig} />
+        </div>
+      </div>
+
+      {/* ── Anthropic Python SDK (direct) ─────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-python-sdk" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Terminal className="h-5 w-5" />
+          Anthropic Python SDK
+          <SectionAnchor id="setup-python-sdk" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            Pass <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcp_servers</code> in the beta messages API (requires <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">anthropic&gt;=0.40</code>):
+          </p>
+          <CodeBlock code={pythonSdkConfig} />
+        </div>
+      </div>
+
+      {/* ── Generic / any other client ───────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-generic" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Plug className="h-5 w-5" />
+          Any other MCP client
+          <SectionAnchor id="setup-generic" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            The server speaks standard <strong>Streamable HTTP (SSE)</strong>. No auth, no custom headers.
+            Point any MCP client at:
+          </p>
+          <CodeBlock code={genericHttpSnippet} />
+          <p className={`${textClass} text-sm mt-3`}>
+            Clients that support only stdio transport can wrap the endpoint with{' '}
+            <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcp-remote</code>:{' '}
+            <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">npx mcp-remote {MCP_URL}</code>
+          </p>
+        </div>
+      </div>
+
+      {/* ── Example prompts ──────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="example-prompts" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Code2 className="h-5 w-5" />
+          Example prompts
+          <SectionAnchor id="example-prompts" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-3`}>
+            Once connected, just describe what you want. The AI picks the right tools and chains them automatically:
+          </p>
+          <ul className={`list-disc list-inside space-y-2 text-sm ${textClass}`}>
             <li>"Map female literacy rates across all Census 2011 districts using a diverging color scale"</li>
             <li>"Which 20 districts have the lowest literacy rates — and what do they have in common?"</li>
             <li>"How does SC/ST population share correlate with literacy across districts?"</li>
@@ -213,6 +401,8 @@ npm run build`;
             <li>"Compare literacy and SC% across states — give me a state-level summary table"</li>
             <li>"What district does GPS coordinate 23.25°N, 80.12°E fall in, and what are its Census indicators?"</li>
             <li>"Rank all districts in Uttar Pradesh by SC population share, then map it"</li>
+            <li>"Find the 10 nearest hospitals to a rural point in Bundelkhand"</li>
+            <li>"Show PMGSY road access vs. PM2.5 pollution at the district level — is there a pattern?"</li>
           </ul>
         </div>
       </div>
@@ -223,7 +413,7 @@ npm run build`;
           Map &amp; Boundary Tools (16)
           <SectionAnchor id="map-tools" />
         </h3>
-        <p className={textClass}>Render choropleth maps, list boundary sets, get CSV templates, and trace district history.</p>
+        <p className={textClass}>Render maps, list boundary sets, get CSV templates, trace district history.</p>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
@@ -247,7 +437,7 @@ npm run build`;
           Spatial Query Tools (6)
           <SectionAnchor id="spatial-tools" />
         </h3>
-        <p className={textClass}>Point-in-polygon, nearest-neighbour, spatial joins, area calculations, and layer metadata.</p>
+        <p className={textClass}>Point-in-polygon lookups, nearest-neighbour search, spatial joins, area calculations, layer metadata.</p>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
@@ -272,9 +462,8 @@ npm run build`;
           <SectionAnchor id="analytics-tools" />
         </h3>
         <p className={textClass}>
-          In-memory statistical analysis on any enriched layer. The Census 2011 districts layer
-          carries 267 columns — 75 demographic indicators and 192 language columns — making these
-          tools especially powerful for demography and public health research.
+          In-memory stats on any enriched layer. Census 2011 districts has 267 columns (75 demographic indicators
+          and 192 language columns), so these tools do real work for demography and public health research.
         </p>
 
         <div className="overflow-x-auto">
@@ -300,10 +489,9 @@ npm run build`;
           <SectionAnchor id="analytics-examples" />
         </h3>
         <p className={textClass}>
-          These examples show the MCP tool calls an AI assistant would make when answering
-          demography and public health questions. The assistant discovers available columns via{' '}
+          What the actual tool calls look like for real demography questions. The AI starts with{' '}
           <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">layer_schema</code>{' '}
-          first, then chains tools as needed.
+          to discover columns, then chains whatever it needs.
         </p>
 
         <ExampleCard
@@ -541,46 +729,41 @@ query_layer({
       <div className="space-y-4">
         <h3 id="discover-workflow" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Search className="h-5 w-5" />
-          Recommended Workflow
+          Typical workflow
           <SectionAnchor id="discover-workflow" />
         </h3>
 
         <div className={cardClass}>
           <ol className={`list-decimal list-inside space-y-3 ${textClass}`}>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Discover layers</strong> —
-              call <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">list_available_maps</code> to
-              see all boundary sets with their IDs, sources, and years.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">list_available_maps</code>:
+              all boundary sets with IDs, sources, and years.
             </li>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Inspect a layer</strong> —
-              call <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">layer_schema</code> or{' '}
-              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code> to
-              see available columns and download URLs.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">layer_schema</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code>:
+              columns and download URLs for a specific layer.
             </li>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Filter and rank</strong> —
-              use <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">rank_features</code> or{' '}
-              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">query_layer</code> to
-              identify features of interest.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">rank_features</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">query_layer</code>:
+              filter down to the features you care about.
             </li>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Analyze</strong> —
-              run <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">correlate</code>,{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">correlate</code>,{' '}
               <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">compare_groups</code>, or{' '}
-              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">find_similar</code> for statistics.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">find_similar</code>:
+              run statistics.
             </li>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Visualize</strong> —
-              pass results to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_districts_map</code> or{' '}
-              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_states_map</code> for
-              a 300 DPI choropleth PNG.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_districts_map</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_states_map</code>:
+              300 DPI choropleth PNG.
             </li>
             <li>
-              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Download raw data</strong> —
-              use the <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">parquetUrl</code> from{' '}
-              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code> for
-              direct GeoParquet access in Python/R.
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">parquetUrl</code> from{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code>:
+              GeoParquet for Python/R if you want the raw data.
             </li>
           </ol>
         </div>
@@ -589,14 +772,13 @@ query_layer({
       <div className="space-y-4">
         <h3 id="data-layers" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Layers className="h-5 w-5" />
-          Enriched Data Layers
+          Layers with attribute data
           <SectionAnchor id="data-layers" />
         </h3>
 
         <div className={cardClass}>
           <p className={`${textClass} mb-4`}>
-            Several boundary layers carry rich attribute data beyond just geometry, enabling
-            in-memory analytics without downloading raw files.
+            These layers have columns you can analyze directly without downloading.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">

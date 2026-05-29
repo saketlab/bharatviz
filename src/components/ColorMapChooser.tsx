@@ -82,7 +82,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
   const sequentialScales = Object.entries(colorScales).filter(([, s]) => s.type === 'sequential');
   const divergingScales = Object.entries(colorScales).filter(([, s]) => s.type === 'diverging');
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [boundariesInput, setBoundariesInput] = useState<string>('');
   const [boundariesError, setBoundariesError] = useState<string>('');
 
@@ -195,7 +195,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
                   </div>
 
                   {colorBarSettings.isDiscrete && (
-                    <div className="space-y-2 pl-3 border-l-2 border-muted dark:border-[hsl(25,8%,16%)]">
+                    <div className="space-y-2 pl-3">
                       <div className="flex items-center gap-2">
                         <Label htmlFor="colorBarBins" className="text-xs text-muted-foreground dark:text-[hsl(30,8%,50%)]">Bins</Label>
                         <Input
