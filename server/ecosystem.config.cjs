@@ -2,14 +2,14 @@ module.exports = {
   apps: [{
     name: 'bharatviz-api',
     script: './dist/index.js',
-    instances: 2,
-    exec_mode: 'cluster',
+    instances: 1,
+    exec_mode: 'fork',
 
     env_production: {
       NODE_ENV: 'production',
       PORT: 3001,
       ALLOWED_ORIGINS: '*',
-      NODE_OPTIONS: '--max-old-space-size=600 --optimize-for-size'
+      NODE_OPTIONS: '--max-old-space-size=1200 --optimize-for-size'
     },
 
     max_memory_restart: '700M',
