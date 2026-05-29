@@ -8,6 +8,7 @@ import { dirname, join } from 'path';
 import swaggerUi from 'swagger-ui-express';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMcpServer } from './mcpTools.js';
+import { warmCache } from './mcpMapService.js';
 import mapRoutes from './routes/mapRoutes.js';
 import districtsMapRoutes from './routes/districtsMapRoutes.js';
 import cityMapRoutes from './routes/cityMapRoutes.js';
@@ -283,6 +284,8 @@ const httpServer = app.listen(PORT, () => {
   if (typeof process.send === 'function') {
     process.send('ready');
   }
+  // Pre-load large SHRUG parquets in the background so analytics queries don't cold-start
+  warmCache().catch(() => {});
 });
 
 process.on('SIGINT', () => {

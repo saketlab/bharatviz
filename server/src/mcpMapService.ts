@@ -24,9 +24,6 @@ export interface MapEntry {
   statesFile?: string;
   featureNameProp?: string;
   parquetUrl?: string;
-  // Pre-aggregated per-district count parquet (columns: district_name, state_name, count).
-  // Available for all health/facility point layers. Use this for choropleth rendering
-  // instead of loading the full point dataset.
   aggregatedByDistrictUrl?: string;
 }
 
@@ -35,7 +32,6 @@ const CENSUS = `${R2}/geojsons/census`;
 const DIST = `${R2}/geojsons/districts`;
 
 export const MAP_REGISTRY: Record<string, MapEntry> = {
-  // Census boundaries
   'census-1872-states': { id: 'census-1872-states', file: `${CENSUS}/India-1872-states.geojson`, level: 'states', source: 'Census 1872', year: 1872, description: 'State boundaries from the 1872 Census of India' },
   'census-1872-districts': { id: 'census-1872-districts', file: `${CENSUS}/India-1872-districts.geojson`, level: 'districts', source: 'Census 1872', year: 1872, description: 'District boundaries from the 1872 Census of India', statesFile: `${CENSUS}/India-1872-states.geojson` },
   'census-1881-states': { id: 'census-1881-states', file: `${CENSUS}/India-1881-states.geojson`, level: 'states', source: 'Census 1881', year: 1881, description: 'State boundaries from the 1881 Census of India' },
@@ -78,28 +74,22 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     statesFile: `${CENSUS}/India-2011-states.geojson`,
   },
 
-  // Official boundaries (LGD - Local Government Directory)
   'lgd-states': { id: 'lgd-states', file: `${DIST}/India_LGD_states.geojson`, level: 'states', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official state boundaries from the Local Government Directory' },
   'lgd-districts': { id: 'lgd-districts', file: `${DIST}/India_LGD_districts.geojson`, level: 'districts', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official district boundaries from the Local Government Directory', statesFile: `${DIST}/India_LGD_states.geojson` },
 
-  // Survey boundaries (NFHS)
   'nfhs4-states': { id: 'nfhs4-states', file: `${DIST}/India_NFHS4_states_simplified.geojson`, level: 'states', source: 'NFHS-4 (2015-16)', year: 2016, description: 'State boundaries from NFHS-4 survey (2015-16)' },
   'nfhs4-districts': { id: 'nfhs4-districts', file: `${DIST}/India_NFHS4_districts_simplified.geojson`, level: 'districts', source: 'NFHS-4 (2015-16)', year: 2016, description: 'District boundaries from NFHS-4 survey (2015-16)', statesFile: `${DIST}/India_NFHS4_states_simplified.geojson` },
   'nfhs5-states': { id: 'nfhs5-states', file: `${DIST}/India_NFHS5_states_simplified.geojson`, level: 'states', source: 'NFHS-5 (2019-21)', year: 2021, description: 'State boundaries from NFHS-5 survey (2019-21)' },
   'nfhs5-districts': { id: 'nfhs5-districts', file: `${DIST}/India_NFHS5_districts_simplified.geojson`, level: 'districts', source: 'NFHS-5 (2019-21)', year: 2021, description: 'District boundaries from NFHS-5 survey (2019-21)', statesFile: `${DIST}/India_NFHS5_states_simplified.geojson` },
 
-  // Survey of India
   'soi-states': { id: 'soi-states', file: `${DIST}/India-soi-states.geojson`, level: 'states', source: 'Survey of India', year: 2020, description: 'State boundaries from the Survey of India' },
   'soi-districts': { id: 'soi-districts', file: `${DIST}/India-soi-districts.geojson`, level: 'districts', source: 'Survey of India', year: 2020, description: 'District boundaries from the Survey of India', statesFile: `${DIST}/India-soi-states.geojson` },
 
-  // ISRO Bhuvan
   'bhuvan-states': { id: 'bhuvan-states', file: `${DIST}/India-bhuvan-states.geojson`, level: 'states', source: 'ISRO Bhuvan', year: 2020, description: 'State boundaries from ISRO Bhuvan satellite data' },
   'bhuvan-districts': { id: 'bhuvan-districts', file: `${DIST}/India-bhuvan-districts.geojson`, level: 'districts', source: 'ISRO Bhuvan', year: 2020, description: 'District boundaries from ISRO Bhuvan satellite data', statesFile: `${DIST}/India-bhuvan-states.geojson` },
 
-  // NSSO Regions
   'nsso-regions': { id: 'nsso-regions', file: `${DIST}/India_NFHS5_NSSO_regions_boundaries.geojson`, level: 'regions', source: 'NSSO', year: 2021, description: 'NSSO regional boundaries based on NFHS-5', featureNameProp: 'nss_region' },
 
-  // Sub-administrative boundaries
   'lgd-subdistricts': { id: 'lgd-subdistricts', file: `${R2}/geojsons/admin/India-geodata-lgd-subdistricts.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'LGD subdistrict (tehsil/taluka) boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'subdistrict_name' },
   'soi-subdistricts': { id: 'soi-subdistricts', file: `${R2}/geojsons/admin/India-geodata-soi-subdistricts.geojson`, level: 'districts', source: 'Survey of India', year: 2020, description: 'Survey of India subdistrict boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-soi-states.geojson`, featureNameProp: 'subdistrict_name' },
   'lgd-blocks': { id: 'lgd-blocks', file: `${R2}/geojsons/admin/India-geodata-lgd-blocks.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'LGD block-level boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'block_name' },
@@ -107,16 +97,13 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   'pmgsy-blocks': { id: 'pmgsy-blocks', file: `${R2}/geojsons/admin/India-geodata-pmgsy-blocks.geojson`, level: 'districts', source: 'PMGSY', year: 2024, description: 'PMGSY (Pradhan Mantri Gram Sadak Yojana) block boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'block_name' },
   'shrug-subdistricts': { id: 'shrug-subdistricts', file: `${R2}/geojsons/admin/India-shrug-subdistrict-pc11_simplified.geojson`, level: 'districts', source: 'SHRUG (Census 2011)', year: 2011, description: 'Census 2011 subdistrict polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad). License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'subdistrict_name' },
 
-  // Electoral boundaries
   'lgd-parliament': { id: 'lgd-parliament', file: `${R2}/geojsons/electoral/India-geodata-lgd-parliament.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Lok Sabha parliamentary constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
   'lgd-assembly': { id: 'lgd-assembly', file: `${R2}/geojsons/electoral/India-geodata-lgd-assembly.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Vidhan Sabha assembly constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
   'susewind-parliament-2014': { id: 'susewind-parliament-2014', file: `${R2}/geojsons/electoral/India-susewind-parliament-2014_simplified.geojson`, level: 'districts', source: 'Susewind (2014)', year: 2014, description: 'Lok Sabha constituency boundaries as used in the 2014 general election, digitised by Raphael Susewind. License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
   'susewind-assembly-2014': { id: 'susewind-assembly-2014', file: `${R2}/geojsons/electoral/India-susewind-assembly-2014_simplified.geojson`, level: 'districts', source: 'Susewind (2014)', year: 2014, description: 'Vidhan Sabha constituency boundaries as used in elections around 2014, digitised by Raphael Susewind. License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
 
-  // SHRUG districts
   'shrug-districts': { id: 'shrug-districts', file: `${R2}/geojsons/districts/India-shrug-district-pc11_simplified.geojson`, level: 'districts', source: 'SHRUG (Census 2011)', year: 2011, description: 'Census 2011 district polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad). License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson` },
 
-  // SHRUG thematic GeoParquet layers — 641 PC11 districts, data aggregated from shrid level
   'shrug-census': {
     id: 'shrug-census', level: 'districts', source: 'SHRUG 2.1 / Census of India', year: 2011,
     file: `${R2}/geoparquet/shrug/shrug_districts_census.parquet`,
@@ -196,19 +183,14 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
       'for faster, focused queries. License: CC BY-NC-SA 4.0.',
   },
 
-  // Environment boundaries
   'gs-wildlife': { id: 'gs-wildlife', file: `${R2}/geojsons/environment/India-geodata-wildlife.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Protected wildlife sanctuaries and national parks', featureNameProp: 'area_name' },
   'bm-eco-zones': { id: 'bm-eco-zones', file: `${R2}/geojsons/environment/India-geodata-eco-zones.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Biological / eco-sensitive zone boundaries', featureNameProp: 'area_name' },
   'fsi-circles': { id: 'fsi-circles', file: `${R2}/geojsons/environment/India-fsi-circles_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative circles — top-level forest administrative unit', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'circle_name' },
   'fsi-divisions': { id: 'fsi-divisions', file: `${R2}/geojsons/environment/India-fsi-divisions_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative divisions, within circles', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'division_name' },
   'fsi-ranges': { id: 'fsi-ranges', file: `${R2}/geojsons/environment/India-fsi-ranges_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative ranges, within divisions', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'range_name' },
 
-  // Urban boundaries
   'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission — national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
 
-  // Health facility point datasets
-  // Each has a pre-aggregated per-district parquet at aggregatedByDistrictUrl
-  // (columns: district_name, state_name, count) for fast choropleth rendering.
   'nhp-health-facilities': {
     id: 'nhp-health-facilities',
     file: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`,
@@ -268,7 +250,6 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
       'Fields: awc_name, awc_code, district_1 (district), stname (state), dtcode_lg (LGD district code), stcode_lg (LGD state code), latitude, longitude.',
   },
 
-  // Additional health facility datasets
   'bharatmaps-health-centers': {
     id: 'bharatmaps-health-centers',
     file: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
@@ -335,7 +316,6 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
       'Pre-aggregated district counts available via aggregatedByDistrictUrl (734 districts).',
   },
 
-  // Point datasets
   'hotosm-health-facilities': {
     id: 'hotosm-health-facilities',
     file: `${R2}/geojsons/facilities/hotosm_ind_health_facilities.geojson`,
@@ -393,6 +373,34 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
 
 /** GeoJSON cache to avoid reloading large files */
 const geojsonCache = new LRUCache<string, FeatureCollection>(50);
+
+const WARMUP_LAYERS = [
+  'census-2011-enriched',
+  'shrug-census',
+  'shrug-secc',
+  'shrug-economic',
+  'shrug-environment',
+  'shrug-facebook',
+  'shrug-roads',
+  'nhp-health-facilities',
+  'nhp-hospital-directory',
+  'bharatmaps-health-centers',
+  'livingatlas-health-facilities',
+  'hotosm-health-facilities',
+];
+
+export async function warmCache(): Promise<void> {
+  for (const id of WARMUP_LAYERS) {
+    const entry = MAP_REGISTRY[id];
+    if (!entry) continue;
+    try {
+      await loadGeoJSON(entry.file);
+      console.log(`[warmup] cached ${id}`);
+    } catch (e) {
+      console.warn(`[warmup] failed to cache ${id}:`, (e as Error).message);
+    }
+  }
+}
 
 async function loadGeoJSON(url: string): Promise<FeatureCollection> {
   if (geojsonCache.has(url)) return geojsonCache.get(url)!;

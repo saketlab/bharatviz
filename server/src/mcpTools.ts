@@ -35,33 +35,31 @@ export function createMcpServer(): Server {
       instructions:
         'India geospatial data, socioeconomic analytics, and map rendering for 641 districts.\n\n' +
         'DATA LAYERS:\n' +
-        '• Census 2011 demographics: literacy, SC/ST share, population, workers ' +
-        '  (mapId: shrug-census; columns: pca11__lit_total, pca11__sc_share, pca11__st_share, pca11__tot_p)\n' +
-        '• SECC 2012 rural poverty: education, housing, income sources, deprivation ' +
-        '  (mapId: shrug-secc)\n' +
-        '• Economic Census 1990-2013: employment, firm counts, sector breakdown ' +
-        '  (mapId: shrug-economic)\n' +
-        '• Environment: NDVI, nightlights, rainfall, road access ' +
-        '  (mapId: shrug-environment, shrug-roads)\n' +
-        '• NFHS-4 and NFHS-5 health survey indicators by district ' +
-        '  (mapId: nfhs4-districts, nfhs5-districts)\n' +
-        '• Health facilities: 10 datasets (hospitals, blood banks, anganwadis 1.2M, PHCs, dispensaries)\n' +
-        '• 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, ' +
-        '  Lok Sabha/Vidhan Sabha constituencies, wildlife sanctuaries\n\n' +
+        '• Census 2011 enriched (mapId: census-2011-enriched) — 640 districts, clean column names: ' +
+        '  literacy_pct, literate, sc_pct, st_pct, population, shannon_diversity, effective_languages, ' +
+        '  language share for 120+ languages (lang_Hindi_l1_pct, lang_Bengali_l1_pct, etc.)\n' +
+        '• Census 2011 demographics via SHRUG (mapId: shrug-census) — prefixed columns for 1991/2001/2011: ' +
+        '  pca11__lit_total, pca11__sc_share, pca11__st_share, pca11__tot_p, worker categories\n' +
+        '• SECC 2012 rural poverty (mapId: shrug-secc) — education, housing, income sources, deprivation\n' +
+        '• Economic Census 1990-2013 (mapId: shrug-economic) — employment, firm counts, sector breakdown\n' +
+        '• Environment (mapId: shrug-environment) — PM2.5, NDVI, nightlights, elevation, rainfall\n' +
+        '• Wealth index (mapId: shrug-facebook) — Meta Relative Wealth Index (RWI) per district\n' +
+        '• Rural roads (mapId: shrug-roads) — PMGSY road construction length and cost\n' +
+        '• Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
+        '• 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, constituencies\n\n' +
         'TOOLS:\n' +
-        '• rank_features: rank districts by any column (literacy, SC%, stunting, poverty, nightlights)\n' +
+        '• rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
         '• correlate: Pearson/Spearman between two columns across districts or states\n' +
         '• summarize_layer: statistics grouped by state or region\n' +
         '• render_map: choropleth PNG/SVG for any district-level dataset\n' +
         '• spatial queries: facility counts per district/block, point-in-boundary\n' +
         '• trace_district_evolution: boundary changes across Census years\n\n' +
-        'Start with list_available_maps or layer_schema("shrug-census") to see columns.',
+        'For literacy questions use census-2011-enriched (literacy_pct). ' +
+        'For multi-census trends use shrug-census (pca91__/pca01__/pca11__ prefixes). ' +
+        'Start with layer_schema("census-2011-enriched") to see all columns.',
     }
   );
 
-  // -------------------------------------------------------------------------
-  // List Tools
-  // -------------------------------------------------------------------------
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: [
@@ -72,13 +70,15 @@ export function createMcpServer(): Server {
             'including the map ID (used in all other tools), data source, year, level (states/districts/regions/points), ' +
             'and number of features.\n\n' +
             'KEY DATA LAYERS FOR ANALYTICS (use mapId with rank_features / correlate / summarize_layer):\n' +
-            '• shrug-census   — Census 2011 district demographics: literacy (pca11__lit_total, pca11__lit_f), ' +
-            'SC/ST share (pca11__sc_share, pca11__st_share), population (pca11__tot_p), workers. Also 1991/2001.\n' +
+            '• census-2011-enriched — Best for literacy/language/SC/ST queries. Clean columns: literacy_pct, ' +
+            'literate, sc_pct, st_pct, population, shannon_diversity, lang_Hindi_l1_pct, etc. 640 districts.\n' +
+            '• shrug-census   — Census 1991/2001/2011 demographics with prefixed columns: pca11__lit_total, ' +
+            'pca11__sc_share, pca11__st_share, pca11__tot_p, worker categories. Use for multi-decade trends.\n' +
             '• shrug-secc     — SECC 2012 rural poverty: education, housing, income sources, land ownership.\n' +
             '• shrug-economic — Economic Census 1990-2013: employment, firm counts, sector breakdown.\n' +
-            '• shrug-environment — NDVI, nightlights, rainfall, distance to roads/towns.\n' +
-            '• shrug-roads    — Road density and quality by district.\n' +
-            '• census2011     — Census 2011 districts with population and basic demographics.\n' +
+            '• shrug-environment — PM2.5, NDVI, nightlights, elevation, rainfall by district.\n' +
+            '• shrug-facebook — Meta Relative Wealth Index (RWI) per district.\n' +
+            '• shrug-roads    — PMGSY rural road construction length and cost.\n' +
             'BOUNDARY SETS: Census years 1872-2011, LGD, NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, NSSO regions, ' +
             'PMGSY blocks, Lok Sabha/Vidhan Sabha constituencies, wildlife sanctuaries, eco-sensitive zones.',
           inputSchema: {
@@ -675,9 +675,9 @@ export function createMcpServer(): Server {
             'for one or more numeric columns in any registered map layer. ' +
             'Use groupBy to break down stats by a categorical column (e.g. state_name). ' +
             'Use columns:["*"] to summarize all numeric columns at once. ' +
-            'Examples: "Mean literacy rate per state" → mapId="shrug-census", columns=["pca11__lit_total"], groupBy="state_name". ' +
-            '"Distribution of SC% across all districts" → mapId="shrug-census", columns=["pca11__sc_share"]. ' +
-            '"Sum of population by state" → mapId="shrug-census", columns=["pca11__tot_p"], groupBy="state_name".',
+            'Examples: "Mean literacy rate per state" → mapId="census-2011-enriched", columns=["literacy_pct"], groupBy="state_name". ' +
+            '"Distribution of SC% across all districts" → mapId="census-2011-enriched", columns=["sc_pct"]. ' +
+            '"Sum of population by state" → mapId="census-2011-enriched", columns=["population"], groupBy="state_name".',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -714,10 +714,11 @@ export function createMcpServer(): Server {
             'Sort features in any map layer by a numeric column and return the top or bottom N. ' +
             'Use filters to restrict to a state or other subset. ' +
             'Examples: ' +
-            '"20 districts with lowest literacy" → mapId="shrug-census", column="pca11__lit_total", order="asc". ' +
-            '"Top 20 ST-majority districts" → mapId="shrug-census", column="pca11__st_share", order="desc". ' +
+            '"20 districts with lowest literacy" → mapId="census-2011-enriched", column="literacy_pct", order="asc". ' +
+            '"Top 20 ST-majority districts" → mapId="census-2011-enriched", column="st_pct", order="desc". ' +
+            '"Most Hindi-speaking districts" → mapId="census-2011-enriched", column="lang_Hindi_l1_pct", order="desc". ' +
             '"Airports by elevation" → mapId="airports", column="elevation_ft", order="desc". ' +
-            '"Lowest literacy in Bihar" → mapId="shrug-census", column="pca11__lit_total", order="asc", filters={"state_name":"Bihar"}.',
+            '"Lowest literacy in Bihar" → mapId="census-2011-enriched", column="literacy_pct", order="asc", filters={"state_name":"Bihar"}.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -743,9 +744,10 @@ export function createMcpServer(): Server {
             'Use groupBy to compute correlation separately per group (e.g. per state). ' +
             'Use sampleRows to get scatter-plot data points. ' +
             'Examples: ' +
-            '"Correlation between SC% and literacy" → mapId="shrug-census", x="pca11__sc_share", y="pca11__lit_total". ' +
+            '"Correlation between SC% and literacy" → mapId="census-2011-enriched", x="sc_pct", y="literacy_pct". ' +
             '"State-level SC% vs literacy" → same mapId, groupBy="state_name". ' +
-            '"NFHS stunting vs poverty" → mapId="shrug-secc", x/y from secc columns.',
+            '"Language diversity vs literacy" → mapId="census-2011-enriched", x="shannon_diversity", y="literacy_pct". ' +
+            '"Wealth vs road access" → mapId="shrug-facebook", join with shrug-roads.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -1044,9 +1046,6 @@ export function createMcpServer(): Server {
     };
   });
 
-  // -------------------------------------------------------------------------
-  // Call Tool
-  // -------------------------------------------------------------------------
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
