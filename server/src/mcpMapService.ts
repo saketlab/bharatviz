@@ -17,14 +17,13 @@ const __dirname = dirname(__filename);
 export interface MapEntry {
   id: string;
   file: string;
-  level: 'states' | 'districts' | 'regions';
+  level: 'states' | 'districts' | 'regions' | 'points';
   source: string;
   year: number;
   description: string;
-  /** For district maps, the corresponding states GeoJSON for boundary overlays */
   statesFile?: string;
-  /** GeoJSON property name for the sub-unit label (defaults to "district_name") */
   featureNameProp?: string;
+  parquetUrl?: string;
 }
 
 const R2 = 'https://geo.bharatviz.org';
@@ -63,6 +62,17 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   'census-2001-districts': { id: 'census-2001-districts', file: `${CENSUS}/India-2001-districts.geojson`, level: 'districts', source: 'Census 2001', year: 2001, description: 'District boundaries from the 2001 Census of India', statesFile: `${CENSUS}/India-2001-states.geojson` },
   'census-2011-states': { id: 'census-2011-states', file: `${CENSUS}/India-2011-states.geojson`, level: 'states', source: 'Census 2011', year: 2011, description: 'State boundaries from the 2011 Census of India' },
   'census-2011-districts': { id: 'census-2011-districts', file: `${CENSUS}/India-2011-districts.geojson`, level: 'districts', source: 'Census 2011', year: 2011, description: 'District boundaries from the 2011 Census of India', statesFile: `${CENSUS}/India-2011-states.geojson` },
+  'census-2011-enriched': {
+    id: 'census-2011-enriched',
+    file: `${R2}/geojsons/census2011/india_census2011_districts.geojson`,
+    parquetUrl: `${R2}/geoparquet/census2011/india_census2011_districts.parquet`,
+    level: 'districts',
+    source: 'Census 2011 (Office of the Registrar General & Census Commissioner, India)',
+    year: 2011,
+    description: 'Census 2011 district boundaries enriched with demographic data. Fields: population, sc_population, sc_pct, st_population, st_pct, literate, literacy_pct, shannon_diversity, effective_languages, num_languages, top_lang_1..5 + top_lang_1..5_pct, and lang_<Language>_l1_pct + lang_<Language>_l2_pct for all 122 scheduled/major languages. 640 districts. SC/ST/literacy from official Census tables; language data from Census C-16 mother tongue returns.',
+    featureNameProp: 'district_name',
+    statesFile: `${CENSUS}/India-2011-states.geojson`,
+  },
 
   // Official boundaries (LGD - Local Government Directory)
   'lgd-states': { id: 'lgd-states', file: `${DIST}/India_LGD_states.geojson`, level: 'states', source: 'LGD (Latest Official)', year: 2024, description: 'Latest official state boundaries from the Local Government Directory' },
@@ -111,6 +121,58 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
 
   // Urban boundaries
   'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission — national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
+
+  // Point datasets
+  'hotosm-health-facilities': {
+    id: 'hotosm-health-facilities',
+    file: `${R2}/geojsons/facilities/hotosm_ind_health_facilities.geojson`,
+    parquetUrl: `${R2}/geoparquet/facilities/hotosm_ind_health_facilities.parquet`,
+    level: 'points',
+    source: 'HOTOSM / OpenStreetMap',
+    year: 2026,
+    description: '142,629 health facilities across India (hospitals, clinics, pharmacies, dentists, health posts) from OpenStreetMap via Humanitarian Data Exchange. Updated monthly. Fields: name, amenity, healthcare, healthcare_speciality, operator_type, capacity_persons, addr_city, adm1_name (state), adm2_name (district).',
+    featureNameProp: 'name',
+  },
+  'airports': {
+    id: 'airports',
+    file: `${R2}/geojsons/points/india_airports.geojson`,
+    parquetUrl: `${R2}/geoparquet/points/india_airports.parquet`,
+    level: 'points',
+    source: 'OurAirports (Public Domain)',
+    year: 2026,
+    description: '649 airports and airfields in India including large, medium, small airports and heliports. Fields: name, type (large_airport/medium_airport/small_airport/heliport), iata_code, icao_code, municipality, state, elevation_ft, scheduled_service.',
+    featureNameProp: 'name',
+  },
+  'dams': {
+    id: 'dams',
+    file: `${R2}/geojsons/points/india_dams.geojson`,
+    parquetUrl: `${R2}/geoparquet/points/india_dams.parquet`,
+    level: 'points',
+    source: 'OpenStreetMap (ODbL)',
+    year: 2026,
+    description: 'Dams and barrages across India from OpenStreetMap. Fields: name, waterway, man_made, operator, height, osm_id.',
+    featureNameProp: 'name',
+  },
+  'water-bodies': {
+    id: 'water-bodies',
+    file: `${R2}/geojsons/points/india_water_bodies.geojson`,
+    parquetUrl: `${R2}/geoparquet/points/india_water_bodies.parquet`,
+    level: 'points',
+    source: 'OpenStreetMap (ODbL)',
+    year: 2026,
+    description: 'Lakes, reservoirs, ponds and other natural water bodies across India from OpenStreetMap. Polygon centroids stored as points. Fields: name, water (lake/reservoir/river/pond), natural, osm_id.',
+    featureNameProp: 'name',
+  },
+  'pincodes-centroids': {
+    id: 'pincodes-centroids',
+    file: `${R2}/geojsons/points/india_pincodes_centroids.geojson`,
+    parquetUrl: `${R2}/geoparquet/points/india_pincodes_centroids.parquet`,
+    level: 'points',
+    source: 'BharatViz (derived from pincode boundaries)',
+    year: 2026,
+    description: '63,864 pincode centroids derived from pincode boundary polygons. Used for proximity queries (e.g. "pincodes near 400071"). Fields: pincode, office_name, district, state.',
+    featureNameProp: 'pincode',
+  },
 };
 
 /** GeoJSON cache to avoid reloading large files */
@@ -123,6 +185,52 @@ async function loadGeoJSON(url: string): Promise<FeatureCollection> {
   const data = await response.json() as FeatureCollection;
   geojsonCache.set(url, data);
   return data;
+}
+
+function pointInRing(lng: number, lat: number, ring: number[][]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+/** Test whether [lng, lat] is inside a GeoJSON geometry (Polygon or MultiPolygon). */
+function pointInGeometry(lng: number, lat: number, geometry: { type: string; coordinates: unknown }): boolean {
+  if (geometry.type === 'Polygon') {
+    const rings = geometry.coordinates as number[][][];
+    if (!pointInRing(lng, lat, rings[0])) return false;
+    for (let i = 1; i < rings.length; i++) {
+      if (pointInRing(lng, lat, rings[i])) return false;
+    }
+    return true;
+  }
+  if (geometry.type === 'MultiPolygon') {
+    for (const polygon of geometry.coordinates as number[][][][]) {
+      if (!pointInRing(lng, lat, polygon[0])) continue;
+      let inHole = false;
+      for (let i = 1; i < polygon.length; i++) {
+        if (pointInRing(lng, lat, polygon[i])) { inHole = true; break; }
+      }
+      if (!inHole) return true;
+    }
+  }
+  return false;
+}
+
+/** Find the first feature in a FeatureCollection whose polygon contains [lat, lng]. */
+function findContainingFeature(fc: FeatureCollection, lat: number, lng: number) {
+  for (const feature of fc.features) {
+    if (!feature.geometry) continue;
+    if (pointInGeometry(lng, lat, feature.geometry as { type: string; coordinates: unknown })) {
+      return feature;
+    }
+  }
+  return null;
 }
 
 /** Levenshtein distance between two strings (two-row optimization) */
@@ -179,18 +287,41 @@ export class McpMapService {
     return result;
   }
 
+  private static categoryForId(id: string): string {
+    if (id.startsWith('census-')) return 'admin';
+    if (id.startsWith('lgd-parliament') || id.startsWith('lgd-assembly') || id.startsWith('susewind-')) return 'electoral';
+    if (id.startsWith('lgd-') || id.startsWith('soi-') || id.startsWith('bhuvan-') || id.startsWith('pmgsy-') || id.startsWith('shrug-')) return 'admin';
+    if (id.startsWith('nfhs') || id.startsWith('nsso-')) return 'survey';
+    if (id.startsWith('gs-') || id.startsWith('bm-') || id.startsWith('fsi-')) return 'environment';
+    if (id.startsWith('sbm-')) return 'urban';
+    if (id.startsWith('hotosm-') || id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-')) return 'points';
+    return 'other';
+  }
+
   /** List all available maps with metadata */
-  async listMaps(): Promise<Array<MapEntry & { featureCount: number }>> {
+  async listMaps(): Promise<Array<MapEntry & { featureCount: number; category: string }>> {
     const results = [];
     for (const entry of Object.values(MAP_REGISTRY)) {
+      const category = McpMapService.categoryForId(entry.id);
       try {
         const data = await loadGeoJSON(entry.file);
-        results.push({ ...entry, featureCount: data.features.length });
+        results.push({ ...entry, category, featureCount: data.features.length });
       } catch {
-        results.push({ ...entry, featureCount: 0 });
+        results.push({ ...entry, category, featureCount: 0 });
       }
     }
     return results;
+  }
+
+  /** List available maps grouped by category, without fetching GeoJSON */
+  listCategories(): Record<string, Array<{ id: string; level: string; source: string; year: number; description: string }>> {
+    const out: Record<string, Array<{ id: string; level: string; source: string; year: number; description: string }>> = {};
+    for (const entry of Object.values(MAP_REGISTRY)) {
+      const cat = McpMapService.categoryForId(entry.id);
+      if (!out[cat]) out[cat] = [];
+      out[cat].push({ id: entry.id, level: entry.level, source: entry.source, year: entry.year, description: entry.description });
+    }
+    return out;
   }
 
   /** List state names for a given map */
@@ -479,6 +610,426 @@ export class McpMapService {
     return this.formatOutput(svgString, options.outputFormat);
   }
 
+  getLayerDetail(mapId: string): { mapId: string; geojsonUrl: string; parquetUrl?: string; description: string; source: string; year: number; level: string } {
+    const entry = MAP_REGISTRY[mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${mapId}". Use list_available_maps to see valid IDs.`);
+    const parquetUrl = entry.parquetUrl ?? (
+      entry.file.includes('/geojsons/')
+        ? entry.file.replace('/geojsons/', '/geoparquet/').replaceAll('.geojson', '.parquet')
+        : undefined
+    );
+    return {
+      mapId: entry.id,
+      geojsonUrl: entry.file,
+      parquetUrl,
+      description: entry.description,
+      source: entry.source,
+      year: entry.year,
+      level: entry.level,
+    };
+  }
+
+  private haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  private ringAreaKm2(ring: number[][]): number {
+    const R = 6371;
+    let area = 0;
+    const n = ring.length;
+    for (let i = 0; i < n; i++) {
+      const [lon1, lat1] = ring[i];
+      const [lon2, lat2] = ring[(i + 1) % n];
+      area += (lon2 - lon1) * Math.PI / 180 * (2 + Math.sin(lat1 * Math.PI / 180) + Math.sin(lat2 * Math.PI / 180));
+    }
+    return Math.abs(area * R * R / 2);
+  }
+
+  /** Compute area in km² for a GeoJSON Polygon or MultiPolygon feature. */
+  private featureAreaKm2(geometry: { type: string; coordinates: unknown }): number {
+    if (geometry.type === 'Polygon') {
+      const rings = geometry.coordinates as number[][][];
+      let area = this.ringAreaKm2(rings[0]);
+      for (let i = 1; i < rings.length; i++) area -= this.ringAreaKm2(rings[i]);
+      return area;
+    }
+    if (geometry.type === 'MultiPolygon') {
+      let total = 0;
+      for (const polygon of geometry.coordinates as number[][][][]) {
+        let area = this.ringAreaKm2(polygon[0]);
+        for (let i = 1; i < polygon.length; i++) area -= this.ringAreaKm2(polygon[i]);
+        total += area;
+      }
+      return total;
+    }
+    return 0;
+  }
+
+  private featureCentroid(geometry: { type: string; coordinates: unknown }): [number, number] | null {
+    if (geometry.type === 'Point') {
+      const [lon, lat] = geometry.coordinates as number[];
+      return [lon, lat];
+    }
+    if (geometry.type === 'Polygon') {
+      const ring = (geometry.coordinates as number[][][])[0];
+      const lon = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+      const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+      return [lon, lat];
+    }
+    if (geometry.type === 'MultiPolygon') {
+      const polys = geometry.coordinates as number[][][][];
+      if (!polys.length || !polys[0]?.length) return null;
+      // Use the largest outer ring (by vertex count) as a proxy for the main body
+      const ring = polys.reduce((best, p) => p[0].length > best.length ? p[0] : best, polys[0][0]);
+      const lon = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+      const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+      return [lon, lat];
+    }
+    return null;
+  }
+
+  async nearby(options: {
+    lat: number;
+    lon: number;
+    radiusKm: number;
+    mapIds: string[];
+    limit?: number;
+    properties?: string[];
+  }): Promise<Array<{ mapId: string; features: Array<Record<string, string | number>> }>> {
+    const limit = Math.max(1, Math.min(options.limit ?? 20, 200));
+    const results: Array<{ mapId: string; features: Array<Record<string, string | number>> }> = [];
+
+    for (const mapId of options.mapIds) {
+      const entry = MAP_REGISTRY[mapId];
+      if (!entry) { results.push({ mapId, features: [] }); continue; }
+      let data: FeatureCollection;
+      try { data = await loadGeoJSON(entry.file); } catch { results.push({ mapId, features: [] }); continue; }
+
+      const hits: Array<{ dist: number; props: Record<string, string | number> }> = [];
+      for (const feature of data.features) {
+        if (!feature.geometry) continue;
+        const centroid = this.featureCentroid(feature.geometry as { type: string; coordinates: unknown });
+        if (!centroid) continue;
+        const [fLon, fLat] = centroid;
+        const dist = this.haversine(options.lat, options.lon, fLat, fLon);
+        if (dist > options.radiusKm) continue;
+
+        const raw = feature.properties || {};
+        const props: Record<string, string | number> = { _distance_km: Math.round(dist * 10) / 10 };
+        const keys = options.properties?.length ? options.properties : Object.keys(raw);
+        for (const k of keys) if (raw[k] != null) props[k] = raw[k] as string | number;
+        hits.push({ dist, props });
+      }
+
+      hits.sort((a, b) => a.dist - b.dist);
+      results.push({ mapId, features: hits.slice(0, limit).map(h => h.props) });
+    }
+
+    return results;
+  }
+
+  async getArea(options: {
+    mapId: string;
+    name?: string;
+    populationProperty?: string;
+    limit?: number;
+  }): Promise<Array<{ name: string; area_km2: number; population?: number; density_per_km2?: number; properties: Record<string, string> }>> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}". Use list_available_maps.`);
+    const data = await loadGeoJSON(entry.file);
+    const nameProp = entry.featureNameProp || 'district_name';
+    const limit = Math.max(1, Math.min(options.limit ?? 50, 500));
+
+    let features = data.features.filter(f => f.geometry);
+
+    if (options.name) {
+      const names = features.map(f => String(f.properties?.[nameProp] || ''));
+      const matched = fuzzyMatchName(options.name, names);
+      if (!matched) return [];
+      features = features.filter(f => String(f.properties?.[nameProp] || '') === matched);
+    }
+
+    return features.slice(0, limit).map(f => {
+      const area = this.featureAreaKm2(f.geometry as { type: string; coordinates: unknown });
+      const props: Record<string, string> = {};
+      for (const [k, v] of Object.entries(f.properties || {})) if (v != null) props[k] = String(v);
+      const result: { name: string; area_km2: number; population?: number; density_per_km2?: number; properties: Record<string, string> } = {
+        name: String(f.properties?.[nameProp] || ''),
+        area_km2: Math.round(area * 10) / 10,
+        properties: props,
+      };
+      if (options.populationProperty) {
+        const pop = parseFloat(String(f.properties?.[options.populationProperty] || ''));
+        if (!isNaN(pop) && area > 0) {
+          result.population = pop;
+          result.density_per_km2 = Math.round(pop / area);
+        }
+      }
+      return result;
+    });
+  }
+
+  async spatialJoin(options: {
+    boundaryMapId: string;
+    boundaryFilter: Record<string, string>;
+    targetMapId: string;
+    targetFilters?: Record<string, string>;
+    limit?: number;
+    properties?: string[];
+  }): Promise<{
+    boundary: Record<string, string> | null;
+    boundaryArea_km2?: number;
+    boundaryCount?: number;
+    total: number;
+    results: Array<Record<string, string>>;
+  }> {
+    const boundaryEntry = MAP_REGISTRY[options.boundaryMapId];
+    if (!boundaryEntry) throw new Error(`Unknown boundaryMapId: "${options.boundaryMapId}"`);
+    const targetEntry = MAP_REGISTRY[options.targetMapId];
+    if (!targetEntry) throw new Error(`Unknown targetMapId: "${options.targetMapId}"`);
+
+    const limit = Math.max(1, Math.min(options.limit ?? 100, 1000));
+
+    const boundaryData = await loadGeoJSON(boundaryEntry.file);
+    let boundaryFeatures = boundaryData.features;
+    const hasFilter = Object.keys(options.boundaryFilter).length > 0;
+    if (hasFilter) {
+      for (const [key, value] of Object.entries(options.boundaryFilter)) {
+        const lv = value.toLowerCase();
+        boundaryFeatures = boundaryFeatures.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+      if (boundaryFeatures.length === 0) {
+        return { boundary: null, total: 0, results: [] };
+      }
+    }
+
+    const targetData = await loadGeoJSON(targetEntry.file);
+    let targetFeatures = targetData.features;
+    if (options.targetFilters) {
+      for (const [key, value] of Object.entries(options.targetFilters)) {
+        const lv = value.toLowerCase();
+        targetFeatures = targetFeatures.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+    }
+
+    if (hasFilter) {
+      // Union targets across ALL matched boundary features so that ambiguous filters
+      // (e.g. district_name:"north" matching dozens of districts) don't silently
+      // discard everything except the first match.
+      let totalMatched = 0;
+      const matched: Array<Record<string, string>> = [];
+
+      for (const boundaryFeature of boundaryFeatures) {
+        if (!boundaryFeature.geometry) continue;
+        const boundaryGeom = boundaryFeature.geometry as { type: string; coordinates: unknown };
+
+        for (const feature of targetFeatures) {
+          if (!feature.geometry) continue;
+          const geom = feature.geometry as { type: string; coordinates: unknown };
+
+          let testLon: number, testLat: number;
+          if (geom.type === 'Point') {
+            [testLon, testLat] = geom.coordinates as number[];
+          } else {
+            const c = this.featureCentroid(geom);
+            if (!c) continue;
+            [testLon, testLat] = c;
+          }
+
+          if (!pointInGeometry(testLon, testLat, boundaryGeom)) continue;
+
+          totalMatched++;
+          if (matched.length < limit) {
+            const raw = feature.properties || {};
+            const props: Record<string, string> = {};
+            const keys = options.properties?.length ? options.properties : Object.keys(raw);
+            for (const k of keys) if (raw[k] != null) props[k] = String(raw[k]);
+            matched.push(props);
+          }
+        }
+      }
+
+      // Use the first matched boundary's properties/area for the envelope fields.
+      const firstGeom = boundaryFeatures.find(f => f.geometry)?.geometry as { type: string; coordinates: unknown } | undefined;
+      const boundaryProps: Record<string, string> = {};
+      for (const [k, v] of Object.entries(boundaryFeatures[0].properties || {})) {
+        if (v != null) boundaryProps[k] = String(v);
+      }
+      const boundaryArea = firstGeom && (firstGeom.type === 'Polygon' || firstGeom.type === 'MultiPolygon')
+        ? Math.round(this.featureAreaKm2(firstGeom) * 10) / 10
+        : undefined;
+      return {
+        boundary: boundaryProps,
+        ...(boundaryArea !== undefined ? { boundaryArea_km2: boundaryArea } : {}),
+        ...(boundaryFeatures.length > 1 ? { boundaryCount: boundaryFeatures.length } : {}),
+        total: totalMatched,
+        results: matched,
+      };
+    }
+
+    // No filter: locate semantics — return the first boundary that contains any target.
+    for (const boundaryFeature of boundaryFeatures) {
+      if (!boundaryFeature.geometry) continue;
+      const boundaryGeom = boundaryFeature.geometry as { type: string; coordinates: unknown };
+
+      let totalMatched = 0;
+      const matched: Array<Record<string, string>> = [];
+
+      for (const feature of targetFeatures) {
+        if (!feature.geometry) continue;
+        const geom = feature.geometry as { type: string; coordinates: unknown };
+
+        let testLon: number, testLat: number;
+        if (geom.type === 'Point') {
+          [testLon, testLat] = geom.coordinates as number[];
+        } else {
+          const c = this.featureCentroid(geom);
+          if (!c) continue;
+          [testLon, testLat] = c;
+        }
+
+        if (!pointInGeometry(testLon, testLat, boundaryGeom)) continue;
+
+        totalMatched++;
+        if (matched.length < limit) {
+          const raw = feature.properties || {};
+          const props: Record<string, string> = {};
+          const keys = options.properties?.length ? options.properties : Object.keys(raw);
+          for (const k of keys) if (raw[k] != null) props[k] = String(raw[k]);
+          matched.push(props);
+        }
+      }
+
+      if (totalMatched > 0) {
+        const boundaryProps: Record<string, string> = {};
+        for (const [k, v] of Object.entries(boundaryFeature.properties || {})) {
+          if (v != null) boundaryProps[k] = String(v);
+        }
+        const boundaryArea = (boundaryGeom.type === 'Polygon' || boundaryGeom.type === 'MultiPolygon')
+          ? Math.round(this.featureAreaKm2(boundaryGeom) * 10) / 10
+          : undefined;
+        return {
+          boundary: boundaryProps,
+          ...(boundaryArea !== undefined ? { boundaryArea_km2: boundaryArea } : {}),
+          total: totalMatched,
+          results: matched,
+        };
+      }
+    }
+
+    return { boundary: null, total: 0, results: [] };
+  }
+
+  async locate(lat: number, lon: number, mapIds?: string[]): Promise<Array<{ mapId: string; match: Record<string, string> | null; error?: string; }>> {
+    const useDefault = !Array.isArray(mapIds) || mapIds.length === 0;
+    const targets = useDefault
+      ? ['lgd-states', 'lgd-districts', 'lgd-subdistricts', 'lgd-blocks']
+      : mapIds;
+
+    const results: Array<{ mapId: string; match: Record<string, string> | null; error?: string }> = [];
+
+    for (const mapId of targets) {
+      const entry = MAP_REGISTRY[mapId];
+      if (!entry) {
+        results.push({ mapId, match: null, error: `Unknown map ID: "${mapId}"` });
+        continue;
+      }
+      let data: FeatureCollection;
+      try {
+        data = await loadGeoJSON(entry.file);
+      } catch {
+        results.push({ mapId, match: null });
+        continue;
+      }
+
+      const hit = findContainingFeature(data, lat, lon);
+      if (hit) {
+        // Return all non-null string/number properties
+        const props: Record<string, string> = {};
+        for (const [k, v] of Object.entries(hit.properties || {})) {
+          if (v !== null && v !== undefined && v !== '') props[k] = String(v);
+        }
+        results.push({ mapId, match: props });
+      } else {
+        results.push({ mapId, match: null });
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Query any registered map layer: filter by property values and optionally
+   * aggregate (count features per value of a groupBy property).
+   */
+  async queryLayer(options: {
+    mapId: string;
+    filters?: Record<string, string>;
+    groupBy?: string;
+    limit?: number;
+    properties?: string[];
+  }): Promise<{ total: number; results: Array<Record<string, string>>; grouped?: Record<string, number> }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}". Use list_available_maps to see valid IDs.`);
+
+    const data = await loadGeoJSON(entry.file);
+    const limit = Math.max(1, Math.min(options.limit ?? 100, 1000));
+
+    let features = data.features;
+
+    // Apply filters (case-insensitive substring match)
+    if (options.filters) {
+      for (const [key, value] of Object.entries(options.filters)) {
+        const lv = value.toLowerCase();
+        features = features.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+    }
+
+    const total = features.length;
+
+    // Grouping
+    let grouped: Record<string, number> | undefined;
+    if (options.groupBy) {
+      grouped = {};
+      for (const f of features) {
+        const key = String(f.properties?.[options.groupBy] ?? '(none)');
+        grouped[key] = (grouped[key] ?? 0) + 1;
+      }
+    }
+
+    // Select properties to return
+    const slice = features.slice(0, limit);
+    const results = slice.map(f => {
+      const props = f.properties || {};
+      if (options.properties && options.properties.length > 0) {
+        const out: Record<string, string> = {};
+        for (const p of options.properties) if (props[p] != null) out[p] = String(props[p]);
+        return out;
+      }
+      const out: Record<string, string> = {};
+      for (const [k, v] of Object.entries(props)) {
+        if (v !== null && v !== undefined) out[k] = String(v);
+      }
+      return out;
+    });
+
+    return { total, results, ...(grouped ? { grouped } : {}) };
+  }
+
   // ── District Evolution Tools ───────────────────────────────────────────
 
   async listHistoricalDistrictNames(): Promise<Array<{ district: string; state: string }>> {
@@ -518,5 +1069,492 @@ export class McpMapService {
     };
 
     return enriched;
+  }
+
+  // ── Analytics Tools ────────────────────────────────────────────────────────
+
+  /** Extract numeric values for a column across features, skipping nulls. */
+  private extractNumeric(
+    features: Array<{ properties: Record<string, unknown> | null }>,
+    column: string,
+  ): number[] {
+    const out: number[] = [];
+    for (const f of features) {
+      const v = f.properties?.[column];
+      if (v !== null && v !== undefined && v !== '') {
+        const n = Number(v);
+        if (isFinite(n)) out.push(n);
+      }
+    }
+    return out;
+  }
+
+  private computeStats(vals: number[]): {
+    count: number; min: number; max: number; mean: number;
+    median: number; p10: number; p25: number; p75: number; p90: number;
+    stddev: number; sum: number;
+  } | null {
+    if (!vals.length) return null;
+    const sorted = [...vals].sort((a, b) => a - b);
+    const n = sorted.length;
+    const sum = sorted.reduce((s, v) => s + v, 0);
+    const mean = sum / n;
+    const variance = sorted.reduce((s, v) => s + (v - mean) ** 2, 0) / n;
+    const pct = (p: number) => {
+      const idx = p * (n - 1);
+      const lo = Math.floor(idx), hi = Math.ceil(idx);
+      return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+    };
+    return {
+      count: n, min: sorted[0], max: sorted[n - 1],
+      mean: Math.round(mean * 10000) / 10000,
+      median: Math.round(pct(0.5) * 10000) / 10000,
+      p10: Math.round(pct(0.1) * 10000) / 10000,
+      p25: Math.round(pct(0.25) * 10000) / 10000,
+      p75: Math.round(pct(0.75) * 10000) / 10000,
+      p90: Math.round(pct(0.9) * 10000) / 10000,
+      stddev: Math.round(Math.sqrt(variance) * 10000) / 10000,
+      sum: Math.round(sum * 100) / 100,
+    };
+  }
+
+  /** Apply string + optional numeric filters to a feature list. */
+  private applyFilters(
+    features: ReturnType<FeatureCollection['features']['filter']>,
+    filters?: Record<string, string>,
+    numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>,
+  ) {
+    let out = features;
+    if (filters) {
+      for (const [key, value] of Object.entries(filters)) {
+        const lv = value.toLowerCase();
+        out = out.filter(f => {
+          const pv = String(f.properties?.[key] ?? '').toLowerCase();
+          return pv === lv || pv.includes(lv);
+        });
+      }
+    }
+    if (numericFilters) {
+      for (const nf of numericFilters) {
+        out = out.filter(f => {
+          const v = Number(f.properties?.[nf.column]);
+          if (!isFinite(v)) return false;
+          if (nf.gt  !== undefined && !(v >  nf.gt))  return false;
+          if (nf.gte !== undefined && !(v >= nf.gte)) return false;
+          if (nf.lt  !== undefined && !(v <  nf.lt))  return false;
+          if (nf.lte !== undefined && !(v <= nf.lte)) return false;
+          return true;
+        });
+      }
+    }
+    return out;
+  }
+
+  /** Describe the schema of any registered layer: numeric columns with ranges, categorical columns with unique-value counts. */
+  async layerSchema(mapId: string): Promise<{
+    featureCount: number;
+    numeric: Array<{ column: string; nonNull: number; min: number; max: number; mean: number }>;
+    categorical: Array<{ column: string; uniqueValues: number; sample: string[] }>;
+    textId: string[];
+  }> {
+    const entry = MAP_REGISTRY[mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const features = data.features;
+    if (!features.length) return { featureCount: 0, numeric: [], categorical: [], textId: [] };
+
+    // Detect column types from first non-null value across all features
+    const allKeys = new Set<string>();
+    for (const f of features) for (const k of Object.keys(f.properties || {})) allKeys.add(k);
+
+    const numeric: Array<{ column: string; nonNull: number; min: number; max: number; mean: number }> = [];
+    const categorical: Array<{ column: string; uniqueValues: number; sample: string[] }> = [];
+    const textId: string[] = [];
+
+    for (const col of allKeys) {
+      // Detect type from first non-null value in the column
+      let firstNonNull: unknown = undefined;
+      for (const f of features) {
+        const v = f.properties?.[col];
+        if (v !== null && v !== undefined && v !== '') { firstNonNull = v; break; }
+      }
+      const isNumericCol = typeof firstNonNull === 'number' ||
+        (typeof firstNonNull === 'string' && firstNonNull !== '' && isFinite(Number(firstNonNull)));
+
+      if (isNumericCol) {
+        const vals = this.extractNumeric(features, col);
+        const s = this.computeStats(vals)!;
+        numeric.push({ column: col, nonNull: vals.length, min: s.min, max: s.max, mean: s.mean });
+      } else {
+        // Categorical or free-text identifier
+        const uniq = new Set<string>();
+        for (const f of features) {
+          const v = f.properties?.[col];
+          if (v !== null && v !== undefined) uniq.add(String(v));
+        }
+        if (uniq.size <= 60) {
+          categorical.push({ column: col, uniqueValues: uniq.size, sample: [...uniq].slice(0, 8) });
+        } else {
+          textId.push(col);
+        }
+      }
+    }
+
+    numeric.sort((a, b) => a.column.localeCompare(b.column));
+    categorical.sort((a, b) => a.column.localeCompare(b.column));
+    textId.sort();
+
+    return { featureCount: features.length, numeric, categorical, textId };
+  }
+
+  /** Compute descriptive statistics for numeric columns, with optional groupBy. */
+  async summarizeLayer(options: {
+    mapId: string;
+    columns: string[];
+    groupBy?: string;
+    filters?: Record<string, string>;
+    numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+  }): Promise<{
+    featureCount: number;
+    columns: Record<string, ReturnType<McpMapService['computeStats']>>;
+    groups?: Record<string, Record<string, ReturnType<McpMapService['computeStats']>>>;
+  }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    let features = this.applyFilters(data.features, options.filters, options.numericFilters);
+
+    // Resolve "*" to all numeric columns
+    let cols = options.columns;
+    if (cols.length === 1 && cols[0] === '*') {
+      const allKeys = new Set<string>();
+      for (const f of features) for (const k of Object.keys(f.properties || {})) allKeys.add(k);
+      cols = [];
+      for (const col of allKeys) {
+        const vals = this.extractNumeric(features, col);
+        if (vals.length > 0) cols.push(col);
+      }
+    }
+
+    const columnStats: Record<string, ReturnType<McpMapService['computeStats']>> = {};
+    for (const col of cols) {
+      columnStats[col] = this.computeStats(this.extractNumeric(features, col));
+    }
+
+    if (!options.groupBy) {
+      return { featureCount: features.length, columns: columnStats };
+    }
+
+    // Group by categorical column
+    const buckets = new Map<string, typeof features>();
+    for (const f of features) {
+      const key = String(f.properties?.[options.groupBy] ?? '(none)');
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key)!.push(f);
+    }
+
+    const groups: Record<string, Record<string, ReturnType<McpMapService['computeStats']>>> = {};
+    for (const [group, gFeatures] of buckets) {
+      groups[group] = {};
+      for (const col of cols) {
+        groups[group][col] = this.computeStats(this.extractNumeric(gFeatures, col));
+      }
+    }
+
+    return { featureCount: features.length, columns: columnStats, groups };
+  }
+
+  /** Sort features by a numeric column and return the top/bottom N. */
+  async rankFeatures(options: {
+    mapId: string;
+    column: string;
+    order: 'asc' | 'desc';
+    limit?: number;
+    filters?: Record<string, string>;
+    numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+    properties?: string[];
+  }): Promise<{ total: number; column: string; order: string; results: Array<Record<string, string | number>> }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const features = this.applyFilters(data.features, options.filters, options.numericFilters);
+    const limit = Math.max(1, Math.min(options.limit ?? 10, 100));
+
+    // Only rank features with a valid numeric value for the column
+    const ranked = features
+      .map(f => ({ f, v: Number(f.properties?.[options.column]) }))
+      .filter(({ v }) => isFinite(v))
+      .sort((a, b) => options.order === 'asc' ? a.v - b.v : b.v - a.v);
+
+    const results = ranked.slice(0, limit).map(({ f, v }, i) => {
+      const raw = f.properties || {};
+      const keys = options.properties?.length ? options.properties : Object.keys(raw);
+      const out: Record<string, string | number> = { _rank: i + 1, [options.column]: v };
+      for (const k of keys) {
+        if (k !== options.column && raw[k] != null) out[k] = raw[k] as string | number;
+      }
+      return out;
+    });
+
+    return { total: ranked.length, column: options.column, order: options.order, results };
+  }
+
+  /** Pearson and Spearman correlation between two numeric columns. */
+  async correlate(options: {
+    mapId: string;
+    x: string;
+    y: string;
+    filters?: Record<string, string>;
+    numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+    groupBy?: string;
+    sampleRows?: number;
+    labelProperty?: string;
+  }): Promise<{
+    n: number; x: string; y: string;
+    pearson_r: number; spearman_r: number;
+    x_mean: number; y_mean: number; x_stddev: number; y_stddev: number;
+    scatter?: Array<{ x: number; y: number; label?: string }>;
+    groups?: Array<{ group: string; n: number; pearson_r: number; spearman_r: number }>;
+  }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const features = this.applyFilters(data.features, options.filters, options.numericFilters);
+
+    const pearsonAndSpearman = (pairs: Array<[number, number]>) => {
+      if (pairs.length < 2) return { pearson_r: NaN, spearman_r: NaN };
+      const n = pairs.length;
+      const xs = pairs.map(p => p[0]);
+      const ys = pairs.map(p => p[1]);
+      const meanX = xs.reduce((s, v) => s + v, 0) / n;
+      const meanY = ys.reduce((s, v) => s + v, 0) / n;
+      let num = 0, dX = 0, dY = 0;
+      for (let i = 0; i < n; i++) {
+        num += (xs[i] - meanX) * (ys[i] - meanY);
+        dX  += (xs[i] - meanX) ** 2;
+        dY  += (ys[i] - meanY) ** 2;
+      }
+      const pearson_r = (dX === 0 || dY === 0) ? NaN : Math.round(num / Math.sqrt(dX * dY) * 10000) / 10000;
+      // Spearman: rank transform then Pearson
+      const rank = (arr: number[]) => {
+        const indexed = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
+        const ranks = new Array(n);
+        for (let i = 0; i < n; ) {
+          let j = i;
+          while (j < n && indexed[j].v === indexed[i].v) j++;
+          const avg = (i + j - 1) / 2 + 1;
+          for (let k = i; k < j; k++) ranks[indexed[k].i] = avg;
+          i = j;
+        }
+        return ranks;
+      };
+      const rx = rank(xs), ry = rank(ys);
+      let rNum = 0, rDX = 0, rDY = 0;
+      const rmX = (n + 1) / 2, rmY = (n + 1) / 2;
+      for (let i = 0; i < n; i++) {
+        rNum += (rx[i] - rmX) * (ry[i] - rmY);
+        rDX  += (rx[i] - rmX) ** 2;
+        rDY  += (ry[i] - rmY) ** 2;
+      }
+      const spearman_r = (rDX === 0 || rDY === 0) ? NaN : Math.round(rNum / Math.sqrt(rDX * rDY) * 10000) / 10000;
+      return { pearson_r, spearman_r };
+    };
+
+    // Collect valid pairs
+    const pairs: Array<[number, number]> = [];
+    const labels: string[] = [];
+    const groupKeys: string[] = [];
+    for (const f of features) {
+      const xv = Number(f.properties?.[options.x]);
+      const yv = Number(f.properties?.[options.y]);
+      if (!isFinite(xv) || !isFinite(yv)) continue;
+      pairs.push([xv, yv]);
+      if (options.labelProperty) labels.push(String(f.properties?.[options.labelProperty] ?? ''));
+      if (options.groupBy) groupKeys.push(String(f.properties?.[options.groupBy] ?? '(none)'));
+    }
+
+    if (!pairs.length) {
+      return { n: 0, x: options.x, y: options.y, pearson_r: NaN, spearman_r: NaN, x_mean: NaN, y_mean: NaN, x_stddev: NaN, y_stddev: NaN };
+    }
+
+    const { pearson_r, spearman_r } = pearsonAndSpearman(pairs);
+    const xs = pairs.map(p => p[0]);
+    const ys = pairs.map(p => p[1]);
+    const xStats = this.computeStats(xs)!;
+    const yStats = this.computeStats(ys)!;
+
+    const result: ReturnType<McpMapService['correlate']> extends Promise<infer T> ? T : never = {
+      n: pairs.length, x: options.x, y: options.y,
+      pearson_r, spearman_r,
+      x_mean: xStats.mean, y_mean: yStats.mean,
+      x_stddev: xStats.stddev, y_stddev: yStats.stddev,
+    };
+
+    if (options.sampleRows && options.sampleRows > 0) {
+      const step = Math.max(1, Math.floor(pairs.length / options.sampleRows));
+      result.scatter = pairs
+        .filter((_, i) => i % step === 0)
+        .slice(0, options.sampleRows)
+        .map((p, i) => ({
+          x: p[0], y: p[1],
+          ...(options.labelProperty ? { label: labels[i * step] } : {}),
+        }));
+    }
+
+    if (options.groupBy) {
+      const groupMap = new Map<string, Array<[number, number]>>();
+      for (let i = 0; i < pairs.length; i++) {
+        const g = groupKeys[i];
+        if (!groupMap.has(g)) groupMap.set(g, []);
+        groupMap.get(g)!.push(pairs[i]);
+      }
+      result.groups = [];
+      for (const [group, gPairs] of groupMap) {
+        const { pearson_r: pr, spearman_r: sr } = pearsonAndSpearman(gPairs);
+        result.groups.push({ group, n: gPairs.length, pearson_r: pr, spearman_r: sr });
+      }
+      result.groups.sort((a, b) => a.group.localeCompare(b.group));
+    }
+
+    return result;
+  }
+
+  /** Compare named groups of features on one or more numeric columns. */
+  async compareGroups(options: {
+    mapId: string;
+    groups: Array<{
+      label: string;
+      filters?: Record<string, string>;
+      numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+    }>;
+    columns: string[];
+    stats?: Array<'mean' | 'median' | 'min' | 'max' | 'count' | 'sum' | 'p10' | 'p90'>;
+  }): Promise<{
+    columns: string[];
+    stats: string[];
+    groups: Array<{
+      label: string;
+      featureCount: number;
+      values: Record<string, Record<string, number | null>>;
+    }>;
+  }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const statKeys = options.stats ?? ['count', 'mean', 'median', 'min', 'max'];
+
+    const groupResults = options.groups.map(g => {
+      const features = this.applyFilters(data.features, g.filters, g.numericFilters);
+      const values: Record<string, Record<string, number | null>> = {};
+      for (const col of options.columns) {
+        const vals = this.extractNumeric(features, col);
+        const s = this.computeStats(vals);
+        values[col] = {};
+        for (const sk of statKeys) {
+          if (sk === 'count') values[col][sk] = vals.length;
+          else if (!s) values[col][sk] = null;
+          else values[col][sk] = (s as Record<string, number>)[sk] ?? null;
+        }
+      }
+      return { label: g.label, featureCount: features.length, values };
+    });
+
+    return { columns: options.columns, stats: statKeys, groups: groupResults };
+  }
+
+  /** Find K features most similar to a reference feature by Z-score normalized Euclidean distance. */
+  async findSimilar(options: {
+    mapId: string;
+    referenceName: string;
+    referenceState?: string;
+    columns: string[];
+    k?: number;
+    filters?: Record<string, string>;
+    numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
+  }): Promise<{
+    reference: { name: string; state?: string; values: Record<string, number> };
+    similar: Array<{ rank: number; name: string; state?: string; distance: number; values: Record<string, number> }>;
+  }> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const k = Math.max(1, Math.min(options.k ?? 10, 100));
+
+    const nameProp = entry.featureNameProp ?? 'name';
+    const stateProp = 'state_name';
+
+    // Find reference feature — use index so we can exclude by position, not identity,
+    // which handles layers with duplicate feature names (OSM points, electoral layers).
+    const nameLower = options.referenceName.toLowerCase();
+    let refIndex = -1;
+    for (let i = 0; i < data.features.length; i++) {
+      const f = data.features[i];
+      const n = String(f.properties?.[nameProp] ?? '').toLowerCase();
+      if (n !== nameLower && !n.includes(nameLower)) continue;
+      if (options.referenceState) {
+        const s = String(f.properties?.[stateProp] ?? '').toLowerCase();
+        if (!s.includes(options.referenceState.toLowerCase())) continue;
+      }
+      refIndex = i;
+      break;
+    }
+    if (refIndex === -1) throw new Error(`Feature "${options.referenceName}" not found in map "${options.mapId}"`);
+    const refFeature = data.features[refIndex];
+
+    // Compute per-column mean+stddev for Z-score normalization
+    const allFeatures = this.applyFilters(data.features, options.filters, options.numericFilters);
+    const colStats: Record<string, { mean: number; stddev: number }> = {};
+    for (const col of options.columns) {
+      const s = this.computeStats(this.extractNumeric(allFeatures, col));
+      colStats[col] = s ? { mean: s.mean, stddev: s.stddev } : { mean: 0, stddev: 1 };
+    }
+
+    const zScore = (col: string, v: number) => {
+      const { mean, stddev } = colStats[col];
+      return stddev === 0 ? 0 : (v - mean) / stddev;
+    };
+
+    const getVec = (f: (typeof data.features)[0]): Record<string, number> | null => {
+      const vals: Record<string, number> = {};
+      for (const col of options.columns) {
+        const v = Number(f.properties?.[col]);
+        if (!isFinite(v)) return null;
+        vals[col] = v;
+      }
+      return vals;
+    };
+
+    const refVals = getVec(refFeature);
+    if (!refVals) throw new Error(`Reference feature "${options.referenceName}" has missing values for requested columns`);
+
+    const refZ = options.columns.map(col => zScore(col, refVals[col]));
+
+    // Score all other features — exclude by original index to handle duplicate names.
+    const allFeaturesWithIdx = allFeatures.map(f => ({ f, origIdx: data.features.indexOf(f) }));
+    const scored: Array<{ f: (typeof data.features)[0]; dist: number; vals: Record<string, number> }> = [];
+    for (const { f, origIdx } of allFeaturesWithIdx) {
+      if (origIdx === refIndex) continue;
+      const vals = getVec(f);
+      if (!vals) continue;
+      const fZ = options.columns.map(col => zScore(col, vals[col]));
+      const dist = Math.sqrt(fZ.reduce((s, z, i) => s + (z - refZ[i]) ** 2, 0));
+      scored.push({ f, dist, vals });
+    }
+    scored.sort((a, b) => a.dist - b.dist);
+
+    return {
+      reference: {
+        name: String(refFeature.properties?.[nameProp] ?? ''),
+        ...(refFeature.properties?.[stateProp] ? { state: String(refFeature.properties[stateProp]) } : {}),
+        values: refVals,
+      },
+      similar: scored.slice(0, k).map(({ f, dist, vals }, i) => ({
+        rank: i + 1,
+        name: String(f.properties?.[nameProp] ?? ''),
+        ...(f.properties?.[stateProp] ? { state: String(f.properties[stateProp]) } : {}),
+        distance: Math.round(dist * 10000) / 10000,
+        values: vals,
+      })),
+    };
   }
 }

@@ -25,6 +25,9 @@ const App = () => (
         <Route path="/cities" element={<Index />} />
         <Route path="/city-stats" element={<Index />} />
         <Route path="/evolution" element={<Index />} />
+        <Route path="/census" element={<Index />} />
+        <Route path="/api" element={<Index />} />
+        <Route path="/maps" element={<Index />} />
         <Route path="/embed-demo" element={<EmbedDemo />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

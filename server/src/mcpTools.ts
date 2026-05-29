@@ -389,6 +389,194 @@ export function createMcpServer(): Server {
           },
         },
 
+        {
+          name: 'locate',
+          description:
+            'Point-in-polygon lookup: given a latitude and longitude, returns the containing ' +
+            'administrative unit(s) from one or more BharatViz map layers. ' +
+            'By default checks state, district, subdistrict, and block (LGD layers). ' +
+            'Pass mapIds to query specific layers (e.g. constituencies, eco-zones). ' +
+            'Returns all feature properties for each matched layer.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              lat: { type: 'number', description: 'Latitude (decimal degrees, e.g. 28.6139)' },
+              lon: { type: 'number', description: 'Longitude (decimal degrees, e.g. 77.2090)' },
+              mapIds: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Map IDs to test against. Default: ["lgd-states","lgd-districts","lgd-subdistricts","lgd-blocks"]. Use list_available_maps to see all options.',
+              },
+            },
+            required: ['lat', 'lon'],
+          },
+        },
+        {
+          name: 'query_layer',
+          description:
+            'Filter and aggregate features in any registered BharatViz map layer. ' +
+            'Returns matching feature properties (up to 1000 rows). ' +
+            'Use filters to narrow by any property value (case-insensitive substring match). ' +
+            'Use groupBy to count features per value of a property (e.g. count districts per state). ' +
+            'Use properties to select only specific columns in the output. ' +
+            'Example: count hospitals per state in the HOTOSM health facilities layer.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: {
+                type: 'string',
+                description: 'Map layer ID to query. Use list_available_maps to see all options.',
+              },
+              filters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Property filters as {propertyName: value}. Matches if the feature\'s property contains the value (case-insensitive). E.g. {"state_name": "Maharashtra", "amenity": "hospital"}.',
+              },
+              groupBy: {
+                type: 'string',
+                description: 'Property name to group and count by. Returns a {value: count} summary in addition to individual results.',
+              },
+              properties: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'List of property names to include in results. Omit to return all properties.',
+              },
+              limit: {
+                type: 'number',
+                description: 'Maximum number of individual feature rows to return (default: 100, max: 1000).',
+              },
+            },
+            required: ['mapId'],
+          },
+        },
+        {
+          name: 'spatial_join',
+          description:
+            'Spatial join: find all features from a TARGET layer that fall inside a boundary ' +
+            'selected from a BOUNDARY layer. This is the tool for cross-map queries.\n\n' +
+            'Examples:\n' +
+            '• "Which hospitals are in pincode 400071?" → boundaryMapId="pincodes", boundaryFilter={"pincode":"400071"}, targetMapId="hotosm-health-facilities", targetFilters={"amenity":"hospital"}\n' +
+            '• "Which parliamentary constituency does pincode 400071 belong to?" → boundaryMapId="lgd-parliament", boundaryFilter={}, targetMapId="pincodes-centroids", targetFilters={"pincode":"400071"} (finds which constituency contains the pincode centroid)\n' +
+            '• "Airports in Karnataka" → boundaryMapId="lgd-states", boundaryFilter={"state_name":"Karnataka"}, targetMapId="airports"\n' +
+            '• "Dams in Hubballi district" → boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Dharwad"}, targetMapId="dams"\n' +
+            '• "Water bodies in Kodagu" → boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Kodagu"}, targetMapId="water-bodies"\n\n' +
+            'For constituency lookups, flip the join: use the constituency polygons as the boundary ' +
+            'and the pincode centroid as the target. boundaryFilter can be left empty {} to test all boundaries — ' +
+            'the first one containing the target will be returned. Better: use locate tool for single-point lookups.\n\n' +
+            'boundaryFilter uses case-insensitive substring matching on any property.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              boundaryMapId: {
+                type: 'string',
+                description: 'Map ID for the boundary layer (any polygon layer). E.g. "pincodes", "lgd-districts", "lgd-states", "lgd-parliament", "gs-wildlife".',
+              },
+              boundaryFilter: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Property filter to select the boundary feature(s). E.g. {"pincode":"400071"} or {"district_name":"Pune"} or {"state_name":"Karnataka"}. Use {} to match all boundaries (only useful with a targeted targetFilter).',
+              },
+              targetMapId: {
+                type: 'string',
+                description: 'Map ID for the target layer whose features will be tested for containment. Works with any layer: point datasets (airports, dams, hotosm-health-facilities, pincodes-centroids, water-bodies) or polygon layers (districts, constituencies, etc.).',
+              },
+              targetFilters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Optional property filters on target features before spatial testing. E.g. {"amenity":"hospital"} or {"type":"large_airport"}.',
+              },
+              properties: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Property names to include in results. Omit for all properties.',
+              },
+              limit: {
+                type: 'number',
+                description: 'Max results to return (default 100, max 1000).',
+              },
+            },
+            required: ['boundaryMapId', 'boundaryFilter', 'targetMapId'],
+          },
+        },
+        {
+          name: 'nearby',
+          description:
+            'Find features within a given radius (km) of a lat/lon point, across one or more map layers. ' +
+            'Works with both point layers (airports, dams, health facilities, water bodies, pincodes) and polygon layers (districts, wildlife sanctuaries, etc. — uses polygon centroids). ' +
+            'Results are sorted by distance. Use this for queries like: ' +
+            '"airports in Karnataka near water bodies", "dams within 50 km of Hubballi", ' +
+            '"hospitals near me", "pincodes near 400071". ' +
+            'Available point layers: airports, dams, water-bodies, hotosm-health-facilities, pincodes-centroids. ' +
+            'Also works with any polygon layer (districts, gs-wildlife, etc.).',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              lat: { type: 'number', description: 'Centre latitude (decimal degrees)' },
+              lon: { type: 'number', description: 'Centre longitude (decimal degrees)' },
+              radiusKm: { type: 'number', description: 'Search radius in kilometres.' },
+              mapIds: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'One or more map layer IDs to search. E.g. ["airports"], ["dams","water-bodies"], ["hotosm-health-facilities"]. Use list_available_maps to discover IDs.',
+              },
+              limit: { type: 'number', description: 'Max results per layer (default 20, max 200).' },
+              properties: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Property names to include in results. Omit for all properties.',
+              },
+            },
+            required: ['lat', 'lon', 'radiusKm', 'mapIds'],
+          },
+        },
+        {
+          name: 'get_area',
+          description:
+            'Compute area in km² for one or more features in a polygon map layer. ' +
+            'Optionally compute population density if the layer has a population column. ' +
+            'Use this for questions like "what is the area of Bangalore district?", ' +
+            '"how many km² is Rajasthan?", "population density of all Kerala districts". ' +
+            'Works with any polygon layer: districts, states, subdistricts, constituencies, wildlife sanctuaries, eco-zones, etc.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: {
+                type: 'string',
+                description: 'Polygon map layer ID (e.g. "lgd-districts", "lgd-states", "gs-wildlife"). Use list_available_maps.',
+              },
+              name: {
+                type: 'string',
+                description: 'Optional feature name to look up (fuzzy match). Omit to get areas for all features.',
+              },
+              populationProperty: {
+                type: 'string',
+                description: 'Optional property name holding population count. When provided, also returns population density (people/km²).',
+              },
+              limit: { type: 'number', description: 'Max features to return (default 50, max 500).' },
+            },
+            required: ['mapId'],
+          },
+        },
+        {
+          name: 'get_layer_detail',
+          description:
+            'Returns the raw data download URL(s) for any registered BharatViz map layer. ' +
+            'Provides both the GeoJSON URL and the GeoParquet URL hosted on the BharatViz CDN (geo.bharatviz.org). ' +
+            'GeoParquet is recommended for analytical queries in DuckDB, pandas, or Arrow — it is 5-10x smaller ' +
+            'and columnar reads are dramatically faster. GeoJSON is better for direct browser/GIS tool use. ' +
+            'The HOTOSM health facilities layer (hotosm-health-facilities) is also available in both formats.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: {
+                type: 'string',
+                description: 'Map layer ID. Use list_available_maps to see all options.',
+              },
+            },
+            required: ['mapId'],
+          },
+        },
+
         // ── District Evolution Tools ───────────────────────────────────────
         {
           name: 'trace_district_evolution',
@@ -430,6 +618,194 @@ export function createMcpServer(): Server {
             properties: {},
           },
         },
+        // ── Analytics ──────────────────────────────────────────────────
+        {
+          name: 'layer_schema',
+          description:
+            'Describes the schema of any registered BharatViz map layer: which columns are numeric ' +
+            '(with min/max/mean), which are categorical (with unique-value count and sample), and ' +
+            'which are free-text identifiers. Call this before summarize_layer, rank_features, ' +
+            'correlate, compare_groups, or find_similar to discover exact column names.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID. Use list_available_maps to see all options.' },
+            },
+            required: ['mapId'],
+          },
+        },
+        {
+          name: 'summarize_layer',
+          description:
+            'Compute descriptive statistics (count, min, max, mean, median, p10, p25, p75, p90, stddev, sum) ' +
+            'for one or more numeric columns in any registered map layer. ' +
+            'Use groupBy to break down stats by a categorical column (e.g. state_name). ' +
+            'Use columns:["*"] to summarize all numeric columns at once. ' +
+            'Examples: "Mean literacy rate per state in Census 2011", ' +
+            '"Distribution of SC% across all districts", "Sum of population by state".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID.' },
+              columns: {
+                type: 'array', items: { type: 'string' },
+                description: 'Numeric column names to summarize. Pass ["*"] for all numeric columns.',
+              },
+              groupBy: { type: 'string', description: 'Categorical column to group by (e.g. "state_name").' },
+              filters: {
+                type: 'object', additionalProperties: { type: 'string' },
+                description: 'String property filters (case-insensitive substring). E.g. {"state_name":"Bihar"}.',
+              },
+              numericFilters: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    column: { type: 'string' },
+                    gt: { type: 'number' }, gte: { type: 'number' },
+                    lt: { type: 'number' }, lte: { type: 'number' },
+                  },
+                  required: ['column'],
+                },
+                description: 'Numeric range filters. E.g. [{column:"st_pct", gte:40}] for tribal-majority districts.',
+              },
+            },
+            required: ['mapId', 'columns'],
+          },
+        },
+        {
+          name: 'rank_features',
+          description:
+            'Sort features in any map layer by a numeric column and return the top or bottom N. ' +
+            'Use filters to restrict to a state or other subset. ' +
+            'Examples: "10 districts with lowest literacy in Bihar", ' +
+            '"Top 20 ST-majority districts nationwide", "Airports by elevation".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID.' },
+              column: { type: 'string', description: 'Numeric column to rank by.' },
+              order: { type: 'string', enum: ['asc', 'desc'], description: '"asc" for lowest first, "desc" for highest first.' },
+              limit: { type: 'number', description: 'Number of results to return (default 10, max 100).' },
+              filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'String property filters.' },
+              numericFilters: {
+                type: 'array',
+                items: { type: 'object', properties: { column: { type: 'string' }, gt: { type: 'number' }, gte: { type: 'number' }, lt: { type: 'number' }, lte: { type: 'number' } }, required: ['column'] },
+                description: 'Numeric range filters.',
+              },
+              properties: { type: 'array', items: { type: 'string' }, description: 'Properties to include in output (default: all).' },
+            },
+            required: ['mapId', 'column', 'order'],
+          },
+        },
+        {
+          name: 'correlate',
+          description:
+            'Compute Pearson and Spearman correlation between two numeric columns across features. ' +
+            'Use groupBy to compute correlation separately per group (e.g. per state). ' +
+            'Use sampleRows to get scatter-plot data points. ' +
+            'Examples: "Correlation between SC% and literacy rate", ' +
+            '"Does language diversity predict lower literacy?", ' +
+            '"State-level breakdown of SC% vs literacy correlation".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID.' },
+              x: { type: 'string', description: 'First numeric column (X axis).' },
+              y: { type: 'string', description: 'Second numeric column (Y axis).' },
+              filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'String property filters.' },
+              numericFilters: {
+                type: 'array',
+                items: { type: 'object', properties: { column: { type: 'string' }, gt: { type: 'number' }, gte: { type: 'number' }, lt: { type: 'number' }, lte: { type: 'number' } }, required: ['column'] },
+              },
+              groupBy: { type: 'string', description: 'Compute correlation separately for each value of this column.' },
+              sampleRows: { type: 'number', description: 'Return up to N scatter pairs for plotting (default: none).' },
+              labelProperty: { type: 'string', description: 'Property to use as point label in scatter output (e.g. "district_name").' },
+            },
+            required: ['mapId', 'x', 'y'],
+          },
+        },
+        {
+          name: 'compare_groups',
+          description:
+            'Compare named groups of features side-by-side on numeric columns. ' +
+            'Each group is defined by string and/or numeric filters. ' +
+            'Returns a table of stats per group per column. ' +
+            'Examples: "BIMARU vs South Indian states on literacy and SC%", ' +
+            '"Tribal districts (ST%>40) vs rest on all demographic axes", ' +
+            '"Urban vs rural literacy gap".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID.' },
+              groups: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    label: { type: 'string', description: 'Group name for display.' },
+                    filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'String property filters.' },
+                    numericFilters: {
+                      type: 'array',
+                      items: { type: 'object', properties: { column: { type: 'string' }, gt: { type: 'number' }, gte: { type: 'number' }, lt: { type: 'number' }, lte: { type: 'number' } }, required: ['column'] },
+                    },
+                  },
+                  required: ['label'],
+                },
+                description: 'List of groups to compare.',
+              },
+              columns: { type: 'array', items: { type: 'string' }, description: 'Numeric columns to compare across groups.' },
+              stats: {
+                type: 'array',
+                items: { type: 'string', enum: ['mean', 'median', 'min', 'max', 'count', 'sum', 'p10', 'p90'] },
+                description: 'Which statistics to compute (default: count, mean, median, min, max).',
+              },
+            },
+            required: ['mapId', 'groups', 'columns'],
+          },
+        },
+        {
+          name: 'find_similar',
+          description:
+            'Find the K features most similar to a reference feature using Z-score normalized ' +
+            'Euclidean distance across a multi-column metric vector. ' +
+            'Essential for identifying epidemiological comparators or policy-matched districts. ' +
+            'Examples: "10 districts demographically similar to Nandurbar (high ST, low literacy)", ' +
+            '"Districts like Washim on literacy + SC + language diversity".',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID.' },
+              referenceName: { type: 'string', description: 'Name of the reference feature (value of the layer\'s featureNameProp).' },
+              referenceState: { type: 'string', description: 'State name to disambiguate when the district name is not unique.' },
+              columns: { type: 'array', items: { type: 'string' }, description: 'Numeric columns forming the similarity metric vector.' },
+              k: { type: 'number', description: 'Number of similar features to return (default 10, max 100).' },
+              filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'Restrict the candidate pool before searching.' },
+              numericFilters: {
+                type: 'array',
+                items: { type: 'object', properties: { column: { type: 'string' }, gt: { type: 'number' }, gte: { type: 'number' }, lt: { type: 'number' }, lte: { type: 'number' } }, required: ['column'] },
+              },
+            },
+            required: ['mapId', 'referenceName', 'columns'],
+          },
+        },
+        {
+          name: 'list_categories',
+          description:
+            'Lists all available BharatViz map layers grouped by category. ' +
+            'Categories: admin (Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts), ' +
+            'electoral (Lok Sabha, Vidhan Sabha constituencies), ' +
+            'survey (NFHS-4, NFHS-5, NSSO regions), ' +
+            'environment (wildlife sanctuaries, eco-sensitive zones, FSI forests), ' +
+            'urban (SBM urban local bodies), ' +
+            'points (health facilities, airports, dams, water bodies, pincodes). ' +
+            'Each entry includes id, level, source, year, and description. ' +
+            'Faster than list_available_maps — does not fetch GeoJSON.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {},
+          },
+        },
       ],
     };
   });
@@ -446,6 +822,96 @@ export function createMcpServer(): Server {
           const maps = await mapService.listMaps();
           return {
             content: [{ type: 'text', text: JSON.stringify(maps, null, 2) }],
+          };
+        }
+
+        // ── Analytics handlers ──────────────────────────────────────────
+        case 'layer_schema': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const result = await mapService.layerSchema(mapId);
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'summarize_layer': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const columns = (Array.isArray(args?.columns) && (args.columns as string[]).length > 0) ? args.columns as string[] : ['*'];
+          const result = await mapService.summarizeLayer({
+            mapId,
+            columns,
+            groupBy: args?.groupBy as string | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+            numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'rank_features': {
+          const mapId = args?.mapId as string;
+          const column = args?.column as string;
+          const orderRaw = args?.order as string;
+          if (orderRaw !== undefined && orderRaw !== 'asc' && orderRaw !== 'desc')
+            throw new Error(`order must be "asc" or "desc", got "${orderRaw}"`);
+          const order: 'asc' | 'desc' = (orderRaw as 'asc' | 'desc') ?? 'desc';
+          if (!mapId || !column) throw new Error('mapId and column are required');
+          const result = await mapService.rankFeatures({
+            mapId, column, order,
+            limit: args?.limit as number | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+            numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
+            properties: Array.isArray(args?.properties) ? args.properties as string[] : undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'correlate': {
+          const mapId = args?.mapId as string;
+          const x = args?.x as string;
+          const y = args?.y as string;
+          if (!mapId || !x || !y) throw new Error('mapId, x, and y are required');
+          const result = await mapService.correlate({
+            mapId, x, y,
+            filters: args?.filters as Record<string, string> | undefined,
+            numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
+            groupBy: args?.groupBy as string | undefined,
+            sampleRows: args?.sampleRows as number | undefined,
+            labelProperty: args?.labelProperty as string | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'compare_groups': {
+          const mapId = args?.mapId as string;
+          const groups = args?.groups as Array<{ label: string; filters?: Record<string, string>; numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> }>;
+          const columns = Array.isArray(args?.columns) ? args.columns as string[] : [];
+          if (!mapId || !groups?.length || !columns.length) throw new Error('mapId, groups, and columns are required');
+          const result = await mapService.compareGroups({
+            mapId, groups, columns,
+            stats: args?.stats as Array<'mean' | 'median' | 'min' | 'max' | 'count' | 'sum' | 'p10' | 'p90'> | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'find_similar': {
+          const mapId = args?.mapId as string;
+          const referenceName = args?.referenceName as string;
+          const columns = Array.isArray(args?.columns) ? args.columns as string[] : [];
+          if (!mapId || !referenceName || !columns.length) throw new Error('mapId, referenceName, and columns are required');
+          const result = await mapService.findSimilar({
+            mapId, referenceName, columns,
+            referenceState: args?.referenceState as string | undefined,
+            k: args?.k as number | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+            numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'list_categories': {
+          const categories = mapService.listCategories();
+          return {
+            content: [{ type: 'text', text: JSON.stringify(categories, null, 2) }],
           };
         }
 
@@ -617,6 +1083,77 @@ export function createMcpServer(): Server {
           });
 
           return mapResultToContent(result);
+        }
+
+        case 'locate': {
+          const lat = args?.lat as number;
+          const lon = args?.lon as number;
+          if (lat == null || lon == null) throw new Error('lat and lon are required');
+          const mapIds = Array.isArray(args?.mapIds) ? args.mapIds as string[] : undefined;
+          const result = await mapService.locate(lat, lon, mapIds);
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'query_layer': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const result = await mapService.queryLayer({
+            mapId,
+            filters: args?.filters as Record<string, string> | undefined,
+            groupBy: args?.groupBy as string | undefined,
+            properties: args?.properties as string[] | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'spatial_join': {
+          const boundaryMapId = args?.boundaryMapId as string;
+          const targetMapId = args?.targetMapId as string;
+          if (!boundaryMapId || !targetMapId) throw new Error('boundaryMapId and targetMapId are required');
+          const result = await mapService.spatialJoin({
+            boundaryMapId,
+            boundaryFilter: (args?.boundaryFilter as Record<string, string>) ?? {},
+            targetMapId,
+            targetFilters: args?.targetFilters as Record<string, string> | undefined,
+            properties: args?.properties as string[] | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'nearby': {
+          const lat = args?.lat as number;
+          const lon = args?.lon as number;
+          const radiusKm = args?.radiusKm as number;
+          const mapIds = Array.isArray(args?.mapIds) ? args.mapIds as string[] : [];
+          if (lat == null || lon == null || radiusKm == null || !mapIds.length)
+            throw new Error('lat, lon, radiusKm, and mapIds are required');
+          const result = await mapService.nearby({
+            lat, lon, radiusKm, mapIds,
+            limit: args?.limit as number | undefined,
+            properties: args?.properties as string[] | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'get_area': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const result = await mapService.getArea({
+            mapId,
+            name: args?.name as string | undefined,
+            populationProperty: args?.populationProperty as string | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'get_layer_detail': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const result = mapService.getLayerDetail(mapId);
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
 
         // ── District Evolution Tools ───────────────────────────────────

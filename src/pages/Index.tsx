@@ -43,6 +43,9 @@ const CityStats = lazy(() => import('@/components/CityStats').then(m => ({ defau
 const HistoricalEvolution = lazy(() => import('@/components/HistoricalEvolution').then(m => ({ default: m.HistoricalEvolution })));
 const Credits = lazy(() => import('@/components/Credits'));
 const MCPDocs = lazy(() => import('@/components/MCPDocs'));
+const APIDocs = lazy(() => import('@/components/APIDocs'));
+const MapsGallery = lazy(() => import('@/components/MapsGallery'));
+const CensusMap = lazy(() => import('@/components/CensusMap').then(m => ({ default: m.CensusMap })));
 
 const TabPanel = ({ active, children }: { active: boolean; children: React.ReactNode }) => {
   if (!active) return null;
@@ -85,7 +88,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -612,7 +615,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'help', 'credits', 'mcp', 'sub-admin', 'electoral', 'environment', 'urban'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -877,6 +880,7 @@ const Index = () => {
 
   const environmentMapRef = useRef<IndiaDistrictsMapRef>(null);
   const urbanMapRef = useRef<IndiaDistrictsMapRef>(null);
+  const censusMapRef = useRef<IndiaDistrictsMapRef>(null);
 
   const handleSubAdminDataLoad = (rawData: Array<{ state: string; district: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
     const featureKey = getSubAdminLayer(subAdminLayerId).featureNameProp;
@@ -1181,6 +1185,7 @@ const Index = () => {
     if (activeTab === 'electoral') return electoralMapRef.current;
     if (activeTab === 'environment') return environmentMapRef.current;
     if (activeTab === 'urban') return urbanMapRef.current;
+    if (activeTab === 'census') return censusMapRef.current;
     return stateDistrictMapRef.current;
   };
 
@@ -1663,9 +1668,12 @@ const Index = () => {
               <TabsTrigger value="district-stats" className={secondaryTabClass}>District Stats</TabsTrigger>
               <TabsTrigger value="city-stats" className={secondaryTabClass}>City Stats</TabsTrigger>
               <TabsTrigger value="evolution" className={secondaryTabClass}>Evolution</TabsTrigger>
+              <TabsTrigger value="census" className={secondaryTabClass}>Census 2011</TabsTrigger>
               <TabsTrigger value="help" className={secondaryTabClass}>Help</TabsTrigger>
               <TabsTrigger value="credits" className={secondaryTabClass}>Credits</TabsTrigger>
-              <TabsTrigger value="mcp" className={secondaryTabClass}>API</TabsTrigger>
+              <TabsTrigger value="maps" className={secondaryTabClass}>Maps</TabsTrigger>
+              <TabsTrigger value="mcp" className={secondaryTabClass}>MCP</TabsTrigger>
+              <TabsTrigger value="api" className={secondaryTabClass}>API</TabsTrigger>
             </TabsList>
           </div>
 
@@ -3367,12 +3375,26 @@ POST /api/v1/districts/map
             <HistoricalEvolution />
           </TabPanel>
 
+          <TabPanel active={activeTab === 'census'}>
+            <Suspense fallback={<div className="h-32 flex items-center justify-center text-[hsl(28,8%,40%)]">Loading…</div>}>
+              <CensusMap ref={censusMapRef} darkMode={darkMode} />
+            </Suspense>
+          </TabPanel>
+
           <TabPanel active={activeTab === 'credits'}>
             <Credits />
           </TabPanel>
 
+          <TabPanel active={activeTab === 'maps'}>
+            <MapsGallery />
+          </TabPanel>
+
           <TabPanel active={activeTab === 'mcp'}>
             <MCPDocs />
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'api'}>
+            <APIDocs />
           </TabPanel>
         </Tabs>
       </div>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, Server, Plug, Code2, Palette, Map, Link2, GitBranch, Hash } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Copy, Check, Terminal, Server, Plug, Code2, Hash, ChartBar, Search, MapPin, Layers } from 'lucide-react';
 
 interface MCPDocsProps {
   darkMode?: boolean;
@@ -8,13 +7,11 @@ interface MCPDocsProps {
 
 const CopyButton: React.FC<{ text: string }> = ({ text }) => {
   const [copied, setCopied] = useState(false);
-
   const handleCopy = async () => {
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   return (
     <button
       onClick={handleCopy}
@@ -32,7 +29,7 @@ const SectionAnchor: React.FC<{ id: string }> = ({ id }) => (
   </a>
 );
 
-const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code }) => (
+const CodeBlock: React.FC<{ code: string }> = ({ code }) => (
   <div className="relative">
     <pre className="p-4 rounded-lg overflow-x-auto text-sm font-mono bg-[hsl(25,8%,9%)] text-[hsl(35,12%,90%)]">
       <code>{code}</code>
@@ -41,20 +38,37 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code }) => (
   </div>
 );
 
-const CurlExample: React.FC<{ label: string; code: string }> = ({ label, code }) => (
-  <div>
-    <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">{label}</p>
-    <CodeBlock code={code} />
-  </div>
-);
+const ToolRow: React.FC<{ name: string; description: string; input: string }> = ({ name, description, input }) => {
+  const badgeClass = 'inline-block px-2 py-0.5 rounded text-xs font-mono bg-[hsl(28,42%,94%)] text-[hsl(28,48%,30%)] dark:bg-[hsl(28,20%,14%)] dark:text-[hsl(28,55%,62%)]';
+  const tableCellClass = 'p-3 text-sm border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,58%)]';
+  return (
+    <tr>
+      <td className={`${tableCellClass} border font-mono text-xs`}>
+        <span className={badgeClass}>{name}</span>
+      </td>
+      <td className={`${tableCellClass} border`}>{description}</td>
+      <td className={`${tableCellClass} border font-mono text-xs hidden sm:table-cell`}>{input}</td>
+    </tr>
+  );
+};
+
+const ExampleCard: React.FC<{ title: string; prompt: string; code: string }> = ({ title, prompt, code }) => {
+  const cardClass = 'p-5 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]';
+  const textClass = 'text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,60%)]';
+  return (
+    <div className={cardClass}>
+      <h4 className="text-base font-semibold mb-1 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">{title}</h4>
+      <p className={`text-sm italic mb-3 ${textClass}`}>"{prompt}"</p>
+      <CodeBlock code={code} />
+    </div>
+  );
+};
 
 const MCPDocs: React.FC<MCPDocsProps> = () => {
   const cardClass = 'p-5 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]';
   const headingClass = 'font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]';
   const textClass = 'text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,60%)]';
-  const badgeClass = 'inline-block px-2 py-0.5 rounded text-xs font-mono bg-[hsl(28,42%,94%)] text-[hsl(28,48%,30%)] dark:bg-[hsl(28,20%,14%)] dark:text-[hsl(28,55%,62%)]';
   const tableHeaderClass = 'text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]';
-  const tableCellClass = 'p-3 text-sm border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,58%)]';
 
   const remoteConfig = `{
   "mcpServers": {
@@ -88,173 +102,41 @@ cd bharatviz/server
 npm install
 npm run build`;
 
-  const exampleStatesCall = `// Ask your AI assistant:
-"Draw a map of India showing literacy rates by state
- using the viridis color scale"
-
-// The assistant will call render_states_map with:
-{
-  "data": [
-    {"state": "Kerala", "value": 93.91},
-    {"state": "Delhi", "value": 86.21},
-    {"state": "Maharashtra", "value": 82.34},
-    {"state": "Tamil Nadu", "value": 80.09},
-    {"state": "Bihar", "value": 63.82}
-  ],
-  "title": "Literacy Rate by State (%)",
-  "colorScale": "viridis",
-  "legendTitle": "Literacy Rate (%)"
-}`;
-
-  const exampleDistrictsCall = `// Ask your AI assistant:
-"Show me a map of Kerala's districts with
- random population data"
-
-// The assistant will call render_districts_map with:
-{
-  "data": [
-    {"state": "Kerala", "district": "Ernakulam", "value": 3282388},
-    {"state": "Kerala", "district": "Thiruvananthapuram", "value": 3307284},
-    {"state": "Kerala", "district": "Kozhikode", "value": 3089543}
-  ],
-  "state": "Kerala",
-  "title": "Kerala District Population",
-  "colorScale": "blues"
-}`;
-
-  const mapIds = [
-    { id: 'lgd-states', level: 'States', source: 'LGD (Latest Official)', year: '2024' },
-    { id: 'lgd-districts', level: 'Districts', source: 'LGD (Latest Official)', year: '2024' },
-    { id: 'nfhs5-states', level: 'States', source: 'NFHS-5', year: '2021' },
-    { id: 'nfhs5-districts', level: 'Districts', source: 'NFHS-5', year: '2021' },
-    { id: 'nfhs4-states', level: 'States', source: 'NFHS-4', year: '2016' },
-    { id: 'nfhs4-districts', level: 'Districts', source: 'NFHS-4', year: '2016' },
-    { id: 'census-2011-states', level: 'States', source: 'Census 2011', year: '2011' },
-    { id: 'census-2011-districts', level: 'Districts', source: 'Census 2011', year: '2011' },
-    { id: 'census-2001-states', level: 'States', source: 'Census 2001', year: '2001' },
-    { id: 'census-2001-districts', level: 'Districts', source: 'Census 2001', year: '2001' },
-    { id: 'census-1991-states', level: 'States', source: 'Census 1991', year: '1991' },
-    { id: 'census-1991-districts', level: 'Districts', source: 'Census 1991', year: '1991' },
-    { id: 'census-1981-states', level: 'States', source: 'Census 1981', year: '1981' },
-    { id: 'census-1981-districts', level: 'Districts', source: 'Census 1981', year: '1981' },
-    { id: 'census-1971-states', level: 'States', source: 'Census 1971', year: '1971' },
-    { id: 'census-1971-districts', level: 'Districts', source: 'Census 1971', year: '1971' },
-    { id: 'census-1961-states', level: 'States', source: 'Census 1961', year: '1961' },
-    { id: 'census-1961-districts', level: 'Districts', source: 'Census 1961', year: '1961' },
-    { id: 'census-1951-states', level: 'States', source: 'Census 1951', year: '1951' },
-    { id: 'census-1951-districts', level: 'Districts', source: 'Census 1951', year: '1951' },
-    { id: 'census-1941-states', level: 'States', source: 'Census 1941', year: '1941' },
-    { id: 'census-1941-districts', level: 'Districts', source: 'Census 1941', year: '1941' },
-    { id: 'census-1931-states', level: 'States', source: 'Census 1931 (Jolad et al.)', year: '1931' },
-    { id: 'census-1931-districts', level: 'Districts', source: 'Census 1931 (Jolad et al.)', year: '1931' },
-    { id: 'census-1921-states', level: 'States', source: 'Census 1921 (Jolad et al.)', year: '1921' },
-    { id: 'census-1921-districts', level: 'Districts', source: 'Census 1921 (Jolad et al.)', year: '1921' },
-    { id: 'census-1911-states', level: 'States', source: 'Census 1911 (Jolad et al.)', year: '1911' },
-    { id: 'census-1911-districts', level: 'Districts', source: 'Census 1911 (Jolad et al.)', year: '1911' },
-    { id: 'census-1901-states', level: 'States', source: 'Census 1901 (Jolad et al.)', year: '1901' },
-    { id: 'census-1901-districts', level: 'Districts', source: 'Census 1901 (Jolad et al.)', year: '1901' },
-    { id: 'census-1891-states', level: 'States', source: 'Census 1891 (Jolad et al.)', year: '1891' },
-    { id: 'census-1891-districts', level: 'Districts', source: 'Census 1891 (Jolad et al.)', year: '1891' },
-    { id: 'census-1881-states', level: 'States', source: 'Census 1881 (Jolad et al.)', year: '1881' },
-    { id: 'census-1881-districts', level: 'Districts', source: 'Census 1881 (Jolad et al.)', year: '1881' },
-    { id: 'census-1872-states', level: 'States', source: 'Census 1872 (Jolad et al.)', year: '1872' },
-    { id: 'census-1872-districts', level: 'Districts', source: 'Census 1872 (Jolad et al.)', year: '1872' },
-    { id: 'soi-states', level: 'States', source: 'Survey of India', year: '2020' },
-    { id: 'soi-districts', level: 'Districts', source: 'Survey of India', year: '2020' },
-    { id: 'bhuvan-states', level: 'States', source: 'ISRO Bhuvan', year: '2020' },
-    { id: 'bhuvan-districts', level: 'Districts', source: 'ISRO Bhuvan', year: '2020' },
-    { id: 'nsso-regions', level: 'Regions', source: 'NSSO', year: '2021' },
-    { id: 'shrug-districts', level: 'Districts', source: 'SHRUG (Census 2011)', year: '2011' },
-    { id: 'shrug-subdistricts', level: 'Sub-districts', source: 'SHRUG (Census 2011)', year: '2011' },
-    { id: 'susewind-parliament-2014', level: 'Constituencies', source: 'Susewind (2014)', year: '2014' },
-    { id: 'susewind-assembly-2014', level: 'Constituencies', source: 'Susewind (2014)', year: '2014' },
-    { id: 'fsi-circles', level: 'Regions', source: 'FSI', year: '2024' },
-    { id: 'fsi-divisions', level: 'Regions', source: 'FSI', year: '2024' },
-    { id: 'fsi-ranges', level: 'Regions', source: 'FSI', year: '2024' },
-    { id: 'sbm-ulbs', level: 'Urban', source: 'SBM', year: '2024' },
+  const mapTools = [
+    { name: 'list_available_maps', description: 'Lists all boundary sets with metadata (id, source, year, level, feature count)', input: 'None' },
+    { name: 'list_states', description: 'Lists state/UT names for a given boundary type', input: 'mapId (string)' },
+    { name: 'list_districts', description: 'Lists districts for a boundary type, optionally filtered by state', input: 'mapId, state?' },
+    { name: 'render_states_map', description: 'Renders a state-level choropleth map as 300 DPI PNG', input: 'data [{state, value}], mapId?, colorScale?, title?, ...' },
+    { name: 'render_districts_map', description: 'Renders a district-level choropleth. Works for any sub-state boundary: districts, subdistricts, constituencies, FSI forest units, ULBs.', input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...' },
+    { name: 'get_csv_template', description: 'Returns a CSV template with all entity names for a boundary type', input: 'mapId (string)' },
+    { name: 'list_demos', description: 'Lists all showcase demo datasets (NFHS-5 health indicators, IHME AMR estimates)', input: 'level? ("states" | "districts")' },
+    { name: 'get_demo_url', description: 'Returns a shareable URL that opens a demo dataset in the browser', input: 'demoId, baseUrl?' },
+    { name: 'list_pincode_states', description: 'Lists all 38 states/UTs with pincode boundary data (~19,000 pincodes)', input: 'None' },
+    { name: 'list_pincodes', description: 'Lists all pincodes for a state with post office name and district', input: 'state (string)' },
+    { name: 'render_pincodes_map', description: 'Renders a pincode-level choropleth for a single state as 300 DPI PNG', input: 'data [{pincode, value}], state, colorScale?, ...' },
+    { name: 'list_cities', description: 'Lists 130+ cities with ward/zone boundary data (2,900+ datasets)', input: 'None' },
+    { name: 'list_wards', description: 'Lists all ward names for a given city', input: 'cityId (string)' },
+    { name: 'render_city_map', description: 'Renders a ward-level choropleth for an Indian city as 300 DPI PNG', input: 'cityId, data [{ward, value}], colorScale?, ...' },
+    { name: 'trace_district_evolution', description: 'Traces how a district evolved across Census years 1951–2011 (splits, merges, renames)', input: 'district, state?, year?, includeGeojson?' },
+    { name: 'list_historical_district_names', description: 'Lists all district names in the Census transition data (1951–2011)', input: 'None' },
   ];
 
-  const tools = [
-    {
-      name: 'list_available_maps',
-      description: 'Lists all 49 boundary sets with metadata (id, source, year, level, feature count)',
-      input: 'None',
-    },
-    {
-      name: 'list_states',
-      description: 'Lists state/UT names for a given boundary type',
-      input: 'mapId (string)',
-    },
-    {
-      name: 'list_districts',
-      description: 'Lists districts for a boundary type, optionally filtered by state',
-      input: 'mapId (string), state? (string)',
-    },
-    {
-      name: 'render_states_map',
-      description: 'Renders a state-level choropleth map as 300 DPI PNG',
-      input: 'data [{state, value}], mapId?, colorScale?, title?, ...',
-    },
-    {
-      name: 'render_districts_map',
-      description: 'Renders a district-level choropleth, all-India or zoomed to one state. Works for any sub-state boundary: districts, subdistricts, blocks, constituencies, FSI forest units, ULBs. Pass the mapId to choose the boundary set.',
-      input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...',
-    },
-    {
-      name: 'get_csv_template',
-      description: 'Returns a CSV template with all entity names for a boundary type',
-      input: 'mapId (string)',
-    },
-    {
-      name: 'list_demos',
-      description: 'Lists all showcase demo datasets (NFHS-5 health indicators, IHME AMR estimates)',
-      input: 'level? ("states" | "districts")',
-    },
-    {
-      name: 'get_demo_url',
-      description: 'Returns a shareable URL that opens a demo dataset in the browser',
-      input: 'demoId (string), baseUrl? (string)',
-    },
-    {
-      name: 'list_pincode_states',
-      description: 'Lists all 38 states/UTs with pincode boundary data (~19,000 pincodes)',
-      input: 'None',
-    },
-    {
-      name: 'list_pincodes',
-      description: 'Lists all pincodes for a state with post office name and district',
-      input: 'state (string)',
-    },
-    {
-      name: 'render_pincodes_map',
-      description: 'Renders a pincode-level choropleth for a single state as 300 DPI PNG',
-      input: 'data [{pincode, value}], state, colorScale?, ...',
-    },
-    {
-      name: 'list_cities',
-      description: 'Lists 130+ cities with ward/zone boundary data (2,900+ datasets)',
-      input: 'None',
-    },
-    {
-      name: 'list_wards',
-      description: 'Lists all ward names for a given city',
-      input: 'cityId (string)',
-    },
-    {
-      name: 'render_city_map',
-      description: 'Renders a ward-level choropleth for an Indian city as 300 DPI PNG',
-      input: 'cityId, data [{ward, value}], colorScale?, ...',
-    },
-    {
-      name: 'trace_district_evolution',
-      description: 'Traces how a district evolved across Census years 1951-2011 (splits, merges, renames)',
-      input: 'district (string), state?, year?, includeGeojson?',
-    },
-    {
-      name: 'list_historical_district_names',
-      description: 'Lists all district names in the Census transition data (1951-2011)',
-      input: 'None',
-    },
+  const spatialTools = [
+    { name: 'locate', description: 'Finds which boundary region(s) a point (lat/lon) falls inside, across one or more map layers simultaneously', input: 'lat, lon, mapIds? (array)' },
+    { name: 'query_layer', description: 'Filters features in any map layer by property values or name substring', input: 'mapId, filters?, numericFilters?, limit?' },
+    { name: 'spatial_join', description: 'Finds all features in a target layer that intersect features matched in a boundary layer', input: 'targetMapId, boundaryMapId, boundaryFilters?' },
+    { name: 'nearby', description: 'Finds the N nearest feature centroids to a given lat/lon point', input: 'lat, lon, mapId, n?' },
+    { name: 'get_area', description: 'Computes the geodetic area (km²) of any feature or set of features in a map layer', input: 'mapId, filters?, numericFilters?' },
+    { name: 'get_layer_detail', description: 'Returns metadata for a map layer: feature count, property names, GeoJSON and GeoParquet download URLs', input: 'mapId (string)' },
+  ];
+
+  const analyticsTools = [
+    { name: 'layer_schema', description: 'Returns the full column schema of any enriched map layer, classified into numeric, categorical, and text-ID columns', input: 'mapId (string)' },
+    { name: 'summarize_layer', description: 'Computes descriptive statistics (min, max, mean, median, percentiles, stddev) for one or more numeric columns, with optional group-by and row filters', input: 'mapId, columns?, groupBy?, filters?, numericFilters?' },
+    { name: 'rank_features', description: 'Ranks all features in a layer by a numeric column, returning a sorted table', input: 'mapId, column, order?, limit?, filters?, numericFilters?' },
+    { name: 'correlate', description: 'Computes Pearson and Spearman correlations between two numeric columns, with optional scatter data and group breakdowns', input: 'mapId, x, y, filters?, numericFilters?, scatter?, groupBy?' },
+    { name: 'compare_groups', description: 'Compares summary statistics across groups defined by a categorical column (e.g. by state, by region)', input: 'mapId, groupBy, columns?, filters?, numericFilters?' },
+    { name: 'find_similar', description: 'Finds the N features most similar to a reference feature using Z-score normalized Euclidean distance across multiple numeric columns', input: 'mapId, referenceName, columns, n?, referenceState?, filters?' },
   ];
 
   return (
@@ -266,11 +148,10 @@ npm run build`;
           <SectionAnchor id="mcp-server" />
         </h2>
         <p className={`${textClass} text-lg`}>
-          Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate
-          India maps from natural language. The server exposes 15 tools: listing boundary sets,
-          querying state and district names, rendering choropleth maps at state, district, pincode,
-          and city ward levels across 49 boundary sets, tracing how districts split and merged
-          between 1951 and 2011, and generating shareable URLs.
+          Connect BharatViz to Claude, Codex, or any MCP-compatible AI assistant to generate India maps,
+          query boundaries, and run demographic analytics from natural language. The server exposes
+          22 tools across four categories: map rendering, boundary discovery, spatial queries,
+          and in-memory analytics on 49 boundary layers.
         </p>
       </div>
 
@@ -283,31 +164,24 @@ npm run build`;
 
         <div className={cardClass}>
           <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            1. Add to your AI assistant (Recommended - no install needed)
+            1. Add to your AI assistant (Recommended — no install needed)
           </h4>
           <p className={`${textClass} mb-3`}>
-            Use the hosted MCP server at <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.org/api/mcp</code>. No cloning or building required.
+            Use the hosted MCP server at{' '}
+            <code className="font-mono text-sm text-green-700 dark:text-[hsl(142,55%,65%)]">https://bharatviz.org/api/mcp</code>.
+            No cloning or building required.
           </p>
-
-          <div className="space-y-4">
-            <div>
-              <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
-                Claude Code / Claude Desktop / any MCP client (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
-              </p>
-              <CodeBlock code={remoteConfig} />
-            </div>
-          </div>
+          <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
+            Claude Code / Claude Desktop / any MCP client (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code>):
+          </p>
+          <CodeBlock code={remoteConfig} />
         </div>
 
         <div className={`${cardClass} opacity-80`}>
           <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
             Alternative: Local install (stdio transport)
           </h4>
-          <p className={`${textClass} mb-3`}>
-            If you prefer to run the MCP server locally:
-          </p>
           <CodeBlock code={installFromSource} />
-
           <div className="space-y-4 mt-4">
             <div>
               <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
@@ -315,7 +189,6 @@ npm run build`;
               </p>
               <CodeBlock code={localClaudeCodeConfig} />
             </div>
-
             <div>
               <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">
                 Claude Desktop (<code className="text-sm text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">claude_desktop_config.json</code>):
@@ -327,33 +200,30 @@ npm run build`;
 
         <div className={cardClass}>
           <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            2. Start asking for maps
+            2. Start asking questions
           </h4>
           <p className={`${textClass} mb-2`}>
-            Once connected, ask your AI assistant:
+            Once connected, ask your AI assistant anything about India's geography or demographics:
           </p>
           <ul className={`list-disc list-inside space-y-1 ${textClass}`}>
-            <li>"Draw a map of India showing GDP by state"</li>
-            <li>"Show me Kerala's districts colored by population density"</li>
-            <li>"Create a dark mode map of literacy rates using the viridis color scale"</li>
-            <li>"What maps are available for the 1971 Census boundaries?"</li>
-            <li>"Give me a CSV template for LGD district boundaries"</li>
-            <li>"Show pincode-level data for Delhi using viridis colors"</li>
-            <li>"Show ward-level data for Mumbai"</li>
-            <li>"How did Coimbatore district evolve across Census years?"</li>
-            <li>"Map forest divisions in Maharashtra using FSI boundaries"</li>
-            <li>"Show 2014 parliamentary constituencies colored by winning margin"</li>
-            <li>"Map urban local bodies in Gujarat"</li>
+            <li>"Map female literacy rates across all Census 2011 districts using a diverging color scale"</li>
+            <li>"Which 20 districts have the lowest literacy rates — and what do they have in common?"</li>
+            <li>"How does SC/ST population share correlate with literacy across districts?"</li>
+            <li>"Find districts with a deprivation profile similar to Alirajpur for targeting interventions"</li>
+            <li>"Compare literacy and SC% across states — give me a state-level summary table"</li>
+            <li>"What district does GPS coordinate 23.25°N, 80.12°E fall in, and what are its Census indicators?"</li>
+            <li>"Rank all districts in Uttar Pradesh by SC population share, then map it"</li>
           </ul>
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 id="available-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+        <h3 id="map-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Server className="h-5 w-5" />
-          Available Tools
-          <SectionAnchor id="available-tools" />
+          Map &amp; Boundary Tools (16)
+          <SectionAnchor id="map-tools" />
         </h3>
+        <p className={textClass}>Render choropleth maps, list boundary sets, get CSV templates, and trace district history.</p>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
@@ -365,374 +235,396 @@ npm run build`;
               </tr>
             </thead>
             <tbody>
-              {tools.map((tool) => (
-                <tr key={tool.name}>
-                  <td className={`${tableCellClass} border font-mono text-xs`}>
-                    <span className={badgeClass}>{tool.name}</span>
-                  </td>
-                  <td className={`${tableCellClass} border`}>{tool.description}</td>
-                  <td className={`${tableCellClass} border font-mono text-xs hidden sm:table-cell`}>{tool.input}</td>
-                </tr>
-              ))}
+              {mapTools.map(t => <ToolRow key={t.name} {...t} />)}
             </tbody>
           </table>
         </div>
       </div>
 
-
       <div className="space-y-4">
-        <h3 id="examples" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <Code2 className="h-5 w-5" />
-          Examples
-          <SectionAnchor id="examples" />
+        <h3 id="spatial-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <MapPin className="h-5 w-5" />
+          Spatial Query Tools (6)
+          <SectionAnchor id="spatial-tools" />
         </h3>
-
-        <div className={cardClass}>
-          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            State-level map
-          </h4>
-          <CodeBlock code={exampleStatesCall} />
-        </div>
-
-        <div className={cardClass}>
-          <h4 className="text-lg font-semibold mb-3 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-            Single-state district map
-          </h4>
-          <CodeBlock code={exampleDistrictsCall} />
-        </div>
-      </div>
-
-
-      <div className="space-y-4">
-        <h3 id="shareable-urls" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <Link2 className="h-5 w-5" />
-          Shareable URLs
-          <SectionAnchor id="shareable-urls" />
-        </h3>
-
-        <div className={cardClass}>
-          <p className={`${textClass} mb-3`}>
-            All settings are in the URL — bookmark any view, share it, or load it in an iframe.
-          </p>
-
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
-              <thead>
-                <tr>
-                  <th className={`${tableHeaderClass} border`}>Parameter</th>
-                  <th className={`${tableHeaderClass} border`}>Applies to</th>
-                  <th className={`${tableHeaderClass} border`}>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { param: 'colorScale', tabs: 'All map tabs', desc: 'Color scale name (e.g. viridis, spectral, blues)' },
-                  { param: 'invertColors', tabs: 'All map tabs', desc: 'Invert color scale (true/false)' },
-                  { param: 'hideNames', tabs: 'States, State-Districts, Cities', desc: 'Hide region labels (true/false)' },
-                  { param: 'hideValues', tabs: 'States, State-Districts, Cities', desc: 'Hide data values (true/false)' },
-                  { param: 'darkMode', tabs: 'All tabs', desc: 'Enable dark mode (true/false)' },
-                  { param: 'mapType', tabs: 'Districts, State-Districts', desc: 'Boundary set (e.g. LGD, census-2011-districts)' },
-                  { param: 'showStateBoundaries', tabs: 'Districts', desc: 'Show state boundary outlines (true/false, default true)' },
-                  { param: 'selectedState', tabs: 'State-Districts', desc: 'State to display (e.g. Maharashtra)' },
-                  { param: 'city', tabs: 'Cities', desc: 'City name (e.g. Mumbai, Delhi)' },
-                  { param: 'dataset', tabs: 'Cities', desc: 'City dataset ID (e.g. mumbai, delhi)' },
-                  { param: 'dataUrl', tabs: 'States, Districts', desc: 'Load CSV data from a URL on page load' },
-                ].map((row) => (
-                  <tr key={row.param}>
-                    <td className={`${tableCellClass} border font-mono text-xs`}>
-                      <span className={badgeClass}>{row.param}</span>
-                    </td>
-                    <td className={`${tableCellClass} border text-xs`}>{row.tabs}</td>
-                    <td className={`${tableCellClass} border`}>{row.desc}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-4 space-y-2">
-            <p className="font-medium text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Examples:</p>
-            <CodeBlock code={`# Mumbai wards with viridis color scale in dark mode
-https://bharatviz.org/cities?city=Mumbai&dataset=mumbai&colorScale=viridis&darkMode=true
-
-# Maharashtra districts with Census 2011 boundaries
-https://bharatviz.org/state-districts?selectedState=Maharashtra&mapType=census-2011-districts
-
-# Load external CSV data into district view
-https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=blues`} />
-          </div>
-        </div>
-      </div>
-
-
-      <div className="space-y-4">
-        <h3 id="color-scales" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <Palette className="h-5 w-5" />
-          Color Scales
-          <SectionAnchor id="color-scales" />
-        </h3>
-
-        <div className={cardClass}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Sequential</h4>
-              <div className="space-y-1">
-                {['blues', 'greens', 'reds', 'oranges', 'purples', 'pinks'].map(s => (
-                  <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Perceptually Uniform</h4>
-              <div className="space-y-1">
-                {['viridis', 'plasma', 'inferno', 'magma'].map(s => (
-                  <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Diverging</h4>
-              <div className="space-y-1">
-                {['spectral', 'rdylbu', 'rdylgn', 'brbg', 'piyg', 'puor', 'aqi'].map(s => (
-                  <div key={s} className={`font-mono text-sm ${textClass}`}>{s}</div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div className="space-y-4">
-        <h3 id="district-evolution-api" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <GitBranch className="h-5 w-5" />
-          District Evolution API
-          <SectionAnchor id="district-evolution-api" />
-        </h3>
-
-        <div className={cardClass}>
-          <p className={`${textClass} mb-4`}>
-            Trace how a district's name and boundaries changed across Census years (1951–2011).
-            Districts split, merge, and get renamed; the API follows those changes in both directions.
-            Swagger UI at{' '}
-            <a
-              href="/api-docs"
-              className="text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)] underline underline-offset-2"
-            >
-              /api-docs
-            </a>.
-          </p>
-
-          <Tabs defaultValue="curl" className="mb-5">
-            <TabsList className="mb-3">
-              <TabsTrigger value="curl">curl</TabsTrigger>
-              <TabsTrigger value="python">Python</TabsTrigger>
-              <TabsTrigger value="r">R</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="curl" className="space-y-5">
-              <CurlExample
-                label="Trace a district across all census years:"
-                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"`}
-              />
-              <CurlExample
-                label="Get a single year's entry:"
-                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=24%20Parganas&state=West%20Bengal&year=1991"`}
-              />
-              <CurlExample
-                label="Include GeoJSON boundary polygons:"
-                code={`curl "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"`}
-              />
-              <CurlExample
-                label="Download full transition table (CSV):"
-                code={`curl -O "https://bharatviz.org/api/v1/district-evolution/data.csv"`}
-              />
-            </TabsContent>
-
-            <TabsContent value="python" className="space-y-5">
-              <CurlExample
-                label="Trace a district across all census years:"
-                code={`import urllib.request, json
-
-url = "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&state=Tamil%20Nadu"
-with urllib.request.urlopen(url) as r:
-    data = json.load(r)
-
-match = data["matches"][0]
-for year, entries in match["evolution"].items():
-    names = [e["district"] for e in entries]
-    print(year, "→", ", ".join(names) if names else "(not extant)")`}
-              />
-              <CurlExample
-                label="Fetch with GeoJSON and plot with geopandas:"
-                code={`import urllib.request, json
-import geopandas as gpd
-import matplotlib.pyplot as plt
-
-url = "https://bharatviz.org/api/v1/district-evolution?district=Coimbatore&geojson=true"
-with urllib.request.urlopen(url) as r:
-    data = json.load(r)
-
-match = data["matches"][0]
-fig, axes = plt.subplots(1, 7, figsize=(21, 4))
-for ax, (year, entries) in zip(axes, match["evolution"].items()):
-    features = [e["geojson"] for e in entries if e.get("geojson")]
-    all_features = [f for fc in features for f in fc["features"]]
-    if all_features:
-        gdf = gpd.GeoDataFrame.from_features(all_features)
-        gdf.plot(ax=ax, color="#e07b39", edgecolor="white", linewidth=0.5)
-    ax.set_title(year, fontsize=9)
-    ax.axis("off")
-plt.tight_layout()
-plt.show()`}
-              />
-              <CurlExample
-                label="Download transition CSV into pandas:"
-                code={`import pandas as pd
-
-df = pd.read_csv("https://bharatviz.org/api/v1/district-evolution/data.csv")
-print(df.head())`}
-              />
-            </TabsContent>
-
-            <TabsContent value="r" className="space-y-5">
-              <CurlExample
-                label="Trace a district across all census years:"
-                code={`library(httr2)
-library(purrr)
-
-resp <- request("https://bharatviz.org/api/v1/district-evolution") |>
-  req_url_query(district = "Coimbatore", state = "Tamil Nadu") |>
-  req_perform() |>
-  resp_body_json()
-
-match <- resp$matches[[1]]
-imap(match$evolution, \\(entries, year) {
-  names <- map_chr(entries, "district")
-  cat(year, "→", paste(names, collapse = ", "), "\\n")
-})`}
-              />
-              <CurlExample
-                label="Fetch with GeoJSON and plot with sf:"
-                code={`library(httr2)
-library(sf)
-library(purrr)
-library(ggplot2)
-
-resp <- request("https://bharatviz.org/api/v1/district-evolution") |>
-  req_url_query(district = "Coimbatore", geojson = "true") |>
-  req_perform() |>
-  resp_body_json()
-
-match <- resp$matches[[1]]
-panels <- imap(match$evolution, \\(entries, year) {
-  features <- keep(map(entries, "geojson"), \\(g) !is.null(g))
-  if (length(features) == 0) return(NULL)
-  all_features <- list_rbind(map(features, \\(fc) {
-    st_read(jsonlite::toJSON(fc, auto_unbox = TRUE), quiet = TRUE)
-  }))
-  list(year = year, gdf = all_features)
-}) |> compact()
-
-plots <- map(panels, \\(p) {
-  ggplot(p$gdf) +
-    geom_sf(fill = "#e07b39", colour = "white", linewidth = 0.3) +
-    ggtitle(p$year) + theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, size = 9))
-})
-patchwork::wrap_plots(plots, nrow = 1)`}
-              />
-              <CurlExample
-                label="Download transition CSV:"
-                code={`df <- read.csv("https://bharatviz.org/api/v1/district-evolution/data.csv")
-head(df)`}
-              />
-            </TabsContent>
-          </Tabs>
-
-          <div className="mb-5">
-            <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Example response — Coimbatore split over time:</p>
-            <CodeBlock code={`{
-  "query": { "district": "Coimbatore", "state": "Tamil Nadu" },
-  "matches": [{
-    "modern_state": "Tamil Nadu",
-    "evolution": {
-      "1951": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "1961": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "1971": [{ "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "1981": [{ "state": "Tamil Nadu", "district": "Periyar" },
-               { "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "1991": [{ "state": "Tamil Nadu", "district": "Periyar" },
-               { "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "2001": [{ "state": "Tamil Nadu", "district": "Erode" },
-               { "state": "Tamil Nadu", "district": "Coimbatore" }],
-      "2011": [{ "state": "Tamil Nadu", "district": "Erode" },
-               { "state": "Tamil Nadu", "district": "Tiruppur" },
-               { "state": "Tamil Nadu", "district": "Coimbatore" }]
-    }
-  }]
-}`} />
-          </div>
-
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
-              <thead>
-                <tr>
-                  <th className={`${tableHeaderClass} border`}>Parameter</th>
-                  <th className={`${tableHeaderClass} border`}>Required</th>
-                  <th className={`${tableHeaderClass} border`}>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { param: 'district', req: 'Yes', desc: 'District name (case-insensitive)' },
-                  { param: 'state', req: 'No', desc: 'Modern state name to narrow results' },
-                  { param: 'year', req: 'No', desc: 'Census year: 1951 | 1961 | 1971 | 1981 | 1991 | 2001 | 2011' },
-                  { param: 'geojson', req: 'No', desc: 'Attach WGS84 boundary polygons for each year (true/false)' },
-                ].map((row) => (
-                  <tr key={row.param}>
-                    <td className={`${tableCellClass} border font-mono text-xs`}>
-                      <span className={badgeClass}>{row.param}</span>
-                    </td>
-                    <td className={`${tableCellClass} border text-xs`}>{row.req}</td>
-                    <td className={`${tableCellClass} border`}>{row.desc}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-
-      <div className="space-y-4">
-        <h3 id="map-boundaries" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
-          <Map className="h-5 w-5" />
-          All 49 Available Map Boundaries
-          <SectionAnchor id="map-boundaries" />
-        </h3>
+        <p className={textClass}>Point-in-polygon, nearest-neighbour, spatial joins, area calculations, and layer metadata.</p>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
             <thead>
               <tr>
-                <th className={`${tableHeaderClass} border`}>Map ID</th>
-                <th className={`${tableHeaderClass} border`}>Level</th>
-                <th className={`${tableHeaderClass} border`}>Source</th>
-                <th className={`${tableHeaderClass} border`}>Year</th>
+                <th className={`${tableHeaderClass} border`}>Tool</th>
+                <th className={`${tableHeaderClass} border`}>Description</th>
+                <th className={`${tableHeaderClass} border hidden sm:table-cell`}>Input</th>
               </tr>
             </thead>
             <tbody>
-              {mapIds.map((m) => (
-                <tr key={m.id}>
-                  <td className={`${tableCellClass} border font-mono text-xs`}>{m.id}</td>
-                  <td className={`${tableCellClass} border`}>{m.level}</td>
-                  <td className={`${tableCellClass} border`}>{m.source}</td>
-                  <td className={`${tableCellClass} border`}>{m.year}</td>
-                </tr>
-              ))}
+              {spatialTools.map(t => <ToolRow key={t.name} {...t} />)}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h3 id="analytics-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <ChartBar className="h-5 w-5" />
+          Analytics Tools (6)
+          <SectionAnchor id="analytics-tools" />
+        </h3>
+        <p className={textClass}>
+          In-memory statistical analysis on any enriched layer. The Census 2011 districts layer
+          carries 267 columns — 75 demographic indicators and 192 language columns — making these
+          tools especially powerful for demography and public health research.
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
+            <thead>
+              <tr>
+                <th className={`${tableHeaderClass} border`}>Tool</th>
+                <th className={`${tableHeaderClass} border`}>Description</th>
+                <th className={`${tableHeaderClass} border hidden sm:table-cell`}>Input</th>
+              </tr>
+            </thead>
+            <tbody>
+              {analyticsTools.map(t => <ToolRow key={t.name} {...t} />)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h3 id="analytics-examples" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Code2 className="h-5 w-5" />
+          Analytics Examples (Census 2011 Districts)
+          <SectionAnchor id="analytics-examples" />
+        </h3>
+        <p className={textClass}>
+          These examples show the MCP tool calls an AI assistant would make when answering
+          demography and public health questions. The assistant discovers available columns via{' '}
+          <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">layer_schema</code>{' '}
+          first, then chains tools as needed.
+        </p>
+
+        <ExampleCard
+          title="Discover available health and demographic indicators"
+          prompt="What health and demographic indicators are available for Census 2011 districts?"
+          code={`layer_schema({ mapId: "census-2011-districts" })
+
+{
+  "featureCount": 640,
+  "numeric": [
+    "population", "literate", "literacy_pct",
+    "sc_population", "sc_pct", "st_population", "st_pct",
+    "shannon_diversity", "effective_languages", "num_languages"
+    // ... 267 total columns
+  ],
+  "categorical": ["state_name"],
+  "textId": ["district_name", "district_code"]
+}`}
+        />
+
+        <ExampleCard
+          title="Rank districts by deprivation — lowest literacy first"
+          prompt="Which 15 districts have the lowest literacy rates in India? Map them."
+          code={`rank_features({
+  mapId: "census-2011-districts",
+  column: "literacy_pct",
+  order: "asc",
+  limit: 15
+})
+// 1. Alirajpur (MP)    28.77%
+// 2. Bijapur (CG)      30.69%
+// 3. Dantewada (CG)    33.68%
+// 4. Kishanganj (BR)   38.48%
+// ...
+
+render_districts_map({
+  mapId: "census-2011-districts",
+  data: [ /* literacy_pct for all 640 districts */ ],
+  title: "Literacy Rate — Census 2011",
+  colorScale: "rdylgn"
+})`}
+        />
+
+        <ExampleCard
+          title="Deprivation clustering — SC/ST share vs. literacy"
+          prompt="How does SC/ST population share correlate with literacy? Are the worst-off districts concentrated by state?"
+          code={`correlate({
+  mapId: "census-2011-districts",
+  x: "st_pct",
+  y: "literacy_pct",
+  scatter: true,
+  groupBy: "state_name"
+})
+
+{
+  "n": 634,
+  "pearson_r": -0.42,
+  "spearman_r": -0.51,
+  "x_mean": 12.2,
+  "y_mean": 67.4,
+  "scatter": [ ... ],
+  "groups": {
+    "Jharkhand":    { "x_mean": 28.0, "y_mean": 61.7 },
+    "Chhattisgarh": { "x_mean": 35.8, "y_mean": 65.2 },
+    "Odisha":       { "x_mean": 24.1, "y_mean": 63.1 }
+  }
+}`}
+        />
+
+        <ExampleCard
+          title="State-level summary of key deprivation indicators"
+          prompt="Give me a state-level table comparing SC%, ST%, and literacy — which states are hardest hit across all three?"
+          code={`compare_groups({
+  mapId: "census-2011-districts",
+  groupBy: "state_name",
+  columns: ["sc_pct", "st_pct", "literacy_pct"]
+})
+
+{
+  "groups": {
+    "Kerala":        { "sc_pct": { mean: 9.8  }, "st_pct": { mean: 1.5  }, "literacy_pct": { mean: 93.9 } },
+    "Punjab":        { "sc_pct": { mean: 31.9 }, "st_pct": { mean: 0.0  }, "literacy_pct": { mean: 76.7 } },
+    "Chhattisgarh":  { "sc_pct": { mean: 10.9 }, "st_pct": { mean: 35.8 }, "literacy_pct": { mean: 65.2 } },
+    "Rajasthan":     { "sc_pct": { mean: 18.1 }, "st_pct": { mean: 13.5 }, "literacy_pct": { mean: 65.1 } },
+    "Uttar Pradesh": { "sc_pct": { mean: 20.5 }, "st_pct": { mean: 0.6  }, "literacy_pct": { mean: 67.3 } }
+  }
+}`}
+        />
+
+        <ExampleCard
+          title="Find comparable districts for intervention targeting or matched controls"
+          prompt="We want to roll out a nutrition programme in Alirajpur, MP. Which other districts have a similar deprivation profile and could serve as comparison sites?"
+          code={`find_similar({
+  mapId: "census-2011-districts",
+  referenceName: "Alirajpur",
+  referenceState: "Madhya Pradesh",
+  columns: ["literacy_pct", "sc_pct", "st_pct", "population"],
+  n: 6
+})
+
+{
+  "reference": { "district": "Alirajpur", "state": "Madhya Pradesh",
+                 "literacy_pct": 28.8, "st_pct": 78.8 },
+  "similar": [
+    { "district": "Gumla",      "state": "Jharkhand",         "distance": 0.83 },
+    { "district": "Nandurbar",  "state": "Maharashtra",       "distance": 0.91 },
+    { "district": "Mayurbhanj", "state": "Odisha",            "distance": 1.04 },
+    { "district": "West Siang", "state": "Arunachal Pradesh", "distance": 1.11 },
+    { "district": "Dantewada",  "state": "Chhattisgarh",      "distance": 1.19 },
+    { "district": "Simdega",    "state": "Jharkhand",         "distance": 1.23 }
+  ]
+}`}
+        />
+
+        <ExampleCard
+          title="Summarize deprivation burden in high-ST districts"
+          prompt="What are the literacy, SC%, and population statistics across districts with more than 50% Scheduled Tribe population?"
+          code={`summarize_layer({
+  mapId: "census-2011-districts",
+  columns: ["literacy_pct", "sc_pct", "population"],
+  numericFilters: [{ column: "st_pct", op: "gt", value: 50 }]
+})
+
+{
+  "featureCount": 85,
+  "columns": {
+    "literacy_pct": { mean: 56.2, median: 57.8, p10: 37.1, p90: 72.4, stddev: 12.3 },
+    "sc_pct":       { mean: 3.4,  median: 2.1,  p10: 0.3,  p90: 9.1,  stddev: 4.1  },
+    "population":   { mean: 612000, median: 490000, p10: 150000, p90: 1350000 }
+  }
+}`}
+        />
+
+        <ExampleCard
+          title="Geolocate a survey point and retrieve its Census indicators"
+          prompt="A field survey collected data at 23.25°N, 80.12°E. Which district is this, and what are its baseline Census 2011 indicators?"
+          code={`locate({
+  lat: 23.25,
+  lon: 80.12,
+  mapIds: ["census-2011-districts", "lgd-districts"]
+})
+// → { district_name: "Mandla", state_name: "Madhya Pradesh" }
+
+query_layer({
+  mapId: "census-2011-districts",
+  filters: { district_name: "Mandla", state_name: "Madhya Pradesh" }
+})
+// → population: 1054905, literacy_pct: 67.1, st_pct: 57.1, sc_pct: 3.8`}
+        />
+
+        <ExampleCard
+          title="Within-state ranking and choropleth"
+          prompt="Rank all districts in Uttar Pradesh by SC population share, then draw a map."
+          code={`rank_features({
+  mapId: "census-2011-districts",
+  column: "sc_pct",
+  order: "desc",
+  filters: { state_name: "Uttar Pradesh" }
+})
+// Sitapur 34.8%, Hardoi 33.2%, Lakhimpur Kheri 32.6% ...
+
+render_districts_map({
+  mapId: "census-2011-districts",
+  state: "Uttar Pradesh",
+  data: [ /* sc_pct for all UP districts */ ],
+  title: "Scheduled Caste Population Share — Uttar Pradesh (Census 2011)",
+  colorScale: "purples"
+})`}
+        />
+
+        <ExampleCard
+          title="Healthcare facility access — nearest facilities to a survey point"
+          prompt="Find the 10 nearest health facilities to a rural GPS point in Bundelkhand, and show which district they fall in."
+          code={`nearby({
+  lat: 25.10,
+  lon: 79.85,
+  mapId: "hotosm-health-facilities",
+  n: 10
+})
+// Returns facilities sorted by distance with name, amenity, healthcare type,
+// operator_type, adm1_name (state), adm2_name (district)
+
+locate({
+  lat: 25.10,
+  lon: 79.85,
+  mapIds: ["lgd-districts", "census-2011-districts"]
+})
+// → { district_name: "Chhatarpur", state_name: "Madhya Pradesh" }
+
+query_layer({
+  mapId: "hotosm-health-facilities",
+  filters: { adm2_name: "Chhatarpur" }
+})
+// Full facility list; count / population gives per-capita access ratio`}
+        />
+
+        <ExampleCard
+          title="Pincode-level hospital density map"
+          prompt="Show which pincodes in Pune district are within 5 km of a hospital, and map facility density by pincode."
+          code={`list_pincodes({ state: "Maharashtra" })
+
+query_layer({
+  mapId: "hotosm-health-facilities",
+  filters: { adm2_name: "Pune", amenity: "hospital" }
+})
+// 87 hospitals with lat/lon
+
+nearby({ lat: <pincode_lat>, lon: <pincode_lon>, mapId: "hotosm-health-facilities", n: 5 })
+// Per-pincode centroid query; aggregate to get hospital count within radius
+
+render_pincodes_map({
+  state: "Maharashtra",
+  data: [ { pincode: "411001", value: 12 }, { pincode: "411002", value: 3 }, ... ],
+  title: "Hospitals within 5 km — Pune Pincodes",
+  colorScale: "blues"
+})`}
+        />
+
+        <ExampleCard
+          title="Facility type breakdown by state"
+          prompt="What types of health facilities are available in the hotosm layer, and how are they distributed across states?"
+          code={`layer_schema({ mapId: "hotosm-health-facilities" })
+// categorical: ["amenity", "healthcare", "operator_type", "adm1_name"]
+// textId: ["name", "adm2_name"]
+
+query_layer({
+  mapId: "hotosm-health-facilities",
+  filters: { adm1_name: "Bihar", amenity: "clinic" },
+  limit: 200
+})
+// 143 clinics in Bihar with name, location, operator_type`}
+        />
+      </div>
+
+      <div className="space-y-4">
+        <h3 id="discover-workflow" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Search className="h-5 w-5" />
+          Recommended Workflow
+          <SectionAnchor id="discover-workflow" />
+        </h3>
+
+        <div className={cardClass}>
+          <ol className={`list-decimal list-inside space-y-3 ${textClass}`}>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Discover layers</strong> —
+              call <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">list_available_maps</code> to
+              see all boundary sets with their IDs, sources, and years.
+            </li>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Inspect a layer</strong> —
+              call <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">layer_schema</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code> to
+              see available columns and download URLs.
+            </li>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Filter and rank</strong> —
+              use <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">rank_features</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">query_layer</code> to
+              identify features of interest.
+            </li>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Analyze</strong> —
+              run <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">correlate</code>,{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">compare_groups</code>, or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">find_similar</code> for statistics.
+            </li>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Visualize</strong> —
+              pass results to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_districts_map</code> or{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">render_states_map</code> for
+              a 300 DPI choropleth PNG.
+            </li>
+            <li>
+              <strong className="text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Download raw data</strong> —
+              use the <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">parquetUrl</code> from{' '}
+              <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">get_layer_detail</code> for
+              direct GeoParquet access in Python/R.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h3 id="data-layers" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Layers className="h-5 w-5" />
+          Enriched Data Layers
+          <SectionAnchor id="data-layers" />
+        </h3>
+
+        <div className={cardClass}>
+          <p className={`${textClass} mb-4`}>
+            Several boundary layers carry rich attribute data beyond just geometry, enabling
+            in-memory analytics without downloading raw files.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
+              <thead>
+                <tr>
+                  <th className="text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]">Map ID</th>
+                  <th className="text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]">Features</th>
+                  <th className="text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]">Columns</th>
+                  <th className="text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]">Notable data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { id: 'census-2011-districts', features: '640', cols: '267', data: 'Population, SC/ST%, literacy, 75 indicators, 192 language columns' },
+                  { id: 'census-2011-states', features: '35', cols: '267', data: 'Same indicators aggregated to state level' },
+                  { id: 'hotosm-health-facilities', features: '142,629', cols: '—', data: 'Hospitals, clinics, pharmacies — name, amenity, operator, district, state' },
+                  { id: 'shrug-subdistricts', features: '~5,500', cols: 'varies', data: 'Sub-district level SHRUG Census 2011 data' },
+                ].map(r => (
+                  <tr key={r.id}>
+                    <td className="p-3 text-sm border font-mono text-xs border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)] text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,58%)]">{r.id}</td>
+                    <td className="p-3 text-sm border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)] text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,58%)]">{r.features}</td>
+                    <td className="p-3 text-sm border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)] text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,58%)]">{r.cols}</td>
+                    <td className="p-3 text-sm border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)] text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,58%)]">{r.data}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
