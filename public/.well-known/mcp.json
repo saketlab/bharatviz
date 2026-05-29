@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "bharatviz": {
+      "url": "https://bharatviz.saketlab.org/api/mcp",
+      "transport": "http",
+      "description": "BharatViz MCP server — generate India maps, query 60+ boundary layers, run spatial analytics"
+    }
+  }
+}

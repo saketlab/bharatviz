@@ -14,6 +14,7 @@ import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { createRotationCalculator } from '@/lib/rotationUtils';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
 import { svgToHighDpiBlob } from '@/lib/exportUtils';
+import { DeckPointsLayer, type PointViewMode } from './DeckPointsLayer';
 
 import polylabel from "@mapbox/polylabel";
 
@@ -77,6 +78,7 @@ interface IndiaDistrictsMapProps {
   dataTitle: string;
   showStateBoundaries?: boolean;
   pointsLayer?: PointFeature[];
+  pointViewMode?: PointViewMode;
   pointRadius?: number;
   pointColor?: string;
   pointOpacity?: number;
@@ -186,6 +188,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   csvTemplateHeader = 'district',
   labelScale = 1,
   pointsLayer,
+  pointViewMode = 'points',
   pointRadius = 1.5,
   pointColor = '#ef4444',
   pointOpacity = 0.7,
@@ -229,6 +232,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRafRef = useRef<number | null>(null);
+  const [mapRect, setMapRect] = useState<DOMRect | null>(null);
   const rotationCalculator = useRef(createRotationCalculator());
   const isMobile = useIsMobile();
 
@@ -1185,6 +1189,17 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     return { districtLabelData: labels, maxArea: max, minArea: min === Infinity ? 0 : min, districtDataMap: map };
   }, [geojsonData, data]);
 
+  // Track SVG bounding rect for deck.gl canvas positioning
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const update = () => setMapRect(svg.getBoundingClientRect());
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(svg);
+    return () => ro.disconnect();
+  }, [geojsonData]);
+
   if (!geojsonData || !bounds) {
     return (
       <div className="w-full h-96 flex items-center justify-center border border-border rounded bg-background">
@@ -1584,54 +1599,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               )}
 
 
-              {pointsLayer && pointsLayer.length > 0 && bounds && (
-                <g className="points-layer">
-                  {pointsLayer.map((pt, i) => {
-                    const { x, y } = geoToScreen(pt.lon, pt.lat);
-                    if (x < 0 || y < 0) return null;
-                    return (
-                      <circle
-                        key={i}
-                        cx={x}
-                        cy={y}
-                        r={pointRadius}
-                        fill={pt.color ?? pointColor}
-                        opacity={hoveredPoint?.feature === pt ? 1 : pointOpacity}
-                        stroke={hoveredPoint?.feature === pt ? (darkMode ? '#fff' : '#000') : 'none'}
-                        strokeWidth={hoveredPoint?.feature === pt ? 0.8 : 0}
-                        style={{ cursor: 'pointer' }}
-                        onMouseEnter={(e) => {
-                          const svgRect = svgRef.current?.getBoundingClientRect();
-                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
-                          const refRect = containerRect ?? svgRect;
-                          if (!refRect) return;
-                          setHoveredPoint({
-                            x: e.clientX - refRect.left,
-                            y: e.clientY - refRect.top,
-                            feature: pt,
-                          });
-                        }}
-                        onMouseLeave={() => setHoveredPoint(null)}
-                        onMouseMove={(e) => {
-                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
-                          if (!containerRect) return;
-                          setHoveredPoint(prev => prev ? { ...prev, x: e.clientX - containerRect.left, y: e.clientY - containerRect.top } : null);
-                        }}
-                        onClick={(e) => {
-                          const containerRect = (e.currentTarget.closest('.relative') as HTMLElement)?.getBoundingClientRect();
-                          if (!containerRect) return;
-                          setHoveredPoint({
-                            x: e.clientX - containerRect.left,
-                            y: e.clientY - containerRect.top,
-                            feature: pt,
-                          });
-                          e.stopPropagation();
-                        }}
-                      />
-                    );
-                  })}
-                </g>
-              )}
+              {/* points rendered via DeckPointsLayer canvas overlay — see below */}
 
               {naInfo && naInfo.count > 0 && showNALegend && (
                 <g
@@ -1695,6 +1663,30 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               )}
             </svg>
 
+            {pointsLayer && pointsLayer.length > 0 && mapRect && (
+              <DeckPointsLayer
+                points={pointsLayer}
+                viewMode={pointViewMode}
+                mapRect={mapRect}
+                bounds={bounds}
+                pointRadius={pointRadius}
+                pointOpacity={pointOpacity}
+                darkMode={darkMode}
+                onPointHover={(info) => {
+                  if (!info) { setHoveredPoint(null); return; }
+                  const containerRect = containerRef.current?.getBoundingClientRect();
+                  if (!containerRect) return;
+                  const svgRect = svgRef.current?.getBoundingClientRect();
+                  const refRect = svgRect ?? containerRect;
+                  // info.x/y are relative to the deck canvas (= SVG rect)
+                  setHoveredPoint({
+                    x: info.x + (refRect.left - containerRect.left),
+                    y: info.y + (refRect.top - containerRect.top),
+                    feature: info.feature,
+                  });
+                }}
+              />
+            )}
 
             {hoveredDistrict && !hoveredPoint && (
               <div

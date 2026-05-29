@@ -37,6 +37,9 @@
     "update:config-sheets": "node scripts/update-config-with-sheets.js"
   },
   "dependencies": {
+    "@deck.gl/aggregation-layers": "^9.3.2",
+    "@deck.gl/core": "^9.3.2",
+    "@deck.gl/layers": "^9.3.2",
     "@mapbox/polylabel": "^1.0.2",
     "@mlc-ai/web-llm": "^0.2.79",
     "@radix-ui/react-label": "^2.1.0",

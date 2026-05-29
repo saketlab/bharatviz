@@ -24,6 +24,10 @@ export interface MapEntry {
   statesFile?: string;
   featureNameProp?: string;
   parquetUrl?: string;
+  // Pre-aggregated per-district count parquet (columns: district_name, state_name, count).
+  // Available for all health/facility point layers. Use this for choropleth rendering
+  // instead of loading the full point dataset.
+  aggregatedByDistrictUrl?: string;
 }
 
 const R2 = 'https://geo.bharatviz.org';
@@ -202,11 +206,14 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   // Urban boundaries
   'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission — national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
 
-  // Health facility point datasets (Indian Open Maps / ramSeraph)
+  // Health facility point datasets
+  // Each has a pre-aggregated per-district parquet at aggregatedByDistrictUrl
+  // (columns: district_name, state_name, count) for fast choropleth rendering.
   'nhp-health-facilities': {
     id: 'nhp-health-facilities',
     file: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`,
     parquetUrl: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/nhp_health_facilities_per_district.parquet`,
     level: 'points',
     source: 'National Health Portal / NIN / data.gov.in (GODL)',
     year: 2025,
@@ -215,12 +222,14 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
       'National Health Portal via data.gov.in (2025). License: Government Open Data License India (GODL). ' +
       'Attribution: National Health Portal, nhp.gov.in; data.gov.in. ' +
       'Fields: health_facility_name, facility_type (SubCentre/PHC/CHC/Hospital/etc.), ' +
-      'state_name, district_name, taluka_name, block_name, address, pincode.',
+      'state_name, district_name, taluka_name, block_name, address, pincode. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (630 districts).',
   },
   'nhp-hospital-directory': {
     id: 'nhp-hospital-directory',
     file: `${R2}/geoparquet/health/nhp_hospital_directory_2025.parquet`,
     parquetUrl: `${R2}/geoparquet/health/nhp_hospital_directory_2025.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/nhp_hospital_directory_per_district.parquet`,
     level: 'points',
     source: 'National Health Portal / data.gov.in (GODL)',
     year: 2025,
@@ -228,94 +237,102 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     description: '10,843 hospitals from the National Health Portal hospital directory (2025). ' +
       'License: Government Open Data License India (GODL). Attribution: National Health Portal, nhp.gov.in. ' +
       'Fields: Hospital_Name, Hospital_Category, Hospital_Care_Type, Specialties, Facilities, ' +
-      'Accreditation, Total_Num_Beds, Number_Doctor, Emergency_Services, State, District, Pincode.',
+      'Accreditation, Total_Num_Beds, Number_Doctor, Emergency_Services, State, District, Pincode. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (304 districts).',
   },
   'nhp-blood-banks': {
     id: 'nhp-blood-banks',
     file: `${R2}/geoparquet/health/nhp_blood_banks_2015.parquet`,
     parquetUrl: `${R2}/geoparquet/health/nhp_blood_banks_2015.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/nhp_blood_banks_per_district.parquet`,
     level: 'points',
     source: 'National Health Portal / data.gov.in (GODL)',
     year: 2015,
     featureNameProp: 'h_name',
     description: '897 blood banks from the National Health Portal (2015). ' +
       'License: Government Open Data License India (GODL). Attribution: National Health Portal, nhp.gov.in. ' +
-      'Fields: h_name, category, state, district, city, blood_component, blood_group, service_time, contact.',
+      'Fields: h_name, category, state, district, city, blood_component, blood_group, service_time, contact. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (498 districts).',
   },
   'anganwadis-icds': {
     id: 'anganwadis-icds',
     file: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`,
     parquetUrl: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/anganwadis_per_district.parquet`,
     level: 'points',
     source: 'GatiShakti / Ministry of Women and Child Development',
     year: 2024,
-    featureNameProp: 'id',
-    description: '~1.4 million ICDS Anganwadi centres from GatiShakti / ' +
-      'Ministry of Women and Child Development (2024). ' +
-      'Attribution: Ministry of Women and Child Development, GatiShakti (pmgatishakti.gov.in). ' +
-      'Fields: id, geometry.',
+    featureNameProp: 'awc_name',
+    description: '1,224,038 ICDS Anganwadi centres from GatiShakti / Ministry of Women and Child Development (2024). ' +
+      'Too large for direct browser rendering — use aggregatedByDistrictUrl for choropleth (615 districts, 713k centres with LGD codes). ' +
+      'Fields: awc_name, awc_code, district_1 (district), stname (state), dtcode_lg (LGD district code), stcode_lg (LGD state code), latitude, longitude.',
   },
 
-  // Additional health facility datasets from ramSeraph/indian_facilities
+  // Additional health facility datasets
   'bharatmaps-health-centers': {
     id: 'bharatmaps-health-centers',
     file: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
     parquetUrl: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/bharatmaps_health_centers_per_district.parquet`,
     level: 'points',
     source: 'BharatMaps (Government of India)',
     year: 2024,
-    featureNameProp: 'name',
-    description: 'Health centres from the BharatMaps government portal. Independent coverage useful for cross-verification with NHP data.',
-  },
-  'bhuvan-sisdp-anganwadis': {
-    id: 'bhuvan-sisdp-anganwadis',
-    file: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`,
-    parquetUrl: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`,
-    level: 'points',
-    source: 'ISRO Bhuvan SISDP (GODL)',
-    year: 2024,
-    featureNameProp: 'name',
-    description: 'Anganwadi centres from ISRO Bhuvan SISDP portal. Separate source from GatiShakti ICDS — useful for coverage comparison.',
+    featureNameProp: 'facility_n',
+    description: '147,957 health centres from the BharatMaps government portal. ' +
+      'Fields: facility_n (name), facility_t (type), dtname (district), stname (state), stcode11, dtcode11. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (542 districts).',
   },
   'gatishakti-child-care': {
     id: 'gatishakti-child-care',
     file: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`,
     parquetUrl: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/gatishakti_child_care_per_district.parquet`,
     level: 'points',
     source: 'GatiShakti / MoWCD (GODL)',
     year: 2024,
     featureNameProp: 'name',
-    description: 'Government-run creches and child development centres from GatiShakti portal (Ministry of Women and Child Development).',
+    description: '4,125 government-run creches and child development centres from GatiShakti portal (Ministry of Women and Child Development). ' +
+      'Fields: state, district, stateid, districtid, latitude, longitude, postal_address1/2/3. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (572 districts).',
   },
   'ncog-soi-dispensaries': {
     id: 'ncog-soi-dispensaries',
     file: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`,
     parquetUrl: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/ncog_soi_dispensaries_per_district.parquet`,
     level: 'points',
     source: 'Survey of India NCOG (GODL)',
     year: 2024,
-    featureNameProp: 'name',
-    description: 'Dispensaries from the Survey of India NCOG dataset.',
+    featureNameProp: 'loc_name',
+    description: '34,330 dispensaries from the Survey of India NCOG dataset. ' +
+      'Fields: loc_name, type, addl_info, lon, lat. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (731 districts).',
   },
   'ncog-soi-hospitals': {
     id: 'ncog-soi-hospitals',
     file: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`,
     parquetUrl: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/ncog_soi_hospitals_per_district.parquet`,
     level: 'points',
     source: 'Survey of India NCOG (GODL)',
     year: 2024,
     featureNameProp: 'name',
-    description: 'Hospitals from the Survey of India NCOG dataset.',
+    description: '13,932 hospitals from the Survey of India NCOG dataset. ' +
+      'Fields: name, loc_name, type, addl_info, lon, lat. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (745 districts).',
   },
   'livingatlas-health-facilities': {
     id: 'livingatlas-health-facilities',
     file: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`,
     parquetUrl: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/livingatlas_health_facilities_per_district.parquet`,
     level: 'points',
     source: 'Esri Living Atlas',
     year: 2024,
-    featureNameProp: 'name',
-    description: 'Health facilities across India from the Esri Living Atlas, aggregating multiple open government sources.',
+    featureNameProp: 'facilityname',
+    description: '227,091 health facilities across India from the Esri Living Atlas, aggregating multiple open government sources. ' +
+      'Fields: facilityname, facilitytype, district, state, subdistrict, address, posatalcode. ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (734 districts).',
   },
 
   // Point datasets
@@ -323,10 +340,13 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     id: 'hotosm-health-facilities',
     file: `${R2}/geojsons/facilities/hotosm_ind_health_facilities.geojson`,
     parquetUrl: `${R2}/geoparquet/facilities/hotosm_ind_health_facilities.parquet`,
+    aggregatedByDistrictUrl: `${R2}/geoparquet/health/aggregated/hotosm_health_facilities_per_district.parquet`,
     level: 'points',
     source: 'HOTOSM / OpenStreetMap',
     year: 2026,
-    description: '142,629 health facilities across India (hospitals, clinics, pharmacies, dentists, health posts) from OpenStreetMap via Humanitarian Data Exchange. Updated monthly. Fields: name, amenity, healthcare, healthcare_speciality, operator_type, capacity_persons, addr_city, adm1_name (state), adm2_name (district).',
+    description: '142,629 health facilities across India (hospitals, clinics, pharmacies, dentists, health posts) from OpenStreetMap via Humanitarian Data Exchange. Updated monthly. ' +
+      'Fields: name, amenity, healthcare, healthcare_speciality, operator_type, capacity_persons, addr_city, adm1_name (state), adm2_name (district). ' +
+      'Pre-aggregated district counts available via aggregatedByDistrictUrl (695 districts).',
     featureNameProp: 'name',
   },
   'airports': {
@@ -511,8 +531,8 @@ export class McpMapService {
     if (id.startsWith('nfhs') || id.startsWith('nsso-')) return 'survey';
     if (id.startsWith('gs-') || id.startsWith('bm-') || id.startsWith('fsi-')) return 'environment';
     if (id.startsWith('sbm-')) return 'urban';
-    if (id.startsWith('hotosm-') || id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-')) return 'points';
-    if (id.startsWith('nhp-') || id === 'anganwadis-icds' || id.startsWith('bharatmaps-') || id.startsWith('bhuvan-sisdp') || id.startsWith('gatishakti-child') || id.startsWith('ncog-') || id.startsWith('livingatlas-')) return 'health';
+    if (id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-')) return 'points';
+    if (id.startsWith('nhp-') || id === 'anganwadis-icds' || id.startsWith('bharatmaps-') || id.startsWith('bhuvan-sisdp') || id.startsWith('gatishakti-child') || id.startsWith('ncog-') || id.startsWith('livingatlas-') || id.startsWith('hotosm-')) return 'health';
     return 'other';
   }
 
@@ -542,12 +562,12 @@ export class McpMapService {
   }
 
   /** List available maps grouped by category, without fetching GeoJSON */
-  listCategories(): Record<string, Array<{ id: string; level: string; source: string; year: number; description: string }>> {
-    const out: Record<string, Array<{ id: string; level: string; source: string; year: number; description: string }>> = {};
+  listCategories(): Record<string, Array<Pick<MapEntry, 'id' | 'level' | 'source' | 'year' | 'description' | 'aggregatedByDistrictUrl'>>> {
+    const out: Record<string, Array<Pick<MapEntry, 'id' | 'level' | 'source' | 'year' | 'description' | 'aggregatedByDistrictUrl'>>> = {};
     for (const entry of Object.values(MAP_REGISTRY)) {
       const cat = McpMapService.categoryForId(entry.id);
       if (!out[cat]) out[cat] = [];
-      out[cat].push({ id: entry.id, level: entry.level, source: entry.source, year: entry.year, description: entry.description });
+      out[cat].push({ id: entry.id, level: entry.level, source: entry.source, year: entry.year, description: entry.description, aggregatedByDistrictUrl: entry.aggregatedByDistrictUrl });
     }
     return out;
   }

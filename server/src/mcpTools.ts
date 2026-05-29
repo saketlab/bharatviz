@@ -806,6 +806,11 @@ export function createMcpServer(): Server {
           description:
             'Count (and optionally sum/mean/min/max) target-layer features inside each boundary polygon. ' +
             'The essential tool for facility-per-district counts, pincode density by constituency, hospital beds per block, etc.\n\n' +
+            'PRE-AGGREGATED SHORTCUT: All health/facility point layers have a pre-computed per-district count parquet ' +
+            '(aggregatedByDistrictUrl in list_available_maps output). For all-India district counts, load that URL directly ' +
+            'instead of running aggregate_by_boundary — it is instant (~10KB vs 85MB). ' +
+            'Use aggregate_by_boundary when you need: a different boundary level (state/block/constituency), ' +
+            'additional aggregated columns (sum of beds, etc.), or filters.\n\n' +
             'Examples:\n' +
             '• Health facilities per district: boundaryMapId="lgd-districts", targetMapId="nhp-health-facilities"\n' +
             '• Hospitals per state with total beds: boundaryMapId="lgd-states", targetMapId="nhp-hospital-directory", aggColumns=[{column:"Total_Num_Beds",stat:"sum"},{column:"Number_Doctor",stat:"sum"}]\n' +
@@ -983,9 +988,12 @@ export function createMcpServer(): Server {
             'survey (NFHS-4, NFHS-5, NSSO regions), ' +
             'environment (wildlife sanctuaries, eco-sensitive zones, FSI forests), ' +
             'urban (SBM urban local bodies), ' +
-            'health (NHP health facilities, hospital directory, blood banks, Anganwadis), ' +
-            'points (HOTOSM health facilities, airports, dams, water bodies, pincodes). ' +
-            'Each entry includes id, level, source, year, and description. ' +
+            'health (NHP health facilities 166k, hospital directory 10k, blood banks 897, anganwadis 1.2M, ' +
+            'BharatMaps health centers 148k, GatiShakti child care 4k, SOI hospitals 14k, SOI dispensaries 34k, ' +
+            'Living Atlas 227k, HOTOSM 143k), ' +
+            'points (airports, dams, water bodies, pincodes). ' +
+            'Each entry includes id, level, source, year, description, and aggregatedByDistrictUrl ' +
+            '(pre-computed per-district count parquet — available for all health/facility layers). ' +
             'Faster than list_available_maps — does not fetch GeoJSON.',
           inputSchema: {
             type: 'object' as const,
