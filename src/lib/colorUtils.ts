@@ -20,7 +20,41 @@ export function parseColorToRGB(color: string): { r: number; g: number; b: numbe
       };
     }
   }
-  
+
+  if (color.startsWith('hsl')) {
+    const match = color.match(/hsl\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*\)/);
+    if (match) {
+      const h = parseFloat(match[1]) / 360;
+      const s = parseFloat(match[2]) / 100;
+      const l = parseFloat(match[3]) / 100;
+      if (s === 0) {
+        const v = Math.round(l * 255);
+        return { r: v, g: v, b: v };
+      }
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      const hue = (t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      return {
+        r: Math.round(hue(h + 1 / 3) * 255),
+        g: Math.round(hue(h) * 255),
+        b: Math.round(hue(h - 1 / 3) * 255)
+      };
+    }
+  }
+
+  const NAMED: Record<string, { r: number; g: number; b: number }> = {
+    white: { r: 255, g: 255, b: 255 },
+    black: { r: 0, g: 0, b: 0 },
+  };
+  if (NAMED[color]) return NAMED[color];
+
   return { r: 0, g: 0, b: 0 };
 }
 

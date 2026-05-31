@@ -7,7 +7,7 @@
  * forwarded to the parent via onPointHover.
  */
 import React, { useEffect, useRef } from 'react';
-import { Deck } from '@deck.gl/core';
+import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 import type { PickingInfo } from '@deck.gl/core';
@@ -21,8 +21,11 @@ interface DeckPointsLayerProps {
   viewMode: PointViewMode;
   // Bounding box of the SVG map in page coordinates (from getBoundingClientRect)
   mapRect: DOMRect | null;
-  // Geographic extent the SVG is rendering — used to build the orthographic view
-  bounds: { minLng: number; maxLng: number; minLat: number; maxLat: number } | null;
+  // The SVG's geo→viewBox projector and viewBox size, so points use the EXACT same
+  // linear projection as the boundary paths (deck's MapView is Mercator and would drift).
+  project: ((lng: number, lat: number) => { x: number; y: number }) | null;
+  viewBoxWidth: number;
+  viewBoxHeight: number;
   pointRadius?: number;  // px radius for ScatterplotLayer (radiusUnits: 'pixels')
   pointOpacity?: number; // 0–1
   darkMode?: boolean;
@@ -45,7 +48,9 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
   points,
   viewMode,
   mapRect,
-  bounds,
+  project,
+  viewBoxWidth,
+  viewBoxHeight,
   pointRadius = 2,
   pointOpacity = 0.7,
   darkMode = false,
@@ -54,13 +59,14 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const deckRef = useRef<Deck | null>(null);
 
-  // Initialise Deck once on mount
+  // Initialise Deck once on mount, in a pixel-space orthographic view (no Mercator).
   useEffect(() => {
     if (!canvasRef.current) return;
     deckRef.current = new Deck({
       canvas: canvasRef.current,
       controller: false,
-      initialViewState: { longitude: 82, latitude: 22, zoom: 4, pitch: 0, bearing: 0 },
+      views: [new OrthographicView({ id: 'ortho' })],
+      initialViewState: { target: [0, 0, 0], zoom: 0 },
       layers: [],
     });
     return () => { deckRef.current?.finalize(); deckRef.current = null; };
@@ -69,22 +75,19 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
   // Re-render layers whenever data or view changes
   useEffect(() => {
     const deck = deckRef.current;
-    if (!deck || !mapRect || !bounds) return;
+    if (!deck || !mapRect || !project) return;
 
-    // Build view state matching IndiaDistrictsMap's linear projection.
-    // deck.gl MapView: at zoom z, px/° = 256*2^z/360. We want projW px per geoW °.
-    const w = mapRect.width;
-    const h = mapRect.height;
-    const geoW = bounds.maxLng - bounds.minLng;
-    const geoH = bounds.maxLat - bounds.minLat;
-    const geoAspect = geoW / geoH;
-    const projW = (w / h) > geoAspect ? h * geoAspect : w;
-    const zoom = Math.log2((projW / geoW) * 360 / 256);
-    const viewState = {
-      longitude: (bounds.minLng + bounds.maxLng) / 2,
-      latitude: (bounds.minLat + bounds.maxLat) / 2,
-      zoom, pitch: 0, bearing: 0,
+    // Project each point through the SVG's own geo→viewBox transform, then scale
+    // viewBox → canvas pixels. Render in CARTESIAN pixel space so points land exactly
+    // on the boundary paths regardless of latitude.
+    const sx = mapRect.width / viewBoxWidth;
+    const sy = mapRect.height / viewBoxHeight;
+    const toPixel = (d: PointFeature): [number, number] => {
+      const p = project(d.lon, d.lat);
+      return [p.x * sx, p.y * sy];
     };
+    // Center the orthographic view on the canvas (target is canvas-center in px).
+    const viewState = { target: [mapRect.width / 2, mapRect.height / 2, 0], zoom: 0 };
 
     const opacityByte = Math.round(pointOpacity * 255);
 
@@ -92,7 +95,8 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
       ? [new HeatmapLayer({
           id: 'heatmap',
           data: points,
-          getPosition: (d: PointFeature) => [d.lon, d.lat],
+          coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+          getPosition: toPixel,
           getWeight: 1,
           radiusPixels: 20,
           intensity: 1,
@@ -104,7 +108,8 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
       : [new ScatterplotLayer<PointFeature>({
           id: 'points',
           data: points,
-          getPosition: (d: PointFeature) => [d.lon, d.lat],
+          coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+          getPosition: toPixel,
           getRadius: pointRadius,
           radiusUnits: 'pixels',
           getFillColor: (d: PointFeature) => {
@@ -122,11 +127,11 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
               onPointHover(null);
             }
           },
-          updateTriggers: { getFillColor: [pointOpacity], getRadius: [pointRadius] },
+          updateTriggers: { getPosition: [mapRect.width, mapRect.height, project], getFillColor: [pointOpacity], getRadius: [pointRadius] },
         })];
 
     deck.setProps({ viewState, layers });
-  }, [points, viewMode, mapRect, bounds, pointRadius, pointOpacity, darkMode, onPointHover]);
+  }, [points, viewMode, mapRect, project, viewBoxWidth, viewBoxHeight, pointRadius, pointOpacity, darkMode, onPointHover]);
 
   if (!mapRect) return null;
 
