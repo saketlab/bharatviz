@@ -747,13 +747,16 @@ export function createMcpServer(): Server {
             '"Correlation between SC% and literacy" → mapId="census-2011-enriched", x="sc_pct", y="literacy_pct". ' +
             '"State-level SC% vs literacy" → same mapId, groupBy="state_name". ' +
             '"Language diversity vs literacy" → mapId="census-2011-enriched", x="shannon_diversity", y="literacy_pct". ' +
-            '"Wealth vs road access" → mapId="shrug-facebook", join with shrug-roads.',
+            'CROSS-LAYER: set yMapId to pull y from a different district layer, joined per district (on pc11_district_id, ' +
+            'else state+district name). E.g. "Does Meta wealth index predict literacy?" → mapId="shrug-facebook", ' +
+            'x="facebook-rwi__facebook_mean_rwi", yMapId="census-2011-enriched", y="literacy_pct".',
           inputSchema: {
             type: 'object' as const,
             properties: {
-              mapId: { type: 'string', description: 'Map layer ID.' },
-              x: { type: 'string', description: 'First numeric column (X axis).' },
-              y: { type: 'string', description: 'Second numeric column (Y axis).' },
+              mapId: { type: 'string', description: 'Map layer ID (provides X, and the districts iterated over).' },
+              x: { type: 'string', description: 'First numeric column (X axis), from mapId.' },
+              y: { type: 'string', description: 'Second numeric column (Y axis), from yMapId if set, else mapId.' },
+              yMapId: { type: 'string', description: 'Optional: pull Y from this layer instead, joined per district. Enables cross-layer correlation (e.g. wealth in shrug-facebook vs literacy in census-2011-enriched).' },
               filters: { type: 'object', additionalProperties: { type: 'string' }, description: 'String property filters.' },
               numericFilters: {
                 type: 'array',
@@ -1105,6 +1108,7 @@ export function createMcpServer(): Server {
           if (!mapId || !x || !y) throw new Error('mapId, x, and y are required');
           const result = await mapService.correlate({
             mapId, x, y,
+            yMapId: args?.yMapId as string | undefined,
             filters: args?.filters as Record<string, string> | undefined,
             numericFilters: args?.numericFilters as Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }> | undefined,
             groupBy: args?.groupBy as string | undefined,

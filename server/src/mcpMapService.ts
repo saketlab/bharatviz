@@ -421,12 +421,20 @@ async function loadParquetAsGeoJSON(url: string): Promise<FeatureCollection> {
   const { compressors } = await import('hyparquet-compressors');
   const file = await asyncBufferFromUrl({ url });
   const rows = await parquetReadObjects({ file, compressors }) as Array<Record<string, unknown>>;
+  // hyparquet returns int64 as BigInt, which JSON.stringify can't serialize; coerce to
+  // Number, or string above MAX_SAFE_INTEGER to avoid silent precision loss.
+  const normalize = (v: unknown): unknown =>
+    typeof v === 'bigint'
+      ? (v >= BigInt(Number.MIN_SAFE_INTEGER) && v <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(v) : v.toString())
+      : v;
   const features: Feature[] = rows.map(row => {
-    const { geometry, ...properties } = row;
+    const { geometry, ...rawProps } = row;
+    const properties: Record<string, unknown> = {};
+    for (const [k, val] of Object.entries(rawProps)) properties[k] = normalize(val);
     return {
       type: 'Feature',
       geometry: geometry as Geometry,
-      properties: properties as Record<string, unknown>,
+      properties,
     };
   });
   return { type: 'FeatureCollection', features };
@@ -1555,11 +1563,70 @@ export class McpMapService {
     return { total: ranked.length, column: options.column, order: options.order, results };
   }
 
+  // Joins another layer's column onto the primary layer per district: SHRUG layers
+  // key on pc11_district_id, census/LGD on normalized state+district names.
+  private static joinNorm(s: unknown): string {
+    return String(s ?? '').trim().toLowerCase()
+      .replace(/\s*&\s*/g, ' and ').replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  private async buildJoinLookup(mapId: string, column: string): Promise<{
+    byPc11: Map<number, number>;
+    byStateDistrict: Map<string, number>;
+    byDistrict: Map<string, number>;        // district-only, present only when unambiguous
+  }> {
+    const entry = MAP_REGISTRY[mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${mapId}"`);
+    const data = await loadGeoJSON(entry.file);
+    const norm = McpMapService.joinNorm;
+    const byPc11 = new Map<number, number>();
+    const byStateDistrict = new Map<string, number>();
+    const districtCounts = new Map<string, number>();
+    const byDistrict = new Map<string, number>();
+    for (const f of data.features) {
+      const p = f.properties || {};
+      const v = Number(p[column]);
+      if (!isFinite(v)) continue;
+      if (p.pc11_district_id != null) byPc11.set(Number(p.pc11_district_id), v);
+      const dn = norm(p.district_name);
+      const sn = norm(p.state_name);
+      if (dn && sn) byStateDistrict.set(`${sn}|${dn}`, v);
+      if (dn) {
+        districtCounts.set(dn, (districtCounts.get(dn) ?? 0) + 1);
+        byDistrict.set(dn, v);
+      }
+    }
+    // drop ambiguous district-only keys so we never join the wrong district
+    for (const [dn, count] of districtCounts) if (count > 1) byDistrict.delete(dn);
+    return { byPc11, byStateDistrict, byDistrict };
+  }
+
+  private joinValue(
+    lookup: { byPc11: Map<number, number>; byStateDistrict: Map<string, number>; byDistrict: Map<string, number> },
+    props: Record<string, unknown>,
+  ): number | undefined {
+    const norm = McpMapService.joinNorm;
+    if (props.pc11_district_id != null) {
+      const v = lookup.byPc11.get(Number(props.pc11_district_id));
+      if (v !== undefined) return v;
+    }
+    const dn = norm(props.district_name);
+    const sn = norm(props.state_name);
+    if (dn && sn) {
+      const v = lookup.byStateDistrict.get(`${sn}|${dn}`);
+      if (v !== undefined) return v;
+    }
+    // one side lacks state_name (e.g. SHRUG layers) — fall back to unambiguous district name
+    if (dn) return lookup.byDistrict.get(dn);
+    return undefined;
+  }
+
   /** Pearson and Spearman correlation between two numeric columns. */
   async correlate(options: {
     mapId: string;
     x: string;
     y: string;
+    yMapId?: string;
     filters?: Record<string, string>;
     numericFilters?: Array<{ column: string; gt?: number; gte?: number; lt?: number; lte?: number }>;
     groupBy?: string;
@@ -1616,15 +1683,21 @@ export class McpMapService {
       return { pearson_r, spearman_r };
     };
 
+    const yLookup = options.yMapId && options.yMapId !== options.mapId
+      ? await this.buildJoinLookup(options.yMapId, options.y)
+      : null;
+
     // Collect valid pairs
     const pairs: Array<[number, number]> = [];
     const labels: string[] = [];
     const groupKeys: string[] = [];
     for (const f of features) {
       const xv = Number(f.properties?.[options.x]);
-      const yv = Number(f.properties?.[options.y]);
-      if (!isFinite(xv) || !isFinite(yv)) continue;
-      pairs.push([xv, yv]);
+      const yv = yLookup
+        ? this.joinValue(yLookup, f.properties || {})
+        : Number(f.properties?.[options.y]);
+      if (!isFinite(xv) || yv === undefined || !isFinite(yv)) continue;
+      pairs.push([xv, yv as number]);
       if (options.labelProperty) labels.push(String(f.properties?.[options.labelProperty] ?? ''));
       if (options.groupBy) groupKeys.push(String(f.properties?.[options.groupBy] ?? '(none)'));
     }

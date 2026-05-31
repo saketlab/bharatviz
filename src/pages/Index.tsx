@@ -4,6 +4,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { Helmet } from 'react-helmet-async';
 import Papa from 'papaparse';
 import { FileUpload } from '@/components/FileUpload';
+import { MapProcessingOverlay } from '@/components/MapProcessingOverlay';
 import type { IndiaMapRef } from '@/components/IndiaMap';
 import type { IndiaDistrictsMapRef } from '@/components/IndiaDistrictsMap';
 import { ExportOptions } from '@/components/ExportOptions';
@@ -104,6 +105,8 @@ const Index = () => {
   const [stateHideValues, setStateHideValues] = useState(false);
   const [stateDataTitle, setStateDataTitle] = useState<string>('');
   const [stateMapTitle, setStateMapTitle] = useState<string>('');
+  const [uploadProcessing, setUploadProcessing] = useState<{ active: boolean; message?: string }>({ active: false });
+  const handleUploadProcessing = (active: boolean, message?: string) => setUploadProcessing({ active, message });
   const [stateColorBarSettings, setStateColorBarSettings] = useState<ColorBarSettings>({
     isDiscrete: false,
     binCount: 5,
@@ -1186,11 +1189,11 @@ const Index = () => {
     }
   };
 
-  const handlePincodeDataLoad = (rawData: Array<{ pincode?: string; pin?: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
+  const handlePincodeDataLoad = (rawData: Array<{ pincode?: string; pin?: string; state?: string; value: number | string }>, title?: string, naInfo?: NAInfo) => {
     const data: PincodeMapData[] = rawData
       .filter(row => row.value !== '' && row.value !== 'NA')
       .map(row => ({
-        pincode: row.pincode || row.pin || '',
+        pincode: String(row.pincode || row.pin || row.state || '').trim(),
         value: row.value
       }));
 
@@ -1728,7 +1731,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'states'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 {stateMultiYearSeries.length > 0 ? (
                   <div className="space-y-4">
                     {stateMultiYearSeries.length === 2 ? (
@@ -1864,7 +1868,7 @@ const Index = () => {
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
                     disabled={stateMapData.length === 0 && stateMultiYearSeries.length === 0}
-                    geojsonDownloadUrl="/India_LGD_states.geojson"
+                    geojsonDownloadUrl={DATA_FILES.STATES_GEOJSON}
                     geojsonDownloadName="India_LGD_states.geojson"
                     citationInfo={STATES_CITATION}
                   />
@@ -1874,13 +1878,14 @@ const Index = () => {
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
                 <FileUpload
                   onDataLoad={handleStateDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   onMultiDataLoad={(payload) => {
                     if (payload.kind === 'states') {
                       handleStateMultiYearDataLoad(payload.series);
                     }
                   }}
                   mode="states"
-                  geojsonPath="/India_LGD_states.geojson"
+                  geojsonPath={DATA_FILES.STATES_GEOJSON}
                   onMapTitleChange={setStateMapTitle}
                   onDemoUrlChange={handleDemoUrlChange}
                 />
@@ -1914,7 +1919,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'districts'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={districtMapRef}
                   data={districtMapData}
@@ -2000,6 +2006,7 @@ const Index = () => {
 
                 <FileUpload
                   onDataLoad={handleDistrictDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="districts"
                   templateCsvPath={getDistrictMapConfig(selectedDistrictMapType).templateCsvPath}
                   googleSheetLink={getDistrictMapConfig(selectedDistrictMapType).googleSheetLink}
@@ -2035,7 +2042,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'regions'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={districtMapRef}
                   data={districtMapData}
@@ -2078,11 +2086,13 @@ const Index = () => {
 
                 <FileUpload
                   onDataLoad={handleDistrictDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="districts"
                   templateCsvPath={getDistrictMapConfig('NSSO').templateCsvPath}
                   demoDataPath={getDistrictMapConfig('NSSO').demoDataPath}
                   googleSheetLink={getDistrictMapConfig('NSSO').googleSheetLink}
                   geojsonPath={getDistrictMapConfig('NSSO').geojsonPath}
+                  locationProp="nss_region"
                 />
                 <div className="mt-6">
                   <ColorMapChooser
@@ -2113,7 +2123,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'state-districts'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={stateDistrictMapRef}
                   data={stateDistrictMapData}
@@ -2245,6 +2256,7 @@ const Index = () => {
 
                 <FileUpload
                   onDataLoad={handleStateDistrictDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="districts"
                   templateCsvPath={getDistrictMapConfig(selectedStateMapType).templateCsvPath}
                   demoDataPath={getDistrictMapConfig(selectedStateMapType).demoDataPath}
@@ -2283,7 +2295,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'sub-admin'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={subAdminMapRef}
                   data={subAdminMapData}
@@ -2435,10 +2448,12 @@ const Index = () => {
 
                 <FileUpload
                   onDataLoad={handleSubAdminDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="districts"
-                  templateCsvPath={undefined}
-                  googleSheetLink={undefined}
+                  templateCsvPath={getSubAdminLayer(subAdminLayerId).templateCsvPath}
+                  googleSheetLink={getSubAdminLayer(subAdminLayerId).googleSheetLink}
                   geojsonPath={getSubAdminLayer(subAdminLayerId).url}
+                  locationProp={getSubAdminLayer(subAdminLayerId).featureNameProp}
                   selectedState={subAdminSelectedState !== 'All India' ? subAdminSelectedState : undefined}
                 />
                 <div className="mt-6">
@@ -2471,7 +2486,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'electoral'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={electoralMapRef}
                   data={electoralMapData}
@@ -2615,8 +2631,12 @@ const Index = () => {
 
                 <FileUpload
                   onDataLoad={handleElectoralDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="districts"
+                  templateCsvPath={getElectoralLayer(electoralLayerId).templateCsvPath}
+                  googleSheetLink={getElectoralLayer(electoralLayerId).googleSheetLink}
                   geojsonPath={getElectoralLayer(electoralLayerId).url}
+                  locationProp={getElectoralLayer(electoralLayerId).featureNameProp}
                   selectedState={electoralSelectedState !== 'All India' ? electoralSelectedState : undefined}
                 />
                 <div className="mt-6">
@@ -2649,7 +2669,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'environment'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={environmentMapRef}
                   data={[]}
@@ -2739,7 +2760,8 @@ const Index = () => {
 
           <TabPanel active={activeTab === 'urban'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={urbanMapRef}
                   data={[]}
@@ -3165,7 +3187,8 @@ POST /api/v1/districts/map
 
           <TabPanel active={activeTab === 'cities'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaCityMap
                   ref={cityMapRef}
                   data={cityMapData}
@@ -3294,6 +3317,7 @@ POST /api/v1/districts/map
 
                 <FileUpload
                   onDataLoad={handleCityDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="states"
                   demoDataPath={getCityCsvUrls(selectedCityDataset).demo}
                   templateCsvPath={getCityCsvUrls(selectedCityDataset).template}
@@ -3330,7 +3354,8 @@ POST /api/v1/districts/map
 
           <TabPanel active={activeTab === 'pincodes'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-              <div className="lg:col-span-2 order-1 lg:order-2">
+              <div className="relative lg:col-span-2 order-1 lg:order-2">
+                <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaPincodesMap
                   ref={pincodeMapRef}
                   data={pincodeMapData}
@@ -3406,7 +3431,10 @@ POST /api/v1/districts/map
 
                 <FileUpload
                   onDataLoad={handlePincodeDataLoad}
+                  onProcessingChange={handleUploadProcessing}
                   mode="states"
+                  templateCsvPath="/bharatviz-pincodes-template.csv"
+                  googleSheetLink="https://docs.google.com/spreadsheets/d/1eAQYpHG9uBg80orEKuvmIyde6SPDegUaizlvhQOcZGY/edit?usp=sharing"
                   onMapTitleChange={setPincodeMapTitle}
                 />
                 <div className="mt-6">

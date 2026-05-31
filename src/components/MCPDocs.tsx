@@ -52,13 +52,17 @@ const ToolRow: React.FC<{ name: string; description: string; input: string }> = 
   );
 };
 
-const ExampleCard: React.FC<{ title: string; prompt: string; code: string }> = ({ title, prompt, code }) => {
+const ExampleCard: React.FC<{ title: string; prompt: string; answer: string; code: string }> = ({ title, prompt, answer, code }) => {
   const cardClass = 'p-5 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]';
   const textClass = 'text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,60%)]';
   return (
     <div className={cardClass}>
       <h4 className="text-base font-semibold mb-1 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">{title}</h4>
-      <p className={`text-sm italic mb-3 ${textClass}`}>"{prompt}"</p>
+      <p className={`text-sm italic mb-2 ${textClass}`}>"{prompt}"</p>
+      <p className="text-sm mb-3 flex gap-1.5 text-[hsl(28,24%,28%)] dark:text-[hsl(35,12%,78%)]">
+        <span className="select-none font-semibold text-[hsl(28,62%,46%)] dark:text-[hsl(28,55%,56%)]" aria-hidden="true">→</span>
+        <span>{answer}</span>
+      </p>
       <CodeBlock code={code} />
     </div>
   );
@@ -403,6 +407,8 @@ Auth:         None required`;
             <li>"Rank all districts in Uttar Pradesh by SC population share, then map it"</li>
             <li>"Find the 10 nearest hospitals to a rural point in Bundelkhand"</li>
             <li>"Show PMGSY road access vs. PM2.5 pollution at the district level — is there a pattern?"</li>
+            <li>"Does the Meta wealth index predict literacy across districts? And are tribal districts poorer?"</li>
+            <li>"Is air pollution (PM2.5) correlated with lower literacy at the district level?"</li>
           </ul>
         </div>
       </div>
@@ -497,7 +503,8 @@ Auth:         None required`;
         <ExampleCard
           title="Discover available health and demographic indicators"
           prompt="What health and demographic indicators are available for Census 2011 districts?"
-          code={`layer_schema({ mapId: "census-2011-districts" })
+          answer="Returns the full column list for all 640 districts — population, literacy, SC/ST shares, language diversity, and 100+ language columns."
+          code={`layer_schema({ mapId: "census-2011-enriched" })
 
 {
   "featureCount": 640,
@@ -515,20 +522,21 @@ Auth:         None required`;
         <ExampleCard
           title="Rank districts by deprivation — lowest literacy first"
           prompt="Which 15 districts have the lowest literacy rates in India? Map them."
+          answer="Returns all 640 districts ranked ascending — the tribal belt of MP and Chhattisgarh dominates, with Alirajpur (MP) lowest at 28.8%. The follow-up renders a 300 DPI choropleth."
           code={`rank_features({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   column: "literacy_pct",
   order: "asc",
   limit: 15
 })
-// 1. Alirajpur (MP)    28.77%
-// 2. Bijapur (CG)      30.69%
-// 3. Dantewada (CG)    33.68%
-// 4. Kishanganj (BR)   38.48%
+// 1. Alirajpur (MP)     28.77%
+// 2. Bijapur (CG)       34.06%
+// 3. Jhabua (MP)        34.35%
+// 4. Dantewada (CG)     35.84%
 // ...
 
 render_districts_map({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   data: [ /* literacy_pct for all 640 districts */ ],
   title: "Literacy Rate — Census 2011",
   colorScale: "rdylgn"
@@ -538,45 +546,40 @@ render_districts_map({
         <ExampleCard
           title="Deprivation clustering — SC/ST share vs. literacy"
           prompt="How does SC/ST population share correlate with literacy? Are the worst-off districts concentrated by state?"
+          answer="Returns a weak negative correlation nationally (Pearson −0.17 across 640 districts) — tribal share alone is a soft predictor of literacy; the effect is driven by specific state clusters, not a clean linear trend."
           code={`correlate({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   x: "st_pct",
   y: "literacy_pct",
-  scatter: true,
-  groupBy: "state_name"
+  scatter: true
 })
 
 {
-  "n": 634,
-  "pearson_r": -0.42,
-  "spearman_r": -0.51,
-  "x_mean": 12.2,
-  "y_mean": 67.4,
-  "scatter": [ ... ],
-  "groups": {
-    "Jharkhand":    { "x_mean": 28.0, "y_mean": 61.7 },
-    "Chhattisgarh": { "x_mean": 35.8, "y_mean": 65.2 },
-    "Odisha":       { "x_mean": 24.1, "y_mean": 63.1 }
-  }
+  "n": 640,
+  "pearson_r": -0.175,
+  "spearman_r": -0.183,
+  "x_mean": 13.0,
+  "y_mean": 62.5,
+  "scatter": [ ... ]
 }`}
         />
 
         <ExampleCard
           title="State-level summary of key deprivation indicators"
           prompt="Give me a state-level table comparing SC%, ST%, and literacy — which states are hardest hit across all three?"
+          answer="Returns per-state means across ~36 states — a ~34-point literacy gap from Bihar (50.4%) to Kerala (84.1%), with Punjab carrying the highest SC share and the NE states near-fully tribal."
           code={`compare_groups({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   groupBy: "state_name",
   columns: ["sc_pct", "st_pct", "literacy_pct"]
 })
 
 {
   "groups": {
-    "Kerala":        { "sc_pct": { mean: 9.8  }, "st_pct": { mean: 1.5  }, "literacy_pct": { mean: 93.9 } },
-    "Punjab":        { "sc_pct": { mean: 31.9 }, "st_pct": { mean: 0.0  }, "literacy_pct": { mean: 76.7 } },
-    "Chhattisgarh":  { "sc_pct": { mean: 10.9 }, "st_pct": { mean: 35.8 }, "literacy_pct": { mean: 65.2 } },
-    "Rajasthan":     { "sc_pct": { mean: 18.1 }, "st_pct": { mean: 13.5 }, "literacy_pct": { mean: 65.1 } },
-    "Uttar Pradesh": { "sc_pct": { mean: 20.5 }, "st_pct": { mean: 0.6  }, "literacy_pct": { mean: 67.3 } }
+    "Kerala":  { "sc_pct": { mean: 9.0  }, "st_pct": { mean: 2.6  }, "literacy_pct": { mean: 84.1 } },
+    "Punjab":  { "sc_pct": { mean: 32.9 }, "st_pct": { mean: 0.0  }, "literacy_pct": { mean: 66.5 } },
+    "Mizoram": { "sc_pct": { mean: 0.1  }, "st_pct": { mean: 94.8 }, "literacy_pct": { mean: 75.0 } },
+    "Bihar":   { "sc_pct": { mean: 16.1 }, "st_pct": { mean: 1.3  }, "literacy_pct": { mean: 50.4 } }
   }
 }`}
         />
@@ -584,8 +587,9 @@ render_districts_map({
         <ExampleCard
           title="Find comparable districts for intervention targeting or matched controls"
           prompt="We want to roll out a nutrition programme in Alirajpur, MP. Which other districts have a similar deprivation profile and could serve as comparison sites?"
+          answer="Returns the nearest-neighbour districts in the chosen feature space — Alirajpur's closest twins are other high-ST, low-literacy districts in MP and the Bastar region of Chhattisgarh."
           code={`find_similar({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   referenceName: "Alirajpur",
   referenceState: "Madhya Pradesh",
   columns: ["literacy_pct", "sc_pct", "st_pct", "population"],
@@ -594,14 +598,12 @@ render_districts_map({
 
 {
   "reference": { "district": "Alirajpur", "state": "Madhya Pradesh",
-                 "literacy_pct": 28.8, "st_pct": 78.8 },
+                 "literacy_pct": 28.8, "st_pct": 89.0 },
   "similar": [
-    { "district": "Gumla",      "state": "Jharkhand",         "distance": 0.83 },
-    { "district": "Nandurbar",  "state": "Maharashtra",       "distance": 0.91 },
-    { "district": "Mayurbhanj", "state": "Odisha",            "distance": 1.04 },
-    { "district": "West Siang", "state": "Arunachal Pradesh", "distance": 1.11 },
-    { "district": "Dantewada",  "state": "Chhattisgarh",      "distance": 1.19 },
-    { "district": "Simdega",    "state": "Jharkhand",         "distance": 1.23 }
+    { "district": "Jhabua",                  "state": "Madhya Pradesh", "distance": 0.61 },
+    { "district": "Bijapur",                 "state": "Chhattisgarh",   "distance": 0.68 },
+    { "district": "Dakshin Bastar Dantewada","state": "Chhattisgarh",   "distance": 0.83 }
+    // ... 3 more
   ]
 }`}
         />
@@ -609,16 +611,17 @@ render_districts_map({
         <ExampleCard
           title="Summarize deprivation burden in high-ST districts"
           prompt="What are the literacy, SC%, and population statistics across districts with more than 50% Scheduled Tribe population?"
+          answer="Returns aggregate statistics over the 90 tribal-majority districts (ST > 50%) — averaging 58.4% literacy, well below the all-India district mean of 62.5%."
           code={`summarize_layer({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   columns: ["literacy_pct", "sc_pct", "population"],
   numericFilters: [{ column: "st_pct", op: "gt", value: 50 }]
 })
 
 {
-  "featureCount": 85,
+  "featureCount": 90,
   "columns": {
-    "literacy_pct": { mean: 56.2, median: 57.8, p10: 37.1, p90: 72.4, stddev: 12.3 },
+    "literacy_pct": { mean: 58.5, median: 58.0, p10: 39.4, p90: 76.1, stddev: 12.1 },
     "sc_pct":       { mean: 3.4,  median: 2.1,  p10: 0.3,  p90: 9.1,  stddev: 4.1  },
     "population":   { mean: 612000, median: 490000, p10: 150000, p90: 1350000 }
   }
@@ -628,33 +631,35 @@ render_districts_map({
         <ExampleCard
           title="Geolocate a survey point and retrieve its Census indicators"
           prompt="A field survey collected data at 23.25°N, 80.12°E. Which district is this, and what are its baseline Census 2011 indicators?"
+          answer="The point falls in Jabalpur, Madhya Pradesh; the follow-up query returns its baseline Census 2011 indicators (population 2.46M, 71.3% literacy)."
           code={`locate({
   lat: 23.25,
   lon: 80.12,
-  mapIds: ["census-2011-districts", "lgd-districts"]
+  mapIds: ["census-2011-enriched", "lgd-districts"]
 })
-// → { district_name: "Mandla", state_name: "Madhya Pradesh" }
+// → { district_name: "Jabalpur", state_name: "Madhya Pradesh" }
 
 query_layer({
-  mapId: "census-2011-districts",
-  filters: { district_name: "Mandla", state_name: "Madhya Pradesh" }
+  mapId: "census-2011-enriched",
+  filters: { district_name: "Jabalpur", state_name: "Madhya Pradesh" }
 })
-// → population: 1054905, literacy_pct: 67.1, st_pct: 57.1, sc_pct: 3.8`}
+// → population: 2463289, literacy_pct: 71.31, st_pct: 15.23, sc_pct: 14.13`}
         />
 
         <ExampleCard
           title="Within-state ranking and choropleth"
           prompt="Rank all districts in Uttar Pradesh by SC population share, then draw a map."
+          answer="Returns UP's 71 districts ranked by SC share — Kaushambi leads at 34.7% — then renders a single-state choropleth."
           code={`rank_features({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   column: "sc_pct",
   order: "desc",
   filters: { state_name: "Uttar Pradesh" }
 })
-// Sitapur 34.8%, Hardoi 33.2%, Lakhimpur Kheri 32.6% ...
+// Kaushambi 34.7%, Sitapur 32.3%, Hardoi 31.1%, Unnao 30.5% ...
 
 render_districts_map({
-  mapId: "census-2011-districts",
+  mapId: "census-2011-enriched",
   state: "Uttar Pradesh",
   data: [ /* sc_pct for all UP districts */ ],
   title: "Scheduled Caste Population Share — Uttar Pradesh (Census 2011)",
@@ -665,6 +670,7 @@ render_districts_map({
         <ExampleCard
           title="Healthcare facility access — nearest facilities to a survey point"
           prompt="Find the 10 nearest health facilities to a rural GPS point in Bundelkhand, and show which district they fall in."
+          answer="Returns the 10 closest facilities sorted by distance (nearest ≈ 7 km); the point sits in Mahoba district, UP — combine with the per-district facility count to get a per-capita access ratio."
           code={`nearby({
   lat: 25.10,
   lon: 79.85,
@@ -673,17 +679,18 @@ render_districts_map({
 })
 // Returns facilities sorted by distance with name, amenity, healthcare type,
 // operator_type, adm1_name (state), adm2_name (district)
+// → nearest: "SubCentre, Bhandra" ~6.9 km, adm2_name: "Mahoba"
 
 locate({
   lat: 25.10,
   lon: 79.85,
-  mapIds: ["lgd-districts", "census-2011-districts"]
+  mapIds: ["lgd-districts", "census-2011-enriched"]
 })
-// → { district_name: "Chhatarpur", state_name: "Madhya Pradesh" }
+// → { district_name: "Mahoba", state_name: "Uttar Pradesh" }
 
 query_layer({
   mapId: "hotosm-health-facilities",
-  filters: { adm2_name: "Chhatarpur" }
+  filters: { adm2_name: "Mahoba" }
 })
 // Full facility list; count / population gives per-capita access ratio`}
         />
@@ -691,13 +698,14 @@ query_layer({
         <ExampleCard
           title="Pincode-level hospital density map"
           prompt="Show which pincodes in Pune district are within 5 km of a hospital, and map facility density by pincode."
+          answer="Combines a pincode list, a district-filtered hospital query, and per-pincode radius counts into a density choropleth. Filter health facilities by adm2_name (plain district names like 'Pune') — adm1_name carries diacritics."
           code={`list_pincodes({ state: "Maharashtra" })
 
 query_layer({
   mapId: "hotosm-health-facilities",
   filters: { adm2_name: "Pune", amenity: "hospital" }
 })
-// 87 hospitals with lat/lon
+// hospitals in Pune district with lat/lon
 
 nearby({ lat: <pincode_lat>, lon: <pincode_lon>, mapId: "hotosm-health-facilities", n: 5 })
 // Per-pincode centroid query; aggregate to get hospital count within radius
@@ -713,16 +721,94 @@ render_pincodes_map({
         <ExampleCard
           title="Facility type breakdown by state"
           prompt="What types of health facilities are available in the hotosm layer, and how are they distributed across states?"
+          answer="The schema exposes facility type (amenity: 36 values incl. hospital, clinic, pharmacy), operator_type, and state/district names across 142,629 facilities; filter to drill into one state and type."
           code={`layer_schema({ mapId: "hotosm-health-facilities" })
-// categorical: ["amenity", "healthcare", "operator_type", "adm1_name"]
-// textId: ["name", "adm2_name"]
+// categorical: ["amenity", "operator_type", "adm1_name"]
+// textId: ["name", "adm2_name", "healthcare"]
 
 query_layer({
   mapId: "hotosm-health-facilities",
   filters: { adm1_name: "Bihar", amenity: "clinic" },
   limit: 200
 })
-// 143 clinics in Bihar with name, location, operator_type`}
+// clinics in Bihar with name, location, operator_type`}
+        />
+      </div>
+
+      {/* ── Cross-layer crosstalk examples ──────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="crosstalk-examples" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Code2 className="h-5 w-5" />
+          Cross-layer: wealth, environment &amp; demographics
+          <SectionAnchor id="crosstalk-examples" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`text-sm ${textClass}`}>
+            Each district layer is one row per district on a shared key, so <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">correlate</code> can
+            join a column from <em>another</em> layer with <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">yMapId</code> —
+            so the Meta wealth index (<code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">shrug-facebook</code>) and
+            pollution (<code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">shrug-environment</code>) can be tested against Census literacy and tribal share. Figures below are live results across 600 matched districts.
+          </p>
+        </div>
+
+        <ExampleCard
+          title="Does wealth track literacy? (Meta RWI × Census)"
+          prompt="Across districts, does the Meta Relative Wealth Index predict literacy?"
+          answer="Yes — a clear positive link: Pearson +0.47 across 600 districts. Wealthier districts are consistently more literate."
+          code={`correlate({
+  mapId: "shrug-facebook",
+  x: "facebook-rwi__facebook_mean_rwi",
+  yMapId: "census-2011-enriched",   // join the other layer per district
+  y: "literacy_pct"
+})
+
+{ "n": 600, "pearson_r": 0.4654, "spearman_r": 0.4325,
+  "x_mean": -0.05, "y_mean": 62.37 }`}
+        />
+
+        <ExampleCard
+          title="Are tribal districts poorer? (Meta RWI × ST share)"
+          prompt="Do districts with a higher Scheduled Tribe share have lower wealth?"
+          answer="Strongly — Spearman −0.58: tribal-majority districts cluster at the bottom of the Meta wealth index, quantifying the ST wealth gap."
+          code={`correlate({
+  mapId: "shrug-facebook",
+  x: "facebook-rwi__facebook_mean_rwi",
+  yMapId: "census-2011-enriched",
+  y: "st_pct"
+})
+
+{ "n": 600, "pearson_r": -0.4574, "spearman_r": -0.5849,
+  "x_mean": -0.05, "y_mean": 17.44 }`}
+        />
+
+        <ExampleCard
+          title="Air pollution vs literacy (PM2.5 × Census)"
+          prompt="Are higher-pollution districts also lower-literacy? Map the overlap."
+          answer="Weak-to-moderate negative link (Pearson −0.29): the high-PM2.5 Indo-Gangetic plain also runs below-average on literacy."
+          code={`correlate({
+  mapId: "shrug-environment",
+  x: "pm25__pm25_mean",
+  yMapId: "census-2011-enriched",
+  y: "literacy_pct"
+})
+
+{ "n": 600, "pearson_r": -0.2929, "spearman_r": -0.3237,
+  "x_mean": 46.67, "y_mean": 62.37 }`}
+        />
+
+        <ExampleCard
+          title="Night-time lights as a development proxy (VIIRS × Census)"
+          prompt="Do brighter (more economically active) districts have higher literacy?"
+          answer="A mild positive signal (Pearson +0.19) — nightlight intensity tracks literacy loosely, so it's a coarse development proxy, not a substitute for it."
+          code={`correlate({
+  mapId: "shrug-environment",
+  x: "viirs-annual__viirs_annual_mean",
+  yMapId: "census-2011-enriched",
+  y: "literacy_pct"
+})
+
+{ "n": 600, "pearson_r": 0.1937, "spearman_r": 0.1908,
+  "x_mean": 1.14, "y_mean": 62.37 }`}
         />
       </div>
 
@@ -792,9 +878,13 @@ query_layer({
               </thead>
               <tbody>
                 {[
-                  { id: 'census-2011-districts', features: '640', cols: '267', data: 'Population, SC/ST%, literacy, 75 indicators, 192 language columns' },
+                  { id: 'census-2011-enriched', features: '640', cols: '267', data: 'Population, SC/ST%, literacy, 75 indicators, 192 language columns' },
                   { id: 'census-2011-states', features: '35', cols: '267', data: 'Same indicators aggregated to state level' },
                   { id: 'hotosm-health-facilities', features: '142,629', cols: '—', data: 'Hospitals, clinics, pharmacies — name, amenity, operator, district, state' },
+                  { id: 'shrug-facebook', features: '641', cols: '12', data: 'Meta Relative Wealth Index (RWI) per district — facebook-rwi__facebook_mean_rwi' },
+                  { id: 'shrug-environment', features: '641', cols: '38', data: 'PM2.5 (pm25__pm25_mean), nightlights (viirs/DMSP), NDVI, elevation, ruggedness' },
+                  { id: 'shrug-secc', features: '641', cols: '120+', data: 'SECC 2012 rural/urban poverty, housing, income source, education shares' },
+                  { id: 'shrug-economic', features: '641', cols: '400+', data: 'Economic Census 1990–2013 — firm counts, employment by sector and ownership' },
                   { id: 'shrug-subdistricts', features: '~5,500', cols: 'varies', data: 'Sub-district level SHRUG Census 2011 data' },
                 ].map(r => (
                   <tr key={r.id}>

@@ -154,7 +154,8 @@ export async function processDistrictData(
   data: DistrictData[],
   geojsonPath: string,
   fuzzyThreshold: number,
-  selectedState?: string
+  selectedState?: string,
+  locationProp: string = 'district_name'
 ): Promise<ProcessedData<DistrictData>> {
   const geojson = await fetchGeoJSON(geojsonPath);
 
@@ -163,7 +164,7 @@ export async function processDistrictData(
 
   geojson.features.forEach((feature) => {
     const stateName = feature.properties?.state_name?.trim();
-    const districtName = feature.properties?.district_name?.trim();
+    const districtName = feature.properties?.[locationProp]?.trim();
 
     if (stateName) {
       validStates.add(stateName);

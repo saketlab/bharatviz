@@ -9,6 +9,8 @@ export interface GeoDataLayer {
   statesUrl: string;
   featureNameProp: string; // property used as the label for each feature
   csvColumns: string[]; // required CSV columns for user data upload
+  templateCsvPath?: string; // downloadable upload template generated from this layer
+  googleSheetLink?: string; // shareable Google Sheets template for this layer
   source: string; // key for citations.ts
 }
 
@@ -21,6 +23,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
     featureNameProp: 'subdistrict_name',
     csvColumns: ['state_name', 'subdistrict_name', 'value'],
+    templateCsvPath: '/bharatviz-lgd-subdistricts-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1tFqE-Rz4fJugBtktTBmuVNieJUfn7YRHo_YQXxHj8fU/edit?usp=sharing',
     source: 'LGD',
   },
   {
@@ -31,6 +35,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-soi-states.geojson`,
     featureNameProp: 'subdistrict_name',
     csvColumns: ['state_name', 'subdistrict_name', 'value'],
+    templateCsvPath: '/bharatviz-soi-subdistricts-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1FkzjwCdh5kI2l95RvC42z2TW29SvcqpXATDJtNw_GQw/edit?usp=sharing',
     source: 'SOI',
   },
   {
@@ -41,6 +47,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
     featureNameProp: 'block_name',
     csvColumns: ['state_name', 'block_name', 'value'],
+    templateCsvPath: '/bharatviz-lgd-blocks-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/11IK3jH7t45rOZr-vIJKKsxlIR-X2SsH79U5ivd65alQ/edit?usp=sharing',
     source: 'LGD',
   },
   {
@@ -51,6 +59,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-bhuvan-states.geojson`,
     featureNameProp: 'block_name',
     csvColumns: ['state_name', 'block_name', 'value'],
+    templateCsvPath: '/bharatviz-bhuvan-blocks-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1qgbqwc5UwpquUNZ49Zc-y3uOAcRqC3MqY9NL18zoU8c/edit?usp=sharing',
     source: 'BHUVAN',
   },
   {
@@ -61,6 +71,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
     featureNameProp: 'block_name',
     csvColumns: ['state_name', 'block_name', 'value'],
+    templateCsvPath: '/bharatviz-pmgsy-blocks-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1V6FLF2pvAHe7ZxVGQNQ57rKcLgo0hSbed4GUdFS4XmM/edit?usp=sharing',
     source: 'LGD',
   },
   {
@@ -71,6 +83,8 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     statesUrl: STATES_URL,
     featureNameProp: 'subdistrict_name',
     csvColumns: ['state_name', 'subdistrict_name', 'value'],
+    templateCsvPath: '/bharatviz-shrug-subdistricts-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/179T5JptGxp1Nw2ifmsxF3zuwgaYyLc3qysXvul_PVnk/edit?usp=sharing',
     source: 'SHRUG',
   },
 ];
@@ -92,6 +106,8 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
+    templateCsvPath: '/bharatviz-lgd-parliament-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1hdUCBnEm3dszDlESxHgi5g5MpIYngdi5hwJJnntwYAA/edit?usp=sharing',
     source: 'LGD',
   },
   {
@@ -102,6 +118,8 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     statesUrl: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
+    templateCsvPath: '/bharatviz-lgd-assembly-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1-FG9vEzkkvH-SdSSBwl0f2nO0BLHbndgAFud1ALZegQ/edit?usp=sharing',
     source: 'LGD',
   },
   {
@@ -112,6 +130,7 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     statesUrl: STATES_URL,
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
+    templateCsvPath: '/bharatviz-susewind-parliament-template.csv',
     source: 'Susewind',
   },
   {
@@ -122,6 +141,7 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     statesUrl: STATES_URL,
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
+    templateCsvPath: '/bharatviz-susewind-assembly-template.csv',
     source: 'Susewind',
   },
 ];

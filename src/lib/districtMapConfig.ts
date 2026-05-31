@@ -260,7 +260,7 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     states: `${DISTRICTS}/India_LGD_states.geojson`,
     templateCsvPath: '/bharatviz-shrug-district-template.csv',
     demoDataPath: '/districts_demo.csv',
-    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1JBRvqyqXC787xgxcKuQw5E5tQFXHkOHJFgcoe2i7hH4/edit?usp=sharing',
     description: 'Census 2011 district polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad 2021). Includes pc11 census identifiers. License: CC BY-NC-SA 4.0.'
   },
 
@@ -273,7 +273,7 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     states: `${DISTRICTS}/India_LGD_states.geojson`,
     templateCsvPath: '/bharatviz-nsso-regions-template.csv',
     demoDataPath: '/nsso_regions_demo.csv',
-    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1example/edit?usp=sharing',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1Wn2SyMfZPsZxDlum2YScgaSCbMow4W1h1N4UOxVCyL8/edit?usp=sharing',
     description: 'NSSO (National Sample Survey Organization) regions - Regional boundaries for survey sampling'
   }
 };

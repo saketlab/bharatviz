@@ -40,12 +40,14 @@ interface FileUploadProps {
   googleSheetLink?: string;
   geojsonPath?: string;
   selectedState?: string;
+  locationProp?: string;
   onMapTitleChange?: (title: string) => void;
   onDemoUrlChange?: (dataUrl: string, title: string) => void;
+  onProcessingChange?: (active: boolean, message?: string) => void;
   darkMode?: boolean;
 }
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataLoad, mode = 'states', templateCsvPath, demoDataPath, googleSheetLink, geojsonPath, selectedState, onMapTitleChange, onDemoUrlChange, darkMode: _darkMode }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataLoad, mode = 'states', templateCsvPath, demoDataPath, googleSheetLink, geojsonPath, selectedState, locationProp, onMapTitleChange, onDemoUrlChange, onProcessingChange, darkMode: _darkMode }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
   const [loadingSheet, setLoadingSheet] = useState(false);
@@ -87,6 +89,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
   const processUploadedData = async (result: Papa.ParseResult<Record<string, string>>) => {
     try {
       const data = result.data as Array<Record<string, string>>;
+      const rowCount = data.filter(row => Object.values(row).some(v => v && String(v).trim())).length;
+      onProcessingChange?.(true, `Matching ${rowCount.toLocaleString()} rows to boundaries…`);
       const headers = (result.meta.fields || []).filter(h => h.trim() !== '' && !/^_\d+$/.test(h.trim()));
 
       const requiredColumns = mode === 'districts' ? 3 : 2;
@@ -237,7 +241,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
               seriesRaw,
               geojsonPath || '',
               fuzzyThreshold,
-              selectedState
+              selectedState,
+              locationProp
             );
 
             allSeries.push({
@@ -284,7 +289,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
           processedData as Array<{ state: string; district: string; value: number | string }>,
           geojsonPath || '',
           fuzzyThreshold,
-          selectedState
+          selectedState,
+          locationProp
         );
 
         if (result.matched.length === 0) {
@@ -309,6 +315,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
       }
     } catch (error) {
       alert(`Error processing file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      onProcessingChange?.(false);
     }
   };
 
@@ -519,18 +527,21 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
           <div className="text-center mb-3">
             <h4 className="text-sm font-medium mb-1 text-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)]">Or load from URL</h4>
             <p className="text-xs text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,50%)]">
-              Paste a Google Sheets link (sheet must be publicly viewable — see{' '}
-              <a
-                href={googleSheetLink || (mode === 'districts'
-                  ? "https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing"
-                  : "https://docs.google.com/spreadsheets/d/1BtZOnh15b4ZG_I0pFLdMIK7nNqplikn5_ui59SFbxaI/edit?usp=sharing")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline text-[hsl(28,45%,38%)] hover:text-[hsl(30,42%,28%)] dark:text-[hsl(28,55%,52%)] dark:hover:text-[hsl(28,48%,58%)]"
-              >
-                template
-              </a>
-              ) or a direct URL to CSV, TSV, or gzipped files.{' '}
+              {/* googleSheetLink === '' explicitly means "no sheet for this layer" — show only the CSV download */}
+              {googleSheetLink !== ''
+                ? <>Paste a Google Sheets link (sheet must be publicly viewable — see{' '}
+                    <a
+                      href={googleSheetLink || (mode === 'districts'
+                        ? "https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing"
+                        : "https://docs.google.com/spreadsheets/d/1BtZOnh15b4ZG_I0pFLdMIK7nNqplikn5_ui59SFbxaI/edit?usp=sharing")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-[hsl(28,45%,38%)] hover:text-[hsl(30,42%,28%)] dark:text-[hsl(28,55%,52%)] dark:hover:text-[hsl(28,48%,58%)]"
+                    >
+                      template
+                    </a>
+                  ) or a direct URL to CSV, TSV, or gzipped files.{' '}</>
+                : <>Paste a public Google Sheets link or a direct URL to a CSV, TSV, or gzipped file.{' '}</>}
               <button
                 onClick={downloadCSVTemplate}
                 className="underline text-[hsl(28,38%,42%)] hover:text-[hsl(28,45%,32%)] dark:text-[hsl(28,45%,48%)] dark:hover:text-[hsl(28,55%,58%)]"
