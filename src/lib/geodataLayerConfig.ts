@@ -131,6 +131,7 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
     templateCsvPath: '/bharatviz-susewind-parliament-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1MG44MN-mQLlR9rJxTlS93Xgo4L-mca2sq-dln4c2AI0/edit?usp=sharing',
     source: 'Susewind',
   },
   {
@@ -142,6 +143,7 @@ export const ELECTORAL_LAYERS: GeoDataLayer[] = [
     featureNameProp: 'constituency_name',
     csvColumns: ['state_name', 'constituency_name', 'value'],
     templateCsvPath: '/bharatviz-susewind-assembly-template.csv',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1bnJ2-XS9zleKPE6rg2Y5LdqKzbc3uazSiYCn6DYXhdY/edit?usp=sharing',
     source: 'Susewind',
   },
 ];

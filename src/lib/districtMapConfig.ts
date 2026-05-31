@@ -211,9 +211,9 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     displayName: 'Bhuvan',
     geojsonPath: `${DISTRICTS}/India-bhuvan-districts.geojson`,
     states: `${DISTRICTS}/India-bhuvan-states.geojson`,
-    templateCsvPath: '/India-bhuvan-districts.csv',
+    templateCsvPath: '/bharatviz-bhuvan-district-template.csv',
     demoDataPath: '/districts_demo.csv',
-    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1XJz6OLUHFERQhQ03mQPLtaV2uCmNQklylmNu9aHPVZM/edit?usp=sharing',
     description: 'Bhuvan district boundaries from NRSC'
   },
   SOI: {
@@ -222,9 +222,9 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     displayName: 'Survey of India',
     geojsonPath: `${DISTRICTS}/India-soi-districts.geojson`,
     states: `${DISTRICTS}/India-soi-states.geojson`,
-    templateCsvPath: '/India-soi-districts.csv',
+    templateCsvPath: '/bharatviz-soi-district-template.csv',
     demoDataPath: '/districts_demo.csv',
-    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing',
+    googleSheetLink: 'https://docs.google.com/spreadsheets/d/1XRIu4SR7zVUusKrqRW8T-eAvVuZrmn82IbiStqk3-vo/edit?usp=sharing',
     description: 'Survey of India official district boundaries'
   },
   NFHS5: {

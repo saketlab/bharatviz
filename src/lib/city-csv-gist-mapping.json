@@ -11298,5 +11298,645 @@
   "zunheboto": {
     "demo": "https://gist.githubusercontent.com/saketkc/838fab8a05aec4fdd2afbfad8d202ec8/raw/28ee89e7c9c604ad521daff11a1d2994ee581bd0/zunheboto_demo.csv",
     "template": "https://gist.githubusercontent.com/saketkc/838fab8a05aec4fdd2afbfad8d202ec8/raw/d1ae4fc6572fb34ea7d5e29be90e3173042af8eb/zunheboto_template.csv"
+  },
+  "r2_bengaluru_gba": {
+    "demo": "/cities-templates/r2_bengaluru_gba.csv",
+    "template": "/cities-templates/r2_bengaluru_gba.csv"
+  },
+  "r2_bengaluru_bbmp_2022": {
+    "demo": "/cities-templates/r2_bengaluru_bbmp_2022.csv",
+    "template": "/cities-templates/r2_bengaluru_bbmp_2022.csv"
+  },
+  "r2_chennai": {
+    "demo": "/cities-templates/r2_chennai.csv",
+    "template": "/cities-templates/r2_chennai.csv"
+  },
+  "r2_hyderabad": {
+    "demo": "/cities-templates/r2_hyderabad.csv",
+    "template": "/cities-templates/r2_hyderabad.csv"
+  },
+  "r2_mumbai": {
+    "demo": "/cities-templates/r2_mumbai.csv",
+    "template": "/cities-templates/r2_mumbai.csv"
+  },
+  "r2_mumbai_electoral2017": {
+    "demo": "/cities-templates/r2_mumbai_electoral2017.csv",
+    "template": "/cities-templates/r2_mumbai_electoral2017.csv"
+  },
+  "r2_kolkata": {
+    "demo": "/cities-templates/r2_kolkata.csv",
+    "template": "/cities-templates/r2_kolkata.csv"
+  },
+  "r2_pune": {
+    "demo": "/cities-templates/r2_pune.csv",
+    "template": "/cities-templates/r2_pune.csv"
+  },
+  "r2_ahmedabad": {
+    "demo": "/cities-templates/r2_ahmedabad.csv",
+    "template": "/cities-templates/r2_ahmedabad.csv"
+  },
+  "r2_jaipur": {
+    "demo": "/cities-templates/r2_jaipur.csv",
+    "template": "/cities-templates/r2_jaipur.csv"
+  },
+  "r2_gurugram": {
+    "demo": "/cities-templates/r2_gurugram.csv",
+    "template": "/cities-templates/r2_gurugram.csv"
+  },
+  "r2_kochi": {
+    "demo": "/cities-templates/r2_kochi.csv",
+    "template": "/cities-templates/r2_kochi.csv"
+  },
+  "r2_bhubaneswar": {
+    "demo": "/cities-templates/r2_bhubaneswar.csv",
+    "template": "/cities-templates/r2_bhubaneswar.csv"
+  },
+  "r2_vizag": {
+    "demo": "/cities-templates/r2_vizag.csv",
+    "template": "/cities-templates/r2_vizag.csv"
+  },
+  "r2_thane": {
+    "demo": "/cities-templates/r2_thane.csv",
+    "template": "/cities-templates/r2_thane.csv"
+  },
+  "bulandshahr": {
+    "demo": "/cities-templates/bulandshahr.csv",
+    "template": "/cities-templates/bulandshahr.csv"
+  },
+  "diamond_harbour": {
+    "demo": "/cities-templates/diamond_harbour.csv",
+    "template": "/cities-templates/diamond_harbour.csv"
+  },
+  "basti": {
+    "demo": "/cities-templates/basti.csv",
+    "template": "/cities-templates/basti.csv"
+  },
+  "chengalpattu": {
+    "demo": "/cities-templates/chengalpattu.csv",
+    "template": "/cities-templates/chengalpattu.csv"
+  },
+  "dindigul": {
+    "demo": "/cities-templates/dindigul.csv",
+    "template": "/cities-templates/dindigul.csv"
+  },
+  "haridwar": {
+    "demo": "/cities-templates/haridwar.csv",
+    "template": "/cities-templates/haridwar.csv"
+  },
+  "kalanaur": {
+    "demo": "/cities-templates/kalanaur.csv",
+    "template": "/cities-templates/kalanaur.csv"
+  },
+  "kalanwali": {
+    "demo": "/cities-templates/kalanwali.csv",
+    "template": "/cities-templates/kalanwali.csv"
+  },
+  "kalayat": {
+    "demo": "/cities-templates/kalayat.csv",
+    "template": "/cities-templates/kalayat.csv"
+  },
+  "kalinagar": {
+    "demo": "/cities-templates/kalinagar.csv",
+    "template": "/cities-templates/kalinagar.csv"
+  },
+  "kalghatagi": {
+    "demo": "/cities-templates/kalghatagi.csv",
+    "template": "/cities-templates/kalghatagi.csv"
+  },
+  "kallakurichi": {
+    "demo": "/cities-templates/kallakurichi.csv",
+    "template": "/cities-templates/kallakurichi.csv"
+  },
+  "hosur": {
+    "demo": "/cities-templates/hosur.csv",
+    "template": "/cities-templates/hosur.csv"
+  },
+  "kalpetta": {
+    "demo": "/cities-templates/kalpetta.csv",
+    "template": "/cities-templates/kalpetta.csv"
+  },
+  "kalaburagi": {
+    "demo": "/cities-templates/kalaburagi.csv",
+    "template": "/cities-templates/kalaburagi.csv"
+  },
+  "kalol": {
+    "demo": "/cities-templates/kalol.csv",
+    "template": "/cities-templates/kalol.csv"
+  },
+  "kalmeshwar": {
+    "demo": "/cities-templates/kalmeshwar.csv",
+    "template": "/cities-templates/kalmeshwar.csv"
+  },
+  "kalwakurthy": {
+    "demo": "/cities-templates/kalwakurthy.csv",
+    "template": "/cities-templates/kalwakurthy.csv"
+  },
+  "kalwan": {
+    "demo": "/cities-templates/kalwan.csv",
+    "template": "/cities-templates/kalwan.csv"
+  },
+  "kamakshyanagar": {
+    "demo": "/cities-templates/kamakshyanagar.csv",
+    "template": "/cities-templates/kamakshyanagar.csv"
+  },
+  "kamalganj": {
+    "demo": "/cities-templates/kamalganj.csv",
+    "template": "/cities-templates/kamalganj.csv"
+  },
+  "kaman": {
+    "demo": "/cities-templates/kaman.csv",
+    "template": "/cities-templates/kaman.csv"
+  },
+  "kampil": {
+    "demo": "/cities-templates/kampil.csv",
+    "template": "/cities-templates/kampil.csv"
+  },
+  "itanagar": {
+    "demo": "/cities-templates/itanagar.csv",
+    "template": "/cities-templates/itanagar.csv"
+  },
+  "kamareddy": {
+    "demo": "/cities-templates/kamareddy.csv",
+    "template": "/cities-templates/kamareddy.csv"
+  },
+  "kamptee": {
+    "demo": "/cities-templates/kamptee.csv",
+    "template": "/cities-templates/kamptee.csv"
+  },
+  "kampli": {
+    "demo": "/cities-templates/kampli.csv",
+    "template": "/cities-templates/kampli.csv"
+  },
+  "kanchausi": {
+    "demo": "/cities-templates/kanchausi.csv",
+    "template": "/cities-templates/kanchausi.csv"
+  },
+  "kanad": {
+    "demo": "/cities-templates/kanad.csv",
+    "template": "/cities-templates/kanad.csv"
+  },
+  "kanakapura": {
+    "demo": "/cities-templates/kanakapura.csv",
+    "template": "/cities-templates/kanakapura.csv"
+  },
+  "kalyandurgam": {
+    "demo": "/cities-templates/kalyandurgam.csv",
+    "template": "/cities-templates/kalyandurgam.csv"
+  },
+  "kamalapura": {
+    "demo": "/cities-templates/kamalapura.csv",
+    "template": "/cities-templates/kamalapura.csv"
+  },
+  "kanakagiri": {
+    "demo": "/cities-templates/kanakagiri.csv",
+    "template": "/cities-templates/kanakagiri.csv"
+  },
+  "kandhla": {
+    "demo": "/cities-templates/kandhla.csv",
+    "template": "/cities-templates/kandhla.csv"
+  },
+  "kancheepuram": {
+    "demo": "/cities-templates/kancheepuram.csv",
+    "template": "/cities-templates/kancheepuram.csv"
+  },
+  "kanchipuram": {
+    "demo": "/cities-templates/kanchipuram.csv",
+    "template": "/cities-templates/kanchipuram.csv"
+  },
+  "kangeyam": {
+    "demo": "/cities-templates/kangeyam.csv",
+    "template": "/cities-templates/kangeyam.csv"
+  },
+  "kalyan_dombivli": {
+    "demo": "/cities-templates/kalyan_dombivli.csv",
+    "template": "/cities-templates/kalyan_dombivli.csv"
+  },
+  "kanina": {
+    "demo": "/cities-templates/kanina.csv",
+    "template": "/cities-templates/kanina.csv"
+  },
+  "kanigiri": {
+    "demo": "/cities-templates/kanigiri.csv",
+    "template": "/cities-templates/kanigiri.csv"
+  },
+  "kankavali": {
+    "demo": "/cities-templates/kankavali.csv",
+    "template": "/cities-templates/kankavali.csv"
+  },
+  "kanker": {
+    "demo": "/cities-templates/kanker.csv",
+    "template": "/cities-templates/kanker.csv"
+  },
+  "kanchrapara": {
+    "demo": "/cities-templates/kanchrapara.csv",
+    "template": "/cities-templates/kanchrapara.csv"
+  },
+  "kannad": {
+    "demo": "/cities-templates/kannad.csv",
+    "template": "/cities-templates/kannad.csv"
+  },
+  "kannod": {
+    "demo": "/cities-templates/kannod.csv",
+    "template": "/cities-templates/kannod.csv"
+  },
+  "kannur": {
+    "demo": "/cities-templates/kannur.csv",
+    "template": "/cities-templates/kannur.csv"
+  },
+  "kanor": {
+    "demo": "/cities-templates/kanor.csv",
+    "template": "/cities-templates/kanor.csv"
+  },
+  "kantaphod": {
+    "demo": "/cities-templates/kantaphod.csv",
+    "template": "/cities-templates/kantaphod.csv"
+  },
+  "kantabanji": {
+    "demo": "/cities-templates/kantabanji.csv",
+    "template": "/cities-templates/kantabanji.csv"
+  },
+  "kapasan": {
+    "demo": "/cities-templates/kapasan.csv",
+    "template": "/cities-templates/kapasan.csv"
+  },
+  "kapurthala": {
+    "demo": "/cities-templates/kapurthala.csv",
+    "template": "/cities-templates/kapurthala.csv"
+  },
+  "kaptanganj": {
+    "demo": "/cities-templates/kaptanganj.csv",
+    "template": "/cities-templates/kaptanganj.csv"
+  },
+  "kapren": {
+    "demo": "/cities-templates/kapren.csv",
+    "template": "/cities-templates/kapren.csv"
+  },
+  "karaikudi": {
+    "demo": "/cities-templates/karaikudi.csv",
+    "template": "/cities-templates/karaikudi.csv"
+  },
+  "kanth": {
+    "demo": "/cities-templates/kanth.csv",
+    "template": "/cities-templates/kanth.csv"
+  },
+  "kanhangad": {
+    "demo": "/cities-templates/kanhangad.csv",
+    "template": "/cities-templates/kanhangad.csv"
+  },
+  "karanja": {
+    "demo": "/cities-templates/karanja.csv",
+    "template": "/cities-templates/karanja.csv"
+  },
+  "karamadai": {
+    "demo": "/cities-templates/karamadai.csv",
+    "template": "/cities-templates/karamadai.csv"
+  },
+  "karad": {
+    "demo": "/cities-templates/karad.csv",
+    "template": "/cities-templates/karad.csv"
+  },
+  "karanjia": {
+    "demo": "/cities-templates/karanjia.csv",
+    "template": "/cities-templates/karanjia.csv"
+  },
+  "karanja_was": {
+    "demo": "/cities-templates/karanja_was.csv",
+    "template": "/cities-templates/karanja_was.csv"
+  },
+  "karari": {
+    "demo": "/cities-templates/karari.csv",
+    "template": "/cities-templates/karari.csv"
+  },
+  "kamarhati": {
+    "demo": "/cities-templates/kamarhati.csv",
+    "template": "/cities-templates/kamarhati.csv"
+  },
+  "karanpur": {
+    "demo": "/cities-templates/karanpur.csv",
+    "template": "/cities-templates/karanpur.csv"
+  },
+  "karera": {
+    "demo": "/cities-templates/karera.csv",
+    "template": "/cities-templates/karera.csv"
+  },
+  "karhal": {
+    "demo": "/cities-templates/karhal.csv",
+    "template": "/cities-templates/karhal.csv"
+  },
+  "karjat_a": {
+    "demo": "/cities-templates/karjat_a.csv",
+    "template": "/cities-templates/karjat_a.csv"
+  },
+  "karnawad": {
+    "demo": "/cities-templates/karnawad.csv",
+    "template": "/cities-templates/karnawad.csv"
+  },
+  "karauli": {
+    "demo": "/cities-templates/karauli.csv",
+    "template": "/cities-templates/karauli.csv"
+  },
+  "kartarpur": {
+    "demo": "/cities-templates/kartarpur.csv",
+    "template": "/cities-templates/kartarpur.csv"
+  },
+  "kareli": {
+    "demo": "/cities-templates/kareli.csv",
+    "template": "/cities-templates/kareli.csv"
+  },
+  "karikan_dhata": {
+    "demo": "/cities-templates/karikan_dhata.csv",
+    "template": "/cities-templates/karikan_dhata.csv"
+  },
+  "kari": {
+    "demo": "/cities-templates/kari.csv",
+    "template": "/cities-templates/kari.csv"
+  },
+  "karumathampatti": {
+    "demo": "/cities-templates/karumathampatti.csv",
+    "template": "/cities-templates/karumathampatti.csv"
+  },
+  "kasai_dodamarg": {
+    "demo": "/cities-templates/kasai_dodamarg.csv",
+    "template": "/cities-templates/kasai_dodamarg.csv"
+  },
+  "kasganj": {
+    "demo": "/cities-templates/kasganj.csv",
+    "template": "/cities-templates/kasganj.csv"
+  },
+  "kasdol": {
+    "demo": "/cities-templates/kasdol.csv",
+    "template": "/cities-templates/kasdol.csv"
+  },
+  "kasinagar": {
+    "demo": "/cities-templates/kasinagar.csv",
+    "template": "/cities-templates/kasinagar.csv"
+  },
+  "katangi": {
+    "demo": "/cities-templates/katangi.csv",
+    "template": "/cities-templates/katangi.csv"
+  },
+  "karunagappally": {
+    "demo": "/cities-templates/karunagappally.csv",
+    "template": "/cities-templates/karunagappally.csv"
+  },
+  "karwar": {
+    "demo": "/cities-templates/karwar.csv",
+    "template": "/cities-templates/karwar.csv"
+  },
+  "kasrawad": {
+    "demo": "/cities-templates/kasrawad.csv",
+    "template": "/cities-templates/kasrawad.csv"
+  },
+  "katghora": {
+    "demo": "/cities-templates/katghora.csv",
+    "template": "/cities-templates/katghora.csv"
+  },
+  "katra": {
+    "demo": "/cities-templates/katra.csv",
+    "template": "/cities-templates/katra.csv"
+  },
+  "katol": {
+    "demo": "/cities-templates/katol.csv",
+    "template": "/cities-templates/katol.csv"
+  },
+  "katra_gulab_singh_bazar": {
+    "demo": "/cities-templates/katra_gulab_singh_bazar.csv",
+    "template": "/cities-templates/katra_gulab_singh_bazar.csv"
+  },
+  "katra_g": {
+    "demo": "/cities-templates/katra_g.csv",
+    "template": "/cities-templates/katra_g.csv"
+  },
+  "kashipur": {
+    "demo": "/cities-templates/kashipur.csv",
+    "template": "/cities-templates/kashipur.csv"
+  },
+  "katra_medniganj": {
+    "demo": "/cities-templates/katra_medniganj.csv",
+    "template": "/cities-templates/katra_medniganj.csv"
+  },
+  "karur": {
+    "demo": "/cities-templates/karur.csv",
+    "template": "/cities-templates/karur.csv"
+  },
+  "katghar_lalganj": {
+    "demo": "/cities-templates/katghar_lalganj.csv",
+    "template": "/cities-templates/katghar_lalganj.csv"
+  },
+  "kauriaganj": {
+    "demo": "/cities-templates/kauriaganj.csv",
+    "template": "/cities-templates/kauriaganj.csv"
+  },
+  "keelakarai": {
+    "demo": "/cities-templates/keelakarai.csv",
+    "template": "/cities-templates/keelakarai.csv"
+  },
+  "kavali": {
+    "demo": "/cities-templates/kavali.csv",
+    "template": "/cities-templates/kavali.csv"
+  },
+  "kayamkulam": {
+    "demo": "/cities-templates/kayamkulam.csv",
+    "template": "/cities-templates/kayamkulam.csv"
+  },
+  "kaymore": {
+    "demo": "/cities-templates/kaymore.csv",
+    "template": "/cities-templates/kaymore.csv"
+  },
+  "kawardha": {
+    "demo": "/cities-templates/kawardha.csv",
+    "template": "/cities-templates/kawardha.csv"
+  },
+  "kaup": {
+    "demo": "/cities-templates/kaup.csv",
+    "template": "/cities-templates/kaup.csv"
+  },
+  "kekri": {
+    "demo": "/cities-templates/kekri.csv",
+    "template": "/cities-templates/kekri.csv"
+  },
+  "kendrapara": {
+    "demo": "/cities-templates/kendrapara.csv",
+    "template": "/cities-templates/kendrapara.csv"
+  },
+  "kerakat": {
+    "demo": "/cities-templates/kerakat.csv",
+    "template": "/cities-templates/kerakat.csv"
+  },
+  "keskal": {
+    "demo": "/cities-templates/keskal.csv",
+    "template": "/cities-templates/keskal.csv"
+  },
+  "keshorai_patan": {
+    "demo": "/cities-templates/keshorai_patan.csv",
+    "template": "/cities-templates/keshorai_patan.csv"
+  },
+  "kandukur": {
+    "demo": "/cities-templates/kandukur.csv",
+    "template": "/cities-templates/kandukur.csv"
+  },
+  "kendujhar": {
+    "demo": "/cities-templates/kendujhar.csv",
+    "template": "/cities-templates/kendujhar.csv"
+  },
+  "kerur": {
+    "demo": "/cities-templates/kerur.csv",
+    "template": "/cities-templates/kerur.csv"
+  },
+  "kembhavi": {
+    "demo": "/cities-templates/kembhavi.csv",
+    "template": "/cities-templates/kembhavi.csv"
+  },
+  "kesrisinghpur": {
+    "demo": "/cities-templates/kesrisinghpur.csv",
+    "template": "/cities-templates/kesrisinghpur.csv"
+  },
+  "khadda": {
+    "demo": "/cities-templates/khadda.csv",
+    "template": "/cities-templates/khadda.csv"
+  },
+  "kekkera": {
+    "demo": "/cities-templates/kekkera.csv",
+    "template": "/cities-templates/kekkera.csv"
+  },
+  "khairagarh": {
+    "demo": "/cities-templates/khairagarh.csv",
+    "template": "/cities-templates/khairagarh.csv"
+  },
+  "khair": {
+    "demo": "/cities-templates/khair.csv",
+    "template": "/cities-templates/khair.csv"
+  },
+  "khairthal": {
+    "demo": "/cities-templates/khairthal.csv",
+    "template": "/cities-templates/khairthal.csv"
+  },
+  "keolari": {
+    "demo": "/cities-templates/keolari.csv",
+    "template": "/cities-templates/keolari.csv"
+  },
+  "khagaul": {
+    "demo": "/cities-templates/khagaul.csv",
+    "template": "/cities-templates/khagaul.csv"
+  },
+  "khalilabad": {
+    "demo": "/cities-templates/khalilabad.csv",
+    "template": "/cities-templates/khalilabad.csv"
+  },
+  "khalapur": {
+    "demo": "/cities-templates/khalapur.csv",
+    "template": "/cities-templates/khalapur.csv"
+  },
+  "khamanon": {
+    "demo": "/cities-templates/khamanon.csv",
+    "template": "/cities-templates/khamanon.csv"
+  },
+  "khamaria": {
+    "demo": "/cities-templates/khamaria.csv",
+    "template": "/cities-templates/khamaria.csv"
+  },
+  "khambhat": {
+    "demo": "/cities-templates/khambhat.csv",
+    "template": "/cities-templates/khambhat.csv"
+  },
+  "khachrod": {
+    "demo": "/cities-templates/khachrod.csv",
+    "template": "/cities-templates/khachrod.csv"
+  },
+  "khagaria": {
+    "demo": "/cities-templates/khagaria.csv",
+    "template": "/cities-templates/khagaria.csv"
+  },
+  "khanapur_tg": {
+    "demo": "/cities-templates/khanapur_tg.csv",
+    "template": "/cities-templates/khanapur_tg.csv"
+  },
+  "khand": {
+    "demo": "/cities-templates/khand.csv",
+    "template": "/cities-templates/khand.csv"
+  },
+  "khamgaon": {
+    "demo": "/cities-templates/khamgaon.csv",
+    "template": "/cities-templates/khamgaon.csv"
+  },
+  "khanapur_mh": {
+    "demo": "/cities-templates/khanapur_mh.csv",
+    "template": "/cities-templates/khanapur_mh.csv"
+  },
+  "khanauri": {
+    "demo": "/cities-templates/khanauri.csv",
+    "template": "/cities-templates/khanauri.csv"
+  },
+  "khaniadhana": {
+    "demo": "/cities-templates/khaniadhana.csv",
+    "template": "/cities-templates/khaniadhana.csv"
+  },
+  "khandala": {
+    "demo": "/cities-templates/khandala.csv",
+    "template": "/cities-templates/khandala.csv"
+  },
+  "khanpur": {
+    "demo": "/cities-templates/khanpur.csv",
+    "template": "/cities-templates/khanpur.csv"
+  },
+  "khallikote": {
+    "demo": "/cities-templates/khallikote.csv",
+    "template": "/cities-templates/khallikote.csv"
+  },
+  "kharar": {
+    "demo": "/cities-templates/kharar.csv",
+    "template": "/cities-templates/kharar.csv"
+  },
+  "khandela": {
+    "demo": "/cities-templates/khandela.csv",
+    "template": "/cities-templates/khandela.csv"
+  },
+  "khajuraho": {
+    "demo": "/cities-templates/khajuraho.csv",
+    "template": "/cities-templates/khajuraho.csv"
+  },
+  "moirang": {
+    "demo": "/cities-templates/moirang.csv",
+    "template": "/cities-templates/moirang.csv"
+  },
+  "khanna": {
+    "demo": "/cities-templates/khanna.csv",
+    "template": "/cities-templates/khanna.csv"
+  },
+  "rudrapur": {
+    "demo": "/cities-templates/rudrapur.csv",
+    "template": "/cities-templates/rudrapur.csv"
+  },
+  "naya_raipur": {
+    "demo": "/cities-templates/naya_raipur.csv",
+    "template": "/cities-templates/naya_raipur.csv"
+  },
+  "thoubal": {
+    "demo": "/cities-templates/thoubal.csv",
+    "template": "/cities-templates/thoubal.csv"
+  },
+  "khardah": {
+    "demo": "/cities-templates/khardah.csv",
+    "template": "/cities-templates/khardah.csv"
+  },
+  "sangli": {
+    "demo": "/cities-templates/sangli.csv",
+    "template": "/cities-templates/sangli.csv"
+  },
+  "khandwa": {
+    "demo": "/cities-templates/khandwa.csv",
+    "template": "/cities-templates/khandwa.csv"
+  },
+  "thanjavur": {
+    "demo": "/cities-templates/thanjavur.csv",
+    "template": "/cities-templates/thanjavur.csv"
+  },
+  "chennai_zones": {
+    "demo": "/cities-templates/chennai_zones.csv",
+    "template": "/cities-templates/chennai_zones.csv"
+  },
+  "delhi_boundary": {
+    "demo": "/cities-templates/delhi_boundary.csv",
+    "template": "/cities-templates/delhi_boundary.csv"
   }
 }

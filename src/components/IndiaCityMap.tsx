@@ -231,19 +231,18 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const geoData = await response.json();
 
-        // Normalize ward names: use "Ward <number>" when ward_name is missing or non-unique (e.g. "Na")
+        // Name missing/non-unique ("Na") wards "Ward <number>", or "Ward <1-based index>"
+        // when number/code are also absent — keeps every ward matchable to an upload.
         const names = geoData.features.map((f: GeoJSONFeature) => (f.properties.ward_name || '').toLowerCase().trim());
         const uniqueNames = new Set(names.filter(Boolean));
         if (uniqueNames.size < geoData.features.length * 0.5) {
-          for (const feature of geoData.features as GeoJSONFeature[]) {
+          (geoData.features as GeoJSONFeature[]).forEach((feature, i) => {
             const wn = (feature.properties.ward_name || '').trim().toLowerCase();
             if (!wn || wn === 'na' || wn === 'n/a' || wn === 'm_ward') {
-              const num = feature.properties.ward_number ?? feature.properties.wardcode;
-              if (num != null) {
-                feature.properties.ward_name = `Ward ${num}`;
-              }
+              const num = feature.properties.ward_number ?? feature.properties.wardcode ?? (i + 1);
+              feature.properties.ward_name = `Ward ${num}`;
             }
-          }
+          });
         }
 
         setGeojsonData(geoData);
