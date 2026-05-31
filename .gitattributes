@@ -1,0 +1,7 @@
+*.ipynb linguist-documentation
+
+*.geojson linguist-generated
+*.csv linguist-generated
+src/lib/city-csv-gist-mapping.json linguist-generated
+src/lib/city-gist-mapping.json linguist-generated
+server/dist/** linguist-generated
