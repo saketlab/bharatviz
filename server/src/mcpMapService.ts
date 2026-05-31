@@ -799,8 +799,62 @@ export class McpMapService {
     return this.pincodeRenderer.getAvailableStates();
   }
 
-  async listPincodes(state?: string): Promise<Array<{ pincode: string; office_name: string; district: string }>> {
-    return this.pincodeRenderer.listPincodes(state);
+  /**
+   * Build a point→{district,state} locator from lgd-districts, optionally scoped to one
+   * state so the per-point polygon test only scans that state's districts. The district
+   * attribution is polygon-derived (the pincode layer's own district field is blank/dirty).
+   */
+  private async buildDistrictLocator(state?: string): Promise<(lon: number, lat: number) => { district: string; state: string }> {
+    const data = await loadGeoJSON(MAP_REGISTRY['lgd-districts'].file);
+    let feats = data.features.filter(f => f.geometry);
+    if (state && state.trim() && state.toLowerCase() !== 'all india') {
+      const lv = state.toLowerCase().trim();
+      const scoped = feats.filter(f => String(f.properties?.state_name ?? '').toLowerCase().trim() === lv);
+      if (scoped.length) feats = scoped;
+    }
+    return (lon: number, lat: number) => {
+      for (const f of feats) {
+        if (pointInGeometry(lon, lat, f.geometry as { type: string; coordinates: unknown })) {
+          return {
+            district: String(f.properties?.district_name ?? ''),
+            state: String(f.properties?.state_name ?? ''),
+          };
+        }
+      }
+      return { district: '', state: '' };
+    };
+  }
+
+  // When scoped, sources from pincodes-centroids and derives district/state by
+  // point-in-polygon (the layer's own district field is blank). `district` filter is an
+  // EXACT match on the derived name. Unscoped stays on the cheap coordinate-free path.
+  async listPincodes(
+    state?: string,
+    district?: string,
+  ): Promise<Array<{ pincode: string; office_name: string; district: string; state?: string; lat?: number; lon?: number }>> {
+    const scoped = Boolean((state && state.trim() && state.toLowerCase() !== 'all india') || (district && district.trim()));
+    if (!scoped) {
+      return this.pincodeRenderer.listPincodes(state);
+    }
+
+    const data = await loadGeoJSON(MAP_REGISTRY['pincodes-centroids'].file);
+    const locate = await this.buildDistrictLocator(state);
+    const wantDistrict = district?.toLowerCase().trim();
+
+    const rows: Array<{ pincode: string; office_name: string; district: string; state: string; lat: number; lon: number }> = [];
+    for (const f of data.features) {
+      const props = f.properties || {};
+      const pincode = String(props.pincode ?? '').trim();
+      if (!pincode) continue;
+      const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+      if (!c) continue;
+      const ds = locate(c[0], c[1]);
+      if (state && state.toLowerCase() !== 'all india' && ds.state &&
+          ds.state.toLowerCase().trim() !== state.toLowerCase().trim()) continue;
+      if (wantDistrict && ds.district.toLowerCase().trim() !== wantDistrict) continue;
+      rows.push({ pincode, office_name: String(props.office_name ?? '').trim(), district: ds.district, state: ds.state, lat: c[1], lon: c[0] });
+    }
+    return rows.sort((a, b) => a.pincode.localeCompare(b.pincode));
   }
 
   async renderPincodesMap(options: {
@@ -958,43 +1012,98 @@ export class McpMapService {
   }
 
   async nearby(options: {
-    lat: number;
-    lon: number;
+    lat?: number;
+    lon?: number;
+    pincode?: string;
     radiusKm: number;
     mapIds: string[];
     limit?: number;
     properties?: string[];
-  }): Promise<Array<{ mapId: string; features: Array<Record<string, string | number>> }>> {
+    filters?: Record<string, string>;
+    terse?: boolean;
+  }): Promise<{
+    center: { lat: number; lon: number; pincode?: string };
+    layers: Array<{ mapId: string; features: Array<Record<string, string | number>> }>;
+  }> {
     const limit = Math.max(1, Math.min(options.limit ?? 20, 200));
-    const results: Array<{ mapId: string; features: Array<Record<string, string | number>> }> = [];
+
+    // Resolve the search center: explicit lat/lon, or a pincode centroid.
+    let lat = options.lat;
+    let lon = options.lon;
+    if ((lat == null || lon == null) && options.pincode) {
+      const c = await this.pincodeCentroid(options.pincode);
+      if (!c) throw new Error(`Unknown pincode: "${options.pincode}"`);
+      lat = c.lat; lon = c.lon;
+    }
+    if (lat == null || lon == null) throw new Error('Provide either lat+lon or pincode as the center.');
+
+    // Verbose OSM admin-code/duplicate-name boilerplate to drop when terse (the default).
+    const TERSE_DROP = /^(adm\d_pcode|adm0_name|adm0_pcode|name_latin|name_en|name_hi|osm_id|source)$/;
+    const terse = options.terse !== false && !options.properties?.length;
+
+    const layers: Array<{ mapId: string; features: Array<Record<string, string | number>> }> = [];
 
     for (const mapId of options.mapIds) {
       const entry = MAP_REGISTRY[mapId];
-      if (!entry) { results.push({ mapId, features: [] }); continue; }
+      if (!entry) { layers.push({ mapId, features: [] }); continue; }
       let data: FeatureCollection;
-      try { data = await loadGeoJSON(entry.file); } catch { results.push({ mapId, features: [] }); continue; }
+      try { data = await loadGeoJSON(entry.file); } catch { layers.push({ mapId, features: [] }); continue; }
 
-      const hits: Array<{ dist: number; props: Record<string, string | number> }> = [];
-      for (const feature of data.features) {
+      const candidates = options.filters
+        ? this.applyFilters(data.features, options.filters)
+        : data.features;
+
+      const hits: Array<{ dist: number; props: Record<string, string | number>; dedupKey: string }> = [];
+      for (const feature of candidates) {
         if (!feature.geometry) continue;
         const centroid = this.featureCentroid(feature.geometry as { type: string; coordinates: unknown });
         if (!centroid) continue;
         const [fLon, fLat] = centroid;
-        const dist = this.haversine(options.lat, options.lon, fLat, fLon);
+        const dist = this.haversine(lat, lon, fLat, fLon);
         if (dist > options.radiusKm) continue;
 
         const raw = feature.properties || {};
         const props: Record<string, string | number> = { _distance_km: Math.round(dist * 10) / 10 };
         const keys = options.properties?.length ? options.properties : Object.keys(raw);
-        for (const k of keys) if (raw[k] != null) props[k] = raw[k] as string | number;
-        hits.push({ dist, props });
+        for (const k of keys) {
+          if (raw[k] == null || raw[k] === '') continue;
+          if (terse && TERSE_DROP.test(k)) continue;
+          props[k] = raw[k] as string | number;
+        }
+        // Dedup the OSM double-node records: same name at (nearly) the same place.
+        const name = String(raw.name ?? raw.office_name ?? raw.pincode ?? '').toLowerCase().trim();
+        const dedupKey = `${name}|${fLon.toFixed(3)},${fLat.toFixed(3)}`;
+        hits.push({ dist, props, dedupKey });
       }
 
       hits.sort((a, b) => a.dist - b.dist);
-      results.push({ mapId, features: hits.slice(0, limit).map(h => h.props) });
+      const seen = new Set<string>();
+      const deduped: Array<Record<string, string | number>> = [];
+      for (const h of hits) {
+        if (h.dedupKey && seen.has(h.dedupKey)) continue;
+        seen.add(h.dedupKey);
+        deduped.push(h.props);
+        if (deduped.length >= limit) break;
+      }
+
+      // Pincode results ship district/state blank — derive them per returned row.
+      if (mapId === 'pincodes-centroids') {
+        for (const p of deduped) {
+          if ((!p.district || p.district === '') && p.pincode) {
+            const c = await this.pincodeCentroid(String(p.pincode));
+            if (c) {
+              const ds = await this.districtStateAt(c.lat, c.lon);
+              p.district = ds.district;
+              p.state = ds.state;
+            }
+          }
+        }
+      }
+
+      layers.push({ mapId, features: deduped });
     }
 
-    return results;
+    return { center: { lat, lon, ...(options.pincode ? { pincode: options.pincode } : {}) }, layers };
   }
 
   async getArea(options: {
@@ -1036,6 +1145,43 @@ export class McpMapService {
       }
       return result;
     });
+  }
+
+  /**
+   * Centroid (lat/lon) of any feature in any layer — district, constituency, ward,
+   * pincode, point, polygon. Look up by fuzzy `name` (on the layer's featureNameProp)
+   * and/or `filters`. Returns one row per matched feature.
+   */
+  async centroid(options: {
+    mapId: string;
+    name?: string;
+    filters?: Record<string, string>;
+    limit?: number;
+  }): Promise<Array<{ name: string; lat: number; lon: number; properties: Record<string, string> }>> {
+    const entry = MAP_REGISTRY[options.mapId];
+    if (!entry) throw new Error(`Unknown map ID: "${options.mapId}". Use list_available_maps.`);
+    const data = await loadGeoJSON(entry.file);
+    const nameProp = entry.featureNameProp || 'district_name';
+    const limit = Math.max(1, Math.min(options.limit ?? 50, 500));
+
+    let features = data.features.filter(f => f.geometry);
+    if (options.filters) features = this.applyFilters(features, options.filters);
+    if (options.name) {
+      const names = features.map(f => String(f.properties?.[nameProp] || ''));
+      const matched = fuzzyMatchName(options.name, names);
+      if (!matched) return [];
+      features = features.filter(f => String(f.properties?.[nameProp] || '') === matched);
+    }
+
+    const out: Array<{ name: string; lat: number; lon: number; properties: Record<string, string> }> = [];
+    for (const f of features.slice(0, limit)) {
+      const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+      if (!c) continue;
+      const props: Record<string, string> = {};
+      for (const [k, v] of Object.entries(f.properties || {})) if (v != null && v !== '') props[k] = String(v);
+      out.push({ name: String(f.properties?.[nameProp] || ''), lat: c[1], lon: c[0], properties: props });
+    }
+    return out;
   }
 
   async spatialJoin(options: {
@@ -1197,8 +1343,10 @@ export class McpMapService {
 
   async locate(lat: number, lon: number, mapIds?: string[]): Promise<Array<{ mapId: string; match: Record<string, string> | null; error?: string; }>> {
     const useDefault = !Array.isArray(mapIds) || mapIds.length === 0;
+    // Default to state+district only — point-in-polygon against the large subdistrict/block
+    // GeoJSONs on every call is slow and drop-prone; request those explicitly when needed.
     const targets = useDefault
-      ? ['lgd-states', 'lgd-districts', 'lgd-subdistricts', 'lgd-blocks']
+      ? ['lgd-states', 'lgd-districts']
       : mapIds;
 
     const results: Array<{ mapId: string; match: Record<string, string> | null; error?: string }> = [];
@@ -1231,6 +1379,60 @@ export class McpMapService {
     }
 
     return results;
+  }
+
+  /** Look up a pincode's [lon, lat] centroid from the pincodes-centroids layer. */
+  async pincodeCentroid(pincode: string): Promise<{ lat: number; lon: number } | null> {
+    const data = await loadGeoJSON(MAP_REGISTRY['pincodes-centroids'].file);
+    const target = String(pincode).trim();
+    for (const f of data.features) {
+      if (String(f.properties?.pincode ?? '').trim() === target) {
+        const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+        if (c) return { lon: c[0], lat: c[1] };
+      }
+    }
+    return null;
+  }
+
+  /** Resolve a pincode to its coordinates + office name + derived district/state, in one call. */
+  async resolvePincode(pincode: string): Promise<{
+    pincode: string; lat: number; lon: number; office_name: string; district: string; state: string;
+  } | null> {
+    const data = await loadGeoJSON(MAP_REGISTRY['pincodes-centroids'].file);
+    const target = String(pincode).trim();
+    for (const f of data.features) {
+      if (String(f.properties?.pincode ?? '').trim() !== target) continue;
+      const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+      if (!c) return null;
+      const ds = await this.districtStateAt(c[1], c[0]);
+      return {
+        pincode: target,
+        lat: c[1],
+        lon: c[0],
+        office_name: String(f.properties?.office_name ?? ''),
+        district: ds.district,
+        state: ds.state,
+      };
+    }
+    return null;
+  }
+
+  /**
+   * Resolve district + state for a lat/lon via point-in-polygon against LGD districts.
+   * The pincode centroid layer ships these blank, so we derive them on demand.
+   */
+  private async districtStateAt(lat: number, lon: number): Promise<{ district: string; state: string }> {
+    try {
+      const data = await loadGeoJSON(MAP_REGISTRY['lgd-districts'].file);
+      const hit = findContainingFeature(data, lat, lon);
+      if (hit) {
+        return {
+          district: String(hit.properties?.district_name ?? ''),
+          state: String(hit.properties?.state_name ?? ''),
+        };
+      }
+    } catch { /* fall through */ }
+    return { district: '', state: '' };
   }
 
   /**
@@ -1703,7 +1905,16 @@ export class McpMapService {
     }
 
     if (!pairs.length) {
-      return { n: 0, x: options.x, y: options.y, pearson_r: NaN, spearman_r: NaN, x_mean: NaN, y_mean: NaN, x_stddev: NaN, y_stddev: NaN };
+      // n=0 reads as "no correlation" — surface the real cause instead (usually a column
+      // that lives in another layer; the fix is yMapId for a cross-layer join).
+      const hasX = features.some(f => isFinite(Number(f.properties?.[options.x])));
+      const ySource = options.yMapId && options.yMapId !== options.mapId ? options.yMapId : options.mapId;
+      const hasY = yLookup
+        ? features.some(f => this.joinValue(yLookup, f.properties || {}) !== undefined)
+        : features.some(f => isFinite(Number(f.properties?.[options.y])));
+      if (!hasX) throw new Error(`Column "${options.x}" not found (or non-numeric) in "${options.mapId}". Check the column name with layer_schema.`);
+      if (!hasY) throw new Error(`Column "${options.y}" not found (or non-numeric) in "${ySource}". If it lives in a different layer, pass yMapId (e.g. yMapId="census-2011-enriched", y="literacy_pct").`);
+      throw new Error(`No district matched between "${options.mapId}" and "${ySource}" for the cross-layer join.`);
     }
 
     const { pearson_r, spearman_r } = pearsonAndSpearman(pairs);
@@ -1910,6 +2121,144 @@ export class McpMapService {
 
     results.sort((a, b) => (b._count as number) - (a._count as number));
     return { boundaryCount: totalBoundaryCount, results: results.slice(0, limit) };
+  }
+
+  // Per-source nearest-target distance, within-radius flag, and count of targets within
+  // radiusKm — the buffer counterpart to aggregate_by_boundary's point-in-polygon counting.
+  async proximityCoverage(options: {
+    sourceMapId: string;
+    sourceFilters?: Record<string, string>;
+    targetMapId: string;
+    targetFilters?: Record<string, string>;
+    radiusKm: number;
+    limit?: number;
+    properties?: string[];
+  }): Promise<{
+    summary: { source_total: number; covered_count: number; covered_pct: number; radiusKm: number };
+    results: Array<Record<string, string | number | boolean>>;
+  }> {
+    const srcEntry = MAP_REGISTRY[options.sourceMapId];
+    if (!srcEntry) throw new Error(`Unknown sourceMapId: "${options.sourceMapId}"`);
+    const tgtEntry = MAP_REGISTRY[options.targetMapId];
+    if (!tgtEntry) throw new Error(`Unknown targetMapId: "${options.targetMapId}"`);
+    const limit = Math.max(1, Math.min(options.limit ?? 1000, 5000));
+
+    const hasSourceFilter = options.sourceFilters && Object.keys(options.sourceFilters).length > 0;
+    if (!hasSourceFilter) {
+      throw new Error(
+        'proximity_coverage requires sourceFilters to scope the source set (e.g. {"district":"Pune"} or {"state_name":"Kerala"}) ' +
+        'to avoid an all-India cartesian blow-up.',
+      );
+    }
+
+    // Source features. For the pincode centroid layer (district/state blank), derive
+    // district/state per feature so sourceFilters like {"district":"Pune"} work.
+    const srcData = await loadGeoJSON(srcEntry.file);
+    const srcNameProp = srcEntry.featureNameProp || 'pincode';
+    const wantsDerivedDistrict = options.sourceMapId === 'pincodes-centroids'
+      && options.sourceFilters
+      && Object.keys(options.sourceFilters).some(k => k === 'district' || k === 'state');
+
+    let locate: ((lon: number, lat: number) => { district: string; state: string }) | null = null;
+    if (wantsDerivedDistrict) {
+      locate = await this.buildDistrictLocator(options.sourceFilters?.state);
+    }
+
+    type Src = { name: string; lon: number; lat: number; props: Record<string, string> };
+    const sources: Src[] = [];
+    for (const f of srcData.features) {
+      if (!f.geometry) continue;
+      const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+      if (!c) continue;
+      const props: Record<string, string> = {};
+      for (const [k, v] of Object.entries(f.properties || {})) if (v != null && v !== '') props[k] = String(v);
+      if (locate) { const ds = locate(c[0], c[1]); props.district = ds.district; props.state = ds.state; }
+      sources.push({ name: String(props[srcNameProp] ?? ''), lon: c[0], lat: c[1], props });
+    }
+
+    const filteredSources = this.filterRows(sources, options.sourceFilters);
+    if (!filteredSources.length) {
+      return { summary: { source_total: 0, covered_count: 0, covered_pct: 0, radiusKm: options.radiusKm }, results: [] };
+    }
+
+    // Targets: filter, dedup OSM double-nodes, and bbox-prefilter to the source extent + radius.
+    const tgtData = await loadGeoJSON(tgtEntry.file);
+    const tgtNameProp = tgtEntry.featureNameProp || 'name';
+    let tgtFeatures = this.applyFilters(tgtData.features.filter(f => f.geometry), options.targetFilters);
+
+    const minLat = Math.min(...filteredSources.map(s => s.lat));
+    const maxLat = Math.max(...filteredSources.map(s => s.lat));
+    const minLon = Math.min(...filteredSources.map(s => s.lon));
+    const maxLon = Math.max(...filteredSources.map(s => s.lon));
+    const latPad = options.radiusKm / 111;
+    const lonPad = options.radiusKm / (111 * Math.cos((minLat + maxLat) / 2 * Math.PI / 180) || 1);
+
+    const seen = new Set<string>();
+    const targets: Array<{ name: string; lon: number; lat: number }> = [];
+    for (const f of tgtFeatures) {
+      const c = this.featureCentroid(f.geometry as { type: string; coordinates: unknown });
+      if (!c) continue;
+      const [lon, lat] = c;
+      if (lat < minLat - latPad || lat > maxLat + latPad || lon < minLon - lonPad || lon > maxLon + lonPad) continue;
+      const name = String(f.properties?.[tgtNameProp] ?? f.properties?.name ?? '').toLowerCase().trim();
+      const key = `${name}|${lon.toFixed(3)},${lat.toFixed(3)}`;
+      if (name && seen.has(key)) continue;
+      seen.add(key);
+      targets.push({ name: String(f.properties?.[tgtNameProp] ?? f.properties?.name ?? ''), lon, lat });
+    }
+
+    let covered = 0;
+    const results: Array<Record<string, string | number | boolean>> = [];
+    for (const s of filteredSources.slice(0, limit)) {
+      let nearestDist = Infinity;
+      let nearestName = '';
+      let within = 0;
+      for (const t of targets) {
+        const d = this.haversine(s.lat, s.lon, t.lat, t.lon);
+        if (d < nearestDist) { nearestDist = d; nearestName = t.name; }
+        if (d <= options.radiusKm) within++;
+      }
+      const isCovered = nearestDist <= options.radiusKm;
+      if (isCovered) covered++;
+      const row: Record<string, string | number | boolean> = {
+        [srcNameProp]: s.name,
+        lat: Math.round(s.lat * 1e5) / 1e5,
+        lon: Math.round(s.lon * 1e5) / 1e5,
+        nearest_target_name: nearestName,
+        nearest_distance_km: nearestDist === Infinity ? -1 : Math.round(nearestDist * 10) / 10,
+        within_radius: isCovered,
+        targets_within_radius: within,
+      };
+      if (options.properties?.length) {
+        for (const k of options.properties) if (s.props[k] != null) row[k] = s.props[k];
+      }
+      results.push(row);
+    }
+
+    const total = filteredSources.length;
+    return {
+      summary: {
+        source_total: total,
+        covered_count: covered,
+        covered_pct: total ? Math.round((covered / total) * 1000) / 10 : 0,
+        radiusKm: options.radiusKm,
+      },
+      results,
+    };
+  }
+
+  /** Case-insensitive (exact-or-substring) filter over plain {name,...,props} rows. */
+  private filterRows<T extends { props: Record<string, string> }>(rows: T[], filters?: Record<string, string>): T[] {
+    if (!filters) return rows;
+    let out = rows;
+    for (const [key, value] of Object.entries(filters)) {
+      const lv = value.toLowerCase().trim();
+      out = out.filter(r => {
+        const pv = String(r.props[key] ?? '').toLowerCase().trim();
+        return pv === lv || pv.includes(lv);
+      });
+    }
+    return out;
   }
 
   /**

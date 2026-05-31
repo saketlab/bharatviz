@@ -165,7 +165,7 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png". Use "svg" for editable vector, "both" for both.',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing; "both" for both.',
               },
             },
             required: ['data'],
@@ -220,7 +220,7 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png".',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.',
               },
             },
             required: ['data'],
@@ -294,17 +294,39 @@ export function createMcpServer(): Server {
           },
         },
         {
+          name: 'pincode_centroid',
+          description:
+            'Resolve a single pincode to its centroid coordinates plus the district and state it falls in. ' +
+            'One call replaces the list_pincodes → find → locate triangulation. ' +
+            'Returns { pincode, lat, lon, office_name, district, state }. ' +
+            'Pair with nearby (which also accepts a pincode directly) for "facilities near pincode X" queries.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              pincode: { type: 'string', description: 'The 6-digit pincode, e.g. "400071".' },
+            },
+            required: ['pincode'],
+          },
+        },
+        {
           name: 'list_pincodes',
           description:
-            'Lists all pincodes (postal codes) for a given Indian state or all of India. ' +
-            'Returns pincode, post office name, and district for each entry. ' +
-            'Defaults to all-India if state is omitted.',
+            'Lists pincodes (postal codes) for a given Indian state, district, or all of India. ' +
+            'When scoped by state or district, every row includes lat/lon and a polygon-derived ' +
+            'district/state (computed by point-in-polygon against district boundaries — cleaner than ' +
+            'the post-office table, which mislabels some neighbouring-district pincodes). ' +
+            'The district filter is an EXACT match on that polygon-derived name. ' +
+            'Defaults to all-India (no coordinates, for size) when state and district are omitted.',
           inputSchema: {
             type: 'object' as const,
             properties: {
               state: {
                 type: 'string',
                 description: 'State name (e.g. "Maharashtra", "Delhi"). Default: "All India". Case-insensitive.',
+              },
+              district: {
+                type: 'string',
+                description: 'District name for an exact, polygon-derived match (e.g. "Pune"). Scopes results to that district and attaches lat/lon. Pair with state for fastest lookup.',
               },
             },
           },
@@ -350,7 +372,7 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png".',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.',
               },
             },
             required: ['data'],
@@ -417,7 +439,7 @@ export function createMcpServer(): Server {
               invertColors: { type: 'boolean', description: 'Invert color scale. Default: false.' },
               hideWardNames: { type: 'boolean', description: 'Hide ward labels. Default: true.' },
               hideValues: { type: 'boolean', description: 'Hide value labels. Default: true.' },
-              outputFormat: { type: 'string', enum: ['png', 'svg', 'both'], description: 'Output format. Default: "png".' },
+              outputFormat: { type: 'string', enum: ['png', 'svg', 'both'], description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.' },
             },
             required: ['cityId', 'data'],
           },
@@ -428,8 +450,8 @@ export function createMcpServer(): Server {
           description:
             'Point-in-polygon lookup: given a latitude and longitude, returns the containing ' +
             'administrative unit(s) from one or more BharatViz map layers. ' +
-            'By default checks state, district, subdistrict, and block (LGD layers). ' +
-            'Pass mapIds to query specific layers (e.g. constituencies, eco-zones). ' +
+            'By default checks state + district only (fast). Subdistrict, block, constituency, etc. ' +
+            'are opt-in via mapIds because those layers are large. ' +
             'Returns all feature properties for each matched layer.',
           inputSchema: {
             type: 'object' as const,
@@ -439,7 +461,7 @@ export function createMcpServer(): Server {
               mapIds: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Map IDs to test against. Default: ["lgd-states","lgd-districts","lgd-subdistricts","lgd-blocks"]. Use list_available_maps to see all options.',
+                description: 'Map IDs to test against. Default: ["lgd-states","lgd-districts"]. Add "lgd-subdistricts"/"lgd-blocks"/constituencies explicitly when you need finer units (they are large). Use list_available_maps to see all options.',
               },
             },
             required: ['lat', 'lon'],
@@ -489,7 +511,7 @@ export function createMcpServer(): Server {
             'Spatial join: find all features from a TARGET layer that fall inside a boundary ' +
             'selected from a BOUNDARY layer. This is the tool for cross-map queries.\n\n' +
             'Examples:\n' +
-            '• "Which hospitals are in pincode 400071?" → boundaryMapId="pincodes", boundaryFilter={"pincode":"400071"}, targetMapId="hotosm-health-facilities", targetFilters={"amenity":"hospital"}\n' +
+            '• "Which hospitals are near pincode 400071?" → there is no pincode polygon layer, so use nearby(pincode="400071", mapIds=["hotosm-health-facilities"], filters={"amenity":"hospital"}) for a radius search, or proximity_coverage for many pincodes at once.\n' +
             '• "Which parliamentary constituency does pincode 400071 belong to?" → boundaryMapId="lgd-parliament", boundaryFilter={}, targetMapId="pincodes-centroids", targetFilters={"pincode":"400071"} (finds which constituency contains the pincode centroid)\n' +
             '• "Airports in Karnataka" → boundaryMapId="lgd-states", boundaryFilter={"state_name":"Karnataka"}, targetMapId="airports"\n' +
             '• "Dams in Hubballi district" → boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Dharwad"}, targetMapId="dams"\n' +
@@ -503,7 +525,7 @@ export function createMcpServer(): Server {
             properties: {
               boundaryMapId: {
                 type: 'string',
-                description: 'Map ID for the boundary layer (any polygon layer). E.g. "pincodes", "lgd-districts", "lgd-states", "lgd-parliament", "gs-wildlife".',
+                description: 'Map ID for the boundary layer (any polygon layer). E.g. "lgd-districts", "lgd-states", "lgd-parliament", "gs-wildlife". Note: there is no pincode polygon layer — "pincodes-centroids" is point-based, use it as a target, not a boundary.',
               },
               boundaryFilter: {
                 type: 'object',
@@ -535,32 +557,63 @@ export function createMcpServer(): Server {
         {
           name: 'nearby',
           description:
-            'Find features within a given radius (km) of a lat/lon point, across one or more map layers. ' +
-            'Works with both point layers (airports, dams, health facilities, water bodies, pincodes) and polygon layers (districts, wildlife sanctuaries, etc. — uses polygon centroids). ' +
-            'Results are sorted by distance. Use this for queries like: ' +
-            '"airports in Karnataka near water bodies", "dams within 50 km of Hubballi", ' +
-            '"hospitals near me", "pincodes near 400071". ' +
-            'Available point layers: airports, dams, water-bodies, hotosm-health-facilities, pincodes-centroids. ' +
-            'Also works with any polygon layer (districts, gs-wildlife, etc.).',
+            'Find features within a given radius (km) of a center point, across one or more map layers. ' +
+            'Center the search on a lat/lon OR pass a pincode directly (its centroid is resolved server-side). ' +
+            'Works with point layers (airports, dams, health facilities, water bodies, pincodes-centroids) and polygon layers (uses polygon centroids). ' +
+            'Results are sorted by distance, deduped (OSM ships each facility as two near-coincident nodes), and trimmed of admin-code boilerplate by default. ' +
+            'Use filters to constrain server-side BEFORE the limit applies — e.g. filters={"amenity":"hospital"} so limit=10 returns 10 hospitals, not 10 mixed clinics/pharmacies. ' +
+            'Examples: nearby(pincode="400071", mapIds=["hotosm-health-facilities"], filters={"amenity":"hospital"}, limit=10); ' +
+            '"dams within 50 km of Hubballi"; "pincodes near 400071". ' +
+            'Available point layers: airports, dams, water-bodies, hotosm-health-facilities, pincodes-centroids.',
           inputSchema: {
             type: 'object' as const,
             properties: {
-              lat: { type: 'number', description: 'Centre latitude (decimal degrees)' },
-              lon: { type: 'number', description: 'Centre longitude (decimal degrees)' },
+              lat: { type: 'number', description: 'Centre latitude (decimal degrees). Provide lat+lon, or use pincode instead.' },
+              lon: { type: 'number', description: 'Centre longitude (decimal degrees). Provide lat+lon, or use pincode instead.' },
+              pincode: { type: 'string', description: 'Centre on this pincode\'s centroid instead of lat/lon. E.g. "400071".' },
               radiusKm: { type: 'number', description: 'Search radius in kilometres.' },
               mapIds: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'One or more map layer IDs to search. E.g. ["airports"], ["dams","water-bodies"], ["hotosm-health-facilities"]. Use list_available_maps to discover IDs.',
+                description: 'One or more map layer IDs to search. E.g. ["hotosm-health-facilities"], ["dams","water-bodies"]. Use list_available_maps to discover IDs.',
               },
-              limit: { type: 'number', description: 'Max results per layer (default 20, max 200).' },
+              filters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Server-side property filters applied before the radius/limit. E.g. {"amenity":"hospital"}. Case-insensitive substring match.',
+              },
+              limit: { type: 'number', description: 'Max results per layer after dedup (default 20, max 200).' },
               properties: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Property names to include in results. Omit for all properties.',
+                description: 'Property names to include. Omit for a terse default (admin-code/duplicate-name fields dropped).',
               },
+              terse: { type: 'boolean', description: 'Drop verbose admin-code boilerplate (adm*_pcode, name_latin, etc.). Default true.' },
             },
-            required: ['lat', 'lon', 'radiusKm', 'mapIds'],
+            required: ['radiusKm', 'mapIds'],
+          },
+        },
+        {
+          name: 'centroid',
+          description:
+            'Centroid (lat/lon) of any feature in any layer — district, state, constituency, ward, pincode, point, or polygon. ' +
+            'Look up by fuzzy name (matched against the layer\'s name property) and/or property filters. ' +
+            'Examples: centroid(mapId="lgd-districts", name="Pune"); centroid(mapId="lgd-parliament", name="Chennai South"); ' +
+            'centroid(mapId="pincodes-centroids", filters={"pincode":"400071"}). ' +
+            'For pincodes specifically, pincode_centroid also fills in district/state. Returns one row per matched feature.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              mapId: { type: 'string', description: 'Map layer ID. Use list_available_maps to discover IDs.' },
+              name: { type: 'string', description: 'Optional feature name (fuzzy match on the layer\'s name property). Omit to get centroids for all/filtered features.' },
+              filters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Optional property filters, e.g. {"pincode":"400071"} or {"state_name":"Kerala"}. Case-insensitive substring match.',
+              },
+              limit: { type: 'number', description: 'Max features to return (default 50, max 500).' },
+            },
+            required: ['mapId'],
           },
         },
         {
@@ -909,6 +962,47 @@ export function createMcpServer(): Server {
           },
         },
         {
+          name: 'proximity_coverage',
+          description:
+            'Bulk nearest-distance + within-radius coverage: for EACH source feature, returns the nearest ' +
+            'target feature, its distance (km), whether it is within radiusKm, and how many targets fall ' +
+            'within radiusKm (a density metric). This is the buffer / "within N km" counterpart to ' +
+            'aggregate_by_boundary (which counts features strictly INSIDE a polygon) — keep both.\n\n' +
+            'Canonical use: "which pincodes in Pune district are within 5 km of a hospital, and map density":\n' +
+            'proximity_coverage(sourceMapId="pincodes-centroids", sourceFilters={"district":"Pune"}, ' +
+            'targetMapId="hotosm-health-facilities", targetFilters={"amenity":"hospital"}, radiusKm=5).\n' +
+            'Feed the result straight into render_pincodes_map: use targets_within_radius as the value (density), ' +
+            'or within_radius as a 0/1 coverage map.\n\n' +
+            'For source=pincodes-centroids, district/state are polygon-derived so sourceFilters={"district":"..."} works. ' +
+            'Targets are deduped (OSM ships double-nodes) and bbox-prefiltered to the source extent. ' +
+            'sourceFilters is REQUIRED (scope to a district/state) to avoid an all-India blow-up.',
+          inputSchema: {
+            type: 'object' as const,
+            properties: {
+              sourceMapId: { type: 'string', description: 'Features to measure FROM, e.g. "pincodes-centroids". Use list_available_maps.' },
+              sourceFilters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'REQUIRED. Scope the source subset, e.g. {"district":"Pune"} or {"state_name":"Kerala"}. For pincodes-centroids, district/state are polygon-derived.',
+              },
+              targetMapId: { type: 'string', description: 'Features to measure TO, e.g. "hotosm-health-facilities".' },
+              targetFilters: {
+                type: 'object',
+                additionalProperties: { type: 'string' },
+                description: 'Optional filters on target features, e.g. {"amenity":"hospital"}.',
+              },
+              radiusKm: { type: 'number', description: 'Coverage threshold in km, e.g. 5.' },
+              limit: { type: 'number', description: 'Max source rows returned (default 1000, max 5000).' },
+              properties: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Source properties to echo back. Omit for terse output (name/id + computed fields).',
+              },
+            },
+            required: ['sourceMapId', 'targetMapId', 'radiusKm'],
+          },
+        },
+        {
           name: 'join_layers',
           description:
             'Join numeric columns from two map layers by matching feature names. ' +
@@ -1163,6 +1257,24 @@ export function createMcpServer(): Server {
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
 
+        case 'proximity_coverage': {
+          const sourceMapId = args?.sourceMapId as string;
+          const targetMapId = args?.targetMapId as string;
+          const radiusKm = args?.radiusKm as number;
+          if (!sourceMapId || !targetMapId || radiusKm == null)
+            throw new Error('sourceMapId, targetMapId, and radiusKm are required');
+          const result = await mapService.proximityCoverage({
+            sourceMapId,
+            sourceFilters: args?.sourceFilters as Record<string, string> | undefined,
+            targetMapId,
+            targetFilters: args?.targetFilters as Record<string, string> | undefined,
+            radiusKm,
+            limit: args?.limit as number | undefined,
+            properties: args?.properties as string[] | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
         case 'join_layers': {
           const baseMapId = args?.baseMapId as string;
           const joinMapId = args?.joinMapId as string;
@@ -1322,10 +1434,21 @@ export function createMcpServer(): Server {
         }
 
         case 'list_pincodes': {
-          const pincodes = await mapService.listPincodes(args?.state as string | undefined);
+          const pincodes = await mapService.listPincodes(
+            args?.state as string | undefined,
+            args?.district as string | undefined,
+          );
           return {
             content: [{ type: 'text', text: JSON.stringify(pincodes, null, 2) }],
           };
+        }
+
+        case 'pincode_centroid': {
+          const pincode = args?.pincode as string;
+          if (!pincode) throw new Error('pincode is required');
+          const result = await mapService.resolvePincode(pincode);
+          if (!result) throw new Error(`Unknown pincode: "${pincode}"`);
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
 
         case 'render_pincodes_map': {
@@ -1429,16 +1552,21 @@ export function createMcpServer(): Server {
         }
 
         case 'nearby': {
-          const lat = args?.lat as number;
-          const lon = args?.lon as number;
+          const lat = args?.lat as number | undefined;
+          const lon = args?.lon as number | undefined;
+          const pincode = args?.pincode as string | undefined;
           const radiusKm = args?.radiusKm as number;
           const mapIds = Array.isArray(args?.mapIds) ? args.mapIds as string[] : [];
-          if (lat == null || lon == null || radiusKm == null || !mapIds.length)
-            throw new Error('lat, lon, radiusKm, and mapIds are required');
+          if (radiusKm == null || !mapIds.length)
+            throw new Error('radiusKm and mapIds are required');
+          if ((lat == null || lon == null) && !pincode)
+            throw new Error('Provide either lat+lon or a pincode as the center.');
           const result = await mapService.nearby({
-            lat, lon, radiusKm, mapIds,
+            lat, lon, pincode, radiusKm, mapIds,
             limit: args?.limit as number | undefined,
             properties: args?.properties as string[] | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
+            terse: args?.terse as boolean | undefined,
           });
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
@@ -1450,6 +1578,18 @@ export function createMcpServer(): Server {
             mapId,
             name: args?.name as string | undefined,
             populationProperty: args?.populationProperty as string | undefined,
+            limit: args?.limit as number | undefined,
+          });
+          return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        }
+
+        case 'centroid': {
+          const mapId = args?.mapId as string;
+          if (!mapId) throw new Error('mapId is required');
+          const result = await mapService.centroid({
+            mapId,
+            name: args?.name as string | undefined,
+            filters: args?.filters as Record<string, string> | undefined,
             limit: args?.limit as number | undefined,
           });
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };

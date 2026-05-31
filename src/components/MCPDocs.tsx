@@ -174,7 +174,8 @@ Auth:         None required`;
     { name: 'list_demos', description: 'Built-in demo datasets: NFHS-5 health indicators, IHME AMR estimates', input: 'level? ("states" | "districts")' },
     { name: 'get_demo_url', description: 'Shareable URL that opens a demo dataset directly in the browser', input: 'demoId, baseUrl?' },
     { name: 'list_pincode_states', description: '38 states/UTs with pincode boundary data (~19,000 pincodes total)', input: 'None' },
-    { name: 'list_pincodes', description: 'All pincodes for a state with post office name and district', input: 'state (string)' },
+    { name: 'list_pincodes', description: 'Pincodes for a state or district (polygon-derived district + lat/lon when scoped)', input: 'state?, district?' },
+    { name: 'pincode_centroid', description: 'Resolve one pincode → lat/lon + office name + district + state in a single call', input: 'pincode (string)' },
     { name: 'render_pincodes_map', description: 'Pincode-level choropleth for a single state as 300 DPI PNG', input: 'data [{pincode, value}], state, colorScale?, ...' },
     { name: 'list_cities', description: '130+ cities with ward/zone boundary data (2,900+ datasets)', input: 'None' },
     { name: 'list_wards', description: 'All ward names for a given city', input: 'cityId (string)' },
@@ -187,8 +188,10 @@ Auth:         None required`;
     { name: 'locate', description: 'Which boundary region(s) a lat/lon point falls inside, across one or more layers at once', input: 'lat, lon, mapIds? (array)' },
     { name: 'query_layer', description: 'Filter features by property values or name substring', input: 'mapId, filters?, numericFilters?, limit?' },
     { name: 'spatial_join', description: 'All features in a target layer that intersect features matched in a boundary layer', input: 'targetMapId, boundaryMapId, boundaryFilters?' },
-    { name: 'nearby', description: 'N nearest feature centroids to a lat/lon point', input: 'lat, lon, mapId, n?' },
+    { name: 'nearby', description: 'Nearest features to a lat/lon or pincode center; server-side filters, dedup, terse output', input: 'lat+lon | pincode, radiusKm, mapIds, filters?' },
+    { name: 'proximity_coverage', description: 'Per-source nearest-target distance + within-radius flag + density count (e.g. pincodes within 5 km of a hospital)', input: 'sourceMapId, sourceFilters, targetMapId, targetFilters?, radiusKm' },
     { name: 'get_area', description: 'Geodetic area (km²) of any feature or set of features', input: 'mapId, filters?, numericFilters?' },
+    { name: 'centroid', description: 'Centroid (lat/lon) of any feature in any layer — district, constituency, ward, pincode, point', input: 'mapId, name?, filters?' },
     { name: 'get_layer_detail', description: 'Feature count, property names, GeoJSON and GeoParquet download URLs for a layer', input: 'mapId (string)' },
   ];
 
@@ -212,7 +215,7 @@ Auth:         None required`;
         <p className={`${textClass} text-lg mb-3`}>
           BharatViz has a hosted MCP server. Point any MCP-compatible client at it and you can
           generate India maps, query boundaries, and run demographic analytics from plain English.
-          28 tools: map rendering, boundary lookup, spatial queries, and in-memory analytics
+          31 tools: map rendering, boundary lookup, spatial queries, and in-memory analytics
           across 60+ boundary layers.
         </p>
         <div className={`${cardClass} flex items-center gap-3`}>
@@ -416,7 +419,7 @@ Auth:         None required`;
       <div className="space-y-4">
         <h3 id="map-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Server className="h-5 w-5" />
-          Map &amp; Boundary Tools (16)
+          Map &amp; Boundary Tools (17)
           <SectionAnchor id="map-tools" />
         </h3>
         <p className={textClass}>Render maps, list boundary sets, get CSV templates, trace district history.</p>
@@ -440,7 +443,7 @@ Auth:         None required`;
       <div className="space-y-4">
         <h3 id="spatial-tools" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <MapPin className="h-5 w-5" />
-          Spatial Query Tools (6)
+          Spatial Query Tools (8)
           <SectionAnchor id="spatial-tools" />
         </h3>
         <p className={textClass}>Point-in-polygon lookups, nearest-neighbour search, spatial joins, area calculations, layer metadata.</p>
@@ -696,26 +699,56 @@ query_layer({
         />
 
         <ExampleCard
-          title="Pincode-level hospital density map"
-          prompt="Show which pincodes in Pune district are within 5 km of a hospital, and map facility density by pincode."
-          answer="Combines a pincode list, a district-filtered hospital query, and per-pincode radius counts into a density choropleth. Filter health facilities by adm2_name (plain district names like 'Pune') — adm1_name carries diacritics."
-          code={`list_pincodes({ state: "Maharashtra" })
-
-query_layer({
-  mapId: "hotosm-health-facilities",
-  filters: { adm2_name: "Pune", amenity: "hospital" }
+          title="Health facilities near a pincode"
+          prompt="What health facilities are within 3 km of pincode 400071, and which district is that?"
+          answer="One call: nearby resolves the pincode's centroid server-side, returns the nearest facilities (deduped, terse), and the center carries district/state. Add filters={amenity:'hospital'} to narrow — but leaving it off keeps clinics & CHCs in view."
+          code={`nearby({
+  pincode: "400071",        // centered on the pincode's centroid — no lat/lon needed
+  radiusKm: 3,
+  mapIds: ["hotosm-health-facilities"],
+  limit: 8
+  // optional: filters: { amenity: "hospital" } to constrain server-side before the limit
 })
-// hospitals in Pune district with lat/lon
 
-nearby({ lat: <pincode_lat>, lon: <pincode_lon>, mapId: "hotosm-health-facilities", n: 5 })
-// Per-pincode centroid query; aggregate to get hospital count within radius
+{
+  "center": { "lat": 19.06, "lon": 72.90, "pincode": "400071" },
+  "layers": [{ "mapId": "hotosm-health-facilities", "features": [
+    { "_distance_km": 0.1, "name": "Rushabh Eye Hospital", "amenity": "hospital",
+      "adm2_name": "Mumbai Suburban" },
+    // ... 6 hospitals + 2 clinics within 3 km
+  ]}]
+}
 
-render_pincodes_map({
-  state: "Maharashtra",
-  data: [ { pincode: "411001", value: 12 }, { pincode: "411002", value: 3 }, ... ],
-  title: "Hospitals within 5 km — Pune Pincodes",
-  colorScale: "blues"
-})`}
+// To resolve a pincode to its location on its own:
+pincode_centroid({ pincode: "400071" })
+// → { pincode, lat: 19.06, lon: 72.90, office_name: "Chembur HO",
+//     district: "Mumbai Suburban", state: "Maharashtra" }`}
+        />
+
+        <ExampleCard
+          title="Coverage: which pincodes are within 5 km of a hospital"
+          prompt="Which pincodes in Pune district are within 5 km of a hospital? Map the density."
+          answer="One call returns every Pune pincode's nearest-hospital distance, a within-radius flag, and a count of hospitals within 5 km — plus a coverage summary (60% covered). District is polygon-derived, so the Pune set is clean (no stray Raigad pincodes). Feed targets_within_radius straight into render_pincodes_map as the value."
+          code={`proximity_coverage({
+  sourceMapId: "pincodes-centroids",
+  sourceFilters: { district: "Pune" },     // polygon-derived — excludes mislabeled strays
+  targetMapId: "hotosm-health-facilities",
+  targetFilters: { amenity: "hospital" },
+  radiusKm: 5
+})
+
+{
+  "summary": { "source_total": 368, "covered_count": 222, "covered_pct": 60.3, "radiusKm": 5 },
+  "results": [
+    { "pincode": "411001", "lat": 18.52, "lon": 73.86,
+      "nearest_target_name": "...", "nearest_distance_km": 0.4,
+      "within_radius": true, "targets_within_radius": 22 },
+    // ... one row per Pune pincode
+  ]
+}
+
+// → render_pincodes_map({ state: "Maharashtra",
+//     data: results.map(r => ({ pincode: r.pincode, value: r.targets_within_radius })) })`}
         />
 
         <ExampleCard
