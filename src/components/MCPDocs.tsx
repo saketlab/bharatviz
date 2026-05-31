@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, Server, Plug, Code2, Hash, ChartBar, Search, MapPin, Layers } from 'lucide-react';
+import { Copy, Check, Terminal, Server, Plug, Code2, Hash, ChartBar, Search, MapPin, Layers, Cpu } from 'lucide-react';
 
 interface MCPDocsProps {
   darkMode?: boolean;
@@ -163,6 +163,30 @@ response = client.beta.messages.create(
 MCP endpoint: ${MCP_URL}
 Transport:    HTTP / SSE (Streamable HTTP)
 Auth:         None required`;
+
+  const openModelClientSnippet = `# Apps that are MCP clients AND let you pick the model — point them at the
+# endpoint, then choose a local (Ollama / vLLM) or hosted open model:
+#   LibreChat · Open WebUI · Jan · Cline · Continue.dev · 5ire · Cherry Studio
+{
+  "mcpServers": {
+    "bharatviz": { "url": "${MCP_URL}" }
+  }
+}
+# Model picker → e.g. qwen2.5:32b, llama3.3:70b, mistral, deepseek-v3 (Ollama),
+# or any OpenAI-compatible endpoint (vLLM, Together, Groq, OpenRouter).`;
+
+  const ollamaBridgeSnippet = `# Drive the endpoint with a LOCAL Ollama model — no Claude involved.
+# 1. Pull a tool-capable model (7B+ recommended; smaller ones mis-call tools):
+ollama pull qwen2.5:7b          # or llama3.3, mistral, qwen2.5:32b
+
+# 2. Run the bundled bridge (repo: server/examples/ollama_mcp_chat.mjs).
+#    It discovers the tools at runtime, hands them to the model as function
+#    specs, and runs the call→execute→answer loop:
+MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
+  "Which 5 districts have the lowest literacy rate in India?"
+
+# Generic CLI alternative (Go): mcphost --model ollama:qwen2.5:7b \\
+#   --config '{"mcpServers":{"bharatviz":{"url":"${MCP_URL}"}}}'`;
 
   const mapTools = [
     { name: 'list_available_maps', description: 'All boundary sets with id, source, year, level, and feature count', input: 'None' },
@@ -385,6 +409,32 @@ Auth:         None required`;
             Clients that support only stdio transport can wrap the endpoint with{' '}
             <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcp-remote</code>:{' '}
             <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">npx mcp-remote {MCP_URL}</code>
+          </p>
+        </div>
+      </div>
+
+      {/* ── Open & local models ──────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <h3 id="setup-open-models" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
+          <Cpu className="h-5 w-5" />
+          Open &amp; local models (Llama, Qwen, Mistral, …)
+          <SectionAnchor id="setup-open-models" />
+        </h3>
+        <div className={cardClass}>
+          <p className={`${textClass} text-sm mb-2`}>
+            MCP is <strong>model-agnostic</strong> — the server is plain Streamable HTTP and doesn&apos;t care which LLM calls it.
+            Any model with <strong>tool / function calling</strong> works: Llama 3.1+, Qwen 2.5/3, Mistral, DeepSeek, Command-R, GPT-OSS.
+            There are two routes.
+          </p>
+          <p className={`${textClass} text-sm mb-2 font-medium`}>1 · An MCP-client app, with your own model selected</p>
+          <CodeBlock code={openModelClientSnippet} />
+          <p className={`${textClass} text-sm mt-3 mb-2 font-medium`}>2 · A local Ollama model via a tiny bridge</p>
+          <CodeBlock code={ollamaBridgeSnippet} />
+          <p className={`${textClass} text-sm mt-3`}>
+            Tool-calling <em>reliability</em> tracks model strength: 7B models handle simple one-tool prompts,
+            but multi-step queries (e.g. the cross-layer correlation below) want a stronger open model
+            — Qwen2.5-32B, Llama-3.3-70B, or DeepSeek-V3. The server works with all of them; only the
+            orchestration quality differs.
           </p>
         </div>
       </div>
