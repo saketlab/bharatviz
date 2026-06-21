@@ -269,7 +269,7 @@ export const DISTRICT_MAP_TYPES: Record<string, DistrictMapConfig> = {
     id: 'NSSO',
     name: 'NSSO',
     displayName: 'NSSO Regions',
-    geojsonPath: `${DISTRICTS}/India_NFHS5_NSSO_regions_boundaries.geojson`,
+    geojsonPath: `${DISTRICTS}/India_NSSO_regions_v2.geojson`,
     states: `${DISTRICTS}/India_LGD_states.geojson`,
     templateCsvPath: '/bharatviz-nsso-regions-template.csv',
     demoDataPath: '/nsso_regions_demo.csv',

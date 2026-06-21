@@ -146,5 +146,6 @@
   "hotosm_health_facilities": "https://geo.bharatviz.org/geojsons/facilities/hotosm_ind_health_facilities.geojson",
   "hotosm_health_facilities_parquet": "https://geo.bharatviz.org/geoparquet/facilities/hotosm_ind_health_facilities.parquet",
   "census_2011_enriched_geojson": "https://geo.bharatviz.org/geojsons/census2011/india_census2011_districts.geojson",
-  "census_2011_enriched_parquet": "https://geo.bharatviz.org/geoparquet/census2011/india_census2011_districts.parquet"
+  "census_2011_enriched_parquet": "https://geo.bharatviz.org/geoparquet/census2011/india_census2011_districts.parquet",
+  "India_NSSO_regions_v2.geojson": "https://geo.bharatviz.org/geojsons/districts/India_NSSO_regions_v2.geojson"
 }
