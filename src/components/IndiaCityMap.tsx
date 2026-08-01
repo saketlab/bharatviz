@@ -923,6 +923,34 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
     [numericValues]
   );
 
+  // Declutter labels: biggest wards first, drop any whose box overlaps a kept one.
+  const visibleLabelKeys = useMemo(() => {
+    const keep = new Set<string>();
+    if (!bounds || (hideWardNames && hideWardValues)) return keep;
+    const placed: Array<{ x: number; y: number; w: number; h: number }> = [];
+    const sorted = [...wardLabelData].sort((a, b) => b.area - a.area);
+    const areaRange = maxArea - minArea;
+    for (const { feature, area } of sorted) {
+      const wardName = feature.properties.ward_name || '';
+      if (!wardName) continue;
+      const [lng, lat] = getPolygonCenter(feature.geometry);
+      const custom = labelPositions.get(wardName);
+      const { x, y } = custom ?? geoToScreen(lng, lat);
+      const minFontSize = isMobile ? 5 : 6;
+      const maxFontSize = isMobile ? 12 : 14;
+      const normalizedArea = areaRange > 0 ? (area - minArea) / areaRange : 0.5;
+      const fontSize = (minFontSize + Math.sqrt(normalizedArea) * (maxFontSize - minFontSize)) * 0.7;
+      const w = wardName.length * fontSize * 0.55;
+      const h = fontSize * 1.2;
+      const collides = placed.some(p =>
+        Math.abs(p.x - x) < (p.w + w) / 2 && Math.abs(p.y - y) < (p.h + h) / 2);
+      if (collides) continue;
+      placed.push({ x, y, w, h });
+      keep.add(wardName);
+    }
+    return keep;
+  }, [wardLabelData, maxArea, minArea, bounds, isMobile, labelPositions, hideWardNames, hideWardValues]);
+
   if (!geojsonData || !bounds) {
     return (
       <div className="w-full h-96 flex items-center justify-center border border-border rounded bg-background">
@@ -993,7 +1021,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
           <g className="ward-labels">
             {wardLabelData.map(({ feature, area }, index) => {
               const wardName = feature.properties.ward_name || '';
-              if (!wardName) return null;
+              if (!wardName || !visibleLabelKeys.has(wardName)) return null;
 
               const [lng, lat] = getPolygonCenter(feature.geometry);
               const screenPos = geoToScreen(lng, lat);
