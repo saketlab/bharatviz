@@ -123,7 +123,7 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
             boundaryColor={boundaryColor}
             boundaryWidth={boundaryWidth}
             polygonsLayer={features}
-            polygonLabels={true}
+            polygonLabels={false}
           />
         </Suspense>
         {loading && (

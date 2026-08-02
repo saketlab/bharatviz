@@ -8,7 +8,7 @@ import { extent } from 'd3-array';
 import { saveAs } from 'file-saver';
 import { type ColorScale, ColorBarSettings } from './ColorMapChooser';
 import { isColorDark, roundToSignificantDigits, resolveBoundaryStroke, type BoundaryColor } from '@/lib/colorUtils';
-import { getColorForValue, getDiscreteLegendStops } from '@/lib/discreteColorUtils';
+import { getColorForValue, getDiscreteLegendStops, robustDomain } from '@/lib/discreteColorUtils';
 import { DiscreteLegend } from '@/lib/discreteLegend';
 import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { createRotationCalculator } from '@/lib/rotationUtils';
@@ -452,11 +452,15 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     return area;
   };
 
+  // Shared by SVG paths and deck.gl overlays so they align; yOffset clears the title.
+  const layout = useMemo(() => {
+    if (isMobile) return { mapWidth: 320, mapHeight: 400, xOffset: 15, yOffset: 55 };
+    if (selectedState) return { mapWidth: 760, mapHeight: 1050, xOffset: 20, yOffset: 55 };
+    return { mapWidth: 760, mapHeight: 810, xOffset: 20, yOffset: 75 };
+  }, [isMobile, selectedState]);
+
   const geoToScreen = useCallback((lng: number, lat: number): { x: number; y: number } => {
-    const mapWidth = isMobile ? 320 : 760;
-    const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-    const xOffset = isMobile ? 15 : 20;
-    const yOffset = isMobile ? 55 : 45;
+    const { mapWidth, mapHeight, xOffset, yOffset } = layout;
 
     if (!bounds) return { x: 0, y: 0 };
 
@@ -482,7 +486,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY + yOffset;
 
     return { x, y };
-  }, [isMobile, selectedState, bounds]);
+  }, [layout, bounds]);
 
   const overlayViewBoxWidth = isMobile ? 350 : 800;
   const overlayViewBoxHeight = isMobile ? 440 : selectedState ? 1100 : 890;
@@ -493,10 +497,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   ): boolean => {
     if (!bounds) return false;
 
-    const mapWidth = isMobile ? 320 : 760;
-    const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-    const offsetXParam = isMobile ? 55 : 45;
-    const offsetYParam = isMobile ? 15 : 20;
+    const { mapWidth, mapHeight, xOffset: offsetXParam, yOffset: offsetYParam } = layout;
 
     let polygonCoords: number[][] = [];
     if (feature.geometry.type === 'MultiPolygon') {
@@ -583,8 +584,7 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
       .attr('y2', '0%');
 
     const values = scopedNumericValues;
-    const minValue = values.length > 0 ? Math.min(...values) : 0;
-    const maxValue = values.length > 0 ? Math.max(...values) : 1;
+    const [minValue, maxValue] = values.length > 0 ? robustDomain(values) : [0, 1];
 
     const getAQIColorAbsolute = (value: number): string => {
       if (value <= 50) return '#10b981';
@@ -670,16 +670,18 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
   };
 
   const getDistrictColorForValue = (value: number | string | undefined, dataExtent: [number, number] | undefined): string => {
-    if (value === undefined) return darkMode ? '#1a1a1a' : 'white';
+    // Lighter than the dark map bg so no-data regions don't vanish into it.
+    const noData = darkMode ? 'hsl(25, 8%, 22%)' : 'white';
+    if (value === undefined) return noData;
 
     if (dataType === 'categorical' && typeof value === 'string') {
-      return getCategoryColor(value, categoryColors, darkMode ? '#1a1a1a' : '#e5e7eb');
+      return getCategoryColor(value, categoryColors, darkMode ? 'hsl(25, 8%, 22%)' : '#e5e7eb');
     }
 
     if (typeof value === 'number') {
-      if (!dataExtent) return darkMode ? '#1a1a1a' : 'white';
+      if (!dataExtent) return noData;
       if (isNaN(value)) {
-        return darkMode ? '#1a1a1a' : 'white';
+        return noData;
       }
 
       const [minVal, maxVal] = dataExtent;
@@ -1248,9 +1250,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               aria-label={dataTitle ? `India districts map - ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` - ${selectedState}` : ''}`}
             >
               {geojsonData.features.map((feature, index) => {
-                const mapWidth = isMobile ? 320 : 760;
-                const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-                const path = convertCoordinatesToPath(feature.geometry.coordinates, mapWidth, mapHeight, isMobile ? 55 : 45, isMobile ? 15 : 20);
+                const path = convertCoordinatesToPath(feature.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset);
                 const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
                 const districtData = data.find(d =>
                   d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
@@ -1390,9 +1390,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                   return true;
                 })
                 .map((stateFeature, index) => {
-                const mapWidth = isMobile ? 320 : 760;
-                const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
-                const path = convertCoordinatesToPath(stateFeature.geometry.coordinates, mapWidth, mapHeight, isMobile ? 55 : 45, isMobile ? 15 : 20);
+                const path = convertCoordinatesToPath(stateFeature.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset);
                 
                 return (
                   <path

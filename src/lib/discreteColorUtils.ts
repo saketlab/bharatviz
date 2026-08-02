@@ -157,6 +157,22 @@ export function getDiscreteColorInfo(
   };
 }
 
+// p2..p98 domain so outliers don't flatten a skewed distribution. Memoized per
+// array so the sort doesn't repeat across per-district getColorForValue calls.
+const domainCache = new WeakMap<number[], [number, number]>();
+export function robustDomain(values: number[]): [number, number] {
+  if (values.length === 0) return [0, 1];
+  let d = domainCache.get(values);
+  if (!d) {
+    const sorted = [...values].sort((a, b) => a - b);
+    const lo = d3.quantileSorted(sorted, 0.02)!;
+    const hi = d3.quantileSorted(sorted, 0.98)!;
+    d = lo === hi ? [sorted[0], sorted[sorted.length - 1]] : [lo, hi];
+    domainCache.set(values, d);
+  }
+  return d;
+}
+
 export function getColorForValue(
   value: number | undefined,
   values: number[],
@@ -178,10 +194,7 @@ export function getColorForValue(
     return invertColors ? getD3ColorInterpolator(colorScale)(1 - (value / 500)) : getAQIColor(value);
   }
 
-  const minValue = Math.min(...values);
-  const maxValue = Math.max(...values);
-
-  if (minValue === maxValue) {
+  if (Math.min(...values) === Math.max(...values)) {
     return getD3ColorInterpolator(colorScale)(0.5);
   }
 
@@ -191,7 +204,8 @@ export function getColorForValue(
     return colorInfo.color;
   }
 
-  let normalizedValue = (value - minValue) / (maxValue - minValue);
+  const [lo, hi] = robustDomain(values);
+  let normalizedValue = Math.max(0, Math.min(1, (value - lo) / (hi - lo)));
   if (invertColors) {
     normalizedValue = 1 - normalizedValue;
   }

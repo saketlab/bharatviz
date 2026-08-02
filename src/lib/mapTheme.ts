@@ -17,7 +17,7 @@ const LIGHT = {
 const DARK = {
   bg: 'hsl(25, 8%, 6%)',
   emptyFill: 'hsl(25, 8%, 14%)',
-  noDataFill: 'hsl(25, 8%, 14%)',
+  noDataFill: 'hsl(25, 8%, 22%)',
   stroke: 'hsl(35, 12%, 93%)',
   labelPrimary: 'hsl(35, 12%, 93%)',
   labelSecondary: 'hsl(30, 8%, 60%)',

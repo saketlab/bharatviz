@@ -86,7 +86,6 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
       const p = project(d.lon, d.lat);
       return [p.x * sx, p.y * sy];
     };
-    // Center the orthographic view on the canvas (target is canvas-center in px).
     const viewState = { target: [mapRect.width / 2, mapRect.height / 2, 0], zoom: 0 };
 
     const opacityByte = Math.round(pointOpacity * 255);
@@ -113,8 +112,7 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
           getRadius: pointRadius,
           radiusUnits: 'pixels',
           radiusMinPixels: 0.5,
-          radiusMaxPixels: 40,
-          antialiasing: false,
+          radiusMaxPixels: 3,
           parameters: { depthTest: false },
           getFillColor: (d: PointFeature) => {
             const rgb = colorToRgb(d.color ?? '#ef4444');

@@ -19,6 +19,7 @@ export interface PolygonFeature {
 
 const FILL_RGB: [number, number, number] = [193, 122, 60];
 const FILL_A = Math.round(0.35 * 255);
+const LABEL_CAP = 400;
 
 interface DeckPolygonsLayerProps {
   features: PolygonFeature[];
@@ -83,7 +84,7 @@ export const DeckPolygonsLayer: React.FC<DeckPolygonsLayerProps> = ({
     return out;
   }, [features, width, height, viewBoxWidth, viewBoxHeight, project]);
 
-  // One label per feature, placed on its largest already-projected ring.
+  // Above LABEL_CAP names overlap into a mush, so hover shows them instead.
   const labels = useMemo<LabelDatum[]>(() => {
     if (!showLabels) return [];
     const best = new Map<PolygonFeature, number[][]>();
@@ -93,6 +94,7 @@ export const DeckPolygonsLayer: React.FC<DeckPolygonsLayerProps> = ({
       const prev = best.get(d.feature);
       if (!prev || ring.length > prev.length) best.set(d.feature, ring);
     }
+    if (best.size > LABEL_CAP) return [];
     const out: LabelDatum[] = [];
     for (const [feature, ring] of best) {
       let ax = 0, ay = 0;
