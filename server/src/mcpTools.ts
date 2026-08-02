@@ -1,8 +1,4 @@
-/**
- * Shared MCP tool definitions and handlers.
- *
- * Used by both the stdio entry point (mcp.ts) and the HTTP transport (index.ts).
- */
+// Tool registrations are shared by the stdio and HTTP transports.
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
@@ -24,9 +20,6 @@ function mapResultToContent(result: { svg?: string; png?: string }) {
   return { content };
 }
 
-/**
- * Creates a new MCP Server instance with all BharatViz tools registered.
- */
 export function createMcpServer(): Server {
   const server = new Server(
     { name: 'bharatviz', version: '1.0.0' },
@@ -46,8 +39,8 @@ export function createMcpServer(): Server {
         '- Wealth index (mapId: shrug-facebook) - Meta Relative Wealth Index (RWI) per district\n' +
         '- Rural roads (mapId: shrug-roads) - PMGSY road construction length and cost\n' +
         '- Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
-        '- Villages (mapId: villages-soi-points) - 576,430 Survey of India village points, the finest ' +
-        '  admin level available; fields village_name, state_name, district, subdivision, LGD codes\n' +
+        '- Villages (mapId: villages-soi-points) - 584,615 LGD village points (centroids of LGD village ' +
+        '  polygons), the finest admin level, complete nationwide; fields village_name, state_name, district\n' +
         '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, constituencies\n\n' +
         'TOOLS:\n' +
         '- rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
@@ -284,7 +277,6 @@ export function createMcpServer(): Server {
           },
         },
 
-        // Pincode Tools
         {
           name: 'list_pincode_states',
           description:
@@ -381,7 +373,6 @@ export function createMcpServer(): Server {
           },
         },
 
-        // City/Ward Tools
         {
           name: 'list_cities',
           description:
@@ -666,7 +657,6 @@ export function createMcpServer(): Server {
           },
         },
 
-        // District Evolution Tools
         {
           name: 'trace_district_evolution',
           description:
@@ -707,7 +697,6 @@ export function createMcpServer(): Server {
             properties: {},
           },
         },
-        // Analytics
         {
           name: 'layer_schema',
           description:
@@ -1157,7 +1146,6 @@ export function createMcpServer(): Server {
           };
         }
 
-        // Analytics handlers
         case 'layer_schema': {
           const mapId = args?.mapId as string;
           if (!mapId) throw new Error('mapId is required');
@@ -1426,7 +1414,6 @@ export function createMcpServer(): Server {
           };
         }
 
-        // Pincode Tools
 
         case 'list_pincode_states': {
           const states = mapService.listPincodeStates();
@@ -1474,7 +1461,6 @@ export function createMcpServer(): Server {
           return mapResultToContent(result);
         }
 
-        // City/Ward Tools
 
         case 'list_cities': {
           const cities = await mapService.listCities();
@@ -1604,7 +1590,6 @@ export function createMcpServer(): Server {
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
 
-        // District Evolution Tools
 
         case 'trace_district_evolution': {
           const district = args?.district as string;

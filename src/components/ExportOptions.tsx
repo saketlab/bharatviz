@@ -27,6 +27,8 @@ interface ExportOptionsProps {
   darkMode?: boolean;
   geojsonDownloadUrl?: string | null;
   geojsonDownloadName?: string;
+  parquetDownloadUrl?: string | null;
+  parquetDownloadName?: string;
   citationInfo?: CitationInfo;
   defaultOpen?: boolean;
 }
@@ -83,6 +85,8 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
   darkMode: _darkMode,
   geojsonDownloadUrl,
   geojsonDownloadName,
+  parquetDownloadUrl,
+  parquetDownloadName,
   citationInfo,
   defaultOpen = true,
 }) => {
@@ -97,14 +101,35 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
     prevDisabled.current = disabled;
   }, [disabled]);
 
-  const handleDownloadGeoJSON = () => {
-    if (!geojsonDownloadUrl) return;
+  const derivedParquetUrl = (!parquetDownloadUrl && geojsonDownloadUrl?.includes('/geojsons/') && geojsonDownloadUrl.endsWith('.geojson'))
+    ? geojsonDownloadUrl.replace('/geojsons/', '/geoparquet/').replace(/\.geojson$/, '.parquet')
+    : null;
+  const [resolvedParquetUrl, setResolvedParquetUrl] = useState<string | null>(parquetDownloadUrl ?? null);
+  useEffect(() => {
+    if (parquetDownloadUrl) { setResolvedParquetUrl(parquetDownloadUrl); return; }
+    if (!derivedParquetUrl) { setResolvedParquetUrl(null); return; }
+    let cancelled = false;
+    fetch(derivedParquetUrl, { method: 'HEAD' })
+      .then(r => { if (!cancelled) setResolvedParquetUrl(r.ok ? derivedParquetUrl : null); })
+      .catch(() => { if (!cancelled) setResolvedParquetUrl(null); });
+    return () => { cancelled = true; };
+  }, [parquetDownloadUrl, derivedParquetUrl]);
+
+  const triggerDownload = (url: string, name: string) => {
     const link = document.createElement('a');
-    link.href = geojsonDownloadUrl;
-    link.download = geojsonDownloadName || 'districts.geojson';
+    link.href = url;
+    link.download = name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadGeoJSON = () => {
+    if (geojsonDownloadUrl) triggerDownload(geojsonDownloadUrl, geojsonDownloadName || 'districts.geojson');
+  };
+
+  const handleDownloadParquet = () => {
+    if (resolvedParquetUrl) triggerDownload(resolvedParquetUrl, parquetDownloadName || resolvedParquetUrl.split('/').pop() || 'data.parquet');
   };
 
   const handleCopy = () => {
@@ -143,10 +168,10 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
         <div className="px-4 pb-4 space-y-3">
           <div className="h-px bg-border dark:bg-[hsl(25,8%,14%)]" />
           <div className="flex flex-wrap gap-2">
-            <Button onClick={onExportPNG} disabled={disabled} variant="outline" size="sm" className="flex items-center gap-2">
+            <Button onClick={onExportPNG} variant="outline" size="sm" className="flex items-center gap-2">
               <FileImage className="h-4 w-4" />PNG
             </Button>
-            <Button onClick={onExportSVG} disabled={disabled} variant="outline" size="sm" className="flex items-center gap-2">
+            <Button onClick={onExportSVG} variant="outline" size="sm" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />SVG
             </Button>
             <Button onClick={onExportPDF} disabled={disabled} variant="outline" size="sm" className="flex items-center gap-2">
@@ -179,6 +204,11 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
                   {geojsonUrlCopyFeedback.copied ? 'Copied!' : 'Copy URL'}
                 </Button>
               </>
+            )}
+            {resolvedParquetUrl && (
+              <Button onClick={handleDownloadParquet} variant="outline" size="sm" className="flex items-center gap-2">
+                <Download className="h-4 w-4" />GeoParquet
+              </Button>
             )}
             {citationInfo && (
               <Button

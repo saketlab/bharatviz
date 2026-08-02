@@ -371,17 +371,16 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   },
   'villages-soi-points': {
     id: 'villages-soi-points',
-    file: `${R2}/geoparquet/points/villages_soi_points.parquet`,
-    parquetUrl: `${R2}/geoparquet/points/villages_soi_points.parquet`,
+    file: `${R2}/geoparquet/points/lgd_village_points.parquet`,
+    parquetUrl: `${R2}/geoparquet/points/lgd_village_points.parquet`,
     level: 'points',
-    source: 'Survey of India village points (ramSeraph/indian_admin_boundaries)',
+    source: 'LGD village points (centroids of LGD village polygons, ramSeraph/indian_admin_boundaries)',
     year: 2024,
-    description: '576,430 village points across India from Survey of India, digitised by ramSeraph. The finest admin level available - village polygons exist upstream but are multi-GB and not yet hosted; these are village locations as points. Fields: village_name, state_name, district, subdivision, lgd_state_code, lgd_district_code, lgd_sub_dist_code, soi_code.',
+    description: '584,615 village points across India, computed as centroids of LGD village polygons. Complete nationwide coverage (the earlier SOI point source was missing most of UP/Bihar/Jharkhand). Fields: village_name, state_name, district.',
     featureNameProp: 'village_name',
   },
 };
 
-/** GeoJSON cache to avoid reloading large files */
 const geojsonCache = new LRUCache<string, FeatureCollection>(50);
 
 const WARMUP_LAYERS = [
@@ -462,7 +461,6 @@ function pointInRing(lng: number, lat: number, ring: number[][]): boolean {
   return inside;
 }
 
-/** Test whether [lng, lat] is inside a GeoJSON geometry (Polygon or MultiPolygon). */
 function pointInGeometry(lng: number, lat: number, geometry: { type: string; coordinates: unknown }): boolean {
   if (geometry.type === 'Polygon') {
     const rings = geometry.coordinates as number[][][];
@@ -485,7 +483,6 @@ function pointInGeometry(lng: number, lat: number, geometry: { type: string; coo
   return false;
 }
 
-/** Find the first feature in a FeatureCollection whose polygon contains [lat, lng]. */
 function findContainingFeature(fc: FeatureCollection, lat: number, lng: number) {
   for (const feature of fc.features) {
     if (!feature.geometry) continue;
@@ -496,7 +493,6 @@ function findContainingFeature(fc: FeatureCollection, lat: number, lng: number) 
   return null;
 }
 
-/** Levenshtein distance between two strings (two-row optimization) */
 function levenshtein(a: string, b: string): number {
   const m = a.length, n = b.length;
   let prev = new Array(n + 1);
@@ -514,7 +510,6 @@ function levenshtein(a: string, b: string): number {
   return prev[n];
 }
 
-/** Find the best fuzzy match for `input` among `candidates`. Returns null if no good match. */
 function fuzzyMatchName(input: string, candidates: string[]): string | null {
   const norm = input.toLowerCase().trim();
   const normalized = candidates.map(c => c.toLowerCase().trim());
@@ -562,7 +557,6 @@ export class McpMapService {
     return 'other';
   }
 
-  /** List all available maps with metadata */
   async listMaps(): Promise<Array<MapEntry & { featureCount: number; category: string }>> {
     const results = [];
     for (const entry of Object.values(MAP_REGISTRY)) {
@@ -570,7 +564,6 @@ export class McpMapService {
       try {
         let featureCount = 0;
         if (entry.file.endsWith('.parquet')) {
-          // Read only the parquet footer (cheap) to get row count
           const { asyncBufferFromUrl, parquetMetadataAsync } = await import('hyparquet');
           const file = await asyncBufferFromUrl({ url: entry.file });
           const meta = await parquetMetadataAsync(file);
@@ -587,7 +580,6 @@ export class McpMapService {
     return results;
   }
 
-  /** List available maps grouped by category, without fetching GeoJSON */
   listCategories(): Record<string, Array<Pick<MapEntry, 'id' | 'level' | 'source' | 'year' | 'description' | 'aggregatedByDistrictUrl'>>> {
     const out: Record<string, Array<Pick<MapEntry, 'id' | 'level' | 'source' | 'year' | 'description' | 'aggregatedByDistrictUrl'>>> = {};
     for (const entry of Object.values(MAP_REGISTRY)) {
@@ -598,7 +590,6 @@ export class McpMapService {
     return out;
   }
 
-  /** List state names for a given map */
   async listStates(mapId: string): Promise<string[]> {
     const entry = MAP_REGISTRY[mapId];
     if (!entry) throw new Error(`Unknown map ID: ${mapId}. Use list_available_maps to see valid IDs.`);
@@ -612,7 +603,6 @@ export class McpMapService {
     return Array.from(states).sort();
   }
 
-  /** List districts for a given map, optionally filtered by state */
   async listDistricts(mapId: string, state?: string): Promise<Array<{ state: string; district: string }>> {
     const entry = MAP_REGISTRY[mapId];
     if (!entry) throw new Error(`Unknown map ID: ${mapId}. Use list_available_maps to see valid IDs.`);
@@ -631,7 +621,6 @@ export class McpMapService {
     return results.sort((a, b) => a.state.localeCompare(b.state) || a.district.localeCompare(b.district));
   }
 
-  /** Generate CSV template for a given map */
   async getCsvTemplate(mapId: string): Promise<string> {
     const entry = MAP_REGISTRY[mapId];
     if (!entry) throw new Error(`Unknown map ID: ${mapId}. Use list_available_maps to see valid IDs.`);
@@ -655,7 +644,6 @@ export class McpMapService {
     }
   }
 
-  /** Render a state-level map */
   async renderStatesMap(options: {
     data: Array<{ state: string; value: number }>;
     mapId?: string;
@@ -676,7 +664,6 @@ export class McpMapService {
     const renderer = new StatesMapRenderer();
     await renderer.loadGeoJSONFromPath(entry.file);
 
-    // Fuzzy-match user-provided state names to GeoJSON names
     const geojsonStates = await this.listStates(mapId);
     const resolvedData = options.data.map(d => {
       const matched = fuzzyMatchName(d.state, geojsonStates);
@@ -698,7 +685,6 @@ export class McpMapService {
     return this.formatOutput(svgString, options.outputFormat);
   }
 
-  /** Render a district-level map */
   async renderDistrictsMap(options: {
     data: Array<{ state: string; district: string; value: number }>;
     mapId?: string;
@@ -721,7 +707,6 @@ export class McpMapService {
     const renderer = new DistrictsMapRenderer();
     await renderer.loadGeoJSONFromPaths(entry.file, entry.statesFile);
 
-    // Fuzzy-match user-provided names to GeoJSON names
     const allDistricts = await this.listDistricts(mapId);
     const geojsonStates = [...new Set(allDistricts.map(d => d.state).filter(Boolean))];
     const isStateless = geojsonStates.length === 0; // layers like eco-zones have no state_name
@@ -764,14 +749,12 @@ export class McpMapService {
     return this.formatOutput(svgString, options.outputFormat);
   }
 
-  /** Load showcase demo URLs JSON */
   private async loadDemoUrls(): Promise<Record<string, { url: string; title: string }>> {
     const jsonPath = join(__dirname, '../../src/lib/showcase-demo-urls.json');
     const raw = await readFile(jsonPath, 'utf-8');
     return JSON.parse(raw);
   }
 
-  /** List all available showcase demo datasets */
   async listDemos(level?: 'states' | 'districts'): Promise<Array<{ id: string; title: string; level: string; url: string }>> {
     const demos = await this.loadDemoUrls();
     return Object.entries(demos)
@@ -784,7 +767,6 @@ export class McpMapService {
       }));
   }
 
-  /** Generate a shareable BharatViz URL for a given demo */
   async getDemoUrl(demoId: string, baseUrl?: string): Promise<{ shareableUrl: string; title: string; csvUrl: string }> {
     const demos = await this.loadDemoUrls();
     const demo = demos[demoId];
@@ -803,7 +785,6 @@ export class McpMapService {
     };
   }
 
-  // Pincode Tools
 
   listPincodeStates(): string[] {
     return this.pincodeRenderer.getAvailableStates();
@@ -894,7 +875,6 @@ export class McpMapService {
     return this.formatOutput(svgString, options.outputFormat);
   }
 
-  // City/Ward Tools
 
   private citiesManifestCache: Array<{ id: string; displayName: string; state: string; type: string; featureCount: number }> | null = null;
 
@@ -978,7 +958,6 @@ export class McpMapService {
     return Math.abs(area * R * R / 2);
   }
 
-  /** Compute area in km2 for a GeoJSON Polygon or MultiPolygon feature. */
   private featureAreaKm2(geometry: { type: string; coordinates: unknown }): number {
     if (geometry.type === 'Polygon') {
       const rings = geometry.coordinates as number[][][];
@@ -1037,7 +1016,6 @@ export class McpMapService {
   }> {
     const limit = Math.max(1, Math.min(options.limit ?? 20, 200));
 
-    // Resolve the search center: explicit lat/lon, or a pincode centroid.
     let lat = options.lat;
     let lon = options.lon;
     if ((lat == null || lon == null) && options.pincode) {
@@ -1377,7 +1355,6 @@ export class McpMapService {
 
       const hit = findContainingFeature(data, lat, lon);
       if (hit) {
-        // Return all non-null string/number properties
         const props: Record<string, string> = {};
         for (const [k, v] of Object.entries(hit.properties || {})) {
           if (v !== null && v !== undefined && v !== '') props[k] = String(v);
@@ -1391,7 +1368,6 @@ export class McpMapService {
     return results;
   }
 
-  /** Look up a pincode's [lon, lat] centroid from the pincodes-centroids layer. */
   async pincodeCentroid(pincode: string): Promise<{ lat: number; lon: number } | null> {
     const data = await loadGeoJSON(MAP_REGISTRY['pincodes-centroids'].file);
     const target = String(pincode).trim();
@@ -1404,7 +1380,6 @@ export class McpMapService {
     return null;
   }
 
-  /** Resolve a pincode to its coordinates + office name + derived district/state, in one call. */
   async resolvePincode(pincode: string): Promise<{
     pincode: string; lat: number; lon: number; office_name: string; district: string; state: string;
   } | null> {
@@ -1445,10 +1420,6 @@ export class McpMapService {
     return { district: '', state: '' };
   }
 
-  /**
-   * Query any registered map layer: filter by property values and optionally
-   * aggregate (count features per value of a groupBy property).
-   */
   async queryLayer(options: {
     mapId: string;
     filters?: Record<string, string>;
@@ -1464,7 +1435,6 @@ export class McpMapService {
 
     let features = data.features;
 
-    // Apply filters (case-insensitive substring match)
     if (options.filters) {
       for (const [key, value] of Object.entries(options.filters)) {
         const lv = value.toLowerCase();
@@ -1477,7 +1447,6 @@ export class McpMapService {
 
     const total = features.length;
 
-    // Grouping
     let grouped: Record<string, number> | undefined;
     if (options.groupBy) {
       grouped = {};
@@ -1487,7 +1456,6 @@ export class McpMapService {
       }
     }
 
-    // Select properties to return
     const slice = features.slice(0, limit);
     const results = slice.map(f => {
       const props = f.properties || {};
@@ -1506,7 +1474,6 @@ export class McpMapService {
     return { total, results, ...(grouped ? { grouped } : {}) };
   }
 
-  // District Evolution Tools
 
   async listHistoricalDistrictNames(): Promise<Array<{ district: string; state: string }>> {
     await ensureEvolutionLoaded();
@@ -1547,9 +1514,7 @@ export class McpMapService {
     return enriched;
   }
 
-  // Analytics Tools
 
-  /** Extract numeric values for a column across features, skipping nulls. */
   private extractNumeric(
     features: Array<{ properties: Record<string, unknown> | null }>,
     column: string,
@@ -1594,7 +1559,6 @@ export class McpMapService {
     };
   }
 
-  /** Apply string + optional numeric filters to a feature list. */
   private applyFilters(
     features: ReturnType<FeatureCollection['features']['filter']>,
     filters?: Record<string, string>,
@@ -1626,7 +1590,6 @@ export class McpMapService {
     return out;
   }
 
-  /** Describe the schema of any registered layer: numeric columns with ranges, categorical columns with unique-value counts. */
   async layerSchema(mapId: string): Promise<{
     featureCount: number;
     numeric: Array<{ column: string; nonNull: number; min: number; max: number; mean: number }>;
@@ -1639,7 +1602,6 @@ export class McpMapService {
     const features = data.features;
     if (!features.length) return { featureCount: 0, numeric: [], categorical: [], textId: [] };
 
-    // Detect column types from first non-null value across all features
     const allKeys = new Set<string>();
     for (const f of features) for (const k of Object.keys(f.properties || {})) allKeys.add(k);
 
@@ -1648,7 +1610,6 @@ export class McpMapService {
     const textId: string[] = [];
 
     for (const col of allKeys) {
-      // Detect type from first non-null value in the column
       let firstNonNull: unknown = undefined;
       for (const f of features) {
         const v = f.properties?.[col];
@@ -1662,7 +1623,6 @@ export class McpMapService {
         const s = this.computeStats(vals)!;
         numeric.push({ column: col, nonNull: vals.length, min: s.min, max: s.max, mean: s.mean });
       } else {
-        // Categorical or free-text identifier
         const uniq = new Set<string>();
         for (const f of features) {
           const v = f.properties?.[col];
@@ -1683,7 +1643,6 @@ export class McpMapService {
     return { featureCount: features.length, numeric, categorical, textId };
   }
 
-  /** Compute descriptive statistics for numeric columns, with optional groupBy. */
   async summarizeLayer(options: {
     mapId: string;
     columns: string[];
@@ -1700,7 +1659,6 @@ export class McpMapService {
     const data = await loadGeoJSON(entry.file);
     let features = this.applyFilters(data.features, options.filters, options.numericFilters);
 
-    // Resolve "*" to all numeric columns
     let cols = options.columns;
     if (cols.length === 1 && cols[0] === '*') {
       const allKeys = new Set<string>();
@@ -1721,7 +1679,6 @@ export class McpMapService {
       return { featureCount: features.length, columns: columnStats };
     }
 
-    // Group by categorical column
     const buckets = new Map<string, typeof features>();
     for (const f of features) {
       const key = String(f.properties?.[options.groupBy] ?? '(none)');
@@ -1740,7 +1697,6 @@ export class McpMapService {
     return { featureCount: features.length, columns: columnStats, groups };
   }
 
-  /** Sort features by a numeric column and return the top/bottom N. */
   async rankFeatures(options: {
     mapId: string;
     column: string;
@@ -1756,7 +1712,6 @@ export class McpMapService {
     const features = this.applyFilters(data.features, options.filters, options.numericFilters);
     const limit = Math.max(1, Math.min(options.limit ?? 10, 100));
 
-    // Only rank features with a valid numeric value for the column
     const ranked = features
       .map(f => ({ f, v: Number(f.properties?.[options.column]) }))
       .filter(({ v }) => isFinite(v))
@@ -1833,7 +1788,6 @@ export class McpMapService {
     return undefined;
   }
 
-  /** Pearson and Spearman correlation between two numeric columns. */
   async correlate(options: {
     mapId: string;
     x: string;
@@ -1870,7 +1824,6 @@ export class McpMapService {
         dY  += (ys[i] - meanY) ** 2;
       }
       const pearson_r = (dX === 0 || dY === 0) ? NaN : Math.round(num / Math.sqrt(dX * dY) * 10000) / 10000;
-      // Spearman: rank transform then Pearson
       const rank = (arr: number[]) => {
         const indexed = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
         const ranks = new Array(n);
@@ -1899,7 +1852,6 @@ export class McpMapService {
       ? await this.buildJoinLookup(options.yMapId, options.y)
       : null;
 
-    // Collect valid pairs
     const pairs: Array<[number, number]> = [];
     const labels: string[] = [];
     const groupKeys: string[] = [];
@@ -1969,7 +1921,6 @@ export class McpMapService {
     return result;
   }
 
-  /** Compare named groups of features on one or more numeric columns. */
   async compareGroups(options: {
     mapId: string;
     groups: Array<{
@@ -2257,7 +2208,6 @@ export class McpMapService {
     };
   }
 
-  /** Case-insensitive (exact-or-substring) filter over plain {name,...,props} rows. */
   private filterRows<T extends { props: Record<string, string> }>(rows: T[], filters?: Record<string, string>): T[] {
     if (!filters) return rows;
     let out = rows;
@@ -2271,11 +2221,6 @@ export class McpMapService {
     return out;
   }
 
-  /**
-   * Join numeric columns from two map layers on matching feature names.
-   * Returns one row per feature in the base layer, with columns from both.
-   * Use this for cross-layer analysis: SHRUG roads + NFHS-5 outcomes, etc.
-   */
   async joinLayers(options: {
     baseMapId: string;
     joinMapId: string;
@@ -2322,7 +2267,6 @@ export class McpMapService {
     const baseNameProp = options.baseNameProp ?? baseEntry.featureNameProp ?? matchOn;
     const joinNameProp = options.joinNameProp ?? joinEntry.featureNameProp ?? matchOn;
 
-    // Build join index: normalised name -> feature (prefer state-scoped key when available)
     const joinIndex = new Map<string, typeof joinData.features[0]>();
     for (const f of joinFeatures) {
       const name = String(f.properties?.[joinNameProp] ?? '').toLowerCase().trim();
@@ -2351,7 +2295,6 @@ export class McpMapService {
 
       const row: Record<string, string | number> = {};
 
-      // Base columns
       const baseCols = options.baseColumns?.length
         ? options.baseColumns
         : Object.keys(base.properties || {});
@@ -2375,7 +2318,6 @@ export class McpMapService {
     return { joined, unmatched_base, results };
   }
 
-  /** Find K features most similar to a reference feature by Z-score normalized Euclidean distance. */
   async findSimilar(options: {
     mapId: string;
     referenceName: string;
@@ -2416,7 +2358,6 @@ export class McpMapService {
     if (refIndex === -1) throw new Error(`Feature "${options.referenceName}" not found in map "${options.mapId}"`);
     const refFeature = data.features[refIndex];
 
-    // Compute per-column mean+stddev for Z-score normalization
     const allFeatures = this.applyFilters(data.features, options.filters, options.numericFilters);
     const colStats: Record<string, { mean: number; stddev: number }> = {};
     for (const col of options.columns) {

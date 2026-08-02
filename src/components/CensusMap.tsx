@@ -10,16 +10,18 @@ const IndiaDistrictsMap = lazy(() =>
 
 const GEOJSON_URL = 'https://geo.bharatviz.org/geojsons/census2011/india_census2011_districts.geojson';
 
-// Metric groups for the selector
 const METRIC_GROUPS: { label: string; metrics: { key: string; label: string }[] }[] = [
   {
     label: 'Population',
     metrics: [
       { key: 'population',    label: 'Total Population' },
+      { key: 'density_per_km2', label: 'Population Density (persons/km2)' },
       { key: 'sc_pct',        label: 'Scheduled Caste (%)' },
       { key: 'st_pct',        label: 'Scheduled Tribe (%)' },
       { key: 'sc_population', label: 'SC Population (abs)' },
       { key: 'st_population', label: 'ST Population (abs)' },
+      { key: 'sc_density_per_km2', label: 'SC Density (persons/km2)' },
+      { key: 'st_density_per_km2', label: 'ST Density (persons/km2)' },
     ],
   },
   {
@@ -39,7 +41,6 @@ const METRIC_GROUPS: { label: string; metrics: { key: string; label: string }[] 
   },
 ];
 
-// Top languages by national speaker share - shown as individual metric options
 const TOP_LANGUAGES = [
   'Hindi', 'Bengali', 'Marathi', 'Telugu', 'Tamil', 'Gujarati', 'Urdu',
   'Kannada', 'Odia', 'Malayalam', 'Punjabi', 'Assamese', 'Maithili',
@@ -85,14 +86,12 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
     return () => controller.abort();
   }, []);
 
-  // Resolve which column to read for the current metric + level selection
   const resolvedColumn = useMemo(() => {
     const isLang = TOP_LANGUAGES.some(l => metric === colKey(l));
     if (isLang) {
       if (level === 'l1') return `${metric}_l1_pct`;
       if (level === 'l2') return `${metric}_l2_pct`;
-      // combined: sum l1+l2
-      return null; // handled separately
+      return null;
     }
     return metric;
   }, [metric, level]);

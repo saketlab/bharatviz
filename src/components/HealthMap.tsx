@@ -14,13 +14,11 @@ const IndiaDistrictsMap = React.lazy(() =>
 
 const R2 = 'https://geo.bharatviz.org';
 
-// Color palette for categorical coloring - distinct enough at small radius
 const CAT_COLORS = [
   '#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6',
   '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
 ];
 
-// View modes available per dataset. 'choropleth' uses pre-aggregated district counts.
 type ViewMode = PointViewMode | 'choropleth';
 
 interface HealthDataset {
@@ -35,11 +33,10 @@ interface HealthDataset {
   defaultRadius: number;
   tooltipFields?: string[];
   slowPathCap?: number;
-  // If set, this dataset is too large for point rendering; only choropleth mode is available.
-  // The URL points to the pre-aggregated per-district parquet.
+  // `choroplethOnly` datasets cannot be safely rendered as browser-side points.
   choroplethOnly?: boolean;
   choroplethUrl?: string;
-  // Excluded from the Health tab dropdown; shown only when a caller names it via datasetIds.
+  // Hidden datasets remain addressable by callers through `datasetIds`.
   hiddenFromHealth?: boolean;
 }
 
@@ -151,24 +148,22 @@ const DATASETS: HealthDataset[] = [
   },
   {
     id: 'villages-soi-points',
-    displayName: 'Villages (SOI) 2024',
-    parquetUrl: `${R2}/geoparquet/points/villages_soi_points.parquet`,
+    displayName: 'Villages (LGD) 2024',
+    parquetUrl: `${R2}/geoparquet/points/lgd_village_points.parquet`,
     latField: 'lat', lonField: 'lon',
     labelField: 'village_name', colorField: undefined,
-    rows: '576,430', defaultRadius: 1,
+    rows: '584,615', defaultRadius: 1,
     hiddenFromHealth: true,
-    tooltipFields: ['district', 'subdivision', 'state_name'],
+    tooltipFields: ['district', 'state_name'],
   },
 ];
 
-// Extract lat/lon from a parquet row - handles both dedicated columns and WKB/WKT geometry
 function extractCoords(row: Record<string, unknown>, ds: HealthDataset): { lon: number; lat: number } | null {
-  // Try dedicated lat/lon columns first
   const lat = Number(row[ds.latField]);
   const lon = Number(row[ds.lonField]);
   if (isFinite(lat) && isFinite(lon) && lat !== 0 && lon !== 0) return { lat, lon };
 
-  // Try geometry object (hyparquet parses WKB into a geometry object with coordinates)
+  // hyparquet may decode WKB as a geometry object instead of dedicated columns.
   const geom = row.geometry as { type?: string; coordinates?: number[] } | null;
   if (geom?.type === 'Point' && Array.isArray(geom.coordinates) && geom.coordinates.length >= 2) {
     const [gLon, gLat] = geom.coordinates;
@@ -177,9 +172,6 @@ function extractCoords(row: Record<string, unknown>, ds: HealthDataset): { lon: 
 
   return null;
 }
-
-// India point-in-polygon filter
-// Loads the LGD states GeoJSON once and caches the rings for fast pip testing.
 
 type Ring = number[][];
 let indiaRingsCache: Ring[] | null = null;
@@ -212,7 +204,6 @@ function pointInRingPIP(lon: number, lat: number, ring: Ring): boolean {
 }
 
 function pointInIndia(lon: number, lat: number, rings: Ring[]): boolean {
-  // Quick bbox check first
   if (lat < 6.5 || lat > 37.5 || lon < 68 || lon > 97.5) return false;
   for (const ring of rings) {
     if (pointInRingPIP(lon, lat, ring)) return true;
@@ -253,12 +244,11 @@ export const HealthMap: React.FC<HealthMapProps> = ({
   const [pointOpacity, setPointOpacity] = useState(0.7);
   const [totalRows, setTotalRows] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('points');
-  // Pre-aggregated district counts for choropleth mode
   const [choroData, setChoroData] = useState<Array<{ district: string; state: string; value: number }>>([]);
   const [choroLoading, setChoroLoading] = useState(false);
   const mapRef = useRef<IndiaDistrictsMapRef>(null);
 
-  // Sync from parent (URL read fires after mount)
+  // URL state arrives after mount, so the prop must remain authoritative.
   useEffect(() => {
     if (selectedDatasetIdProp && selectedDatasetIdProp !== selectedDatasetId) {
       setSelectedDatasetId(selectedDatasetIdProp);
@@ -269,12 +259,10 @@ export const HealthMap: React.FC<HealthMapProps> = ({
 
   const dataset = DATASETS.find(d => d.id === selectedDatasetId)!;
 
-  // When switching to a choropleth-only dataset, force choropleth mode
   useEffect(() => {
     if (dataset.choroplethOnly) setViewMode('choropleth');
   }, [dataset]);
 
-  // Load pre-aggregated choropleth data when in choropleth mode
   useEffect(() => {
     if (viewMode !== 'choropleth' || !dataset.choroplethUrl) return;
     setChoroLoading(true);
@@ -317,22 +305,20 @@ export const HealthMap: React.FC<HealthMapProps> = ({
 
       const file = await asyncBufferFromUrl({ url: ds.parquetUrl });
 
-      // Check schema first (cheap) to detect pre-computed columns
       const meta = await parquetMetadataAsync(file);
-      // hyparquet schema is a flat list; first element is the root group (no type), rest are leaf columns
+      // hyparquet includes a typeless root group alongside the leaf columns.
       const schemaNames = new Set(
         (meta.schema ?? []).map((f: { name?: string }) => f.name).filter(Boolean)
       );
       const hasPrecomputed = schemaNames.has('in_india') && schemaNames.has('lon') && schemaNames.has('lat');
 
-      // For slow-path large datasets, cap the rows loaded to avoid browser hang
+      // Unprepared large files are capped to keep the browser responsive.
       const rowEnd = (!hasPrecomputed && ds.slowPathCap)
         ? Math.min(ds.slowPathCap, Number(meta.num_rows))
         : undefined;
 
       const rows = await parquetReadObjects({ file, compressors, rowEnd }) as Array<Record<string, unknown>>;
 
-      // Build category color map
       const catMap: Record<string, string> = {};
       if (ds.colorField) {
         const cats = [...new Set(
@@ -343,7 +329,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
 
       const pts: PointFeature[] = [];
       for (const row of rows) {
-        // Resolve coordinates and validate
         let ptLon: number, ptLat: number;
         if (hasPrecomputed) {
           if (!row.in_india) continue;
@@ -389,7 +374,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
     }
   }, [loadedDatasetId]);
 
-  // Auto-load when dataset changes
   useEffect(() => {
     loadDataset(dataset);
   }, [dataset, loadDataset]);
@@ -399,7 +383,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
-      {/* Map */}
       <div className="lg:col-span-2 order-1 lg:order-2">
         <React.Suspense fallback={<div className="h-96 rounded border border-border bg-background animate-pulse" />}>
           <IndiaDistrictsMap
@@ -452,7 +435,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
         </div>
       </div>
 
-      {/* Controls */}
       <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
         <div className="mb-5">
           <h3 className={`text-sm font-semibold mb-1 ${headingClass}`}>{heading}</h3>
@@ -482,7 +464,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
           </Select>
         </div>
 
-        {/* View mode toggle - heatmap/choropleth only for large datasets */}
         <div className="mb-5">
           <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
             View mode
@@ -543,7 +524,6 @@ export const HealthMap: React.FC<HealthMapProps> = ({
           </div>
         )}
 
-        {/* Category legend */}
         {categories.length > 0 && (
           <div className="mb-5">
             <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">

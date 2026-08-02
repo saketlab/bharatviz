@@ -284,7 +284,7 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Scroll the active primary tab into view when it changes (needed on mobile where bar scrolls)
+  // The active tab can be offscreen in the mobile scrolling bar.
   useEffect(() => {
     const trigger = document.querySelector(`[data-state="active"].primary-tab`) as HTMLElement | null;
     trigger?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
@@ -568,7 +568,6 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedCity, selectedCityDataset, cityColorScale, cityInvertColors, cityHideNames, cityHideValues, darkMode, location.pathname, navigate]);
 
-  // Pincodes tab: read initial URL state
   useEffect(() => {
     if (hasReadInitialUrl.current.has('pincodes')) return;
     if (activeTab !== 'pincodes') return;
@@ -588,7 +587,6 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  // Pincodes tab: persist URL state
   useEffect(() => {
     if (!hasReadInitialUrl.current.has('pincodes')) return;
     if (activeTab !== 'pincodes') return;
@@ -629,7 +627,6 @@ const Index = () => {
     navigate(`/${basePath}${search ? '?' + search : ''}`);
   }, [darkMode, navigate]);
 
-  // Health tab: read initial URL state
   useEffect(() => {
     if (hasReadInitialUrl.current.has('health')) return;
     if (activeTab !== 'health') return;
@@ -640,7 +637,6 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  // Health tab: persist URL state
   useEffect(() => {
     if (activeTab !== 'health') return;
     const params = new URLSearchParams(location.search);
@@ -671,7 +667,6 @@ const Index = () => {
     let dataUrl = searchParams.get('dataUrl');
     let titleFromParams = searchParams.get('title') || '';
 
-    // Support ?demo=N - resolve to the Nth demo for the current tab level
     const demoParam = searchParams.get('demo');
     if (demoParam && !dataUrl) {
       const demoIndex = parseInt(demoParam, 10);
@@ -1713,7 +1708,6 @@ const Index = () => {
                 <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
                 <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
               </TabsList>
-              {/* Scroll-fade indicator - visible only when bar is scrollable (sm and below) */}
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)] sm:hidden" aria-hidden="true" />
             </div>
             <div className="mt-5 mb-2">
@@ -2888,7 +2882,7 @@ const Index = () => {
                   datasetIds={['villages-soi-points']}
                   selectedDatasetId="villages-soi-points"
                   mapLabel="Villages"
-                  heading="Village Map (Survey of India)"
+                  heading="Village Map (LGD)"
                 />
               ) : (
                 <VillagePolygonMap
