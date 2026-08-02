@@ -84,6 +84,7 @@ interface IndiaDistrictsMapProps {
   pointColor?: string;
   pointOpacity?: number;
   polygonsLayer?: PolygonFeature[];
+  polygonLabels?: boolean;
   colorBarSettings?: ColorBarSettings;
   geojsonPath?: string;
   statesGeojsonPath?: string;
@@ -191,6 +192,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   labelScale = 1,
   pointsLayer,
   polygonsLayer,
+  polygonLabels,
   pointViewMode = 'points',
   pointRadius = 1.5,
   pointColor = '#ef4444',
@@ -1677,6 +1679,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 viewBoxWidth={overlayViewBoxWidth}
                 viewBoxHeight={overlayViewBoxHeight}
                 darkMode={darkMode}
+                showLabels={polygonLabels}
                 onPolygonHover={(info) => {
                   if (!info) { setHoveredPoint(null); return; }
                   const containerRect = containerRef.current?.getBoundingClientRect();

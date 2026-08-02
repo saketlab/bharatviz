@@ -112,12 +112,16 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
           getPosition: toPixel,
           getRadius: pointRadius,
           radiusUnits: 'pixels',
+          radiusMinPixels: 0.5,
+          radiusMaxPixels: 40,
+          antialiasing: false,
+          parameters: { depthTest: false },
           getFillColor: (d: PointFeature) => {
             const rgb = colorToRgb(d.color ?? '#ef4444');
             return [...rgb, opacityByte] as [number, number, number, number];
           },
           pickable: true,
-          autoHighlight: true,
+          autoHighlight: points.length < 200000,
           highlightColor: [255, 255, 255, 180],
           onHover: (info: PickingInfo) => {
             if (!onPointHover) return;

@@ -6,7 +6,7 @@
  */
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
-import { PolygonLayer } from '@deck.gl/layers';
+import { PolygonLayer, TextLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
 
 export interface PolygonFeature {

@@ -1,14 +1,20 @@
 /**
- * Village boundary view: 584k polygons nationwide are sliced per state on R2 and
- * loaded on demand. Geometry rides as a JSON `rings` string per row because
- * hyparquet has no in-browser WKB decoder; we JSON.parse it into PolygonFeature[].
+ * Village boundary view: per-state polygon slices loaded on demand from R2.
+ * Geometry rides as a JSON `rings` string per row because hyparquet has no
+ * in-browser WKB decoder; we JSON.parse it into PolygonFeature[]. Multiple
+ * upstream sources (LGD / Bhuvan / SOI) are selectable.
  */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import type { PolygonFeature } from './DeckPolygonsLayer';
-import { getVillagePolygonUrl, getVillagePolygonStates } from '@/lib/villagePolygonMapping';
+import {
+  getVillagePolygonUrl,
+  getVillagePolygonStates,
+  getVillageSources,
+  type VillageSource,
+} from '@/lib/villagePolygonMapping';
 import type { BoundaryColor } from '@/lib/colorUtils';
 
 const IndiaDistrictsMap = lazy(() => import('./IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap })));
@@ -19,16 +25,28 @@ interface VillagePolygonMapProps {
   boundaryWidth?: number;
 }
 
-const STATES = getVillagePolygonStates();
+const SOURCES = getVillageSources();
+const DEFAULT_STATE = 'Maharashtra';
 
 export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, boundaryColor, boundaryWidth }) => {
-  const [state, setState] = useState<string>(STATES[0] ?? '');
+  const [source, setSource] = useState<VillageSource>(SOURCES[0]?.id ?? 'lgd');
+  const states = getVillagePolygonStates(source);
+  const [state, setState] = useState<string>(
+    states.includes(DEFAULT_STATE) ? DEFAULT_STATE : states[0] ?? ''
+  );
   const [features, setFeatures] = useState<PolygonFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Keep the selected state valid when the source changes.
   useEffect(() => {
-    const url = getVillagePolygonUrl(state);
+    if (!states.includes(state)) {
+      setState(states.includes(DEFAULT_STATE) ? DEFAULT_STATE : states[0] ?? '');
+    }
+  }, [source, states, state]);
+
+  useEffect(() => {
+    const url = getVillagePolygonUrl(source, state);
     if (!url) { setFeatures([]); return; }
     let cancelled = false;
     setLoading(true); setError(null);
@@ -63,7 +81,15 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
       }
     })();
     return () => { cancelled = true; };
-  }, [state]);
+  }, [source, state]);
+
+  if (SOURCES.length === 0) {
+    return (
+      <div className="p-6 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+        No village boundary sources are available yet.
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
@@ -80,6 +106,7 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
             boundaryColor={boundaryColor}
             boundaryWidth={boundaryWidth}
             polygonsLayer={features}
+            polygonLabels={true}
           />
         </Suspense>
         {loading && (
@@ -97,17 +124,28 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
       </div>
 
       <div className="lg:col-span-1 order-2 lg:order-1 space-y-3">
+        {SOURCES.length > 1 && (
+          <div>
+            <Label className="text-sm mb-1.5 block">Source</Label>
+            <Select value={source} onValueChange={(v) => setSource(v as VillageSource)}>
+              <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {SOURCES.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div>
           <Label className="text-sm mb-1.5 block">State</Label>
           <Select value={state} onValueChange={setState}>
             <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-[300px]">
-              {STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              {states.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
             </SelectContent>
           </Select>
           <p className="mt-2 text-xs text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,50%)]">
-            Village boundaries load one state at a time. Source: LGD / Survey of India
-            (ramSeraph/indian_admin_boundaries), simplified for web display.
+            Village boundaries load one state at a time. Source: LGD / Survey of India /
+            Bhuvan (ramSeraph/indian_admin_boundaries), simplified for web display.
           </p>
         </div>
       </div>
