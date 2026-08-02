@@ -528,7 +528,7 @@ export class WebLLMEngine {
       const raw = stripThinkTags(completion.choices[0].message.content || '');
       const questions = raw
         .split('\n')
-        .map(l => l.replace(/^\d+[.)]\s*/, '').replace(/^[--*]\s*/, '').trim())
+        .map(l => l.replace(/^\d+[.)]\s*/, '').replace(/^[*-]\s*/, '').trim())
         .filter(l => l.length > 10 && l.length < 120);
 
       await this.engine.resetChat();

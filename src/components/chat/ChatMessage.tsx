@@ -80,7 +80,7 @@ function formatMessage(content: string): JSX.Element {
             <ul key={idx} className="list-disc list-inside my-2 space-y-1">
               {items.map((item, itemIdx) => (
                 <li key={itemIdx} className="text-sm">
-                  {item.replace(/^[--]\s*/, '')}
+                  {item.replace(/^-\s*/, '')}
                 </li>
               ))}
             </ul>
