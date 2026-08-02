@@ -307,7 +307,7 @@ function Panel({
         <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
           darkMode ? 'bg-[hsl(22,60%,14%)] text-[hsl(22,70%,60%)]' : 'bg-[hsl(28,80%,96%)] text-[hsl(22,62%,38%)]'
         }`}>
-          {selectedNames.join(' · ')}
+          {selectedNames.join(' - ')}
         </div>
       )}
       <svg ref={svgRef} className="block w-full" role="img" aria-label={`India district map ${year}`} />
@@ -531,7 +531,7 @@ export function IndiaEvolutionMap({
               <input
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search district…"
+                placeholder="Search district..."
                 className="bg-transparent outline-none w-28 placeholder:opacity-40"
               />
               {searchQuery && (
@@ -566,8 +566,8 @@ export function IndiaEvolutionMap({
             <span className={`flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ${darkMode ? 'bg-[hsl(25,8%,14%)] text-[hsl(35,10%,82%)]' : 'bg-amber-50 text-amber-800 border border-amber-200'}`}>
               <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0" />
               {selectedMeta.name}
-              {selectedMeta.state && <span className={darkMode ? 'text-[hsl(30,8%,44%)]' : 'text-amber-600'}> · {selectedMeta.state}</span>}
-              <button onClick={() => { setClickedChainId(null); setSearchQuery(''); }} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>✕</button>
+              {selectedMeta.state && <span className={darkMode ? 'text-[hsl(30,8%,44%)]' : 'text-amber-600'}> - {selectedMeta.state}</span>}
+              <button onClick={() => { setClickedChainId(null); setSearchQuery(''); }} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>x</button>
             </span>
           ) : (
             <span className={`text-xs italic hidden sm:inline ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>

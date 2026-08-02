@@ -122,7 +122,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
       >
         {dataType === 'categorical' ? (
           <span className="text-xs font-medium flex-1 text-left text-[hsl(28,45%,36%)] dark:text-[hsl(28,45%,52%)]">
-            Categorical — customize colors below
+            Categorical - customize colors below
           </span>
         ) : (
           <>

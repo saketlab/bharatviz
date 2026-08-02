@@ -232,7 +232,7 @@ export const IndiaCityMap = forwardRef<IndiaCityMapRef, IndiaCityMapProps>(({
         const geoData = await response.json();
 
         // Name missing/non-unique ("Na") wards "Ward <number>", or "Ward <1-based index>"
-        // when number/code are also absent — keeps every ward matchable to an upload.
+        // when number/code are also absent - keeps every ward matchable to an upload.
         const names = geoData.features.map((f: GeoJSONFeature) => (f.properties.ward_name || '').toLowerCase().trim());
         const uniqueNames = new Set(names.filter(Boolean));
         if (uniqueNames.size < geoData.features.length * 0.5) {

@@ -260,7 +260,7 @@ export const DistrictStats: React.FC<{ darkMode?: boolean }> = () => {
                     <button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('district_name')} aria-label={`Sort by district${sortField === 'district_name' ? `, currently ${sortDirection}ending` : ''}`}>District{getSortIcon('district_name')}</button>
                   </th>
                   <th className={`${thBase} text-right`}>
-                    <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²){getSortIcon('area_sq_km')}</button>
+                    <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km2){getSortIcon('area_sq_km')}</button>
                   </th>
                   <th className={`${thBase} text-right hidden sm:table-cell`}>
                     <button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('perimeter_km')} aria-label={`Sort by perimeter${sortField === 'perimeter_km' ? `, currently ${sortDirection}ending` : ''}`}>Perimeter (km){getSortIcon('perimeter_km')}</button>

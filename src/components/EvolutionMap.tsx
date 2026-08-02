@@ -266,7 +266,7 @@ function Panel({
         <div className={`px-1.5 py-0.5 text-center text-[9px] font-semibold truncate leading-tight ${
           darkMode ? 'bg-red-950 text-red-300' : 'bg-red-50 text-red-700'
         }`}>
-          {selectedNames.join(' · ')}
+          {selectedNames.join(' - ')}
         </div>
       )}
       <svg ref={svgRef} className="block w-full" role="img" aria-label={`Bombay presidency district map ${year}`} />

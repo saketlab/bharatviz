@@ -493,7 +493,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
 
       const officeName = feature.properties.office_name || '';
       const district = feature.properties.district_name || '';
-      const title = `${pincode}${officeName ? ` — ${officeName}` : ''}${district ? `, ${district}` : ''}${value !== undefined ? `: ${typeof value === 'number' ? roundToSignificantDigits(value) : String(value)}` : ''}`;
+      const title = `${pincode}${officeName ? ` - ${officeName}` : ''}${district ? `, ${district}` : ''}${value !== undefined ? `: ${typeof value === 'number' ? roundToSignificantDigits(value) : String(value)}` : ''}`;
 
       return {
         path: computedPaths[index],
@@ -736,7 +736,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
           transform: 'translateZ(0)',
         }}
         role="img"
-        aria-label={dataTitle ? `India pincodes map — ${dataTitle} (${selectedState})` : `India pincodes choropleth map — ${selectedState}`}
+        aria-label={dataTitle ? `India pincodes map - ${dataTitle} (${selectedState})` : `India pincodes choropleth map - ${selectedState}`}
       >
         {pincodeRenderFeatures.map((feature, index) => (
           <PincodePath

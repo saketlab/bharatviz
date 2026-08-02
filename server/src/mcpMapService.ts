@@ -143,12 +143,12 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_environment.parquet`,
     featureNameProp: 'district_name',
     description: 'Environmental and geographic indicators averaged to 641 PC11 districts. ' +
-      'Covers: Surface PM2.5 concentration (1998–2020, mean/min/max), ' +
-      'Vegetation Continuous Fields / forest cover (2001–2020), ' +
+      'Covers: Surface PM2.5 concentration (1998-2020, mean/min/max), ' +
+      'Vegetation Continuous Fields / forest cover (2001-2020), ' +
       'Elevation from SRTM (mean, median, std, percentiles), ' +
       'Terrain Ruggedness Index, ' +
-      'DMSP night lights 1992–2013 (mean/total/calibrated), ' +
-      'VIIRS annual night lights 2012–2021 (mean/sum). ' +
+      'DMSP night lights 1992-2013 (mean/total/calibrated), ' +
+      'VIIRS annual night lights 2012-2021 (mean/sum). ' +
       'Key columns: pm25__pm25_mean, vcf__vcf_mean, elevation__elevation_mean, ' +
       'dmsp__dmsp_mean_light, viirs-annual__viirs_annual_mean, rugged__tri_mean. License: CC BY-NC-SA 4.0.',
   },
@@ -159,7 +159,7 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     featureNameProp: 'district_name',
     description: 'Facebook / Meta 2021 population and wealth estimates aggregated to 641 PC11 districts. ' +
       'Covers: Facebook population estimates (facebook-pop__facebook_pop_sum), ' +
-      'Relative Wealth Index — RWI (facebook-rwi__facebook_mean_rwi, min, max). ' +
+      'Relative Wealth Index - RWI (facebook-rwi__facebook_mean_rwi, min, max). ' +
       'RWI is a continuous index where higher = wealthier; derived from Facebook connectivity and satellite data. ' +
       'License: CC BY-NC-SA 4.0.',
   },
@@ -185,11 +185,11 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
 
   'gs-wildlife': { id: 'gs-wildlife', file: `${R2}/geojsons/environment/India-geodata-wildlife.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Protected wildlife sanctuaries and national parks', featureNameProp: 'area_name' },
   'bm-eco-zones': { id: 'bm-eco-zones', file: `${R2}/geojsons/environment/India-geodata-eco-zones.geojson`, level: 'regions', source: 'GatiShakti', year: 2024, description: 'Biological / eco-sensitive zone boundaries', featureNameProp: 'area_name' },
-  'fsi-circles': { id: 'fsi-circles', file: `${R2}/geojsons/environment/India-fsi-circles_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative circles — top-level forest administrative unit', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'circle_name' },
+  'fsi-circles': { id: 'fsi-circles', file: `${R2}/geojsons/environment/India-fsi-circles_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative circles - top-level forest administrative unit', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'circle_name' },
   'fsi-divisions': { id: 'fsi-divisions', file: `${R2}/geojsons/environment/India-fsi-divisions_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative divisions, within circles', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'division_name' },
   'fsi-ranges': { id: 'fsi-ranges', file: `${R2}/geojsons/environment/India-fsi-ranges_simplified.geojson`, level: 'regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative ranges, within divisions', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'range_name' },
 
-  'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission — national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
+  'sbm-ulbs': { id: 'sbm-ulbs', file: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, level: 'districts', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission - national coverage (most states)', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'ulb_name' },
 
   'nhp-health-facilities': {
     id: 'nhp-health-facilities',
@@ -246,7 +246,7 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     year: 2024,
     featureNameProp: 'awc_name',
     description: '1,224,038 ICDS Anganwadi centres from GatiShakti / Ministry of Women and Child Development (2024). ' +
-      'Too large for direct browser rendering — use aggregatedByDistrictUrl for choropleth (615 districts, 713k centres with LGD codes). ' +
+      'Too large for direct browser rendering - use aggregatedByDistrictUrl for choropleth (615 districts, 713k centres with LGD codes). ' +
       'Fields: awc_name, awc_code, district_1 (district), stname (state), dtcode_lg (LGD district code), stcode_lg (LGD state code), latitude, longitude.',
   },
 
@@ -368,6 +368,16 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     year: 2026,
     description: '63,864 pincode centroids derived from pincode boundary polygons. Used for proximity queries (e.g. "pincodes near 400071"). Fields: pincode, office_name, district, state.',
     featureNameProp: 'pincode',
+  },
+  'villages-soi-points': {
+    id: 'villages-soi-points',
+    file: `${R2}/geoparquet/points/villages_soi_points.parquet`,
+    parquetUrl: `${R2}/geoparquet/points/villages_soi_points.parquet`,
+    level: 'points',
+    source: 'Survey of India village points (ramSeraph/indian_admin_boundaries)',
+    year: 2024,
+    description: '576,430 village points across India from Survey of India, digitised by ramSeraph. The finest admin level available - village polygons exist upstream but are multi-GB and not yet hosted; these are village locations as points. Fields: village_name, state_name, district, subdivision, lgd_state_code, lgd_district_code, lgd_sub_dist_code, soi_code.',
+    featureNameProp: 'village_name',
   },
 };
 
@@ -547,7 +557,7 @@ export class McpMapService {
     if (id.startsWith('nfhs') || id.startsWith('nsso-')) return 'survey';
     if (id.startsWith('gs-') || id.startsWith('bm-') || id.startsWith('fsi-')) return 'environment';
     if (id.startsWith('sbm-')) return 'urban';
-    if (id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-')) return 'points';
+    if (id === 'airports' || id === 'dams' || id === 'water-bodies' || id.startsWith('pincodes-') || id.startsWith('villages-')) return 'points';
     if (id.startsWith('nhp-') || id === 'anganwadis-icds' || id.startsWith('bharatmaps-') || id.startsWith('bhuvan-sisdp') || id.startsWith('gatishakti-child') || id.startsWith('ncog-') || id.startsWith('livingatlas-') || id.startsWith('hotosm-')) return 'health';
     return 'other';
   }
@@ -793,14 +803,14 @@ export class McpMapService {
     };
   }
 
-  // ── Pincode Tools ──────────────────────────────────────────────────────
+  // Pincode Tools
 
   listPincodeStates(): string[] {
     return this.pincodeRenderer.getAvailableStates();
   }
 
   /**
-   * Build a point→{district,state} locator from lgd-districts, optionally scoped to one
+   * Build a point->{district,state} locator from lgd-districts, optionally scoped to one
    * state so the per-point polygon test only scans that state's districts. The district
    * attribution is polygon-derived (the pincode layer's own district field is blank/dirty).
    */
@@ -884,7 +894,7 @@ export class McpMapService {
     return this.formatOutput(svgString, options.outputFormat);
   }
 
-  // ── City/Ward Tools ────────────────────────────────────────────────────
+  // City/Ward Tools
 
   private citiesManifestCache: Array<{ id: string; displayName: string; state: string; type: string; featureCount: number }> | null = null;
 
@@ -968,7 +978,7 @@ export class McpMapService {
     return Math.abs(area * R * R / 2);
   }
 
-  /** Compute area in km² for a GeoJSON Polygon or MultiPolygon feature. */
+  /** Compute area in km2 for a GeoJSON Polygon or MultiPolygon feature. */
   private featureAreaKm2(geometry: { type: string; coordinates: unknown }): number {
     if (geometry.type === 'Polygon') {
       const rings = geometry.coordinates as number[][][];
@@ -1086,7 +1096,7 @@ export class McpMapService {
         if (deduped.length >= limit) break;
       }
 
-      // Pincode results ship district/state blank — derive them per returned row.
+      // Pincode results ship district/state blank - derive them per returned row.
       if (mapId === 'pincodes-centroids') {
         for (const p of deduped) {
           if ((!p.district || p.district === '') && p.pincode) {
@@ -1148,7 +1158,7 @@ export class McpMapService {
   }
 
   /**
-   * Centroid (lat/lon) of any feature in any layer — district, constituency, ward,
+   * Centroid (lat/lon) of any feature in any layer - district, constituency, ward,
    * pincode, point, polygon. Look up by fuzzy `name` (on the layer's featureNameProp)
    * and/or `filters`. Returns one row per matched feature.
    */
@@ -1288,7 +1298,7 @@ export class McpMapService {
       };
     }
 
-    // No filter: locate semantics — return the first boundary that contains any target.
+    // No filter: locate semantics - return the first boundary that contains any target.
     for (const boundaryFeature of boundaryFeatures) {
       if (!boundaryFeature.geometry) continue;
       const boundaryGeom = boundaryFeature.geometry as { type: string; coordinates: unknown };
@@ -1343,7 +1353,7 @@ export class McpMapService {
 
   async locate(lat: number, lon: number, mapIds?: string[]): Promise<Array<{ mapId: string; match: Record<string, string> | null; error?: string; }>> {
     const useDefault = !Array.isArray(mapIds) || mapIds.length === 0;
-    // Default to state+district only — point-in-polygon against the large subdistrict/block
+    // Default to state+district only - point-in-polygon against the large subdistrict/block
     // GeoJSONs on every call is slow and drop-prone; request those explicitly when needed.
     const targets = useDefault
       ? ['lgd-states', 'lgd-districts']
@@ -1496,7 +1506,7 @@ export class McpMapService {
     return { total, results, ...(grouped ? { grouped } : {}) };
   }
 
-  // ── District Evolution Tools ───────────────────────────────────────────
+  // District Evolution Tools
 
   async listHistoricalDistrictNames(): Promise<Array<{ district: string; state: string }>> {
     await ensureEvolutionLoaded();
@@ -1537,7 +1547,7 @@ export class McpMapService {
     return enriched;
   }
 
-  // ── Analytics Tools ────────────────────────────────────────────────────────
+  // Analytics Tools
 
   /** Extract numeric values for a column across features, skipping nulls. */
   private extractNumeric(
@@ -1818,7 +1828,7 @@ export class McpMapService {
       const v = lookup.byStateDistrict.get(`${sn}|${dn}`);
       if (v !== undefined) return v;
     }
-    // one side lacks state_name (e.g. SHRUG layers) — fall back to unambiguous district name
+    // one side lacks state_name (e.g. SHRUG layers) - fall back to unambiguous district name
     if (dn) return lookup.byDistrict.get(dn);
     return undefined;
   }
@@ -1905,7 +1915,7 @@ export class McpMapService {
     }
 
     if (!pairs.length) {
-      // n=0 reads as "no correlation" — surface the real cause instead (usually a column
+      // n=0 reads as "no correlation" - surface the real cause instead (usually a column
       // that lives in another layer; the fix is yMapId for a cross-layer join).
       const hasX = features.some(f => isFinite(Number(f.properties?.[options.x])));
       const ySource = options.yMapId && options.yMapId !== options.mapId ? options.yMapId : options.mapId;
@@ -2059,7 +2069,7 @@ export class McpMapService {
     if (ops > 50_000_000) {
       throw new Error(
         `aggregateByBoundary would require ~${Math.round(ops / 1e6)}M point-in-polygon tests ` +
-        `(${boundaryFeatures.length} boundaries × ${targetFeatures.length} target features). ` +
+        `(${boundaryFeatures.length} boundaries x ${targetFeatures.length} target features). ` +
         `Reduce scope: filter boundaries by state (boundaryFilters={"state_name":"..."}) ` +
         `or filter target features (targetFilters) before running.`
       );
@@ -2124,7 +2134,7 @@ export class McpMapService {
   }
 
   // Per-source nearest-target distance, within-radius flag, and count of targets within
-  // radiusKm — the buffer counterpart to aggregate_by_boundary's point-in-polygon counting.
+  // radiusKm - the buffer counterpart to aggregate_by_boundary's point-in-polygon counting.
   async proximityCoverage(options: {
     sourceMapId: string;
     sourceFilters?: Record<string, string>;
@@ -2312,7 +2322,7 @@ export class McpMapService {
     const baseNameProp = options.baseNameProp ?? baseEntry.featureNameProp ?? matchOn;
     const joinNameProp = options.joinNameProp ?? joinEntry.featureNameProp ?? matchOn;
 
-    // Build join index: normalised name → feature (prefer state-scoped key when available)
+    // Build join index: normalised name -> feature (prefer state-scoped key when available)
     const joinIndex = new Map<string, typeof joinData.features[0]>();
     for (const f of joinFeatures) {
       const name = String(f.properties?.[joinNameProp] ?? '').toLowerCase().trim();
@@ -2388,7 +2398,7 @@ export class McpMapService {
     const nameProp = entry.featureNameProp ?? 'name';
     const stateProp = 'state_name';
 
-    // Find reference feature — use index so we can exclude by position, not identity,
+    // Find reference feature - use index so we can exclude by position, not identity,
     // which handles layers with duplicate feature names (OSM points, electoral layers).
     const nameLower = options.referenceName.toLowerCase();
     let refIndex = -1;
@@ -2434,7 +2444,7 @@ export class McpMapService {
 
     const refZ = options.columns.map(col => zScore(col, refVals[col]));
 
-    // Score all other features — exclude by original index to handle duplicate names.
+    // Score all other features - exclude by original index to handle duplicate names.
     const allFeaturesWithIdx = allFeatures.map(f => ({ f, origIdx: data.features.indexOf(f) }));
     const scored: Array<{ f: (typeof data.features)[0]; dist: number; vals: Record<string, number> }> = [];
     for (const { f, origIdx } of allFeaturesWithIdx) {

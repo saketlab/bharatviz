@@ -147,7 +147,7 @@ function YearMap({
       <svg ref={svgRef} className="block w-full" />
       {metrics && (
         <div className={`px-1 pb-1 text-center leading-tight ${darkMode ? 'text-[hsl(30,8%,40%)]' : 'text-[hsl(28,8%,56%)]'}`}>
-          <div className="text-[8px]">{Math.round(metrics.area).toLocaleString()} km²</div>
+          <div className="text-[8px]">{Math.round(metrics.area).toLocaleString()} km2</div>
           <div className="text-[8px]">compact. {metrics.compactness.toFixed(2)}</div>
         </div>
       )}
@@ -398,7 +398,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                     type="text"
                     value={stateSearchValue}
                     onChange={e => setStateSearchValue(e.target.value)}
-                    placeholder="Search states…"
+                    placeholder="Search states..."
                     className={`w-full px-2 py-1 rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 ${inputBg}`}
                     autoComplete="off"
                   />
@@ -434,7 +434,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                 onChange={e => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                placeholder={selectedState ? `Search districts in ${selectedState}…` : 'Type a district name, e.g. 24 Para, Coimbatore, Bombay…'}
+                placeholder={selectedState ? `Search districts in ${selectedState}...` : 'Type a district name, e.g. 24 Para, Coimbatore, Bombay...'}
                 className={`w-full pl-9 pr-8 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 ${inputBg}`}
                 autoComplete="off"
                 spellCheck={false}
@@ -527,7 +527,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
         {loading && (
           <div className={`py-16 text-center ${muted} text-sm`}>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-3" />
-            <p>Fetching boundaries…</p>
+            <p>Fetching boundaries...</p>
           </div>
         )}
 
@@ -554,7 +554,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                     const label = entries?.length ? entries.map(e => e.district).join(' / ') : null;
                     return (
                       <span key={y}>
-                        {i > 0 && <span className="opacity-30"> → </span>}
+                        {i > 0 && <span className="opacity-30"> {'->'} </span>}
                         <span className={label ? '' : 'opacity-30 italic'}>
                           {label ?? String(y)}
                         </span>

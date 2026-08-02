@@ -229,7 +229,7 @@ https://bharatviz.org/districts?dataUrl=https://example.com/data.csv&colorScale=
 
         <div className={cardClass}>
           <p className={`${textClass} mb-4`}>
-            Trace how a district's name and boundaries changed across Census years (1951–2011).
+            Trace how a district's name and boundaries changed across Census years (1951-2011).
             Districts split, merge, and get renamed; the API follows those changes in both directions.
           </p>
 
@@ -271,7 +271,7 @@ with urllib.request.urlopen(url) as r:
 match = data["matches"][0]
 for year, entries in match["evolution"].items():
     names = [e["district"] for e in entries]
-    print(year, "→", ", ".join(names) if names else "(not extant)")`}
+    print(year, "->", ", ".join(names) if names else "(not extant)")`}
               />
               <CurlExample
                 label="Fetch with GeoJSON and plot with geopandas:"
@@ -319,7 +319,7 @@ resp <- request("https://bharatviz.org/api/v1/district-evolution") |>
 match <- resp$matches[[1]]
 imap(match$evolution, \\(entries, year) {
   names <- map_chr(entries, "district")
-  cat(year, "→", paste(names, collapse = ", "), "\\n")
+  cat(year, "->", paste(names, collapse = ", "), "\\n")
 })`}
               />
               <CurlExample
@@ -361,7 +361,7 @@ head(df)`}
           </Tabs>
 
           <div className="mb-5">
-            <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Example response — Coimbatore split over time:</p>
+            <p className="font-medium mb-2 text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,82%)]">Example response - Coimbatore split over time:</p>
             <CodeBlock code={`{
   "query": { "district": "Coimbatore", "state": "Tamil Nadu" },
   "matches": [{

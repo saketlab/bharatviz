@@ -14,7 +14,7 @@ const IndiaDistrictsMap = React.lazy(() =>
 
 const R2 = 'https://geo.bharatviz.org';
 
-// Color palette for categorical coloring — distinct enough at small radius
+// Color palette for categorical coloring - distinct enough at small radius
 const CAT_COLORS = [
   '#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6',
   '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
@@ -39,6 +39,8 @@ interface HealthDataset {
   // The URL points to the pre-aggregated per-district parquet.
   choroplethOnly?: boolean;
   choroplethUrl?: string;
+  // Excluded from the Health tab dropdown; shown only when a caller names it via datasetIds.
+  hiddenFromHealth?: boolean;
 }
 
 const AGG = `${R2}/geoparquet/health/aggregated`;
@@ -147,9 +149,19 @@ const DATASETS: HealthDataset[] = [
     labelField: 'awc_name',
     rows: '1,224,038', defaultRadius: 1,
   },
+  {
+    id: 'villages-soi-points',
+    displayName: 'Villages (SOI) 2024',
+    parquetUrl: `${R2}/geoparquet/points/villages_soi_points.parquet`,
+    latField: 'lat', lonField: 'lon',
+    labelField: 'village_name', colorField: undefined,
+    rows: '576,430', defaultRadius: 1,
+    hiddenFromHealth: true,
+    tooltipFields: ['district', 'subdivision', 'state_name'],
+  },
 ];
 
-// Extract lat/lon from a parquet row — handles both dedicated columns and WKB/WKT geometry
+// Extract lat/lon from a parquet row - handles both dedicated columns and WKB/WKT geometry
 function extractCoords(row: Record<string, unknown>, ds: HealthDataset): { lon: number; lat: number } | null {
   // Try dedicated lat/lon columns first
   const lat = Number(row[ds.latField]);
@@ -166,7 +178,7 @@ function extractCoords(row: Record<string, unknown>, ds: HealthDataset): { lon: 
   return null;
 }
 
-// ── India point-in-polygon filter ────────────────────────────────────────────
+// India point-in-polygon filter
 // Loads the LGD states GeoJSON once and caches the rings for fast pip testing.
 
 type Ring = number[][];
@@ -214,14 +226,23 @@ interface HealthMapProps {
   boundaryWidth?: number;
   selectedDatasetId?: string;
   onDatasetChange?: (id: string) => void;
+  datasetIds?: string[];
+  mapLabel?: string;
+  heading?: string;
 }
 
 export const HealthMap: React.FC<HealthMapProps> = ({
   darkMode, boundaryColor, boundaryWidth,
   selectedDatasetId: selectedDatasetIdProp,
   onDatasetChange,
+  datasetIds,
+  mapLabel = 'Health Facilities',
+  heading = 'Health Facility Map',
 }) => {
-  const [selectedDatasetId, setSelectedDatasetId] = useState(selectedDatasetIdProp ?? DATASETS[0].id);
+  const visibleDatasets = datasetIds
+    ? DATASETS.filter(d => datasetIds.includes(d.id))
+    : DATASETS.filter(d => !d.hiddenFromHealth);
+  const [selectedDatasetId, setSelectedDatasetId] = useState(selectedDatasetIdProp ?? visibleDatasets[0].id);
   const [points, setPoints] = useState<PointFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -402,7 +423,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
         {(loading || choroLoading) && (
           <div className="mt-3 flex items-center gap-2 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
             <Loader2 className="h-4 w-4 animate-spin" />
-            {choroLoading ? 'Loading district counts…' : `Loading ${dataset.displayName}…`}
+            {choroLoading ? 'Loading district counts...' : `Loading ${dataset.displayName}...`}
           </div>
         )}
         {error && (
@@ -426,7 +447,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
             disabled={loading}
             geojsonDownloadUrl={dataset.parquetUrl}
             geojsonDownloadName={`${dataset.id}.parquet`}
-            citationInfo={{ source: dataset.displayName, mapLabel: 'Health Facilities' }}
+            citationInfo={{ source: dataset.displayName, mapLabel }}
           />
         </div>
       </div>
@@ -434,7 +455,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
       {/* Controls */}
       <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
         <div className="mb-5">
-          <h3 className={`text-sm font-semibold mb-1 ${headingClass}`}>Health Facility Map</h3>
+          <h3 className={`text-sm font-semibold mb-1 ${headingClass}`}>{heading}</h3>
           <p className={`text-xs ${textClass}`}>
             Plot government health facility registries as points over India's district boundaries.
           </p>
@@ -449,10 +470,10 @@ export const HealthMap: React.FC<HealthMapProps> = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {DATASETS.map(ds => (
+              {visibleDatasets.map(ds => (
                 <SelectItem key={ds.id} value={ds.id}>
                   <span>{ds.displayName}</span>
-                  {ds.rows !== '—' && (
+                  {ds.rows !== '-' && (
                     <span className="ml-2 text-xs text-muted-foreground">{ds.rows}</span>
                   )}
                 </SelectItem>
@@ -461,7 +482,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
           </Select>
         </div>
 
-        {/* View mode toggle — heatmap/choropleth only for large datasets */}
+        {/* View mode toggle - heatmap/choropleth only for large datasets */}
         <div className="mb-5">
           <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
             View mode
@@ -490,7 +511,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
           </div>
           {dataset.choroplethOnly && (
             <p className="mt-1.5 text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
-              1.4M points — only choropleth available in browser.
+              1.4M points - only choropleth available in browser.
             </p>
           )}
         </div>

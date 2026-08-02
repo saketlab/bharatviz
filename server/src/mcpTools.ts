@@ -35,25 +35,27 @@ export function createMcpServer(): Server {
       instructions:
         'India geospatial data, socioeconomic analytics, and map rendering for 641 districts.\n\n' +
         'DATA LAYERS:\n' +
-        '• Census 2011 enriched (mapId: census-2011-enriched) — 640 districts, clean column names: ' +
+        '- Census 2011 enriched (mapId: census-2011-enriched) - 640 districts, clean column names: ' +
         '  literacy_pct, literate, sc_pct, st_pct, population, shannon_diversity, effective_languages, ' +
         '  language share for 120+ languages (lang_Hindi_l1_pct, lang_Bengali_l1_pct, etc.)\n' +
-        '• Census 2011 demographics via SHRUG (mapId: shrug-census) — prefixed columns for 1991/2001/2011: ' +
+        '- Census 2011 demographics via SHRUG (mapId: shrug-census) - prefixed columns for 1991/2001/2011: ' +
         '  pca11__lit_total, pca11__sc_share, pca11__st_share, pca11__tot_p, worker categories\n' +
-        '• SECC 2012 rural poverty (mapId: shrug-secc) — education, housing, income sources, deprivation\n' +
-        '• Economic Census 1990-2013 (mapId: shrug-economic) — employment, firm counts, sector breakdown\n' +
-        '• Environment (mapId: shrug-environment) — PM2.5, NDVI, nightlights, elevation, rainfall\n' +
-        '• Wealth index (mapId: shrug-facebook) — Meta Relative Wealth Index (RWI) per district\n' +
-        '• Rural roads (mapId: shrug-roads) — PMGSY road construction length and cost\n' +
-        '• Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
-        '• 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, constituencies\n\n' +
+        '- SECC 2012 rural poverty (mapId: shrug-secc) - education, housing, income sources, deprivation\n' +
+        '- Economic Census 1990-2013 (mapId: shrug-economic) - employment, firm counts, sector breakdown\n' +
+        '- Environment (mapId: shrug-environment) - PM2.5, NDVI, nightlights, elevation, rainfall\n' +
+        '- Wealth index (mapId: shrug-facebook) - Meta Relative Wealth Index (RWI) per district\n' +
+        '- Rural roads (mapId: shrug-roads) - PMGSY road construction length and cost\n' +
+        '- Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
+        '- Villages (mapId: villages-soi-points) - 576,430 Survey of India village points, the finest ' +
+        '  admin level available; fields village_name, state_name, district, subdivision, LGD codes\n' +
+        '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, constituencies\n\n' +
         'TOOLS:\n' +
-        '• rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
-        '• correlate: Pearson/Spearman between two columns across districts or states\n' +
-        '• summarize_layer: statistics grouped by state or region\n' +
-        '• render_map: choropleth PNG/SVG for any district-level dataset\n' +
-        '• spatial queries: facility counts per district/block, point-in-boundary\n' +
-        '• trace_district_evolution: boundary changes across Census years\n\n' +
+        '- rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
+        '- correlate: Pearson/Spearman between two columns across districts or states\n' +
+        '- summarize_layer: statistics grouped by state or region\n' +
+        '- render_map: choropleth PNG/SVG for any district-level dataset\n' +
+        '- spatial queries: facility counts per district/block, point-in-boundary\n' +
+        '- trace_district_evolution: boundary changes across Census years\n\n' +
         'For literacy questions use census-2011-enriched (literacy_pct). ' +
         'For multi-census trends use shrug-census (pca91__/pca01__/pca11__ prefixes). ' +
         'Start with layer_schema("census-2011-enriched") to see all columns.',
@@ -66,19 +68,19 @@ export function createMcpServer(): Server {
         {
           name: 'list_available_maps',
           description:
-            'Lists all available India map layers — boundaries AND data layers. Returns metadata for each layer ' +
+            'Lists all available India map layers - boundaries AND data layers. Returns metadata for each layer ' +
             'including the map ID (used in all other tools), data source, year, level (states/districts/regions/points), ' +
             'and number of features.\n\n' +
             'KEY DATA LAYERS FOR ANALYTICS (use mapId with rank_features / correlate / summarize_layer):\n' +
-            '• census-2011-enriched — Best for literacy/language/SC/ST queries. Clean columns: literacy_pct, ' +
+            '- census-2011-enriched - Best for literacy/language/SC/ST queries. Clean columns: literacy_pct, ' +
             'literate, sc_pct, st_pct, population, shannon_diversity, lang_Hindi_l1_pct, etc. 640 districts.\n' +
-            '• shrug-census   — Census 1991/2001/2011 demographics with prefixed columns: pca11__lit_total, ' +
+            '- shrug-census   - Census 1991/2001/2011 demographics with prefixed columns: pca11__lit_total, ' +
             'pca11__sc_share, pca11__st_share, pca11__tot_p, worker categories. Use for multi-decade trends.\n' +
-            '• shrug-secc     — SECC 2012 rural poverty: education, housing, income sources, land ownership.\n' +
-            '• shrug-economic — Economic Census 1990-2013: employment, firm counts, sector breakdown.\n' +
-            '• shrug-environment — PM2.5, NDVI, nightlights, elevation, rainfall by district.\n' +
-            '• shrug-facebook — Meta Relative Wealth Index (RWI) per district.\n' +
-            '• shrug-roads    — PMGSY rural road construction length and cost.\n' +
+            '- shrug-secc     - SECC 2012 rural poverty: education, housing, income sources, land ownership.\n' +
+            '- shrug-economic - Economic Census 1990-2013: employment, firm counts, sector breakdown.\n' +
+            '- shrug-environment - PM2.5, NDVI, nightlights, elevation, rainfall by district.\n' +
+            '- shrug-facebook - Meta Relative Wealth Index (RWI) per district.\n' +
+            '- shrug-roads    - PMGSY rural road construction length and cost.\n' +
             'BOUNDARY SETS: Census years 1872-2011, LGD, NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, NSSO regions, ' +
             'PMGSY blocks, Lok Sabha/Vidhan Sabha constituencies, wildlife sanctuaries, eco-sensitive zones.',
           inputSchema: {
@@ -165,7 +167,7 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing; "both" for both.',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline - request it only for vector editing; "both" for both.',
               },
             },
             required: ['data'],
@@ -220,7 +222,7 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline - request it only for vector editing.',
               },
             },
             required: ['data'],
@@ -282,7 +284,7 @@ export function createMcpServer(): Server {
           },
         },
 
-        // ── Pincode Tools ──────────────────────────────────────────────────
+        // Pincode Tools
         {
           name: 'list_pincode_states',
           description:
@@ -297,7 +299,7 @@ export function createMcpServer(): Server {
           name: 'pincode_centroid',
           description:
             'Resolve a single pincode to its centroid coordinates plus the district and state it falls in. ' +
-            'One call replaces the list_pincodes → find → locate triangulation. ' +
+            'One call replaces the list_pincodes -> find -> locate triangulation. ' +
             'Returns { pincode, lat, lon, office_name, district, state }. ' +
             'Pair with nearby (which also accepts a pincode directly) for "facilities near pincode X" queries.',
           inputSchema: {
@@ -313,7 +315,7 @@ export function createMcpServer(): Server {
           description:
             'Lists pincodes (postal codes) for a given Indian state, district, or all of India. ' +
             'When scoped by state or district, every row includes lat/lon and a polygon-derived ' +
-            'district/state (computed by point-in-polygon against district boundaries — cleaner than ' +
+            'district/state (computed by point-in-polygon against district boundaries - cleaner than ' +
             'the post-office table, which mislabels some neighbouring-district pincodes). ' +
             'The district filter is an EXACT match on that polygon-derived name. ' +
             'Defaults to all-India (no coordinates, for size) when state and district are omitted.',
@@ -372,14 +374,14 @@ export function createMcpServer(): Server {
               outputFormat: {
                 type: 'string',
                 enum: ['png', 'svg', 'both'],
-                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.',
+                description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline - request it only for vector editing.',
               },
             },
             required: ['data'],
           },
         },
 
-        // ── City/Ward Tools ────────────────────────────────────────────────
+        // City/Ward Tools
         {
           name: 'list_cities',
           description:
@@ -439,7 +441,7 @@ export function createMcpServer(): Server {
               invertColors: { type: 'boolean', description: 'Invert color scale. Default: false.' },
               hideWardNames: { type: 'boolean', description: 'Hide ward labels. Default: true.' },
               hideValues: { type: 'boolean', description: 'Hide value labels. Default: true.' },
-              outputFormat: { type: 'string', enum: ['png', 'svg', 'both'], description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline — request it only for vector editing.' },
+              outputFormat: { type: 'string', enum: ['png', 'svg', 'both'], description: 'Output format. Default: "png" (inline image). SVG is large (~300 KB+) and will not render inline - request it only for vector editing.' },
             },
             required: ['cityId', 'data'],
           },
@@ -511,13 +513,13 @@ export function createMcpServer(): Server {
             'Spatial join: find all features from a TARGET layer that fall inside a boundary ' +
             'selected from a BOUNDARY layer. This is the tool for cross-map queries.\n\n' +
             'Examples:\n' +
-            '• "Which hospitals are near pincode 400071?" → there is no pincode polygon layer, so use nearby(pincode="400071", mapIds=["hotosm-health-facilities"], filters={"amenity":"hospital"}) for a radius search, or proximity_coverage for many pincodes at once.\n' +
-            '• "Which parliamentary constituency does pincode 400071 belong to?" → boundaryMapId="lgd-parliament", boundaryFilter={}, targetMapId="pincodes-centroids", targetFilters={"pincode":"400071"} (finds which constituency contains the pincode centroid)\n' +
-            '• "Airports in Karnataka" → boundaryMapId="lgd-states", boundaryFilter={"state_name":"Karnataka"}, targetMapId="airports"\n' +
-            '• "Dams in Hubballi district" → boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Dharwad"}, targetMapId="dams"\n' +
-            '• "Water bodies in Kodagu" → boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Kodagu"}, targetMapId="water-bodies"\n\n' +
+            '- "Which hospitals are near pincode 400071?" -> there is no pincode polygon layer, so use nearby(pincode="400071", mapIds=["hotosm-health-facilities"], filters={"amenity":"hospital"}) for a radius search, or proximity_coverage for many pincodes at once.\n' +
+            '- "Which parliamentary constituency does pincode 400071 belong to?" -> boundaryMapId="lgd-parliament", boundaryFilter={}, targetMapId="pincodes-centroids", targetFilters={"pincode":"400071"} (finds which constituency contains the pincode centroid)\n' +
+            '- "Airports in Karnataka" -> boundaryMapId="lgd-states", boundaryFilter={"state_name":"Karnataka"}, targetMapId="airports"\n' +
+            '- "Dams in Hubballi district" -> boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Dharwad"}, targetMapId="dams"\n' +
+            '- "Water bodies in Kodagu" -> boundaryMapId="lgd-districts", boundaryFilter={"district_name":"Kodagu"}, targetMapId="water-bodies"\n\n' +
             'For constituency lookups, flip the join: use the constituency polygons as the boundary ' +
-            'and the pincode centroid as the target. boundaryFilter can be left empty {} to test all boundaries — ' +
+            'and the pincode centroid as the target. boundaryFilter can be left empty {} to test all boundaries - ' +
             'the first one containing the target will be returned. Better: use locate tool for single-point lookups.\n\n' +
             'boundaryFilter uses case-insensitive substring matching on any property.',
           inputSchema: {
@@ -525,7 +527,7 @@ export function createMcpServer(): Server {
             properties: {
               boundaryMapId: {
                 type: 'string',
-                description: 'Map ID for the boundary layer (any polygon layer). E.g. "lgd-districts", "lgd-states", "lgd-parliament", "gs-wildlife". Note: there is no pincode polygon layer — "pincodes-centroids" is point-based, use it as a target, not a boundary.',
+                description: 'Map ID for the boundary layer (any polygon layer). E.g. "lgd-districts", "lgd-states", "lgd-parliament", "gs-wildlife". Note: there is no pincode polygon layer - "pincodes-centroids" is point-based, use it as a target, not a boundary.',
               },
               boundaryFilter: {
                 type: 'object',
@@ -534,7 +536,7 @@ export function createMcpServer(): Server {
               },
               targetMapId: {
                 type: 'string',
-                description: 'Map ID for the target layer whose features will be tested for containment. Works with any layer: point datasets (airports, dams, hotosm-health-facilities, pincodes-centroids, water-bodies) or polygon layers (districts, constituencies, etc.).',
+                description: 'Map ID for the target layer whose features will be tested for containment. Works with any layer: point datasets (airports, dams, hotosm-health-facilities, pincodes-centroids, water-bodies, villages-soi-points) or polygon layers (districts, constituencies, etc.).',
               },
               targetFilters: {
                 type: 'object',
@@ -561,10 +563,10 @@ export function createMcpServer(): Server {
             'Center the search on a lat/lon OR pass a pincode directly (its centroid is resolved server-side). ' +
             'Works with point layers (airports, dams, health facilities, water bodies, pincodes-centroids) and polygon layers (uses polygon centroids). ' +
             'Results are sorted by distance, deduped (OSM ships each facility as two near-coincident nodes), and trimmed of admin-code boilerplate by default. ' +
-            'Use filters to constrain server-side BEFORE the limit applies — e.g. filters={"amenity":"hospital"} so limit=10 returns 10 hospitals, not 10 mixed clinics/pharmacies. ' +
+            'Use filters to constrain server-side BEFORE the limit applies - e.g. filters={"amenity":"hospital"} so limit=10 returns 10 hospitals, not 10 mixed clinics/pharmacies. ' +
             'Examples: nearby(pincode="400071", mapIds=["hotosm-health-facilities"], filters={"amenity":"hospital"}, limit=10); ' +
             '"dams within 50 km of Hubballi"; "pincodes near 400071". ' +
-            'Available point layers: airports, dams, water-bodies, hotosm-health-facilities, pincodes-centroids.',
+            'Available point layers: airports, dams, water-bodies, hotosm-health-facilities, pincodes-centroids, villages-soi-points.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -596,7 +598,7 @@ export function createMcpServer(): Server {
         {
           name: 'centroid',
           description:
-            'Centroid (lat/lon) of any feature in any layer — district, state, constituency, ward, pincode, point, or polygon. ' +
+            'Centroid (lat/lon) of any feature in any layer - district, state, constituency, ward, pincode, point, or polygon. ' +
             'Look up by fuzzy name (matched against the layer\'s name property) and/or property filters. ' +
             'Examples: centroid(mapId="lgd-districts", name="Pune"); centroid(mapId="lgd-parliament", name="Chennai South"); ' +
             'centroid(mapId="pincodes-centroids", filters={"pincode":"400071"}). ' +
@@ -619,10 +621,10 @@ export function createMcpServer(): Server {
         {
           name: 'get_area',
           description:
-            'Compute area in km² for one or more features in a polygon map layer. ' +
+            'Compute area in km2 for one or more features in a polygon map layer. ' +
             'Optionally compute population density if the layer has a population column. ' +
             'Use this for questions like "what is the area of Bangalore district?", ' +
-            '"how many km² is Rajasthan?", "population density of all Kerala districts". ' +
+            '"how many km2 is Rajasthan?", "population density of all Kerala districts". ' +
             'Works with any polygon layer: districts, states, subdistricts, constituencies, wildlife sanctuaries, eco-zones, etc.',
           inputSchema: {
             type: 'object' as const,
@@ -637,7 +639,7 @@ export function createMcpServer(): Server {
               },
               populationProperty: {
                 type: 'string',
-                description: 'Optional property name holding population count. When provided, also returns population density (people/km²).',
+                description: 'Optional property name holding population count. When provided, also returns population density (people/km2).',
               },
               limit: { type: 'number', description: 'Max features to return (default 50, max 500).' },
             },
@@ -649,7 +651,7 @@ export function createMcpServer(): Server {
           description:
             'Returns the raw data download URL(s) for any registered BharatViz map layer. ' +
             'Provides both the GeoJSON URL and the GeoParquet URL hosted on the BharatViz CDN (geo.bharatviz.org). ' +
-            'GeoParquet is recommended for analytical queries in DuckDB, pandas, or Arrow — it is 5-10x smaller ' +
+            'GeoParquet is recommended for analytical queries in DuckDB, pandas, or Arrow - it is 5-10x smaller ' +
             'and columnar reads are dramatically faster. GeoJSON is better for direct browser/GIS tool use. ' +
             'The HOTOSM health facilities layer (hotosm-health-facilities) is also available in both formats.',
           inputSchema: {
@@ -664,7 +666,7 @@ export function createMcpServer(): Server {
           },
         },
 
-        // ── District Evolution Tools ───────────────────────────────────────
+        // District Evolution Tools
         {
           name: 'trace_district_evolution',
           description:
@@ -705,7 +707,7 @@ export function createMcpServer(): Server {
             properties: {},
           },
         },
-        // ── Analytics ──────────────────────────────────────────────────
+        // Analytics
         {
           name: 'layer_schema',
           description:
@@ -728,9 +730,9 @@ export function createMcpServer(): Server {
             'for one or more numeric columns in any registered map layer. ' +
             'Use groupBy to break down stats by a categorical column (e.g. state_name). ' +
             'Use columns:["*"] to summarize all numeric columns at once. ' +
-            'Examples: "Mean literacy rate per state" → mapId="census-2011-enriched", columns=["literacy_pct"], groupBy="state_name". ' +
-            '"Distribution of SC% across all districts" → mapId="census-2011-enriched", columns=["sc_pct"]. ' +
-            '"Sum of population by state" → mapId="census-2011-enriched", columns=["population"], groupBy="state_name".',
+            'Examples: "Mean literacy rate per state" -> mapId="census-2011-enriched", columns=["literacy_pct"], groupBy="state_name". ' +
+            '"Distribution of SC% across all districts" -> mapId="census-2011-enriched", columns=["sc_pct"]. ' +
+            '"Sum of population by state" -> mapId="census-2011-enriched", columns=["population"], groupBy="state_name".',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -767,11 +769,11 @@ export function createMcpServer(): Server {
             'Sort features in any map layer by a numeric column and return the top or bottom N. ' +
             'Use filters to restrict to a state or other subset. ' +
             'Examples: ' +
-            '"20 districts with lowest literacy" → mapId="census-2011-enriched", column="literacy_pct", order="asc". ' +
-            '"Top 20 ST-majority districts" → mapId="census-2011-enriched", column="st_pct", order="desc". ' +
-            '"Most Hindi-speaking districts" → mapId="census-2011-enriched", column="lang_Hindi_l1_pct", order="desc". ' +
-            '"Airports by elevation" → mapId="airports", column="elevation_ft", order="desc". ' +
-            '"Lowest literacy in Bihar" → mapId="census-2011-enriched", column="literacy_pct", order="asc", filters={"state_name":"Bihar"}.',
+            '"20 districts with lowest literacy" -> mapId="census-2011-enriched", column="literacy_pct", order="asc". ' +
+            '"Top 20 ST-majority districts" -> mapId="census-2011-enriched", column="st_pct", order="desc". ' +
+            '"Most Hindi-speaking districts" -> mapId="census-2011-enriched", column="lang_Hindi_l1_pct", order="desc". ' +
+            '"Airports by elevation" -> mapId="airports", column="elevation_ft", order="desc". ' +
+            '"Lowest literacy in Bihar" -> mapId="census-2011-enriched", column="literacy_pct", order="asc", filters={"state_name":"Bihar"}.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -797,11 +799,11 @@ export function createMcpServer(): Server {
             'Use groupBy to compute correlation separately per group (e.g. per state). ' +
             'Use sampleRows to get scatter-plot data points. ' +
             'Examples: ' +
-            '"Correlation between SC% and literacy" → mapId="census-2011-enriched", x="sc_pct", y="literacy_pct". ' +
-            '"State-level SC% vs literacy" → same mapId, groupBy="state_name". ' +
-            '"Language diversity vs literacy" → mapId="census-2011-enriched", x="shannon_diversity", y="literacy_pct". ' +
+            '"Correlation between SC% and literacy" -> mapId="census-2011-enriched", x="sc_pct", y="literacy_pct". ' +
+            '"State-level SC% vs literacy" -> same mapId, groupBy="state_name". ' +
+            '"Language diversity vs literacy" -> mapId="census-2011-enriched", x="shannon_diversity", y="literacy_pct". ' +
             'CROSS-LAYER: set yMapId to pull y from a different district layer, joined per district (on pc11_district_id, ' +
-            'else state+district name). E.g. "Does Meta wealth index predict literacy?" → mapId="shrug-facebook", ' +
+            'else state+district name). E.g. "Does Meta wealth index predict literacy?" -> mapId="shrug-facebook", ' +
             'x="facebook-rwi__facebook_mean_rwi", yMapId="census-2011-enriched", y="literacy_pct".',
           inputSchema: {
             type: 'object' as const,
@@ -870,9 +872,9 @@ export function createMcpServer(): Server {
             'Pass secondaryMapId to look up those similar districts in a second layer (e.g. find districts ' +
             'demographically similar to Nandurbar, then show their NFHS-5 health outcomes).\n\n' +
             'Examples:\n' +
-            '• "10 districts demographically similar to Nandurbar (high ST, low literacy)": mapId="census-2011-enriched"\n' +
-            '• "Districts like Washim on demography — show their NFHS-5 outcomes": mapId="census-2011-enriched", secondaryMapId="nfhs5-districts"\n' +
-            '• "SHRUG districts similar to Sitamarhi on poverty proxy — show road access": mapId="shrug-secc", secondaryMapId="shrug-roads"',
+            '- "10 districts demographically similar to Nandurbar (high ST, low literacy)": mapId="census-2011-enriched"\n' +
+            '- "Districts like Washim on demography - show their NFHS-5 outcomes": mapId="census-2011-enriched", secondaryMapId="nfhs5-districts"\n' +
+            '- "SHRUG districts similar to Sitamarhi on poverty proxy - show road access": mapId="shrug-secc", secondaryMapId="shrug-roads"',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -905,17 +907,17 @@ export function createMcpServer(): Server {
             'The essential tool for facility-per-district counts, pincode density by constituency, hospital beds per block, etc.\n\n' +
             'PRE-AGGREGATED SHORTCUT: All health/facility point layers have a pre-computed per-district count parquet ' +
             '(aggregatedByDistrictUrl in list_available_maps output). For all-India district counts, load that URL directly ' +
-            'instead of running aggregate_by_boundary — it is instant (~10KB vs 85MB). ' +
+            'instead of running aggregate_by_boundary - it is instant (~10KB vs 85MB). ' +
             'Use aggregate_by_boundary when you need: a different boundary level (state/block/constituency), ' +
             'additional aggregated columns (sum of beds, etc.), or filters.\n\n' +
             'Examples:\n' +
-            '• Health facilities per district: boundaryMapId="lgd-districts", targetMapId="nhp-health-facilities"\n' +
-            '• Hospitals per state with total beds: boundaryMapId="lgd-states", targetMapId="nhp-hospital-directory", aggColumns=[{column:"Total_Num_Beds",stat:"sum"},{column:"Number_Doctor",stat:"sum"}]\n' +
-            '• Anganwadis per block: boundaryMapId="lgd-blocks", targetMapId="anganwadis-icds"\n' +
-            '• Airports per state: boundaryMapId="lgd-states", targetMapId="airports"\n' +
-            '• Dams per district in Rajasthan: boundaryMapId="lgd-districts", targetMapId="dams", boundaryFilters={"state_name":"Rajasthan"}\n\n' +
+            '- Health facilities per district: boundaryMapId="lgd-districts", targetMapId="nhp-health-facilities"\n' +
+            '- Hospitals per state with total beds: boundaryMapId="lgd-states", targetMapId="nhp-hospital-directory", aggColumns=[{column:"Total_Num_Beds",stat:"sum"},{column:"Number_Doctor",stat:"sum"}]\n' +
+            '- Anganwadis per block: boundaryMapId="lgd-blocks", targetMapId="anganwadis-icds"\n' +
+            '- Airports per state: boundaryMapId="lgd-states", targetMapId="airports"\n' +
+            '- Dams per district in Rajasthan: boundaryMapId="lgd-districts", targetMapId="dams", boundaryFilters={"state_name":"Rajasthan"}\n\n' +
             'Result rows are sorted by count descending. ' +
-            'For large point layers (anganwadis 1.4M, nhp-health-facilities 166k), filter boundaries to a single state first using boundaryFilters — all-India queries will be rejected to prevent timeout.',
+            'For large point layers (anganwadis 1.4M, nhp-health-facilities 166k), filter boundaries to a single state first using boundaryFilters - all-India queries will be rejected to prevent timeout.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -967,7 +969,7 @@ export function createMcpServer(): Server {
             'Bulk nearest-distance + within-radius coverage: for EACH source feature, returns the nearest ' +
             'target feature, its distance (km), whether it is within radiusKm, and how many targets fall ' +
             'within radiusKm (a density metric). This is the buffer / "within N km" counterpart to ' +
-            'aggregate_by_boundary (which counts features strictly INSIDE a polygon) — keep both.\n\n' +
+            'aggregate_by_boundary (which counts features strictly INSIDE a polygon) - keep both.\n\n' +
             'Canonical use: "which pincodes in Pune district are within 5 km of a hospital, and map density":\n' +
             'proximity_coverage(sourceMapId="pincodes-centroids", sourceFilters={"district":"Pune"}, ' +
             'targetMapId="hotosm-health-facilities", targetFilters={"amenity":"hospital"}, radiusKm=5).\n' +
@@ -1009,10 +1011,10 @@ export function createMcpServer(): Server {
             'Returns one row per base-layer feature with columns from both layers prefixed base__ and join__. ' +
             'This is the tool for cross-layer analytics: e.g. SHRUG road density + census literacy, or NFHS-5 outcomes + census demography.\n\n' +
             'Examples:\n' +
-            '• SHRUG roads + census literacy: baseMapId="shrug-roads", joinMapId="census-2011-enriched"\n' +
-            '• Facebook wealth index + SECC deprivation: baseMapId="shrug-facebook", joinMapId="shrug-secc"\n' +
-            '• PM2.5 pollution + literacy: baseMapId="shrug-environment", joinMapId="census-2011-enriched", baseColumns=["pm25__pm25_mean"], joinColumns=["literacy_pct","sc_pct"]\n' +
-            '• State-level join: baseMapId="lgd-states", joinMapId="nfhs5-states", matchOn="state_name"\n\n' +
+            '- SHRUG roads + census literacy: baseMapId="shrug-roads", joinMapId="census-2011-enriched"\n' +
+            '- Facebook wealth index + SECC deprivation: baseMapId="shrug-facebook", joinMapId="shrug-secc"\n' +
+            '- PM2.5 pollution + literacy: baseMapId="shrug-environment", joinMapId="census-2011-enriched", baseColumns=["pm25__pm25_mean"], joinColumns=["literacy_pct","sc_pct"]\n' +
+            '- State-level join: baseMapId="lgd-states", joinMapId="nfhs5-states", matchOn="state_name"\n\n' +
             'Matching is state-scoped by default (district_name). For state-level layers pass matchOn="state_name".',
           inputSchema: {
             type: 'object' as const,
@@ -1128,12 +1130,12 @@ export function createMcpServer(): Server {
             'environment (wildlife sanctuaries, eco-sensitive zones, FSI forests), ' +
             'urban (SBM urban local bodies), ' +
             'health (NHP facilities, hospital directory, blood banks, anganwadis, BharatMaps, GatiShakti, SOI, Living Atlas, HOTOSM), ' +
-            'points (airports, dams, water bodies, pincodes). ' +
-            'SHRUG layers carry Census/economic/SECC data columns queryable via rank_features/correlate/summarize_layer — ' +
+            'points (airports, dams, water bodies, pincodes, villages). ' +
+            'SHRUG layers carry Census/economic/SECC data columns queryable via rank_features/correlate/summarize_layer - ' +
             'e.g. literacy: shrug-census pca11__lit_total; SC share: pca11__sc_share. ' +
             'Each entry includes id, level, source, year, description, and aggregatedByDistrictUrl ' +
-            '(pre-computed per-district count parquet — available for all health/facility layers). ' +
-            'Faster than list_available_maps — does not fetch GeoJSON.',
+            '(pre-computed per-district count parquet - available for all health/facility layers). ' +
+            'Faster than list_available_maps - does not fetch GeoJSON.',
           inputSchema: {
             type: 'object' as const,
             properties: {},
@@ -1155,7 +1157,7 @@ export function createMcpServer(): Server {
           };
         }
 
-        // ── Analytics handlers ──────────────────────────────────────────
+        // Analytics handlers
         case 'layer_schema': {
           const mapId = args?.mapId as string;
           if (!mapId) throw new Error('mapId is required');
@@ -1424,7 +1426,7 @@ export function createMcpServer(): Server {
           };
         }
 
-        // ── Pincode Tools ──────────────────────────────────────────────
+        // Pincode Tools
 
         case 'list_pincode_states': {
           const states = mapService.listPincodeStates();
@@ -1472,7 +1474,7 @@ export function createMcpServer(): Server {
           return mapResultToContent(result);
         }
 
-        // ── City/Ward Tools ────────────────────────────────────────────
+        // City/Ward Tools
 
         case 'list_cities': {
           const cities = await mapService.listCities();
@@ -1602,7 +1604,7 @@ export function createMcpServer(): Server {
           return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
         }
 
-        // ── District Evolution Tools ───────────────────────────────────
+        // District Evolution Tools
 
         case 'trace_district_evolution': {
           const district = args?.district as string;

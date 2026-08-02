@@ -60,7 +60,7 @@ const ExampleCard: React.FC<{ title: string; prompt: string; answer: string; cod
       <h4 className="text-base font-semibold mb-1 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">{title}</h4>
       <p className={`text-sm italic mb-2 ${textClass}`}>"{prompt}"</p>
       <p className="text-sm mb-3 flex gap-1.5 text-[hsl(28,24%,28%)] dark:text-[hsl(35,12%,78%)]">
-        <span className="select-none font-semibold text-[hsl(28,62%,46%)] dark:text-[hsl(28,55%,56%)]" aria-hidden="true">→</span>
+        <span className="select-none font-semibold text-[hsl(28,62%,46%)] dark:text-[hsl(28,55%,56%)]" aria-hidden="true">{'->'}</span>
         <span>{answer}</span>
       </p>
       <CodeBlock code={code} />
@@ -159,29 +159,29 @@ response = client.beta.messages.create(
     betas=["mcp-client-2025-04-04"],
 )`;
 
-  const genericHttpSnippet = `# Any HTTP MCP client — SSE endpoint
+  const genericHttpSnippet = `# Any HTTP MCP client - SSE endpoint
 MCP endpoint: ${MCP_URL}
 Transport:    HTTP / SSE (Streamable HTTP)
 Auth:         None required`;
 
-  const openModelClientSnippet = `# Apps that are MCP clients AND let you pick the model — point them at the
+  const openModelClientSnippet = `# Apps that are MCP clients AND let you pick the model - point them at the
 # endpoint, then choose a local (Ollama / vLLM) or hosted open model:
-#   LibreChat · Open WebUI · Jan · Cline · Continue.dev · 5ire · Cherry Studio
+#   LibreChat - Open WebUI - Jan - Cline - Continue.dev - 5ire - Cherry Studio
 {
   "mcpServers": {
     "bharatviz": { "url": "${MCP_URL}" }
   }
 }
-# Model picker → e.g. qwen2.5:32b, llama3.3:70b, mistral, deepseek-v3 (Ollama),
+# Model picker -> e.g. qwen2.5:32b, llama3.3:70b, mistral, deepseek-v3 (Ollama),
 # or any OpenAI-compatible endpoint (vLLM, Together, Groq, OpenRouter).`;
 
-  const ollamaBridgeSnippet = `# Drive the endpoint with a LOCAL Ollama model — no Claude involved.
+  const ollamaBridgeSnippet = `# Drive the endpoint with a LOCAL Ollama model - no Claude involved.
 # 1. Pull a tool-capable model (7B+ recommended; smaller ones mis-call tools):
 ollama pull qwen2.5:7b          # or llama3.3, mistral, qwen2.5:32b
 
 # 2. Run the bundled bridge (repo: server/examples/ollama_mcp_chat.mjs).
 #    It discovers the tools at runtime, hands them to the model as function
-#    specs, and runs the call→execute→answer loop:
+#    specs, and runs the call->execute->answer loop:
 MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
   "Which 5 districts have the lowest literacy rate in India?"
 
@@ -194,18 +194,18 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
     { name: 'list_districts', description: 'Districts for a boundary type, optionally filtered by state', input: 'mapId, state?' },
     { name: 'render_states_map', description: 'State-level choropleth as 300 DPI PNG', input: 'data [{state, value}], mapId?, colorScale?, title?, ...' },
     { name: 'render_districts_map', description: 'District-level choropleth as 300 DPI PNG. Works for any sub-state boundary: districts, subdistricts, constituencies, FSI forest units, ULBs.', input: 'data [{state, district, value}], mapId?, state?, colorScale?, ...' },
-    { name: 'get_csv_template', description: 'CSV template with all entity names for a boundary type — paste your values in column B', input: 'mapId (string)' },
+    { name: 'get_csv_template', description: 'CSV template with all entity names for a boundary type - paste your values in column B', input: 'mapId (string)' },
     { name: 'list_demos', description: 'Built-in demo datasets: NFHS-5 health indicators, IHME AMR estimates', input: 'level? ("states" | "districts")' },
     { name: 'get_demo_url', description: 'Shareable URL that opens a demo dataset directly in the browser', input: 'demoId, baseUrl?' },
     { name: 'list_pincode_states', description: '38 states/UTs with pincode boundary data (~19,000 pincodes total)', input: 'None' },
     { name: 'list_pincodes', description: 'Pincodes for a state or district (polygon-derived district + lat/lon when scoped)', input: 'state?, district?' },
-    { name: 'pincode_centroid', description: 'Resolve one pincode → lat/lon + office name + district + state in a single call', input: 'pincode (string)' },
+    { name: 'pincode_centroid', description: 'Resolve one pincode -> lat/lon + office name + district + state in a single call', input: 'pincode (string)' },
     { name: 'render_pincodes_map', description: 'Pincode-level choropleth for a single state as 300 DPI PNG', input: 'data [{pincode, value}], state, colorScale?, ...' },
     { name: 'list_cities', description: '130+ cities with ward/zone boundary data (2,900+ datasets)', input: 'None' },
     { name: 'list_wards', description: 'All ward names for a given city', input: 'cityId (string)' },
     { name: 'render_city_map', description: 'Ward-level choropleth for an Indian city as 300 DPI PNG', input: 'cityId, data [{ward, value}], colorScale?, ...' },
-    { name: 'trace_district_evolution', description: 'How a district changed across Census years 1951–2011: splits, merges, renames', input: 'district, state?, year?, includeGeojson?' },
-    { name: 'list_historical_district_names', description: 'All district names in the Census transition data (1951–2011)', input: 'None' },
+    { name: 'trace_district_evolution', description: 'How a district changed across Census years 1951-2011: splits, merges, renames', input: 'district, state?, year?, includeGeojson?' },
+    { name: 'list_historical_district_names', description: 'All district names in the Census transition data (1951-2011)', input: 'None' },
   ];
 
   const spatialTools = [
@@ -214,17 +214,17 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
     { name: 'spatial_join', description: 'All features in a target layer that intersect features matched in a boundary layer', input: 'targetMapId, boundaryMapId, boundaryFilters?' },
     { name: 'nearby', description: 'Nearest features to a lat/lon or pincode center; server-side filters, dedup, terse output', input: 'lat+lon | pincode, radiusKm, mapIds, filters?' },
     { name: 'proximity_coverage', description: 'Per-source nearest-target distance + within-radius flag + density count (e.g. pincodes within 5 km of a hospital)', input: 'sourceMapId, sourceFilters, targetMapId, targetFilters?, radiusKm' },
-    { name: 'get_area', description: 'Geodetic area (km²) of any feature or set of features', input: 'mapId, filters?, numericFilters?' },
-    { name: 'centroid', description: 'Centroid (lat/lon) of any feature in any layer — district, constituency, ward, pincode, point', input: 'mapId, name?, filters?' },
+    { name: 'get_area', description: 'Geodetic area (km2) of any feature or set of features', input: 'mapId, filters?, numericFilters?' },
+    { name: 'centroid', description: 'Centroid (lat/lon) of any feature in any layer - district, constituency, ward, pincode, point', input: 'mapId, name?, filters?' },
     { name: 'get_layer_detail', description: 'Feature count, property names, GeoJSON and GeoParquet download URLs for a layer', input: 'mapId (string)' },
   ];
 
   const analyticsTools = [
     { name: 'layer_schema', description: 'Full column list for any enriched layer, split into numeric, categorical, and text-ID columns', input: 'mapId (string)' },
-    { name: 'summarize_layer', description: 'Min, max, mean, median, percentiles, stddev for one or more numeric columns — supports group-by and row filters', input: 'mapId, columns?, groupBy?, filters?, numericFilters?' },
+    { name: 'summarize_layer', description: 'Min, max, mean, median, percentiles, stddev for one or more numeric columns - supports group-by and row filters', input: 'mapId, columns?, groupBy?, filters?, numericFilters?' },
     { name: 'rank_features', description: 'All features sorted by a numeric column', input: 'mapId, column, order?, limit?, filters?, numericFilters?' },
     { name: 'correlate', description: 'Pearson and Spearman correlations between two numeric columns, with optional scatter data and per-group breakdowns', input: 'mapId, x, y, filters?, numericFilters?, scatter?, groupBy?' },
-    { name: 'compare_groups', description: 'Summary stats for each group in a categorical column — e.g. compare districts by state', input: 'mapId, groupBy, columns?, filters?, numericFilters?' },
+    { name: 'compare_groups', description: 'Summary stats for each group in a categorical column - e.g. compare districts by state', input: 'mapId, groupBy, columns?, filters?, numericFilters?' },
     { name: 'find_similar', description: 'N features closest to a reference using Z-score normalized Euclidean distance across multiple columns', input: 'mapId, referenceName, columns, n?, referenceState?, filters?' },
   ];
 
@@ -250,7 +250,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Claude Code ─────────────────────────────────────────────────── */}
+      {/* Claude Code */}
       <div className="space-y-3">
         <h3 id="setup-claude-code" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -258,15 +258,15 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
           <SectionAnchor id="setup-claude-code" />
         </h3>
         <div className={cardClass}>
-          <p className={`${textClass} text-sm mb-2`}><strong>Option A — one command</strong> (saves globally):</p>
+          <p className={`${textClass} text-sm mb-2`}><strong>Option A - one command</strong> (saves globally):</p>
           <CodeBlock code={claudeCodeCliCommand} />
-          <p className={`${textClass} text-sm mt-4 mb-2`}><strong>Option B — config file</strong>: add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code> in your project root, or <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.claude/claude.json</code> for global scope:</p>
+          <p className={`${textClass} text-sm mt-4 mb-2`}><strong>Option B - config file</strong>: add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">.mcp.json</code> in your project root, or <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.claude/claude.json</code> for global scope:</p>
           <CodeBlock code={claudeCodeJsonConfig} />
           <p className={`${textClass} text-sm mt-3`}>Run <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">/mcp</code> inside Claude Code to confirm <strong>bharatviz</strong> shows as connected.</p>
         </div>
       </div>
 
-      {/* ── Claude Desktop ───────────────────────────────────────────────── */}
+      {/* Claude Desktop */}
       <div className="space-y-3">
         <h3 id="setup-claude-desktop" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -275,7 +275,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </h3>
         <div className={cardClass}>
           <p className={`${textClass} text-sm mb-2`}>
-            Open <strong>Settings → Developer → Edit Config</strong> and add the <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcpServers</code> block.
+            Open <strong>Settings {'->'} Developer {'->'} Edit Config</strong> and add the <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">mcpServers</code> block.
             Config file location:
           </p>
           <ul className={`text-xs mb-3 space-y-1 font-mono ${textClass}`}>
@@ -290,7 +290,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Cursor ───────────────────────────────────────────────────────── */}
+      {/* Cursor */}
       <div className="space-y-3">
         <h3 id="setup-cursor" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -299,7 +299,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </h3>
         <div className={cardClass}>
           <p className={`${textClass} text-sm mb-2`}>
-            Go to <strong>Cursor Settings → MCP → Add new MCP server</strong>, or add manually to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.cursor/mcp.json</code>:
+            Go to <strong>Cursor Settings {'->'} MCP {'->'} Add new MCP server</strong>, or add manually to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.cursor/mcp.json</code>:
           </p>
           <CodeBlock code={cursorConfig} />
           <p className={`${textClass} text-sm mt-3`}>
@@ -308,7 +308,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Windsurf ─────────────────────────────────────────────────────── */}
+      {/* Windsurf */}
       <div className="space-y-3">
         <h3 id="setup-windsurf" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -317,7 +317,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </h3>
         <div className={cardClass}>
           <p className={`${textClass} text-sm mb-2`}>
-            Open <strong>Windsurf Settings → Cascade → MCP Servers → Add Server</strong>.
+            Open <strong>Windsurf Settings {'->'} Cascade {'->'} MCP Servers {'->'} Add Server</strong>.
             Choose <strong>Remote URL</strong> and paste the endpoint:
           </p>
           <CodeBlock code={MCP_URL} />
@@ -327,7 +327,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Continue.dev ─────────────────────────────────────────────────── */}
+      {/* Continue.dev */}
       <div className="space-y-3">
         <h3 id="setup-continue" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -342,7 +342,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── OpenAI Codex CLI ─────────────────────────────────────────────── */}
+      {/* OpenAI Codex CLI */}
       <div className="space-y-3">
         <h3 id="setup-codex" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -350,10 +350,10 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
           <SectionAnchor id="setup-codex" />
         </h3>
         <div className={cardClass}>
-          <p className={`${textClass} text-sm mb-2`}><strong>Option A — one command:</strong></p>
+          <p className={`${textClass} text-sm mb-2`}><strong>Option A - one command:</strong></p>
           <CodeBlock code={codexCliConfig} />
           <p className={`${textClass} text-sm mt-4 mb-2`}>
-            <strong>Option B — config file.</strong> Add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.codex/config.json</code>:
+            <strong>Option B - config file.</strong> Add to <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">~/.codex/config.json</code>:
           </p>
           <CodeBlock code={codexJsonConfig} />
           <p className={`${textClass} text-sm mt-3`}>
@@ -362,7 +362,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── OpenAI Agents SDK ─────────────────────────────────────────────── */}
+      {/* OpenAI Agents SDK */}
       <div className="space-y-3">
         <h3 id="setup-openai-agents" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -377,7 +377,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Anthropic Python SDK (direct) ─────────────────────────────────── */}
+      {/* Anthropic Python SDK (direct) */}
       <div className="space-y-3">
         <h3 id="setup-python-sdk" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Terminal className="h-5 w-5" />
@@ -392,7 +392,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Generic / any other client ───────────────────────────────────── */}
+      {/* Generic / any other client */}
       <div className="space-y-3">
         <h3 id="setup-generic" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Plug className="h-5 w-5" />
@@ -413,33 +413,33 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         </div>
       </div>
 
-      {/* ── Open & local models ──────────────────────────────────────────── */}
+      {/* Open & local models */}
       <div className="space-y-3">
         <h3 id="setup-open-models" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Cpu className="h-5 w-5" />
-          Open &amp; local models (Llama, Qwen, Mistral, …)
+          Open &amp; local models (Llama, Qwen, Mistral, ...)
           <SectionAnchor id="setup-open-models" />
         </h3>
         <div className={cardClass}>
           <p className={`${textClass} text-sm mb-2`}>
-            MCP is <strong>model-agnostic</strong> — the server is plain Streamable HTTP and doesn&apos;t care which LLM calls it.
+            MCP is <strong>model-agnostic</strong> - the server is plain Streamable HTTP and doesn&apos;t care which LLM calls it.
             Any model with <strong>tool / function calling</strong> works: Llama 3.1+, Qwen 2.5/3, Mistral, DeepSeek, Command-R, GPT-OSS.
             There are two routes.
           </p>
-          <p className={`${textClass} text-sm mb-2 font-medium`}>1 · An MCP-client app, with your own model selected</p>
+          <p className={`${textClass} text-sm mb-2 font-medium`}>1 - An MCP-client app, with your own model selected</p>
           <CodeBlock code={openModelClientSnippet} />
-          <p className={`${textClass} text-sm mt-3 mb-2 font-medium`}>2 · A local Ollama model via a tiny bridge</p>
+          <p className={`${textClass} text-sm mt-3 mb-2 font-medium`}>2 - A local Ollama model via a tiny bridge</p>
           <CodeBlock code={ollamaBridgeSnippet} />
           <p className={`${textClass} text-sm mt-3`}>
             Tool-calling <em>reliability</em> tracks model strength: 7B models handle simple one-tool prompts,
             but multi-step queries (e.g. the cross-layer correlation below) want a stronger open model
-            — Qwen2.5-32B, Llama-3.3-70B, or DeepSeek-V3. The server works with all of them; only the
+            - Qwen2.5-32B, Llama-3.3-70B, or DeepSeek-V3. The server works with all of them; only the
             orchestration quality differs.
           </p>
         </div>
       </div>
 
-      {/* ── Example prompts ──────────────────────────────────────────────── */}
+      {/* Example prompts */}
       <div className="space-y-3">
         <h3 id="example-prompts" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Code2 className="h-5 w-5" />
@@ -452,14 +452,14 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
           </p>
           <ul className={`list-disc list-inside space-y-2 text-sm ${textClass}`}>
             <li>"Map female literacy rates across all Census 2011 districts using a diverging color scale"</li>
-            <li>"Which 20 districts have the lowest literacy rates — and what do they have in common?"</li>
+            <li>"Which 20 districts have the lowest literacy rates - and what do they have in common?"</li>
             <li>"How does SC/ST population share correlate with literacy across districts?"</li>
             <li>"Find districts with a deprivation profile similar to Alirajpur for targeting interventions"</li>
-            <li>"Compare literacy and SC% across states — give me a state-level summary table"</li>
-            <li>"What district does GPS coordinate 23.25°N, 80.12°E fall in, and what are its Census indicators?"</li>
+            <li>"Compare literacy and SC% across states - give me a state-level summary table"</li>
+            <li>"What district does GPS coordinate 23.25N, 80.12E fall in, and what are its Census indicators?"</li>
             <li>"Rank all districts in Uttar Pradesh by SC population share, then map it"</li>
             <li>"Find the 10 nearest hospitals to a rural point in Bundelkhand"</li>
-            <li>"Show PMGSY road access vs. PM2.5 pollution at the district level — is there a pattern?"</li>
+            <li>"Show PMGSY road access vs. PM2.5 pollution at the district level - is there a pattern?"</li>
             <li>"Does the Meta wealth index predict literacy across districts? And are tribal districts poorer?"</li>
             <li>"Is air pollution (PM2.5) correlated with lower literacy at the district level?"</li>
           </ul>
@@ -556,7 +556,7 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         <ExampleCard
           title="Discover available health and demographic indicators"
           prompt="What health and demographic indicators are available for Census 2011 districts?"
-          answer="Returns the full column list for all 640 districts — population, literacy, SC/ST shares, language diversity, and 100+ language columns."
+          answer="Returns the full column list for all 640 districts - population, literacy, SC/ST shares, language diversity, and 100+ language columns."
           code={`layer_schema({ mapId: "census-2011-enriched" })
 
 {
@@ -573,9 +573,9 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
         />
 
         <ExampleCard
-          title="Rank districts by deprivation — lowest literacy first"
+          title="Rank districts by deprivation - lowest literacy first"
           prompt="Which 15 districts have the lowest literacy rates in India? Map them."
-          answer="Returns all 640 districts ranked ascending — the tribal belt of MP and Chhattisgarh dominates, with Alirajpur (MP) lowest at 28.8%. The follow-up renders a 300 DPI choropleth."
+          answer="Returns all 640 districts ranked ascending - the tribal belt of MP and Chhattisgarh dominates, with Alirajpur (MP) lowest at 28.8%. The follow-up renders a 300 DPI choropleth."
           code={`rank_features({
   mapId: "census-2011-enriched",
   column: "literacy_pct",
@@ -591,15 +591,15 @@ MODEL=qwen2.5:7b node server/examples/ollama_mcp_chat.mjs \\
 render_districts_map({
   mapId: "census-2011-enriched",
   data: [ /* literacy_pct for all 640 districts */ ],
-  title: "Literacy Rate — Census 2011",
+  title: "Literacy Rate - Census 2011",
   colorScale: "rdylgn"
 })`}
         />
 
         <ExampleCard
-          title="Deprivation clustering — SC/ST share vs. literacy"
+          title="Deprivation clustering - SC/ST share vs. literacy"
           prompt="How does SC/ST population share correlate with literacy? Are the worst-off districts concentrated by state?"
-          answer="Returns a weak negative correlation nationally (Pearson −0.17 across 640 districts) — tribal share alone is a soft predictor of literacy; the effect is driven by specific state clusters, not a clean linear trend."
+          answer="Returns a weak negative correlation nationally (Pearson -0.17 across 640 districts) - tribal share alone is a soft predictor of literacy; the effect is driven by specific state clusters, not a clean linear trend."
           code={`correlate({
   mapId: "census-2011-enriched",
   x: "st_pct",
@@ -619,8 +619,8 @@ render_districts_map({
 
         <ExampleCard
           title="State-level summary of key deprivation indicators"
-          prompt="Give me a state-level table comparing SC%, ST%, and literacy — which states are hardest hit across all three?"
-          answer="Returns per-state means across ~36 states — a ~34-point literacy gap from Bihar (50.4%) to Kerala (84.1%), with Punjab carrying the highest SC share and the NE states near-fully tribal."
+          prompt="Give me a state-level table comparing SC%, ST%, and literacy - which states are hardest hit across all three?"
+          answer="Returns per-state means across ~36 states - a ~34-point literacy gap from Bihar (50.4%) to Kerala (84.1%), with Punjab carrying the highest SC share and the NE states near-fully tribal."
           code={`compare_groups({
   mapId: "census-2011-enriched",
   groupBy: "state_name",
@@ -640,7 +640,7 @@ render_districts_map({
         <ExampleCard
           title="Find comparable districts for intervention targeting or matched controls"
           prompt="We want to roll out a nutrition programme in Alirajpur, MP. Which other districts have a similar deprivation profile and could serve as comparison sites?"
-          answer="Returns the nearest-neighbour districts in the chosen feature space — Alirajpur's closest twins are other high-ST, low-literacy districts in MP and the Bastar region of Chhattisgarh."
+          answer="Returns the nearest-neighbour districts in the chosen feature space - Alirajpur's closest twins are other high-ST, low-literacy districts in MP and the Bastar region of Chhattisgarh."
           code={`find_similar({
   mapId: "census-2011-enriched",
   referenceName: "Alirajpur",
@@ -664,7 +664,7 @@ render_districts_map({
         <ExampleCard
           title="Summarize deprivation burden in high-ST districts"
           prompt="What are the literacy, SC%, and population statistics across districts with more than 50% Scheduled Tribe population?"
-          answer="Returns aggregate statistics over the 90 tribal-majority districts (ST > 50%) — averaging 58.4% literacy, well below the all-India district mean of 62.5%."
+          answer="Returns aggregate statistics over the 90 tribal-majority districts (ST > 50%) - averaging 58.4% literacy, well below the all-India district mean of 62.5%."
           code={`summarize_layer({
   mapId: "census-2011-enriched",
   columns: ["literacy_pct", "sc_pct", "population"],
@@ -683,26 +683,26 @@ render_districts_map({
 
         <ExampleCard
           title="Geolocate a survey point and retrieve its Census indicators"
-          prompt="A field survey collected data at 23.25°N, 80.12°E. Which district is this, and what are its baseline Census 2011 indicators?"
+          prompt="A field survey collected data at 23.25N, 80.12E. Which district is this, and what are its baseline Census 2011 indicators?"
           answer="The point falls in Jabalpur, Madhya Pradesh; the follow-up query returns its baseline Census 2011 indicators (population 2.46M, 71.3% literacy)."
           code={`locate({
   lat: 23.25,
   lon: 80.12,
   mapIds: ["census-2011-enriched", "lgd-districts"]
 })
-// → { district_name: "Jabalpur", state_name: "Madhya Pradesh" }
+// -> { district_name: "Jabalpur", state_name: "Madhya Pradesh" }
 
 query_layer({
   mapId: "census-2011-enriched",
   filters: { district_name: "Jabalpur", state_name: "Madhya Pradesh" }
 })
-// → population: 2463289, literacy_pct: 71.31, st_pct: 15.23, sc_pct: 14.13`}
+// -> population: 2463289, literacy_pct: 71.31, st_pct: 15.23, sc_pct: 14.13`}
         />
 
         <ExampleCard
           title="Within-state ranking and choropleth"
           prompt="Rank all districts in Uttar Pradesh by SC population share, then draw a map."
-          answer="Returns UP's 71 districts ranked by SC share — Kaushambi leads at 34.7% — then renders a single-state choropleth."
+          answer="Returns UP's 71 districts ranked by SC share - Kaushambi leads at 34.7% - then renders a single-state choropleth."
           code={`rank_features({
   mapId: "census-2011-enriched",
   column: "sc_pct",
@@ -715,15 +715,15 @@ render_districts_map({
   mapId: "census-2011-enriched",
   state: "Uttar Pradesh",
   data: [ /* sc_pct for all UP districts */ ],
-  title: "Scheduled Caste Population Share — Uttar Pradesh (Census 2011)",
+  title: "Scheduled Caste Population Share - Uttar Pradesh (Census 2011)",
   colorScale: "purples"
 })`}
         />
 
         <ExampleCard
-          title="Healthcare facility access — nearest facilities to a survey point"
+          title="Healthcare facility access - nearest facilities to a survey point"
           prompt="Find the 10 nearest health facilities to a rural GPS point in Bundelkhand, and show which district they fall in."
-          answer="Returns the 10 closest facilities sorted by distance (nearest ≈ 7 km); the point sits in Mahoba district, UP — combine with the per-district facility count to get a per-capita access ratio."
+          answer="Returns the 10 closest facilities sorted by distance (nearest ~ 7 km); the point sits in Mahoba district, UP - combine with the per-district facility count to get a per-capita access ratio."
           code={`nearby({
   lat: 25.10,
   lon: 79.85,
@@ -732,14 +732,14 @@ render_districts_map({
 })
 // Returns facilities sorted by distance with name, amenity, healthcare type,
 // operator_type, adm1_name (state), adm2_name (district)
-// → nearest: "SubCentre, Bhandra" ~6.9 km, adm2_name: "Mahoba"
+// -> nearest: "SubCentre, Bhandra" ~6.9 km, adm2_name: "Mahoba"
 
 locate({
   lat: 25.10,
   lon: 79.85,
   mapIds: ["lgd-districts", "census-2011-enriched"]
 })
-// → { district_name: "Mahoba", state_name: "Uttar Pradesh" }
+// -> { district_name: "Mahoba", state_name: "Uttar Pradesh" }
 
 query_layer({
   mapId: "hotosm-health-facilities",
@@ -751,9 +751,9 @@ query_layer({
         <ExampleCard
           title="Health facilities near a pincode"
           prompt="What health facilities are within 3 km of pincode 400071, and which district is that?"
-          answer="One call: nearby resolves the pincode's centroid server-side, returns the nearest facilities (deduped, terse), and the center carries district/state. Add filters={amenity:'hospital'} to narrow — but leaving it off keeps clinics & CHCs in view."
+          answer="One call: nearby resolves the pincode's centroid server-side, returns the nearest facilities (deduped, terse), and the center carries district/state. Add filters={amenity:'hospital'} to narrow - but leaving it off keeps clinics & CHCs in view."
           code={`nearby({
-  pincode: "400071",        // centered on the pincode's centroid — no lat/lon needed
+  pincode: "400071",        // centered on the pincode's centroid - no lat/lon needed
   radiusKm: 3,
   mapIds: ["hotosm-health-facilities"],
   limit: 8
@@ -771,17 +771,17 @@ query_layer({
 
 // To resolve a pincode to its location on its own:
 pincode_centroid({ pincode: "400071" })
-// → { pincode, lat: 19.06, lon: 72.90, office_name: "Chembur HO",
+// -> { pincode, lat: 19.06, lon: 72.90, office_name: "Chembur HO",
 //     district: "Mumbai Suburban", state: "Maharashtra" }`}
         />
 
         <ExampleCard
           title="Coverage: which pincodes are within 5 km of a hospital"
           prompt="Which pincodes in Pune district are within 5 km of a hospital? Map the density."
-          answer="One call returns every Pune pincode's nearest-hospital distance, a within-radius flag, and a count of hospitals within 5 km — plus a coverage summary (60% covered). District is polygon-derived, so the Pune set is clean (no stray Raigad pincodes). Feed targets_within_radius straight into render_pincodes_map as the value."
+          answer="One call returns every Pune pincode's nearest-hospital distance, a within-radius flag, and a count of hospitals within 5 km - plus a coverage summary (60% covered). District is polygon-derived, so the Pune set is clean (no stray Raigad pincodes). Feed targets_within_radius straight into render_pincodes_map as the value."
           code={`proximity_coverage({
   sourceMapId: "pincodes-centroids",
-  sourceFilters: { district: "Pune" },     // polygon-derived — excludes mislabeled strays
+  sourceFilters: { district: "Pune" },     // polygon-derived - excludes mislabeled strays
   targetMapId: "hotosm-health-facilities",
   targetFilters: { amenity: "hospital" },
   radiusKm: 5
@@ -797,7 +797,7 @@ pincode_centroid({ pincode: "400071" })
   ]
 }
 
-// → render_pincodes_map({ state: "Maharashtra",
+// -> render_pincodes_map({ state: "Maharashtra",
 //     data: results.map(r => ({ pincode: r.pincode, value: r.targets_within_radius })) })`}
         />
 
@@ -818,7 +818,7 @@ query_layer({
         />
       </div>
 
-      {/* ── Cross-layer crosstalk examples ──────────────────────────────── */}
+      {/* Cross-layer crosstalk examples */}
       <div className="space-y-3">
         <h3 id="crosstalk-examples" className={`text-xl ${headingClass} flex items-center gap-2 group`}>
           <Code2 className="h-5 w-5" />
@@ -828,16 +828,16 @@ query_layer({
         <div className={cardClass}>
           <p className={`text-sm ${textClass}`}>
             Each district layer is one row per district on a shared key, so <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">correlate</code> can
-            join a column from <em>another</em> layer with <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">yMapId</code> —
+            join a column from <em>another</em> layer with <code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">yMapId</code> -
             so the Meta wealth index (<code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">shrug-facebook</code>) and
             pollution (<code className="font-mono text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)]">shrug-environment</code>) can be tested against Census literacy and tribal share. Figures below are live results across 600 matched districts.
           </p>
         </div>
 
         <ExampleCard
-          title="Does wealth track literacy? (Meta RWI × Census)"
+          title="Does wealth track literacy? (Meta RWI x Census)"
           prompt="Across districts, does the Meta Relative Wealth Index predict literacy?"
-          answer="Yes — a clear positive link: Pearson +0.47 across 600 districts. Wealthier districts are consistently more literate."
+          answer="Yes - a clear positive link: Pearson +0.47 across 600 districts. Wealthier districts are consistently more literate."
           code={`correlate({
   mapId: "shrug-facebook",
   x: "facebook-rwi__facebook_mean_rwi",
@@ -850,9 +850,9 @@ query_layer({
         />
 
         <ExampleCard
-          title="Are tribal districts poorer? (Meta RWI × ST share)"
+          title="Are tribal districts poorer? (Meta RWI x ST share)"
           prompt="Do districts with a higher Scheduled Tribe share have lower wealth?"
-          answer="Strongly — Spearman −0.58: tribal-majority districts cluster at the bottom of the Meta wealth index, quantifying the ST wealth gap."
+          answer="Strongly - Spearman -0.58: tribal-majority districts cluster at the bottom of the Meta wealth index, quantifying the ST wealth gap."
           code={`correlate({
   mapId: "shrug-facebook",
   x: "facebook-rwi__facebook_mean_rwi",
@@ -865,9 +865,9 @@ query_layer({
         />
 
         <ExampleCard
-          title="Air pollution vs literacy (PM2.5 × Census)"
+          title="Air pollution vs literacy (PM2.5 x Census)"
           prompt="Are higher-pollution districts also lower-literacy? Map the overlap."
-          answer="Weak-to-moderate negative link (Pearson −0.29): the high-PM2.5 Indo-Gangetic plain also runs below-average on literacy."
+          answer="Weak-to-moderate negative link (Pearson -0.29): the high-PM2.5 Indo-Gangetic plain also runs below-average on literacy."
           code={`correlate({
   mapId: "shrug-environment",
   x: "pm25__pm25_mean",
@@ -880,9 +880,9 @@ query_layer({
         />
 
         <ExampleCard
-          title="Night-time lights as a development proxy (VIIRS × Census)"
+          title="Night-time lights as a development proxy (VIIRS x Census)"
           prompt="Do brighter (more economically active) districts have higher literacy?"
-          answer="A mild positive signal (Pearson +0.19) — nightlight intensity tracks literacy loosely, so it's a coarse development proxy, not a substitute for it."
+          answer="A mild positive signal (Pearson +0.19) - nightlight intensity tracks literacy loosely, so it's a coarse development proxy, not a substitute for it."
           code={`correlate({
   mapId: "shrug-environment",
   x: "viirs-annual__viirs_annual_mean",
@@ -963,11 +963,11 @@ query_layer({
                 {[
                   { id: 'census-2011-enriched', features: '640', cols: '267', data: 'Population, SC/ST%, literacy, 75 indicators, 192 language columns' },
                   { id: 'census-2011-states', features: '35', cols: '267', data: 'Same indicators aggregated to state level' },
-                  { id: 'hotosm-health-facilities', features: '142,629', cols: '—', data: 'Hospitals, clinics, pharmacies — name, amenity, operator, district, state' },
-                  { id: 'shrug-facebook', features: '641', cols: '12', data: 'Meta Relative Wealth Index (RWI) per district — facebook-rwi__facebook_mean_rwi' },
+                  { id: 'hotosm-health-facilities', features: '142,629', cols: '-', data: 'Hospitals, clinics, pharmacies - name, amenity, operator, district, state' },
+                  { id: 'shrug-facebook', features: '641', cols: '12', data: 'Meta Relative Wealth Index (RWI) per district - facebook-rwi__facebook_mean_rwi' },
                   { id: 'shrug-environment', features: '641', cols: '38', data: 'PM2.5 (pm25__pm25_mean), nightlights (viirs/DMSP), NDVI, elevation, ruggedness' },
                   { id: 'shrug-secc', features: '641', cols: '120+', data: 'SECC 2012 rural/urban poverty, housing, income source, education shares' },
-                  { id: 'shrug-economic', features: '641', cols: '400+', data: 'Economic Census 1990–2013 — firm counts, employment by sector and ownership' },
+                  { id: 'shrug-economic', features: '641', cols: '400+', data: 'Economic Census 1990-2013 - firm counts, employment by sector and ownership' },
                   { id: 'shrug-subdistricts', features: '~5,500', cols: 'varies', data: 'Sub-district level SHRUG Census 2011 data' },
                 ].map(r => (
                   <tr key={r.id}>

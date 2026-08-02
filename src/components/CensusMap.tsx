@@ -39,7 +39,7 @@ const METRIC_GROUPS: { label: string; metrics: { key: string; label: string }[] 
   },
 ];
 
-// Top languages by national speaker share — shown as individual metric options
+// Top languages by national speaker share - shown as individual metric options
 const TOP_LANGUAGES = [
   'Hindi', 'Bengali', 'Marathi', 'Telugu', 'Tamil', 'Gujarati', 'Urdu',
   'Kannada', 'Odia', 'Malayalam', 'Punjabi', 'Assamese', 'Maithili',
@@ -130,7 +130,7 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
     const lang = TOP_LANGUAGES.find(l => colKey(l) === metric);
     if (lang) {
       const suffix = level === 'l1' ? 'L1 speakers (%)' : level === 'l2' ? 'L2 speakers (%)' : 'L1+L2 speakers (%)';
-      return `${lang} — ${suffix}`;
+      return `${lang} - ${suffix}`;
     }
     return metric;
   }, [metric, level]);
@@ -139,7 +139,7 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
     <div className="space-y-4 sm:space-y-6">
       <div className="p-4 sm:p-6 border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
         <h2 className="text-xl sm:text-2xl font-bold mb-1 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-          Census 2011 — District Demographics
+          Census 2011 - District Demographics
         </h2>
         <p className="text-sm mb-4 text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">
           Population, SC/ST, literacy and language data for 640 districts. Source: Office of the Registrar General &amp; Census Commissioner, India.
@@ -204,7 +204,7 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
       {loading && (
         <div className="p-12 text-center border rounded-lg bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(28,62%,48%)] mx-auto mb-4" />
-          <p className="text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">Loading Census 2011 data…</p>
+          <p className="text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)]">Loading Census 2011 data...</p>
         </div>
       )}
 
@@ -216,7 +216,7 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
       )}
 
       {!loading && !error && (
-        <Suspense fallback={<div className="h-[600px] flex items-center justify-center text-[hsl(28,8%,40%)]">Loading map…</div>}>
+        <Suspense fallback={<div className="h-[600px] flex items-center justify-center text-[hsl(28,8%,40%)]">Loading map...</div>}>
           <IndiaDistrictsMap
             ref={mapRef}
             data={mapData}

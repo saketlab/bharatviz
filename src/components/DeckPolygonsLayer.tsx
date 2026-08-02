@@ -1,0 +1,126 @@
+/**
+ * WebGL polygon overlay on top of the SVG map. Used for village boundaries
+ * (tens of thousands of polygons per state) where SVG <path> would choke.
+ * Shares DeckPointsLayer's CARTESIAN-pixel projection so polygons land on the
+ * boundary paths. No labels are drawn - names surface only on hover.
+ */
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
+import { PolygonLayer } from '@deck.gl/layers';
+import type { PickingInfo } from '@deck.gl/core';
+
+export interface PolygonFeature {
+  // MultiPolygon shape: list of polygons, each a list of rings, each [lng,lat][].
+  polygons: number[][][][];
+  name: string | null;
+  properties: Record<string, string | number | null>;
+}
+
+const FILL_RGB: [number, number, number] = [193, 122, 60]; // brand terracotta
+const FILL_A = Math.round(0.35 * 255);
+
+interface DeckPolygonsLayerProps {
+  features: PolygonFeature[];
+  mapRect: DOMRect | null;
+  project: ((lng: number, lat: number) => { x: number; y: number }) | null;
+  viewBoxWidth: number;
+  viewBoxHeight: number;
+  darkMode?: boolean;
+  onPolygonHover?: (info: { x: number; y: number; feature: PolygonFeature } | null) => void;
+}
+
+type Datum = { rings: number[][][]; feature: PolygonFeature };
+
+export const DeckPolygonsLayer: React.FC<DeckPolygonsLayerProps> = ({
+  features,
+  mapRect,
+  project,
+  viewBoxWidth,
+  viewBoxHeight,
+  darkMode = false,
+  onPolygonHover,
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const deckRef = useRef<Deck | null>(null);
+
+  // Via a ref so hover (which re-renders the parent) doesn't re-project every polygon.
+  const hoverRef = useRef(onPolygonHover);
+  hoverRef.current = onPolygonHover;
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    deckRef.current = new Deck({
+      canvas: canvasRef.current,
+      controller: false,
+      views: [new OrthographicView({ id: 'ortho' })],
+      initialViewState: { target: [0, 0, 0], zoom: 0 },
+      layers: [],
+    });
+    return () => { deckRef.current?.finalize(); deckRef.current = null; };
+  }, []);
+
+  // Project vertices only on geometry change, not on hover/darkMode. One datum per
+  // polygon so each MultiPolygon member keeps its own rings (outer + holes).
+  const width = mapRect?.width ?? 0;
+  const height = mapRect?.height ?? 0;
+  const data = useMemo<Datum[]>(() => {
+    if (!width || !project) return [];
+    const sx = width / viewBoxWidth;
+    const sy = height / viewBoxHeight;
+    const projVertex = ([lng, lat]: number[]): [number, number] => {
+      const p = project(lng, lat);
+      return [p.x * sx, p.y * sy];
+    };
+    const out: Datum[] = [];
+    for (const f of features) {
+      for (const poly of f.polygons) {
+        out.push({ rings: poly.map(ring => ring.map(projVertex)), feature: f });
+      }
+    }
+    return out;
+  }, [features, width, height, viewBoxWidth, viewBoxHeight, project]);
+
+  useEffect(() => {
+    const deck = deckRef.current;
+    if (!deck || !mapRect) return;
+    const line: [number, number, number] = darkMode ? [220, 190, 150] : [140, 90, 40];
+
+    const layer = new PolygonLayer<Datum>({
+      id: 'villages',
+      data,
+      coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+      getPolygon: (d: Datum) => d.rings,
+      filled: true,
+      stroked: true,
+      getFillColor: [...FILL_RGB, FILL_A] as [number, number, number, number],
+      getLineColor: [...line, 200] as [number, number, number, number],
+      getLineWidth: 0.5,
+      lineWidthUnits: 'pixels',
+      pickable: true,
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 90],
+      onHover: (info: PickingInfo) => {
+        const cb = hoverRef.current;
+        if (!cb) return;
+        cb(info.object ? { x: info.x, y: info.y, feature: (info.object as Datum).feature } : null);
+      },
+      updateTriggers: { getLineColor: [darkMode] },
+    });
+
+    deck.setProps({
+      viewState: { target: [mapRect.width / 2, mapRect.height / 2, 0], zoom: 0 },
+      layers: [layer],
+    });
+  }, [data, mapRect, darkMode]);
+
+  if (!mapRect) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={mapRect.width}
+      height={mapRect.height}
+      style={{ position: 'absolute', top: 0, left: 0, width: mapRect.width, height: mapRect.height, pointerEvents: 'auto' }}
+    />
+  );
+};

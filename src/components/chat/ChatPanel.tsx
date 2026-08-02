@@ -107,7 +107,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
       console.error('Failed to load model:', error);
       setIsModelLoading(false);
       setShowModelSelector(true);
-      addSystemMessage(`❌ Failed to load model: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addSystemMessage(`[x] Failed to load model: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -127,19 +127,19 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
     }
 
     if (!engineRef.current || !modelReady) {
-      addSystemMessage('❌ Please wait for the model to finish loading before sending messages.');
+      addSystemMessage('[x] Please wait for the model to finish loading before sending messages.');
       return;
     }
 
     // Capture context immediately to prevent race conditions during async operations
     if (!context) {
-      addSystemMessage('❌ Context not available. Please make sure you have uploaded data to the map. The chatbot needs data context to answer questions.');
+      addSystemMessage('[x] Context not available. Please make sure you have uploaded data to the map. The chatbot needs data context to answer questions.');
       return;
     }
 
     if (!context.currentView || !context.geoMetadata || !context.userData) {
       console.error('ChatPanel - Context structure is invalid:', context);
-      addSystemMessage('❌ Context structure is invalid. Please try reloading the data.');
+      addSystemMessage('[x] Context structure is invalid. Please try reloading the data.');
       return;
     }
 
@@ -210,7 +210,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
       setMessages(prev =>
         prev.map(msg =>
           msg.id === assistantMessageId
-            ? { ...msg, content: `❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}` }
+            ? { ...msg, content: `[x] Error: ${error instanceof Error ? error.message : 'Unknown error'}` }
             : msg
         )
       );
@@ -300,7 +300,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
                         >
                           <div className="flex flex-col items-start min-w-0">
                             <span className="truncate">{model.name}</span>
-                            <span className="text-xs text-muted-foreground">{model.size} · {model.speed}</span>
+                            <span className="text-xs text-muted-foreground">{model.size} - {model.speed}</span>
                           </div>
                           {model.id === currentModelId && (
                             <Check className="h-4 w-4 flex-shrink-0 text-primary" />
@@ -315,8 +315,8 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
                 <p className="text-xs text-muted-foreground mt-0.5 truncate">
                   {context.currentView.selectedState
                     ? `${context.currentView.selectedState} districts`
-                    : `${context.currentView.tab} • ${context.currentView.mapType}`}
-                  {context.userData.hasData && ` • ${context.userData.count} entities`}
+                    : `${context.currentView.tab} - ${context.currentView.mapType}`}
+                  {context.userData.hasData && ` - ${context.userData.count} entities`}
                 </p>
               )}
             </>
@@ -368,7 +368,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
             {!context && (
               <Alert variant="destructive">
                 <AlertDescription>
-                  <p className="font-semibold mb-1">⚠️ No data context</p>
+                  <p className="font-semibold mb-1">! No data context</p>
                   <p className="text-sm">Please upload data to the map first. The chatbot needs data to analyze.</p>
                 </AlertDescription>
               </Alert>

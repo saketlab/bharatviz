@@ -175,7 +175,7 @@ app.get('/', (req, res) => {
     docs: 'https://bharatviz.org/api-docs',
     endpoints: {
       'GET /api/v1/district-evolution': {
-        description: 'Trace a district\'s name across census years 1951–2011',
+        description: 'Trace a district\'s name across census years 1951-2011',
         params: {
           district: 'string - Required',
           state: 'string - Optional (narrows to one state)',
@@ -213,7 +213,7 @@ app.get('/', (req, res) => {
           formats: 'Array<"png" | "svg" | "pdf"> - Optional (default: ["png"])'
         },
         availableMapTypes: {
-          LGD: 'Local Government Directory (LGD) — latest official boundaries',
+          LGD: 'Local Government Directory (LGD) - latest official boundaries',
           BHUVAN: 'ISRO Bhuvan boundaries',
           SOI: 'Survey of India boundaries',
           NFHS5: 'NFHS-5 survey boundaries (2019-21)',
@@ -236,7 +236,7 @@ app.get('/', (req, res) => {
           formats: 'Array<"png" | "svg" | "pdf"> - Optional (default: ["png"])'
         },
         availableMapTypes: {
-          LGD: 'Local Government Directory (LGD) — latest official boundaries',
+          LGD: 'Local Government Directory (LGD) - latest official boundaries',
           BHUVAN: 'ISRO Bhuvan boundaries',
           SOI: 'Survey of India boundaries',
           NFHS5: 'NFHS-5 survey boundaries (2019-21)',

@@ -55,7 +55,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     source: 'GatiShakti / Ministry of Women and Child Development (GODL)',
     year: 2024,
     rows: '~1,400,000',
-    description: 'ICDS Anganwadi centres — the primary early childhood nutrition and care network.',
+    description: 'ICDS Anganwadi centres - the primary early childhood nutrition and care network.',
     fields: 'id, geometry',
     parquetUrl: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`,
     mcpId: 'anganwadis-icds',
@@ -65,7 +65,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'BharatMaps Health Centers',
     source: 'BharatMaps / Government of India',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Health centres from the BharatMaps portal. Independent coverage useful for cross-checking NHP data.',
     fields: 'name, type, geometry',
     parquetUrl: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`,
@@ -76,7 +76,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'Bhuvan SISDP Anganwadis',
     source: 'ISRO Bhuvan SISDP (GODL)',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Anganwadi centres from ISRO Bhuvan SISDP portal. A separate source for coverage comparison with GatiShakti ICDS.',
     fields: 'name, geometry',
     parquetUrl: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`,
@@ -87,7 +87,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'GatiShakti Child Care Institutes',
     source: 'GatiShakti / MoWCD (GODL)',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Government-run creches and child development centres from GatiShakti.',
     fields: 'name, type, geometry',
     parquetUrl: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`,
@@ -98,7 +98,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'SOI NCOG Dispensaries',
     source: 'Survey of India NCOG (GODL)',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Dispensaries from the Survey of India NCOG dataset.',
     fields: 'name, type, state, district, geometry',
     parquetUrl: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`,
@@ -109,7 +109,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'SOI NCOG Hospitals',
     source: 'Survey of India NCOG (GODL)',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Hospitals from the Survey of India NCOG dataset.',
     fields: 'name, type, state, district, geometry',
     parquetUrl: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`,
@@ -120,7 +120,7 @@ const HEALTH_LAYERS: HealthLayer[] = [
     displayName: 'Living Atlas Health Facilities',
     source: 'Esri Living Atlas',
     year: 2024,
-    rows: '—',
+    rows: '-',
     description: 'Health facilities from the Esri Living Atlas, aggregating multiple open government sources.',
     fields: 'name, type, source, geometry',
     parquetUrl: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`,
@@ -189,7 +189,7 @@ aggregate_by_boundary(
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(28,8%,50%)]" />
         <input
           type="text"
-          placeholder="Search datasets…"
+          placeholder="Search datasets..."
           value={query}
           onChange={e => setQuery(e.target.value)}
           className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-[hsl(38,22%,99%)] border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)] focus:outline-none focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent"
@@ -208,7 +208,7 @@ aggregate_by_boundary(
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`text-sm font-medium ${headingClass}`}>{layer.displayName}</span>
                   <span className={badgeClass}>{layer.year}</span>
-                  {layer.rows !== '—' && (
+                  {layer.rows !== '-' && (
                     <span className="text-xs text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,50%)]">{layer.rows} rows</span>
                   )}
                 </div>

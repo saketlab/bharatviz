@@ -1,7 +1,7 @@
 import type { ModelInfo } from './types';
 
 export const AVAILABLE_MODELS: ModelInfo[] = [
-  // — Recommended —
+  // - Recommended -
   {
     id: "Qwen3-4B-q4f16_1-MLC",
     name: "Qwen 3 4B",
@@ -12,7 +12,7 @@ export const AVAILABLE_MODELS: ModelInfo[] = [
     description: "Best balance of quality and speed. Recommended for most users."
   },
 
-  // — Large (6+ GB VRAM, 7-9B params) —
+  // - Large (6+ GB VRAM, 7-9B params) -
   {
     id: "Qwen3-8B-q4f16_1-MLC",
     name: "Qwen 3 8B",
@@ -78,7 +78,7 @@ export const AVAILABLE_MODELS: ModelInfo[] = [
     description: "Mistral's efficient 7B. Good general-purpose reasoning."
   },
 
-  // — Medium (2-5 GB VRAM, 3-4B params) —
+  // - Medium (2-5 GB VRAM, 3-4B params) -
   {
     id: "Phi-3.5-mini-instruct-q4f16_1-MLC",
     name: "Phi 3.5 Mini",
@@ -120,7 +120,7 @@ export const AVAILABLE_MODELS: ModelInfo[] = [
     description: "Open-source 3B chat model from Together AI."
   },
 
-  // — Small (1-2 GB VRAM, 1-2B params) —
+  // - Small (1-2 GB VRAM, 1-2B params) -
   {
     id: "Qwen3-1.7B-q4f16_1-MLC",
     name: "Qwen 3 1.7B",
@@ -178,7 +178,7 @@ export const AVAILABLE_MODELS: ModelInfo[] = [
     description: "Microsoft's original small model. Fast and lightweight."
   },
 
-  // — Tiny (<1 GB VRAM, <1B params) —
+  // - Tiny (<1 GB VRAM, <1B params) -
   {
     id: "Qwen3-0.6B-q4f16_1-MLC",
     name: "Qwen 3 0.6B",

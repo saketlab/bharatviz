@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * BharatViz MCP Server — stdio transport
+ * BharatViz MCP Server - stdio transport
  *
  * For local use with Claude Code, Claude Desktop, etc.
  * For remote HTTP access, use the /mcp endpoint on the Express server instead.

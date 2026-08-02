@@ -195,7 +195,7 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
   doi     = {10.1093/wber/lhab003},
   note    = {Boundary data: CC BY-NC-SA 4.0. Harmonised for BharatViz by ramSeraph (https://github.com/ramSeraph/indian_admin_boundaries).}
 }`,
-    apa: 'Asher, S., Lunt, T., Matsuura, R., & Novosad, P. (2021). Development Research at High Geographic Resolution: An Analysis of Night-Lights, Firms, and Poverty in India Using the SHRUG Open Data Platform. The World Bank Economic Review, 35(4), 845–871. https://doi.org/10.1093/wber/lhab003 (License: CC BY-NC-SA 4.0)',
+    apa: 'Asher, S., Lunt, T., Matsuura, R., & Novosad, P. (2021). Development Research at High Geographic Resolution: An Analysis of Night-Lights, Firms, and Poverty in India Using the SHRUG Open Data Platform. The World Bank Economic Review, 35(4), 845-871. https://doi.org/10.1093/wber/lhab003 (License: CC BY-NC-SA 4.0)',
   },
 
   SBM: {

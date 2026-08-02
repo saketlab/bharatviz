@@ -7,25 +7,25 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 
 const VIEWS = [
   { id: 'district',   label: 'District Search' },
-  { id: 'india',      label: 'India 1951–2024' },
-  { id: 'india1872',  label: 'India 1872–1941' },
-  { id: 'bombay',     label: 'Bombay 1872–1941' },
+  { id: 'india',      label: 'India 1951-2024' },
+  { id: 'india1872',  label: 'India 1872-1941' },
+  { id: 'bombay',     label: 'Bombay 1872-1941' },
 ] as const;
 
 type View = typeof VIEWS[number]['id'];
 
 const DESCRIPTIONS: Record<View, string> = {
-  india:      'District boundaries across eight census decades. Colours trace each district to its 1951 origin — splits, merges, and renames preserve the parent\'s colour.',
+  india:      'District boundaries across eight census decades. Colours trace each district to its 1951 origin - splits, merges, and renames preserve the parent\'s colour.',
   india1872:  'All-India district boundaries across eight census decades under British colonial administration. Colours trace each district to its 1872 origin.',
   bombay:     'Spatial boundaries of Bombay Presidency across seven census years. Colours trace each district to its 1872 origin.',
-  district:   'Trace any district\'s boundaries across census years 1951–2011. Districts that split, merge, or were renamed are shown at each decade.',
+  district:   'Trace any district\'s boundaries across census years 1951-2011. Districts that split, merge, or were renamed are shown at each decade.',
 };
 
 const SOURCES: Record<View, string> = {
   india:      'GeoJSON: Census of India. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
   india1872:  'GeoJSON: Jolad et al., Harvard Dataverse. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
   bombay:     'GeoJSON: Jolad et al., Harvard Dataverse. Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
-  district:   'Boundaries: harmonized Census GeoJSONs (1951–2011). Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
+  district:   'Boundaries: harmonized Census GeoJSONs (1951-2011). Evolution data: India State and District Evolution Database doi:10.7910/DVN/D1AGUR',
 };
 
 const INDIA_1872_GEOJSON_YEAR: Record<number, number> = {

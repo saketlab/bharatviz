@@ -289,7 +289,7 @@ async function loadCentroidsForEntities(
     if (!centroid) continue;
 
     if (isDistrictLevel && districtName) {
-      // Key: "districtName" — match against entity.name
+      // Key: "districtName" - match against entity.name
       centroidMap.set(districtName.toLowerCase(), centroid);
     } else if (stateName) {
       centroidMap.set(stateName.toLowerCase(), centroid);
@@ -544,13 +544,13 @@ function normalCDF(z: number): number {
   return 0.5 * (1.0 + sign * y);
 }
 
-// ─── Spatial Data Cache (reused across tool calls within a single query) ────
+// Spatial Data Cache (reused across tool calls within a single query)
 
 interface SpatialCache {
   geoJsonPath: string;
   centroids: Centroid[];
   matchedEntities: EntityData[];
-  weights: Map<number, number[][]>; // k → weight matrix
+  weights: Map<number, number[][]>; // k -> weight matrix
 }
 
 let spatialCache: SpatialCache | null = null;
@@ -700,7 +700,7 @@ function compareRegions(
 ): ToolResult {
   const hierarchy = context.geoMetadata.hierarchy;
 
-  // Pre-compute state→region map once instead of scanning hierarchy per region
+  // Pre-compute state->region map once instead of scanning hierarchy per region
   const stateToRegion = new Map<string, Region>();
   for (const [state, info] of Object.entries(hierarchy)) {
     stateToRegion.set(state, info.region);

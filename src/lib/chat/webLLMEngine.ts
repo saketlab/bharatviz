@@ -242,7 +242,7 @@ export class WebLLMEngine {
       }
       console.error("WebLLM query error:", error);
       return {
-        answer: `❌ Error processing query: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        answer: `[x] Error processing query: ${error instanceof Error ? error.message : 'Unknown error'}`,
         confidence: 0,
         processingTime: performance.now() - startTime,
         suggestions: ["Try rephrasing your question", "Check if the model is loaded properly"]
@@ -314,7 +314,7 @@ export class WebLLMEngine {
         return this.streamQuery(userQuery, context, onChunk, onComplete);
       }
       console.error("WebLLM streaming error:", error);
-      onChunk(`\n\n❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      onChunk(`\n\n[x] Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       if (onComplete) {
         onComplete();
       }
@@ -455,7 +455,7 @@ export class WebLLMEngine {
         return this.queryWithTools(userQuery, context, onChunk, onToolStatus, onComplete);
       }
       console.error("WebLLM tool query error:", error);
-      onChunk(`\n\n❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      onChunk(`\n\n[x] Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       if (onComplete) {
         onComplete();
       }
@@ -528,7 +528,7 @@ export class WebLLMEngine {
       const raw = stripThinkTags(completion.choices[0].message.content || '');
       const questions = raw
         .split('\n')
-        .map(l => l.replace(/^\d+[.)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
+        .map(l => l.replace(/^\d+[.)]\s*/, '').replace(/^[--*]\s*/, '').trim())
         .filter(l => l.length > 10 && l.length < 120);
 
       await this.engine.resetChat();

@@ -74,13 +74,13 @@ function formatMessage(content: string): JSX.Element {
   return (
     <>
       {paragraphs.map((para, idx) => {
-        if (para.trim().startsWith('-') || para.trim().startsWith('•')) {
+        if (para.trim().startsWith('-') || para.trim().startsWith('-')) {
           const items = para.split('\n').filter(line => line.trim());
           return (
             <ul key={idx} className="list-disc list-inside my-2 space-y-1">
               {items.map((item, itemIdx) => (
                 <li key={itemIdx} className="text-sm">
-                  {item.replace(/^[-•]\s*/, '')}
+                  {item.replace(/^[--]\s*/, '')}
                 </li>
               ))}
             </ul>

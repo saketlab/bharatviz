@@ -20,7 +20,7 @@ export const MapProcessingOverlay: React.FC<MapProcessingOverlayProps> = ({ acti
           style={{ animationDuration: '0.7s' }}
         />
         <p className="text-sm font-medium text-[hsl(28,24%,24%)] dark:text-[hsl(35,12%,88%)]">
-          {message || 'Matching your data to boundaries…'}
+          {message || 'Matching your data to boundaries...'}
         </p>
       </div>
     </div>

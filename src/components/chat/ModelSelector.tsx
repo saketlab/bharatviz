@@ -160,7 +160,7 @@ function MobileModelDropdown({ onSelect, disabled, recommendedId }: MobileModelD
                 <SelectLabel>{group.label}</SelectLabel>
                 {models.map(m => (
                   <SelectItem key={m.id} value={m.id}>
-                    {m.name} — {m.size}
+                    {m.name} - {m.size}
                     {m.id === recommendedId ? ' *' : ''}
                   </SelectItem>
                 ))}

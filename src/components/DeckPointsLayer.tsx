@@ -1,5 +1,5 @@
 /**
- * DeckPointsLayer — WebGL point/heatmap overlay that sits on top of the SVG map.
+ * DeckPointsLayer - WebGL point/heatmap overlay that sits on top of the SVG map.
  *
  * Rendered into a <canvas> that is absolutely positioned to match the SVG
  * container's bounding rect. Uses deck.gl ScatterplotLayer for point mode and
@@ -21,18 +21,18 @@ interface DeckPointsLayerProps {
   viewMode: PointViewMode;
   // Bounding box of the SVG map in page coordinates (from getBoundingClientRect)
   mapRect: DOMRect | null;
-  // The SVG's geo→viewBox projector and viewBox size, so points use the EXACT same
+  // The SVG's geo->viewBox projector and viewBox size, so points use the EXACT same
   // linear projection as the boundary paths (deck's MapView is Mercator and would drift).
   project: ((lng: number, lat: number) => { x: number; y: number }) | null;
   viewBoxWidth: number;
   viewBoxHeight: number;
   pointRadius?: number;  // px radius for ScatterplotLayer (radiusUnits: 'pixels')
-  pointOpacity?: number; // 0–1
+  pointOpacity?: number; // 0-1
   darkMode?: boolean;
   onPointHover?: (info: { x: number; y: number; feature: PointFeature } | null) => void;
 }
 
-// Cache parsed hex colors — at most 10 distinct CAT_COLORS + fallback
+// Cache parsed hex colors - at most 10 distinct CAT_COLORS + fallback
 const rgbCache = new Map<string, [number, number, number]>();
 function colorToRgb(hex: string): [number, number, number] {
   let cached = rgbCache.get(hex);
@@ -77,8 +77,8 @@ export const DeckPointsLayer: React.FC<DeckPointsLayerProps> = ({
     const deck = deckRef.current;
     if (!deck || !mapRect || !project) return;
 
-    // Project each point through the SVG's own geo→viewBox transform, then scale
-    // viewBox → canvas pixels. Render in CARTESIAN pixel space so points land exactly
+    // Project each point through the SVG's own geo->viewBox transform, then scale
+    // viewBox -> canvas pixels. Render in CARTESIAN pixel space so points land exactly
     // on the boundary paths regardless of latitude.
     const sx = mapRect.width / viewBoxWidth;
     const sy = mapRect.height / viewBoxHeight;

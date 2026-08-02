@@ -262,7 +262,7 @@ const EmbedDemo = () => {
       <div className="bg-white dark:bg-[hsl(25,8%,12%)] border-b border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,18%)]">
         <div className="container mx-auto px-4 py-4 sm:py-6">
           <a href="/" className="text-[hsl(28,55%,42%)] hover:text-[hsl(28,48%,32%)] dark:text-[hsl(35,55%,60%)] dark:hover:text-[hsl(35,48%,72%)] text-xs sm:text-sm mb-2 inline-block">
-            ← Back to BharatViz
+            {'<-'} Back to BharatViz
           </a>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">Embed BharatViz Maps</h1>
           <p className="text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,55%)] mt-2 text-sm sm:text-base md:text-lg">

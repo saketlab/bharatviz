@@ -74,7 +74,7 @@ const ALL_MAPS: MapEntry[] = [
   { id: 'fsi-circles', level: 'Regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative circles', geojsonUrl: `${ENV}/India-fsi-circles_simplified.geojson`, parquetUrl: `${ENV_P}/India-fsi-circles_simplified.parquet`, category: 'Environment', tab: 'environment' },
   { id: 'fsi-divisions', level: 'Regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative divisions', geojsonUrl: `${ENV}/India-fsi-divisions_simplified.geojson`, parquetUrl: `${ENV_P}/India-fsi-divisions_simplified.parquet`, category: 'Environment', tab: 'environment' },
   { id: 'fsi-ranges', level: 'Regions', source: 'FSI', year: 2024, description: 'Forest Survey of India administrative ranges', geojsonUrl: `${ENV}/India-fsi-ranges_simplified.geojson`, parquetUrl: `${ENV_P}/India-fsi-ranges_simplified.parquet`, category: 'Environment', tab: 'environment' },
-  // Urban — SBM ULBs
+  // Urban - SBM ULBs
   { id: 'sbm-ulbs', level: 'Urban Local Bodies', source: 'SBM', year: 2024, description: 'Urban Local Body boundaries from the Swachh Bharat Mission', geojsonUrl: `${R2}/geojsons/urban/India-sbm-ulbs_simplified.geojson`, parquetUrl: `${R2}/geoparquet/urban/India-sbm-ulbs_simplified.parquet`, category: 'Urban', tab: 'urban' },
   // City wards
   { id: 'wards-bengaluru-gba', level: 'Wards', source: 'GatiShakti', year: 2024, description: 'Greater Bengaluru Area ward boundaries', geojsonUrl: `${WARDS}/India-geodata-wards-bengaluru-gba.geojson`, parquetUrl: `${WARDS_P}/India-geodata-wards-bengaluru-gba.parquet`, category: 'Urban', tab: 'cities' },
@@ -98,21 +98,21 @@ const ALL_MAPS: MapEntry[] = [
   { id: 'dams', level: 'Points', source: 'OpenStreetMap (ODbL)', year: 2026, description: 'Dams and barrages across India', geojsonUrl: `${R2}/geojsons/points/india_dams.geojson`, parquetUrl: `${R2}/geoparquet/points/india_dams.parquet`, category: 'Points', tab: 'districts' },
   { id: 'water-bodies', level: 'Points', source: 'OpenStreetMap (ODbL)', year: 2026, description: 'Lakes, reservoirs, ponds and other natural water bodies', geojsonUrl: `${R2}/geojsons/points/india_water_bodies.geojson`, parquetUrl: `${R2}/geoparquet/points/india_water_bodies.parquet`, category: 'Points', tab: 'districts' },
   { id: 'pincodes-centroids', level: 'Points', source: 'BharatViz', year: 2026, description: '63,864 pincode centroids for proximity queries', geojsonUrl: `${R2}/geojsons/points/india_pincodes_centroids.geojson`, parquetUrl: `${R2}/geoparquet/points/india_pincodes_centroids.parquet`, category: 'Points', tab: 'pincodes' },
-  // SHRUG thematic district parquets (CC BY-NC-SA 4.0 — Development Data Lab)
-  { id: 'shrug-census', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2011, description: 'Census 1991–2011 counts at PC11 district level: population, literacy, SC/ST shares, language diversity, worker status (1,209 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_census.parquet`, category: 'SHRUG' },
-  { id: 'shrug-economic', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2013, description: 'Economic Census 1990–2013 firm counts, employment, and sector composition at district level (539 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_economic.parquet`, category: 'SHRUG' },
+  // SHRUG thematic district parquets (CC BY-NC-SA 4.0 - Development Data Lab)
+  { id: 'shrug-census', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2011, description: 'Census 1991-2011 counts at PC11 district level: population, literacy, SC/ST shares, language diversity, worker status (1,209 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_census.parquet`, category: 'SHRUG' },
+  { id: 'shrug-economic', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2013, description: 'Economic Census 1990-2013 firm counts, employment, and sector composition at district level (539 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_economic.parquet`, category: 'SHRUG' },
   { id: 'shrug-secc', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2011, description: 'SECC 2011 rural household consumption, deprivation indicators, and urban estimates at district level (122 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_secc.parquet`, category: 'SHRUG' },
   { id: 'shrug-environment', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2020, description: 'PM2.5 concentration, vegetation cover fraction, elevation, terrain ruggedness, DMSP and VIIRS night-lights at district level (41 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_environment.parquet`, category: 'SHRUG' },
   { id: 'shrug-facebook', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2019, description: 'Facebook population estimates and Relative Wealth Index (RWI) at district level (14 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_facebook.parquet`, category: 'SHRUG' },
   { id: 'shrug-roads', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2019, description: 'PMGSY rural road construction and connectivity metrics at district level (14 columns). CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_roads.parquet`, category: 'SHRUG' },
-  { id: 'shrug-all', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2020, description: 'All SHRUG modules joined: Census, Economic Census, SECC, Environment, Facebook, Roads — 1,919 columns at PC11 district level. CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_all.parquet`, category: 'SHRUG' },
-  // NHP health facilities (GODL — Government Open Data License India)
+  { id: 'shrug-all', level: 'Districts', source: 'SHRUG 2.1 (DDL)', year: 2020, description: 'All SHRUG modules joined: Census, Economic Census, SECC, Environment, Facebook, Roads - 1,919 columns at PC11 district level. CC BY-NC-SA 4.0.', parquetUrl: `${R2}/geoparquet/shrug/shrug_districts_all.parquet`, category: 'SHRUG' },
+  // NHP health facilities (GODL - Government Open Data License India)
   { id: 'nhp-health-facilities', level: 'Points', source: 'NHP / NIN / data.gov.in (GODL)', year: 2025, description: '166,462 health facilities: SubCentres, PHCs, CHCs, hospitals. Fields: facility_type, state, district, taluka, block, address, pincode.', parquetUrl: `${R2}/geoparquet/health/nhp_health_facilities_2025.parquet`, category: 'Health', tab: 'districts' },
   { id: 'nhp-hospital-directory', level: 'Points', source: 'National Health Portal (GODL)', year: 2025, description: '10,843 hospitals with beds, specialties, accreditation, doctor count, care type, and facilities. Fields: Hospital_Name, Specialties, Total_Num_Beds, Number_Doctor, Accreditation.', parquetUrl: `${R2}/geoparquet/health/nhp_hospital_directory_2025.parquet`, category: 'Health', tab: 'districts' },
   { id: 'nhp-blood-banks', level: 'Points', source: 'National Health Portal (GODL)', year: 2015, description: '897 blood banks with category, blood components available, blood groups, service hours, and contact details.', parquetUrl: `${R2}/geoparquet/health/nhp_blood_banks_2015.parquet`, category: 'Health', tab: 'districts' },
   { id: 'anganwadis-icds', level: 'Points', source: 'GatiShakti / MoWCD (GODL)', year: 2024, description: '~1.4 million ICDS Anganwadi centres from the Ministry of Women and Child Development via GatiShakti.', parquetUrl: `${R2}/geoparquet/health/anganwadis_icds_2024.parquet`, category: 'Health', tab: 'districts' },
-  { id: 'bharatmaps-health-centers', level: 'Points', source: 'BharatMaps (Govt of India)', year: 2024, description: 'Health centres from the BharatMaps government portal. Independent coverage — useful for cross-verification with NHP data.', parquetUrl: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`, category: 'Health', tab: 'districts' },
-  { id: 'bhuvan-sisdp-anganwadis', level: 'Points', source: 'ISRO Bhuvan SISDP (GODL)', year: 2024, description: 'Anganwadi centres from ISRO Bhuvan SISDP portal — separate source from GatiShakti ICDS, useful for coverage comparison.', parquetUrl: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`, category: 'Health', tab: 'districts' },
+  { id: 'bharatmaps-health-centers', level: 'Points', source: 'BharatMaps (Govt of India)', year: 2024, description: 'Health centres from the BharatMaps government portal. Independent coverage - useful for cross-verification with NHP data.', parquetUrl: `${R2}/geoparquet/health/bharatmaps_health_centers.parquet`, category: 'Health', tab: 'districts' },
+  { id: 'bhuvan-sisdp-anganwadis', level: 'Points', source: 'ISRO Bhuvan SISDP (GODL)', year: 2024, description: 'Anganwadi centres from ISRO Bhuvan SISDP portal - separate source from GatiShakti ICDS, useful for coverage comparison.', parquetUrl: `${R2}/geoparquet/health/bhuvan_sisdp_anganwadis.parquet`, category: 'Health', tab: 'districts' },
   { id: 'gatishakti-child-care', level: 'Points', source: 'GatiShakti / MoWCD (GODL)', year: 2024, description: 'Government-run creches and child development centres from GatiShakti (Ministry of Women and Child Development).', parquetUrl: `${R2}/geoparquet/health/gatishakti_child_care_institutes.parquet`, category: 'Health', tab: 'districts' },
   { id: 'ncog-soi-dispensaries', level: 'Points', source: 'Survey of India NCOG (GODL)', year: 2024, description: 'Dispensaries from the Survey of India NCOG dataset.', parquetUrl: `${R2}/geoparquet/health/ncog_soi_dispensaries.parquet`, category: 'Health', tab: 'districts' },
   { id: 'ncog-soi-hospitals', level: 'Points', source: 'Survey of India NCOG (GODL)', year: 2024, description: 'Hospitals from the Survey of India NCOG dataset.', parquetUrl: `${R2}/geoparquet/health/ncog_soi_hospitals.parquet`, category: 'Health', tab: 'districts' },
@@ -171,7 +171,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
           <SectionAnchor id="maps-gallery" />
         </h2>
         <p className={`${textClass} text-lg`}>
-          All {ALL_MAPS.length} layers available in BharatViz — boundary sets, SHRUG socioeconomic data,
+          All {ALL_MAPS.length} layers available in BharatViz - boundary sets, SHRUG socioeconomic data,
           and health facility point layers. Download as GeoJSON or GeoParquet.
         </p>
       </div>
@@ -181,7 +181,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(28,8%,50%)]" />
           <input
             type="text"
-            placeholder="Search maps…"
+            placeholder="Search maps..."
             value={query}
             onChange={e => setQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,12%)] dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,12%,90%)] dark:placeholder-[hsl(30,6%,40%)] focus:outline-none focus:ring-2 focus:ring-[hsl(28,55%,48%)]"

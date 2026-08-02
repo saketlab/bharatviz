@@ -15,6 +15,7 @@ import { createRotationCalculator } from '@/lib/rotationUtils';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
 import { svgToHighDpiBlob } from '@/lib/exportUtils';
 import { DeckPointsLayer, type PointViewMode } from './DeckPointsLayer';
+import { DeckPolygonsLayer, type PolygonFeature } from './DeckPolygonsLayer';
 
 import polylabel from "@mapbox/polylabel";
 
@@ -82,6 +83,7 @@ interface IndiaDistrictsMapProps {
   pointRadius?: number;
   pointColor?: string;
   pointOpacity?: number;
+  polygonsLayer?: PolygonFeature[];
   colorBarSettings?: ColorBarSettings;
   geojsonPath?: string;
   statesGeojsonPath?: string;
@@ -188,6 +190,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   csvTemplateHeader = 'district',
   labelScale = 1,
   pointsLayer,
+  polygonsLayer,
   pointViewMode = 'points',
   pointRadius = 1.5,
   pointColor = '#ef4444',
@@ -447,7 +450,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     return area;
   };
 
-  const geoToScreen = (lng: number, lat: number): { x: number; y: number } => {
+  const geoToScreen = useCallback((lng: number, lat: number): { x: number; y: number } => {
     const mapWidth = isMobile ? 320 : 760;
     const mapHeight = isMobile ? 400 : selectedState ? 1050 : 850;
     const xOffset = isMobile ? 15 : 20;
@@ -477,7 +480,10 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY + yOffset;
 
     return { x, y };
-  };
+  }, [isMobile, selectedState, bounds]);
+
+  const overlayViewBoxWidth = isMobile ? 350 : 800;
+  const overlayViewBoxHeight = isMobile ? 440 : selectedState ? 1100 : 890;
 
   const isPointInsideDistrict = (
     screenPoint: { x: number; y: number },
@@ -1237,7 +1243,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 transform: 'translateZ(0)',
               }}
               role="img"
-              aria-label={dataTitle ? `India districts map — ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` — ${selectedState}` : ''}`}
+              aria-label={dataTitle ? `India districts map - ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` - ${selectedState}` : ''}`}
             >
               {geojsonData.features.map((feature, index) => {
                 const mapWidth = isMobile ? 320 : 760;
@@ -1599,7 +1605,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               )}
 
 
-              {/* points rendered via DeckPointsLayer canvas overlay — see below */}
+              {/* points rendered via DeckPointsLayer canvas overlay - see below */}
 
               {naInfo && naInfo.count > 0 && showNALegend && (
                 <g
@@ -1656,12 +1662,37 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                         fill: 'white'
                       }}
                     >
-                      ×
+                      x
                     </text>
                   </g>
                 </g>
               )}
             </svg>
+
+            {polygonsLayer && polygonsLayer.length > 0 && mapRect && (
+              <DeckPolygonsLayer
+                features={polygonsLayer}
+                mapRect={mapRect}
+                project={geoToScreen}
+                viewBoxWidth={overlayViewBoxWidth}
+                viewBoxHeight={overlayViewBoxHeight}
+                darkMode={darkMode}
+                onPolygonHover={(info) => {
+                  if (!info) { setHoveredPoint(null); return; }
+                  const containerRect = containerRef.current?.getBoundingClientRect();
+                  if (!containerRect) return;
+                  const svgRect = svgRef.current?.getBoundingClientRect();
+                  const refRect = svgRect ?? containerRect;
+                  // Feed the point tooltip a PointFeature synthesized from the polygon
+                  // (the tooltip reads only label/properties, so lon/lat are unused).
+                  setHoveredPoint({
+                    x: info.x + (refRect.left - containerRect.left),
+                    y: info.y + (refRect.top - containerRect.top),
+                    feature: { lon: 0, lat: 0, label: info.feature.name ?? undefined, properties: info.feature.properties },
+                  });
+                }}
+              />
+            )}
 
             {pointsLayer && pointsLayer.length > 0 && mapRect && (
               <DeckPointsLayer
@@ -1669,8 +1700,8 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 viewMode={pointViewMode}
                 mapRect={mapRect}
                 project={geoToScreen}
-                viewBoxWidth={isMobile ? 350 : 800}
-                viewBoxHeight={isMobile ? 440 : selectedState ? 1100 : 890}
+                viewBoxWidth={overlayViewBoxWidth}
+                viewBoxHeight={overlayViewBoxHeight}
                 pointRadius={pointRadius}
                 pointOpacity={pointOpacity}
                 darkMode={darkMode}
@@ -1713,7 +1744,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               const pt = hoveredPoint.feature;
               const props = pt.properties ?? {};
               const entries = Object.entries(props).filter(([, v]) => v !== null && v !== '' && v !== undefined);
-              // Tooltip should not overflow right edge — flip if too close
+              // Tooltip should not overflow right edge - flip if too close
               const tooltipLeft = hoveredPoint.x + 12;
               return (
                 <div

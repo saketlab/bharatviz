@@ -43,11 +43,23 @@ function shuffle<T>(arr: T[]): T[] {
 
 const queues: Record<string, { items: ShowcaseDemo[]; pos: number }> = {};
 
+// Districts open on population density, then cycle the shuffled NFHS-5 indicators.
+const DEFAULT_FIRST: Record<string, string> = { districts: 'districts_00_population_density' };
+
+// Put the default demo first, shuffle the rest. Falls back to a plain shuffle
+// if the default id isn't present.
+function seededQueue(mode: string, demos: ShowcaseDemo[]): ShowcaseDemo[] {
+  const firstId = DEFAULT_FIRST[mode];
+  const first = firstId && demos.find(d => d.id === firstId);
+  if (!first) return shuffle(demos);
+  return [first, ...shuffle(demos.filter(d => d.id !== firstId))];
+}
+
 export function getNextDemo(mode: 'states' | 'districts'): ShowcaseDemoResult {
   const demos = mode === 'states' ? STATE_DEMOS : DISTRICT_DEMOS;
 
   if (!queues[mode] || queues[mode].pos >= queues[mode].items.length) {
-    queues[mode] = { items: shuffle(demos), pos: 0 };
+    queues[mode] = { items: seededQueue(mode, demos), pos: 0 };
   }
 
   const q = queues[mode];

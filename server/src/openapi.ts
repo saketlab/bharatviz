@@ -8,9 +8,9 @@ export const openApiSpec = {
   info: {
     title: 'BharatViz API',
     version: '1.0.0',
-    description: `API for generating India choropleth maps and querying historical district evolution (1951–2011).
+    description: `API for generating India choropleth maps and querying historical district evolution (1951-2011).
 
-**District Evolution** tracks how district names and boundaries changed across Indian Census years. Districts can split, merge, or be renamed — the API traces these changes forward and backward.
+**District Evolution** tracks how district names and boundaries changed across Indian Census years. Districts can split, merge, or be renamed - the API traces these changes forward and backward.
 
 **Map Generation** produces publication-quality choropleth maps at state and district level.`,
     contact: { name: 'BharatViz', url: 'https://bharatviz.org' },
@@ -20,7 +20,7 @@ export const openApiSpec = {
     { url: 'https://bharatviz.org', description: 'Production' },
   ],
   tags: [
-    { name: 'District Evolution', description: 'Trace how districts changed across census years (1951–2011)' },
+    { name: 'District Evolution', description: 'Trace how districts changed across census years (1951-2011)' },
     { name: 'Maps', description: 'Generate choropleth maps as PNG / SVG / PDF' },
     { name: 'Pincodes', description: 'Pincode-level maps for 38 Indian states (~19,000 pincodes)' },
   ],
@@ -29,9 +29,9 @@ export const openApiSpec = {
       get: {
         tags: ['District Evolution'],
         summary: 'Trace a district across census years',
-        description: `Returns the district(s) a given district evolved into/from across census years 1951–2011.
+        description: `Returns the district(s) a given district evolved into/from across census years 1951-2011.
 
-Each year maps to an **array** of entries — one per district part. When a district splits, each successor is a separate object. Empty array means the district did not exist that year.
+Each year maps to an **array** of entries - one per district part. When a district splits, each successor is a separate object. Empty array means the district did not exist that year.
 
 If \`state\` is omitted and the district name is ambiguous, all matching states are returned as separate matches.`,
         parameters: [
@@ -94,7 +94,7 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                           modern_state: { type: 'string', description: 'Modern state name from the mapping table' },
                           evolution: {
                             type: 'object',
-                            description: 'Map of census year → array of district entries. Empty array if the district did not exist that year.',
+                            description: 'Map of census year -> array of district entries. Empty array if the district did not exist that year.',
                             additionalProperties: {
                               type: 'array',
                               items: {
@@ -117,7 +117,7 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                 },
                 examples: {
                   coimbatore: {
-                    summary: 'Coimbatore — splits into Periyar, Erode, Tiruppur over time',
+                    summary: 'Coimbatore - splits into Periyar, Erode, Tiruppur over time',
                     value: {
                       query: { district: 'Coimbatore', state: 'Tamil Nadu' },
                       matches: [{
@@ -135,7 +135,7 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
                     },
                   },
                   parganas: {
-                    summary: '24 Parganas — renamed and split',
+                    summary: '24 Parganas - renamed and split',
                     value: {
                       query: { district: '24 - Parganas', state: 'West Bengal' },
                       matches: [{
@@ -157,7 +157,7 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
             },
           },
           '400': {
-            description: 'Bad request — missing district or invalid year',
+            description: 'Bad request - missing district or invalid year',
             content: { 'application/json': { schema: { type: 'object', properties: { error: { type: 'string' } } } } },
           },
         },
@@ -167,7 +167,7 @@ If \`state\` is omitted and the district name is ambiguous, all matching states 
       get: {
         tags: ['District Evolution'],
         summary: 'Download deduplicated transition table',
-        description: 'Returns the full deduplicated district transition mapping as CSV (3,636 rows, 1951–2011). Columns: `source_district, dest_district, source_year, dest_year, filter_state`.',
+        description: 'Returns the full deduplicated district transition mapping as CSV (3,636 rows, 1951-2011). Columns: `source_district, dest_district, source_year, dest_year, filter_state`.',
         responses: {
           '200': {
             description: 'CSV file',

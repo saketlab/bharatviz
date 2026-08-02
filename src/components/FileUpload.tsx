@@ -90,7 +90,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
     try {
       const data = result.data as Array<Record<string, string>>;
       const rowCount = data.filter(row => Object.values(row).some(v => v && String(v).trim())).length;
-      onProcessingChange?.(true, `Matching ${rowCount.toLocaleString()} rows to boundaries…`);
+      onProcessingChange?.(true, `Matching ${rowCount.toLocaleString()} rows to boundaries...`);
       const headers = (result.meta.fields || []).filter(h => h.trim() !== '' && !/^_\d+$/.test(h.trim()));
 
       const requiredColumns = mode === 'districts' ? 3 : 2;
@@ -505,7 +505,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
               className="relative flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base px-5 py-2 sm:px-6 sm:py-2.5 font-semibold bg-[hsl(28,62%,48%)] hover:bg-[hsl(28,55%,42%)] text-white border-transparent dark:bg-[hsl(28,55%,52%)] dark:hover:bg-[hsl(28,50%,46%)] dark:text-[hsl(25,8%,6%)]"
             >
               <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              {demoLoading ? 'Loading…' : 'Load Demo'}
+              {demoLoading ? 'Loading...' : 'Load Demo'}
             </Button>
           </div>
           <Button
@@ -519,7 +519,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
         </div>
         {demoInfo && !demoDataPath && (
           <p className="text-xs mt-2 text-[hsl(28,8%,54%)] dark:text-[hsl(28,8%,40%)]">
-            {demoInfo.index} of {demoInfo.total} NFHS-5 indicators — click again for more
+            {demoInfo.index} of {demoInfo.total} NFHS-5 indicators - click again for more
           </p>
         )}
 
@@ -527,9 +527,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
           <div className="text-center mb-3">
             <h4 className="text-sm font-medium mb-1 text-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)]">Or load from URL</h4>
             <p className="text-xs text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,50%)]">
-              {/* googleSheetLink === '' explicitly means "no sheet for this layer" — show only the CSV download */}
+              {/* googleSheetLink === '' explicitly means "no sheet for this layer" - show only the CSV download */}
               {googleSheetLink !== ''
-                ? <>Paste a Google Sheets link (sheet must be publicly viewable — see{' '}
+                ? <>Paste a Google Sheets link (sheet must be publicly viewable - see{' '}
                     <a
                       href={googleSheetLink || (mode === 'districts'
                         ? "https://docs.google.com/spreadsheets/d/1mxE70Qrf0ij3z--4alVbmKEfAIftH3N1wqMWYPNQk7Q/edit?usp=sharing"
@@ -566,7 +566,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[hsl(28,8%,58%)] hover:text-[hsl(30,42%,28%)] dark:text-[hsl(28,8%,36%)] dark:hover:text-[hsl(30,8%,58%)]"
                   disabled={loadingSheet}
                 >
-                  ✕
+                  x
                 </button>
               )}
             </div>

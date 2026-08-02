@@ -71,7 +71,7 @@ function buildLayout(data: EvolutionData) {
 
   const nodeMap = new Map(data.nodes.map(n => [n.id, n]));
 
-  const sortOrder = new Map<string, number>(); // nodeId → sort index
+  const sortOrder = new Map<string, number>(); // nodeId -> sort index
 
   const brit72 = origins1872.filter(n => n.type === 'British districts')
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -307,7 +307,7 @@ export function AlluvialChart({ darkMode: darkModeProp, onNodeClick }: AlluvialC
         {tooltip.node.name}
       </div>
       <div className={`mb-1 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
-        {tooltip.node.year} · {tooltip.node.type}
+        {tooltip.node.year} - {tooltip.node.type}
       </div>
       {tooltip.sources.length > 0 && tooltip.sources[0] !== tooltip.node.name && (
         <div className="mb-0.5">
@@ -329,7 +329,7 @@ export function AlluvialChart({ darkMode: darkModeProp, onNodeClick }: AlluvialC
   if (loading) return (
     <div className={`flex items-center justify-center h-64 ${darkMode ? 'text-[hsl(30,8%,52%)]' : 'text-[hsl(28,8%,44%)]'}`}>
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mr-3" />
-      Loading evolution data…
+      Loading evolution data...
     </div>
   );
 

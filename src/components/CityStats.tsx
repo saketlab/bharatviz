@@ -53,7 +53,7 @@ function loadWardMetrics(): Promise<WardMetric[]> {
 }
 
 const fmt = (n: number | null, d = 2) =>
-  n == null ? '—' : n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
+  n == null ? '-' : n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 function buildDatasetStats(wards: WardMetric[]): Map<string, DatasetStats> {
   const map = new Map<string, { area: number; compactness: number[]; }>();
@@ -170,7 +170,7 @@ function DatasetView({ onDrillDown }: { onDrillDown: (id: string) => void }) {
         datasetStatsCache = buildDatasetStats(wards);
         setStats(datasetStatsCache);
       })
-      .catch(() => {}); // stats columns show '—' on failure
+      .catch(() => {}); // stats columns show '-' on failure
   }, []);
 
   const withStats = useMemo(() => CITY_DATASETS.map(d => ({
@@ -234,7 +234,7 @@ function DatasetView({ onDrillDown }: { onDrillDown: (id: string) => void }) {
                 <th className={`${thBase} text-left hidden sm:table-cell`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('source')} aria-label={`Sort by source${sortField === 'source' ? `, currently ${sortDirection}ending` : ''}`}>Source<SortIcon active={sortField === 'source'} dir={sortDirection} /></button></th>
                 <th className={`${thBase} text-left hidden sm:table-cell`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('label')} aria-label={`Sort by label${sortField === 'label' ? `, currently ${sortDirection}ending` : ''}`}>Label<SortIcon active={sortField === 'label'} dir={sortDirection} /></button></th>
                 <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('featureCount')} aria-label={`Sort by wards${sortField === 'featureCount' ? `, currently ${sortDirection}ending` : ''}`}>Wards<SortIcon active={sortField === 'featureCount'} dir={sortDirection} /></button></th>
-                <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('totalArea')} aria-label={`Sort by area${sortField === 'totalArea' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²)<SortIcon active={sortField === 'totalArea'} dir={sortDirection} /></button></th>
+                <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('totalArea')} aria-label={`Sort by area${sortField === 'totalArea' ? `, currently ${sortDirection}ending` : ''}`}>Area (km2)<SortIcon active={sortField === 'totalArea'} dir={sortDirection} /></button></th>
                 <th className={`${thBase} text-right hidden sm:table-cell`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('avgCompactness')} aria-label={`Sort by compactness${sortField === 'avgCompactness' ? `, currently ${sortDirection}ending` : ''}`}>Compact.<SortIcon active={sortField === 'avgCompactness'} dir={sortDirection} /></button></th>
                 <th className={`${thBase} text-right`}></th>
               </tr>
@@ -313,11 +313,11 @@ function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: strin
           onClick={onBack}
           className="text-sm px-3 py-1.5 rounded border transition-colors border-[hsl(35,18%,78%)] text-[hsl(28,8%,40%)] hover:bg-[hsl(35,20%,96%)] dark:border-[hsl(25,8%,20%)] dark:text-[hsl(35,10%,75%)] dark:hover:bg-[hsl(25,8%,12%)]"
         >
-          ← Back
+          {'<-'} Back
         </button>
         <h3 className="font-semibold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">
-          Ward Metrics — {dataset?.displayName ?? selectedId}
-          {dataset && <span className="ml-2 text-sm font-normal text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,55%)]">{dataset.state} · {dataset.label}</span>}
+          Ward Metrics - {dataset?.displayName ?? selectedId}
+          {dataset && <span className="ml-2 text-sm font-normal text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,55%)]">{dataset.state} - {dataset.label}</span>}
         </h3>
       </div>
 
@@ -330,7 +330,7 @@ function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: strin
           <SelectContent>
             {CITY_DATASETS.map(d => (
               <SelectItem key={d.id} value={d.id}>
-                {d.displayName} — {d.label} ({d.state})
+                {d.displayName} - {d.label} ({d.state})
               </SelectItem>
             ))}
           </SelectContent>
@@ -383,7 +383,7 @@ function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: strin
                 <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
                   <tr>
                     <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('ward_name')} aria-label={`Sort by ward${sortField === 'ward_name' ? `, currently ${sortDirection}ending` : ''}`}>Ward<SortIcon active={sortField === 'ward_name'} dir={sortDirection} /></button></th>
-                    <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km²)<SortIcon active={sortField === 'area_sq_km'} dir={sortDirection} /></button></th>
+                    <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('area_sq_km')} aria-label={`Sort by area${sortField === 'area_sq_km' ? `, currently ${sortDirection}ending` : ''}`}>Area (km2)<SortIcon active={sortField === 'area_sq_km'} dir={sortDirection} /></button></th>
                     <th className={`${thBase} text-right hidden sm:table-cell`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('perimeter_km')} aria-label={`Sort by perimeter${sortField === 'perimeter_km' ? `, currently ${sortDirection}ending` : ''}`}>Perimeter (km)<SortIcon active={sortField === 'perimeter_km'} dir={sortDirection} /></button></th>
                     <th className={`${thBase} text-right`}><button className={`flex items-center justify-end w-full ${thBtnBase}`} onClick={() => handleSort('compactness')} aria-label={`Sort by compactness${sortField === 'compactness' ? `, currently ${sortDirection}ending` : ''}`}>Compact.<SortIcon active={sortField === 'compactness'} dir={sortDirection} /></button></th>
                   </tr>

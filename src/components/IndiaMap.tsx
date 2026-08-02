@@ -1178,7 +1178,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
         style={{ userSelect: 'none', backgroundColor: mapBg }}
         viewBox={isMobile ? "0 0 350 350" : `0 0 ${MAP_DIMENSIONS.STATES.width} ${MAP_DIMENSIONS.STATES.height}`}
         role="img"
-        aria-label={mapTitle || dataTitle ? `India states map${mapTitle ? `: ${mapTitle}` : ''}${dataTitle ? ` — ${dataTitle}` : ''}` : 'India states choropleth map'}
+        aria-label={mapTitle || dataTitle ? `India states map${mapTitle ? `: ${mapTitle}` : ''}${dataTitle ? ` - ${dataTitle}` : ''}` : 'India states choropleth map'}
       >
 
         {data.length > 0 && (
@@ -1442,7 +1442,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
                   fill: 'white'
                 }}
               >
-                ×
+                x
               </text>
             </g>
           </g>

@@ -48,6 +48,7 @@ const APIDocs = lazy(() => import('@/components/APIDocs'));
 const MapsGallery = lazy(() => import('@/components/MapsGallery'));
 const HealthPanel = lazy(() => import('@/components/HealthPanel').then(m => ({ default: m.HealthPanel })));
 const HealthMap = lazy(() => import('@/components/HealthMap').then(m => ({ default: m.HealthMap })));
+const VillagePolygonMap = lazy(() => import('@/components/VillagePolygonMap').then(m => ({ default: m.VillagePolygonMap })));
 const CensusMap = lazy(() => import('@/components/CensusMap').then(m => ({ default: m.CensusMap })));
 
 const TabPanel = ({ active, children }: { active: boolean; children: React.ReactNode }) => {
@@ -91,7 +92,7 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -205,6 +206,7 @@ const Index = () => {
   const [urbanLayerOpen, setUrbanLayerOpen] = useState(false);
 
   const [healthDatasetId, setHealthDatasetId] = useState<string>('nhp-hospital-directory');
+  const [villageView, setVillageView] = useState<'points' | 'boundaries'>('points');
 
   const [cityMapData, setCityMapData] = useState<CityWardData[]>([]);
   const [cityColorScale, setCityColorScale] = useState<ColorScale>('spectral');
@@ -627,7 +629,7 @@ const Index = () => {
     navigate(`/${basePath}${search ? '?' + search : ''}`);
   }, [darkMode, navigate]);
 
-  // ── Health tab: read initial URL state ──────────────────────────────────
+  // Health tab: read initial URL state
   useEffect(() => {
     if (hasReadInitialUrl.current.has('health')) return;
     if (activeTab !== 'health') return;
@@ -638,7 +640,7 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  // ── Health tab: persist URL state ───────────────────────────────────────
+  // Health tab: persist URL state
   useEffect(() => {
     if (activeTab !== 'health') return;
     const params = new URLSearchParams(location.search);
@@ -651,7 +653,7 @@ const Index = () => {
   }, [activeTab, healthDatasetId, darkMode, location.pathname, location.search, navigate]);
 
   useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban', 'health'];
+    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages'];
     if (!nonMapTabs.includes(activeTab)) return;
 
     const params = new URLSearchParams(location.search);
@@ -669,7 +671,7 @@ const Index = () => {
     let dataUrl = searchParams.get('dataUrl');
     let titleFromParams = searchParams.get('title') || '';
 
-    // Support ?demo=N — resolve to the Nth demo for the current tab level
+    // Support ?demo=N - resolve to the Nth demo for the current tab level
     const demoParam = searchParams.get('demo');
     if (demoParam && !dataUrl) {
       const demoIndex = parseInt(demoParam, 10);
@@ -1707,10 +1709,11 @@ const Index = () => {
                 <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
                 <TabsTrigger value="urban" className={primaryTabClass}>Urban</TabsTrigger>
                 <TabsTrigger value="health" className={primaryTabClass}>Health</TabsTrigger>
+                <TabsTrigger value="villages" className={primaryTabClass}>Villages</TabsTrigger>
                 <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
                 <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
               </TabsList>
-              {/* Scroll-fade indicator — visible only when bar is scrollable (sm and below) */}
+              {/* Scroll-fade indicator - visible only when bar is scrollable (sm and below) */}
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)] sm:hidden" aria-hidden="true" />
             </div>
             <div className="mt-5 mb-2">
@@ -1974,7 +1977,7 @@ const Index = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search boundary type…" className="h-9" />
+                        <CommandInput placeholder="Search boundary type..." className="h-9" />
                         <CommandList className="max-h-60">
                           <CommandEmpty>No boundary type found.</CommandEmpty>
                           <CommandGroup>
@@ -2183,7 +2186,7 @@ const Index = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search boundary type…" className="h-9" />
+                        <CommandInput placeholder="Search boundary type..." className="h-9" />
                         <CommandList className="max-h-60">
                           <CommandEmpty>No boundary type found.</CommandEmpty>
                           <CommandGroup>
@@ -2361,7 +2364,7 @@ const Index = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search layer…" className="h-9" />
+                        <CommandInput placeholder="Search layer..." className="h-9" />
                         <CommandList className="max-h-60">
                           <CommandEmpty>No layer found.</CommandEmpty>
                           <CommandGroup>
@@ -2403,14 +2406,14 @@ const Index = () => {
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         <span className="truncate text-left">
-                          {subAdminStatesLoading ? 'Loading states…' : subAdminSelectedState}
+                          {subAdminStatesLoading ? 'Loading states...' : subAdminSelectedState}
                         </span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search state…" className="h-9" />
+                        <CommandInput placeholder="Search state..." className="h-9" />
                         <CommandList className="max-h-72">
                           <CommandEmpty>No state found.</CommandEmpty>
                           <CommandGroup>
@@ -2592,14 +2595,14 @@ const Index = () => {
                         className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         <span className="truncate text-left">
-                          {electoralStatesLoading ? 'Loading states…' : electoralSelectedState}
+                          {electoralStatesLoading ? 'Loading states...' : electoralSelectedState}
                         </span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search state…" className="h-9" />
+                        <CommandInput placeholder="Search state..." className="h-9" />
                         <CommandList className="max-h-72">
                           <CommandEmpty>No state found.</CommandEmpty>
                           <CommandGroup>
@@ -2864,6 +2867,39 @@ const Index = () => {
             </div>
           </TabPanel>
 
+          <TabPanel active={activeTab === 'villages'}>
+            <div className="space-y-6">
+              <div className="inline-flex rounded-md border border-[hsl(35,18%,82%)] dark:border-[hsl(25,8%,20%)] overflow-hidden text-sm">
+                <button
+                  className={`px-4 py-1.5 ${villageView === 'points' ? 'bg-[hsl(28,68%,48%)] text-white' : 'bg-transparent text-[hsl(28,10%,40%)] dark:text-[hsl(30,8%,60%)]'}`}
+                  onClick={() => setVillageView('points')}
+                >Points</button>
+                <button
+                  className={`px-4 py-1.5 ${villageView === 'boundaries' ? 'bg-[hsl(28,68%,48%)] text-white' : 'bg-transparent text-[hsl(28,10%,40%)] dark:text-[hsl(30,8%,60%)]'}`}
+                  onClick={() => setVillageView('boundaries')}
+                >Boundaries</button>
+              </div>
+
+              {villageView === 'points' ? (
+                <HealthMap
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                  datasetIds={['villages-soi-points']}
+                  selectedDatasetId="villages-soi-points"
+                  mapLabel="Villages"
+                  heading="Village Map (Survey of India)"
+                />
+              ) : (
+                <VillagePolygonMap
+                  darkMode={darkMode}
+                  boundaryColor={boundaryColor}
+                  boundaryWidth={boundaryWidth}
+                />
+              )}
+            </div>
+          </TabPanel>
+
           <TabPanel active={activeTab === 'help'}>
             <div className="max-w-4xl mx-auto p-6 space-y-10">
               <div className="px-4 py-3 rounded-md bg-[hsl(35,20%,95%)] dark:bg-[hsl(25,8%,10%)]">
@@ -3097,7 +3133,7 @@ POST /api/v1/districts/map
                         href="/embed-demo"
                         className="inline-block px-4 py-2 bg-[hsl(28,62%,48%)] hover:bg-[hsl(28,55%,42%)] text-white font-semibold rounded-lg transition-colors"
                       >
-                        View Embed Demo →
+                        View Embed Demo {'->'}
                       </a>
                     </div>
 
@@ -3474,7 +3510,7 @@ POST /api/v1/districts/map
           </TabPanel>
 
           <TabPanel active={activeTab === 'census'}>
-            <Suspense fallback={<div className="h-32 flex items-center justify-center text-[hsl(28,8%,40%)]">Loading…</div>}>
+            <Suspense fallback={<div className="h-32 flex items-center justify-center text-[hsl(28,8%,40%)]">Loading...</div>}>
               <CensusMap ref={censusMapRef} darkMode={darkMode} />
             </Suspense>
             <div className="mt-4">
@@ -3510,7 +3546,7 @@ POST /api/v1/districts/map
       <footer className="w-full text-center text-xs mt-8 mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">
         <div className="flex flex-col items-center gap-2">
           <div>
-            © 2025 Saket Choudhary | <a href="http://saketlab.in/" target="_blank" rel="noopener noreferrer" className="underline">Saket Lab</a>
+            (c) 2025 Saket Choudhary | <a href="http://saketlab.in/" target="_blank" rel="noopener noreferrer" className="underline">Saket Lab</a>
           </div>
           <div className="flex items-center gap-1">
             <a

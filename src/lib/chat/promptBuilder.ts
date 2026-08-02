@@ -42,7 +42,7 @@ View: ${getViewDescription(currentView.tab, currentView.selectedState, currentVi
     prompt += buildGeoSection(geoMetadata.featureProperties, currentView.tab);
   }
 
-  // For district/state/region maps, include state→district listing from hierarchy
+  // For district/state/region maps, include state->district listing from hierarchy
   if (currentView.tab !== 'cities') {
     prompt += buildHierarchySection(geoMetadata.hierarchy, currentView.tab, context.mentionedStates);
   }
@@ -103,7 +103,7 @@ function buildToolDataSection(userData: UserData): string {
   }
 
   s += `
-You MUST use your tools to answer data questions. Each tool already has the complete dataset AND geographic boundaries loaded internally. You do not need to provide any data — just call the tool and it returns computed results.
+You MUST use your tools to answer data questions. Each tool already has the complete dataset AND geographic boundaries loaded internally. You do not need to provide any data - just call the tool and it returns computed results.
 
 Tools:
 - summarize_data: summary stats (mean, median, SD, min, max, quartiles). Optional: filter by region or state.
@@ -114,7 +114,7 @@ Tools:
 - hotspot_analysis: computes Getis-Ord Gi* using the loaded GeoJSON boundaries. Returns hotspot/coldspot z-scores.
 
 CRITICAL RULES:
-1. NEVER say "I don't have the data" or "I need spatial data" — the tools have everything.
+1. NEVER say "I don't have the data" or "I need spatial data" - the tools have everything.
 2. ALWAYS call the tool first, then explain the results.
 3. For spatial questions (clustering, Moran's I, LISA, hotspots), the tool loads GeoJSON boundaries automatically.
 4. Call tools with no arguments to use defaults, or pass optional filters.
@@ -403,7 +403,7 @@ export function buildCompactContext(context: DynamicChatContext): string {
   if (userData.hasData && userData.stats) {
     compact += ` | n=${userData.count}/${userData.totalExpected}`;
     compact += ` | ${userData.stats.min.toFixed(1)}-${userData.stats.max.toFixed(1)}`;
-    compact += ` | μ=${userData.stats.mean.toFixed(1)}`;
+    compact += ` | u=${userData.stats.mean.toFixed(1)}`;
     compact += ` | missing=${userData.missingPercentage.toFixed(1)}%`;
   } else {
     compact += ` | No data`;
