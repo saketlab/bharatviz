@@ -1,18 +1,19 @@
 /**
  * Village boundary view: per-state polygon slices loaded on demand from R2.
  * Geometry rides as a JSON `rings` string per row because hyparquet has no
- * in-browser WKB decoder; we JSON.parse it into PolygonFeature[]. Multiple
- * upstream sources (LGD / Bhuvan / SOI) are selectable.
+ * in-browser WKB decoder; we JSON.parse it into PolygonFeature[]. The source ->
+ * state -> url mapping is fetched once from a gist (see villagePolygonMapping).
  */
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import type { PolygonFeature } from './DeckPolygonsLayer';
 import {
-  getVillagePolygonUrl,
-  getVillagePolygonStates,
+  loadVillageMapping,
   getVillageSources,
+  getVillagePolygonStates,
+  getVillagePolygonUrl,
   type VillageSource,
 } from '@/lib/villagePolygonMapping';
 import type { BoundaryColor } from '@/lib/colorUtils';
@@ -25,29 +26,44 @@ interface VillagePolygonMapProps {
   boundaryWidth?: number;
 }
 
-const SOURCES = getVillageSources();
 const DEFAULT_STATE = 'Maharashtra';
+type Mapping = Awaited<ReturnType<typeof loadVillageMapping>>;
+
+const featureCache = new Map<string, PolygonFeature[]>();
 
 export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, boundaryColor, boundaryWidth }) => {
-  const [source, setSource] = useState<VillageSource>(SOURCES[0]?.id ?? 'lgd');
-  const states = getVillagePolygonStates(source);
-  const [state, setState] = useState<string>(
-    states.includes(DEFAULT_STATE) ? DEFAULT_STATE : states[0] ?? ''
-  );
+  const [mapping, setMapping] = useState<Mapping | null>(null);
+  const [source, setSource] = useState<VillageSource>('lgd');
+  const [state, setState] = useState<string>(DEFAULT_STATE);
   const [features, setFeatures] = useState<PolygonFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Keep the selected state valid when the source changes.
   useEffect(() => {
-    if (!states.includes(state)) {
-      setState(states.includes(DEFAULT_STATE) ? DEFAULT_STATE : states[0] ?? '');
-    }
-  }, [source, states, state]);
+    let cancelled = false;
+    loadVillageMapping().then(m => {
+      if (cancelled) return;
+      setMapping(m);
+      setSource(getVillageSources(m)[0]?.id ?? 'lgd');
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  const sources = useMemo(() => (mapping ? getVillageSources(mapping) : []), [mapping]);
+  const states = useMemo(() => (mapping ? getVillagePolygonStates(mapping, source) : []), [mapping, source]);
 
   useEffect(() => {
-    const url = getVillagePolygonUrl(source, state);
+    if (states.length && !states.includes(state)) {
+      setState(states.includes(DEFAULT_STATE) ? DEFAULT_STATE : states[0]);
+    }
+  }, [states, state]);
+
+  useEffect(() => {
+    if (!mapping) return;
+    const url = getVillagePolygonUrl(mapping, source, state);
     if (!url) { setFeatures([]); return; }
+    const cached = featureCache.get(url);
+    if (cached) { setFeatures(cached); setError(null); setLoading(false); return; }
     let cancelled = false;
     setLoading(true); setError(null);
     (async () => {
@@ -73,6 +89,7 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
           }
           feats.push({ polygons, name: (row.village_name as string) ?? null, properties: props });
         }
+        featureCache.set(url, feats);
         setFeatures(feats);
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load villages');
@@ -81,9 +98,9 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
       }
     })();
     return () => { cancelled = true; };
-  }, [source, state]);
+  }, [mapping, source, state]);
 
-  if (SOURCES.length === 0) {
+  if (mapping && sources.length === 0) {
     return (
       <div className="p-6 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
         No village boundary sources are available yet.
@@ -124,21 +141,21 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
       </div>
 
       <div className="lg:col-span-1 order-2 lg:order-1 space-y-3">
-        {SOURCES.length > 1 && (
+        {sources.length > 1 && (
           <div>
             <Label className="text-sm mb-1.5 block">Source</Label>
             <Select value={source} onValueChange={(v) => setSource(v as VillageSource)}>
               <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {SOURCES.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
+                {sources.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
         )}
         <div>
           <Label className="text-sm mb-1.5 block">State</Label>
-          <Select value={state} onValueChange={setState}>
-            <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
+          <Select value={state} onValueChange={setState} disabled={!mapping}>
+            <SelectTrigger className="w-full text-sm"><SelectValue placeholder="Loading..." /></SelectTrigger>
             <SelectContent className="max-h-[300px]">
               {states.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
             </SelectContent>
