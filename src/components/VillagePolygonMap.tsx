@@ -17,6 +17,7 @@ import {
   type VillageSource,
 } from '@/lib/villagePolygonMapping';
 import type { BoundaryColor } from '@/lib/colorUtils';
+import { getCitation, getVillageCitationInfo } from '@/lib/citations';
 
 const IndiaDistrictsMap = lazy(() => import('./IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap })));
 
@@ -33,7 +34,7 @@ const featureCache = new Map<string, PolygonFeature[]>();
 
 export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, boundaryColor, boundaryWidth }) => {
   const [mapping, setMapping] = useState<Mapping | null>(null);
-  const [source, setSource] = useState<VillageSource>('lgd');
+  const [source, setSource] = useState<VillageSource>('soi_direct');
   const [state, setState] = useState<string>(DEFAULT_STATE);
   const [features, setFeatures] = useState<PolygonFeature[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,13 +45,21 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
     loadVillageMapping().then(m => {
       if (cancelled) return;
       setMapping(m);
-      setSource(getVillageSources(m)[0]?.id ?? 'lgd');
+      setSource(getVillageSources(m)[0]?.id ?? 'soi_direct');
     });
     return () => { cancelled = true; };
   }, []);
 
   const sources = useMemo(() => (mapping ? getVillageSources(mapping) : []), [mapping]);
   const states = useMemo(() => (mapping ? getVillagePolygonStates(mapping, source) : []), [mapping, source]);
+  const activeSourceLabel = useMemo(
+    () => sources.find(s => s.id === source)?.label ?? null,
+    [sources, source],
+  );
+  const citationText = useMemo(() => {
+    const info = getVillageCitationInfo(source, activeSourceLabel ?? undefined);
+    return info ? getCitation(info) : '';
+  }, [source, activeSourceLabel]);
 
   useEffect(() => {
     if (states.length && !states.includes(state)) {
@@ -161,10 +170,20 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
             </SelectContent>
           </Select>
           <p className="mt-2 text-xs text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,50%)]">
-            Village boundaries load one state at a time. Source: LGD / Survey of India /
-            Bhuvan (ramSeraph/indian_admin_boundaries), simplified for web display.
+            Village boundaries load one state at a time, simplified for web display.
           </p>
         </div>
+        {activeSourceLabel && (
+          <div className="flex items-center justify-between gap-2 text-xs text-[hsl(28,8%,52%)] dark:text-[hsl(30,8%,50%)]">
+            <span>Source: {activeSourceLabel}</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(citationText)}
+              className="shrink-0 px-2 py-1 rounded border border-[hsl(35,18%,78%)] hover:border-[hsl(28,42%,52%)] hover:text-[hsl(28,38%,32%)] dark:border-[hsl(25,8%,22%)] dark:hover:border-[hsl(28,30%,44%)] dark:hover:text-[hsl(35,10%,72%)]"
+            >
+              Copy citation
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

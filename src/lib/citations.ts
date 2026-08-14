@@ -69,6 +69,17 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
     apa: 'Survey of India. (2020). District Boundaries of India. https://surveyofindia.gov.in',
   },
 
+  'SOI Villages': {
+    bibtex: `@misc{soi_villages_india,
+  author = {{Survey of India, Government of India}},
+  title  = {Village Boundary Database of Entire India},
+  year   = {2025},
+  url    = {https://surveyofindia.gov.in/pages/village-boundary-data-base-of-entire-india},
+  note   = {Source: Survey of India, Government of India}
+}`,
+    apa: 'Survey of India, Government of India. (2025). Village Boundary Database of Entire India. https://surveyofindia.gov.in/pages/village-boundary-data-base-of-entire-india',
+  },
+
   BHUVAN: {
     bibtex: `@misc{bhuvan_isro,
   author = {{National Remote Sensing Centre (NRSC), ISRO}},
@@ -261,6 +272,14 @@ const DISTRICT_SOURCE_KEYS: Record<string, string> = {
   SHRUG: 'SHRUG',
 };
 
+const VILLAGE_SOURCE_KEYS: Record<string, string> = {
+  soi_direct: 'SOI Villages',
+  soi: 'SOI',
+  lgd: 'LGD',
+  bhuvan: 'BHUVAN',
+  bhuvan_jk: 'BHUVAN',
+};
+
 export interface StructuredCitation {
   source: { apa: string; bibtex: string } | null;
   tool: { apa: string; bibtex: string };
@@ -314,4 +333,10 @@ export function getCityCitationInfo(dataset: { displayName: string; label: strin
     source: dataset.source,
     mapLabel: `${dataset.displayName} - ${dataset.label}`,
   };
+}
+
+export function getVillageCitationInfo(source: string, sourceLabel?: string): CitationInfo | null {
+  const key = VILLAGE_SOURCE_KEYS[source];
+  if (!key) return null;
+  return { source: key, mapLabel: `${sourceLabel ?? source} Villages` };
 }

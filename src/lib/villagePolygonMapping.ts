@@ -1,6 +1,6 @@
 // Village polygons bypass MAP_REGISTRY; the source/state/url mapping is fetched from a
 // gist at runtime so sources and states can change without a redeploy.
-export type VillageSource = 'lgd' | 'bhuvan' | 'soi' | 'bhuvan_jk';
+export type VillageSource = 'soi_direct' | 'lgd' | 'bhuvan' | 'soi' | 'bhuvan_jk';
 
 type VillageMapping = Record<string, { label: string; states: Record<string, string> }>;
 
