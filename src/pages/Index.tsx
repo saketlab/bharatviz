@@ -104,8 +104,16 @@ const Index = () => {
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
+    if (path === 'compare' || path.startsWith('compare/')) return 'compare';
     const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'compare', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
+  };
+
+  const COMPARE_GROUPS: LayerGroup[] = ['districts', 'sub-admin', 'electoral', 'environment', 'urban', 'cities', 'villages'];
+  const getCompareGroupFromPath = (pathname: string): LayerGroup | null => {
+    const path = pathname.replace(/^\/|\/$/g, '');
+    const segment = path.startsWith('compare/') ? path.slice('compare/'.length) : null;
+    return segment && (COMPARE_GROUPS as string[]).includes(segment) ? (segment as LayerGroup) : null;
   };
 
   const [activeTab, setActiveTab] = useState<string>(getTabFromPath(location.pathname));
@@ -150,13 +158,14 @@ const Index = () => {
   const [districtMapTypeOpen, setDistrictMapTypeOpen] = useState(false);
   const [districtNAInfo, setDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
-  const [compareGroup, setCompareGroup] = useState<LayerGroup>('districts');
+  const [compareGroup, setCompareGroup] = useState<LayerGroup>(getCompareGroupFromPath(location.pathname) ?? 'districts');
   const [compareSourceIds, setCompareSourceIds] = useState<string[]>(['LGD', 'SOI']);
   const [compareCityKey, setCompareCityKey] = useState<string | null>(null);
   const [compareScopeState, setCompareScopeState] = useState<string | null>(null);
   const [compareScopeStates, setCompareScopeStates] = useState<string[]>([]);
   // District focus stays separate because nationwide rendering is safe and scoping is optional.
-  const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>(null);
+  // Defaults to Rajasthan, not all-India: a nationwide diff is slow to load and hard to read at a glance.
+  const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>('Rajasthan');
   const [compareDistrictsStates, setCompareDistrictsStates] = useState<string[]>([]);
   const [compareDiffMode, setCompareDiffMode] = useState(true);
   const [compareFocusChanged, setCompareFocusChanged] = useState(false);
@@ -215,11 +224,45 @@ const Index = () => {
     setCompareSourceIds([]);
     setCompareCityKey(null);
     setCompareScopeState(null);
-    setCompareDistrictsFocus(null);
+    setCompareDistrictsFocus(group === 'districts' ? 'Rajasthan' : null);
     setCompareSelectedFeatureId(null);
+    navigate(`/compare/${group}`, { replace: true });
   };
 
   const compareEffectiveState = compareGroup === 'districts' ? compareDistrictsFocus : compareScopeState;
+
+  const hasReadInitialUrl = useRef<Set<string>>(new Set());
+
+  // Hydrate compare state from the URL once, on first arrival at /compare/:group.
+  useEffect(() => {
+    if (activeTab !== 'compare' || hasReadInitialUrl.current.has('compare')) return;
+    hasReadInitialUrl.current.add('compare');
+    const params = new URLSearchParams(location.search);
+    const state = params.get('state');
+    if (state) {
+      if (compareGroup === 'districts') setCompareDistrictsFocus(state);
+      else setCompareScopeState(state);
+    }
+    const sources = params.get('sources');
+    if (sources) setCompareSourceIds(sources.split(',').filter(Boolean));
+    const view = params.get('view');
+    if (view === 'overlay') setCompareDiffMode(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  // Keep /compare/:group?state=&sources=&view= in sync so comparisons are linkable and shareable.
+  useEffect(() => {
+    if (activeTab !== 'compare') return;
+    const params = new URLSearchParams();
+    if (compareEffectiveState) params.set('state', compareEffectiveState);
+    if (compareSourceIds.length > 0) params.set('sources', compareSourceIds.join(','));
+    if (!compareDiffMode) params.set('view', 'overlay');
+    const search = params.toString();
+    const newUrl = `/compare/${compareGroup}${search ? '?' + search : ''}`;
+    if (location.pathname + location.search !== newUrl) {
+      navigate(newUrl, { replace: true });
+    }
+  }, [activeTab, compareGroup, compareEffectiveState, compareSourceIds, compareDiffMode, location.pathname, location.search, navigate]);
 
   useEffect(() => {
     const stillValid = compareSourceIds.filter(id => compareAvailableEntries.some(e => e.id === id));
@@ -366,7 +409,6 @@ const Index = () => {
   const cityMapRef = useRef<IndiaCityMapRef>(null);
   const pincodeMapRef = useRef<IndiaPincodesMapRef>(null);
 
-  const hasReadInitialUrl = useRef<Set<string>>(new Set());
   const skipDataUrlLoad = useRef(false);
   const selectedStateRef = useRef(selectedStateForMap);
   useEffect(() => { selectedStateRef.current = selectedStateForMap; }, [selectedStateForMap]);
@@ -1814,7 +1856,7 @@ const Index = () => {
                 <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
                 <TabsTrigger value="compare" className={primaryTabClass}>Compare</TabsTrigger>
               </TabsList>
-              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)] sm:hidden" aria-hidden="true" />
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)]" aria-hidden="true" />
             </div>
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
@@ -2042,6 +2084,8 @@ const Index = () => {
                     loading={compareDiff.loading}
                     selectedFeatureId={compareSelectedFeatureId}
                     onSelectFeature={setCompareSelectedFeatureId}
+                    nameA={compareEntries[0]?.displayName ?? 'the first source'}
+                    nameB={compareEntries[1]?.displayName ?? 'the second source'}
                   />
                 )}
                 {compareDiff.error && (
@@ -2193,6 +2237,9 @@ const Index = () => {
                       const selectedEntry = compareAvailableEntries.find(e => e.id === sourceId);
                       return (
                         <div key={i} className="flex items-center gap-2">
+                          <span className="w-5 shrink-0 text-xs font-semibold text-muted-foreground" title={i === 0 ? 'Baseline source — "removed" and "split" refer to features missing or divided relative to this one' : 'Comparison source — "added" and "merged" refer to features new or combined relative to the baseline'}>
+                            {i === 0 ? '1st' : i === 1 ? '2nd' : `${i + 1}${i === 2 ? 'rd' : 'th'}`}
+                          </span>
                           <Popover open={comparePickerOpen === i} onOpenChange={(open) => setComparePickerOpen(open ? i : null)}>
                             <PopoverTrigger asChild>
                               <button
@@ -2273,17 +2320,17 @@ const Index = () => {
                   </Label>
                   <div className="flex gap-1.5">
                     <button
-                      onClick={() => setCompareDiffMode(false)}
-                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors ${!compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
-                    >
-                      Overlay
-                    </button>
-                    <button
                       onClick={() => setCompareDiffMode(true)}
                       disabled={compareEntries.length !== 2}
                       className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
                     >
                       Diff
+                    </button>
+                    <button
+                      onClick={() => setCompareDiffMode(false)}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors ${!compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                    >
+                      Overlay
                     </button>
                   </div>
                   {compareEntries.length !== 2 && (

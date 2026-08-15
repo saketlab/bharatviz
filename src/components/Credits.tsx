@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, Download } from 'lucide-react';
+import { SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS } from '@/lib/geodataLayerConfig';
 
 interface CreditSource {
   title: string;
@@ -8,6 +9,10 @@ interface CreditSource {
   usedFor: string[];
   geojsonFiles?: { name: string; path: string }[];
 }
+
+// Mirrors the geojsons/ -> geoparquet/ layout produced by scripts/19 and 20.
+const parquetUrl = (geojsonUrl: string): string =>
+  geojsonUrl.replace('/geojsons/', '/geoparquet/').replace(/\.geojson$/, '.parquet');
 
 const Credits: React.FC<{ darkMode?: boolean }> = () => {
   const sources: CreditSource[] = [
@@ -110,6 +115,34 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       description: 'Municipal Corporation of Greater Mumbai and Maharashtra Pollution Control Board ward and locality boundaries',
       url: 'https://portal.mcgm.gov.in/',
       usedFor: ['Mumbai wards + localities (227 features)'],
+    },
+    {
+      title: 'Sub-Admin boundaries (LGD, SOI, Bhuvan, PMGSY, SHRUG)',
+      description: 'Subdistrict and block-level administrative boundaries used in the Sub-Admin tab',
+      url: 'https://lgdirectory.gov.in/',
+      usedFor: SUB_ADMIN_LAYERS.map(l => l.displayName),
+      geojsonFiles: SUB_ADMIN_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
+    },
+    {
+      title: 'Electoral constituencies (LGD, Susewind)',
+      description: 'Parliamentary and assembly constituency boundaries used in the Electoral tab',
+      url: 'https://lgdirectory.gov.in/',
+      usedFor: ELECTORAL_LAYERS.map(l => l.displayName),
+      geojsonFiles: ELECTORAL_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
+    },
+    {
+      title: 'Environment layers (GatiShakti, FSI)',
+      description: 'Wildlife sanctuaries, eco-sensitive zones, and Forest Survey of India administrative units used in the Environment tab',
+      url: 'https://fsi.nic.in/',
+      usedFor: ENVIRONMENT_LAYERS.map(l => l.displayName),
+      geojsonFiles: ENVIRONMENT_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
+    },
+    {
+      title: 'Urban Local Bodies (SBM)',
+      description: 'ULB boundaries from the Swachh Bharat Mission used in the Urban tab',
+      url: 'https://sbm.gov.in/',
+      usedFor: URBAN_LAYERS.map(l => l.displayName),
+      geojsonFiles: URBAN_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
     }
   ];
 
@@ -188,6 +221,16 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
         </p>
       </div>
 
+      <div className="border rounded-lg p-6 bg-muted/50 dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
+        <h2 className="text-lg font-bold mb-2 dark:text-[hsl(35,12%,93%)]">Per-city, per-state &amp; per-year datasets</h2>
+        <p className="text-muted-foreground dark:text-[hsl(30,8%,65%)]">
+          City ward boundaries (Cities tab, 3000+ files), village polygons (Villages tab), pincode boundaries
+          (Pincodes tab, per state), and historical district evolution (Districts tab, 1872–2011 per state)
+          are too numerous to list individually here. Each has its own GeoJSON and GeoParquet download button
+          in the export panel of its tab once you've selected a dataset.
+        </p>
+      </div>
+
       <div className="grid gap-4">
         {sources.map((source, index) => (
           <div key={index} className="border rounded-lg p-6 hover:shadow-md transition-shadow dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
@@ -212,18 +255,28 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
 
                 {source.geojsonFiles && source.geojsonFiles.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm font-medium mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">Download GeoJSON:</p>
-                    <div className="flex flex-wrap gap-2">
+                    <p className="text-sm font-medium mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">Download:</p>
+                    <div className="flex flex-col gap-1.5">
                       {source.geojsonFiles.map((file, i) => (
-                        <a
-                          key={i}
-                          href={file.path}
-                          download
-                          className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
-                        >
-                          <Download className="h-3 w-3" />
-                          {file.name}
-                        </a>
+                        <div key={i} className="flex flex-wrap items-center gap-2">
+                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-[9rem]">{file.name}</span>
+                          <a
+                            href={file.path}
+                            download
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
+                          >
+                            <Download className="h-3 w-3" />
+                            GeoJSON
+                          </a>
+                          <a
+                            href={parquetUrl(file.path)}
+                            download
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
+                          >
+                            <Download className="h-3 w-3" />
+                            GeoParquet
+                          </a>
+                        </div>
                       ))}
                     </div>
                   </div>

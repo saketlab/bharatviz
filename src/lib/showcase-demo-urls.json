@@ -1,230 +1,230 @@
 {
   "districts_00_population_density": {
-    "url": "https://gist.githubusercontent.com/saketkc/1cbe1f6a3109660aba06ec169b1f093b/raw/3fb9596a6e29c02cb1c773d398498a672813c294/districts_00_population_density.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_00_population_density.csv",
     "title": "Census 2011: Population density (persons/km2)"
   },
   "states_01_csection_rate": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/fe2428f82fb08d44a0ca95e8a6d56b35eea7d883/states_01_csection_rate.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_01_csection_rate.csv",
     "title": "NFHS-5: C-section rate (%)"
   },
   "states_02_child_anemia": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/b40919e6082238be9aa66b6eca58959a9777fede/states_02_child_anemia.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_02_child_anemia.csv",
     "title": "NFHS-5: Children 6-59m anaemic (%)"
   },
   "states_03_women_tobacco": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/eac3c0d917346a2159f806cb4010f7438ce4484b/states_03_women_tobacco.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_03_women_tobacco.csv",
     "title": "NFHS-5: Women 15+ using tobacco (%)"
   },
   "states_04_child_marriage": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/bc92014e63f74f179d4e0ef183c0b101ba67f6fc/states_04_child_marriage.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_04_child_marriage.csv",
     "title": "NFHS-5: Women 20-24 married before 18 (%)"
   },
   "states_05_fertility_rate": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/625f1ef632df257f252745f31ccd89ab77a3fc2c/states_05_fertility_rate.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_05_fertility_rate.csv",
     "title": "NFHS-5: Total fertility rate"
   },
   "states_06_antenatal_4visits": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/1a59b11febf9549e587981fb1238a6665c470a88/states_06_antenatal_4visits.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_06_antenatal_4visits.csv",
     "title": "NFHS-5: Mothers with 4+ antenatal visits (%)"
   },
   "states_07_postnatal_care": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/207f86fa6a3c4f9cda4d00d7660f2311325ad7f1/states_07_postnatal_care.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_07_postnatal_care.csv",
     "title": "NFHS-5: Mothers postnatal care within 2 days (%)"
   },
   "states_08_teen_pregnancy": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/ed753f8147263a0b4c6a382aa4cfda65bd2e624a/states_08_teen_pregnancy.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_08_teen_pregnancy.csv",
     "title": "NFHS-5: Teen mothers/pregnant 15-19 (%)"
   },
   "states_09_exclusive_breastfeeding": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/583ff45fd9743d7372bf398ac48129e8567b755f/states_09_exclusive_breastfeeding.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_09_exclusive_breastfeeding.csv",
     "title": "NFHS-5: Exclusive breastfeeding under 6m (%)"
   },
   "states_10_child_wasting": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/ab4545e0791b1b311216618ce20e9aa8fd356809/states_10_child_wasting.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_10_child_wasting.csv",
     "title": "NFHS-5: Children under 5 wasted (%)"
   },
   "states_11_child_underweight": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/8e322d330dbb1c7a0b3d1057aaba48b13acb8f52/states_11_child_underweight.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_11_child_underweight.csv",
     "title": "NFHS-5: Children under 5 underweight (%)"
   },
   "states_12_full_vaccination": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/d97f22d9425201cca878c21eb35253c747e4485f/states_12_full_vaccination.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_12_full_vaccination.csv",
     "title": "NFHS-5: Children 12-23m fully vaccinated (%)"
   },
   "states_13_women_bmi_low": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/e6a7a189dc0937f9c02e9af0d9bbbab88bbc64ba/states_13_women_bmi_low.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_13_women_bmi_low.csv",
     "title": "NFHS-5: Women BMI below normal (%)"
   },
   "states_14_men_overweight": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/11837ec2733d31deb2bae8bb5d879ace70bf0f2c/states_14_men_overweight.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_14_men_overweight.csv",
     "title": "NFHS-5: Men overweight/obese (%)"
   },
   "states_15_women_hypertension": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/f5394e3280646a4164438d3132e136dd18a20fcd/states_15_women_hypertension.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_15_women_hypertension.csv",
     "title": "NFHS-5: Women with hypertension (%)"
   },
   "states_16_men_hypertension": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/ec3b7427923662083da01594ae1db3c0153c601e/states_16_men_hypertension.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_16_men_hypertension.csv",
     "title": "NFHS-5: Men with hypertension (%)"
   },
   "states_17_women_diabetes": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/e1ef50b8e33ec1b7d2e0c0ec6b4fb2c7ec2ed4df/states_17_women_diabetes.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_17_women_diabetes.csv",
     "title": "NFHS-5: Women with high blood sugar (%)"
   },
   "states_18_sex_ratio_birth": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/9482398fdd442dd90b5c191d26a972c2f3df5b54/states_18_sex_ratio_birth.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_18_sex_ratio_birth.csv",
     "title": "NFHS-5: Sex ratio at birth (females/1000 males)"
   },
   "states_19_women_internet": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/d5941da142a79d9ac000df60868ae738e7b13c90/states_19_women_internet.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_19_women_internet.csv",
     "title": "NFHS-5: Women ever used internet (%)"
   },
   "states_20_menstrual_hygiene": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/27e9e97fcd6abe3f290714c4a869fab6cd4551b9/states_20_menstrual_hygiene.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_20_menstrual_hygiene.csv",
     "title": "NFHS-5: Women 15-24 hygienic menstrual methods (%)"
   },
   "states_21_measles_dose2": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/3182fa3c4d65b33444e8288542ad577914b18b1a/states_21_measles_dose2.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_21_measles_dose2.csv",
     "title": "NFHS-5: Children 24-35m measles 2nd dose (%)"
   },
   "states_22_men_diabetes": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/aa44dfcf329d9ff78d0e718f737506114212893f/states_22_men_diabetes.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_22_men_diabetes.csv",
     "title": "NFHS-5: Men with high blood sugar (%)"
   },
   "states_23_cervical_screening": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/add22c8fc385f503fa901a2da86e863b88fd5cf9/states_23_cervical_screening.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_23_cervical_screening.csv",
     "title": "NFHS-5: Women screened for cervical cancer (%)"
   },
   "states_24_breast_screening": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/9b6b9ddd2d9e26dad14efae7280bcd4f9d43e2d6/states_24_breast_screening.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_24_breast_screening.csv",
     "title": "NFHS-5: Women screened for breast cancer (%)"
   },
   "states_25_neonatal_mortality": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/d61a89a797abff81cf61d282a8bc46313e3ccd2e/states_25_neonatal_mortality.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_25_neonatal_mortality.csv",
     "title": "NFHS-5: Neonatal mortality rate (per 1000)"
   },
   "states_26_ihme_total_yll": {
-    "url": "https://gist.githubusercontent.com/saketkc/90691d161f1e49c4c844b0365979c3f2/raw/3638b1abf6b7ccf2ab5ae3baa148971171bd2ca5/states_ihme_total_yll.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_26_ihme_total_yll.csv",
     "title": "IHME AMR: Total years of life lost (YLL)"
   },
   "states_27_ihme_total_incidence": {
-    "url": "https://gist.githubusercontent.com/saketkc/97c06bd83a2e7cfa8f514334637f9c75/raw/2988bc932564a144c4bcd26ffe766b75e7109acd/states_ihme_total_incidence.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_27_ihme_total_incidence.csv",
     "title": "IHME AMR: Total incidence"
   },
   "states_28_ihme_total_yld": {
-    "url": "https://gist.githubusercontent.com/saketkc/3460f0d91517b9d84dace5d115d6995d/raw/ff126759f9d4a00af11b4427de660ba332f704df/states_ihme_total_yld.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_28_ihme_total_yld.csv",
     "title": "IHME AMR: Total years lived with disability (YLD)"
   },
   "states_29_ihme_bsi_incidence": {
-    "url": "https://gist.githubusercontent.com/saketkc/8457e9d6e55fc99d1e2411bb7b4322d3/raw/89dddf12c48f89113c198d3217aa771569fc951e/states_ihme_bsi_incidence.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_29_ihme_bsi_incidence.csv",
     "title": "IHME AMR: BSI incidence (2017-2023)"
   },
   "states_30_ihme_yll_per_case": {
-    "url": "https://gist.githubusercontent.com/saketkc/6d31540f4cd7c5e1c4e722a2f39fa3f0/raw/b8b67e475577c3d7530de2b2c13cc09b7627e9ae/states_ihme_yll_per_case.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_30_ihme_yll_per_case.csv",
     "title": "IHME AMR: YLL per case"
   },
   "states_31_ihme_yld_per_case": {
-    "url": "https://gist.githubusercontent.com/saketkc/b4bf853608666a28b5139bb84f87e7fd/raw/0a3e2fba3f63d3313477d3aea3391de42716557b/states_ihme_yld_per_case_proxy.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/states_31_ihme_yld_per_case.csv",
     "title": "IHME AMR: YLD per case (proxy)"
   },
   "districts_01_child_stunting": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/eccef18bda4ab78ad5b998802d86abe4ea2f7ee4/districts_01_child_stunting.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_01_child_stunting.csv",
     "title": "NFHS-5: Children under 5 stunted (%)"
   },
   "districts_02_institutional_births": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/2eb5cfe7942a30a99f1002be1f93c59992a46586/districts_02_institutional_births.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_02_institutional_births.csv",
     "title": "NFHS-5: Institutional births (%)"
   },
   "districts_03_female_schooling": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/66dcfd3dae648827e2fd5e92a672c1fc21c052c4/districts_03_female_schooling.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_03_female_schooling.csv",
     "title": "NFHS-5: Females 6+ ever attended school (%)"
   },
   "districts_04_women_overweight": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/efee7f3b59d0b0b021bdb76a15009d69d3157593/districts_04_women_overweight.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_04_women_overweight.csv",
     "title": "NFHS-5: Women overweight/obese (%)"
   },
   "districts_05_child_marriage": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/3b9144a83d2b45b3fcd05a6b220e78ed27ca8721/districts_05_child_marriage.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_05_child_marriage.csv",
     "title": "NFHS-5: Women 20-24 married before 18 (%)"
   },
   "districts_06_csection_rate": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/47dad469c9f6866ad7f20ad77dfb63fdd72e6d49/districts_06_csection_rate.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_06_csection_rate.csv",
     "title": "NFHS-5: C-section rate (%)"
   },
   "districts_07_antenatal_4visits": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/1b3ccbd52c7c1102165ec269c58f7025681fb789/districts_07_antenatal_4visits.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_07_antenatal_4visits.csv",
     "title": "NFHS-5: Mothers with 4+ antenatal visits (%)"
   },
   "districts_08_iron_folic_acid": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/0b7b70efa5e1d0ef75b6efcc2ede79f6616c6fd0/districts_08_iron_folic_acid.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_08_iron_folic_acid.csv",
     "title": "NFHS-5: Mothers iron folic acid 100+ days (%)"
   },
   "districts_09_postnatal_care": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/0e65f0deac5cecd85c8f415dfbac0eb340304478/districts_09_postnatal_care.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_09_postnatal_care.csv",
     "title": "NFHS-5: Mothers postnatal care within 2 days (%)"
   },
   "districts_10_child_wasting": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/82a45869b06c1548841f77c08b626b16a39cf382/districts_10_child_wasting.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_10_child_wasting.csv",
     "title": "NFHS-5: Children under 5 wasted (%)"
   },
   "districts_11_child_underweight": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/2a16f87127888bbaa2227cb374881b3c8f972ece/districts_11_child_underweight.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_11_child_underweight.csv",
     "title": "NFHS-5: Children under 5 underweight (%)"
   },
   "districts_12_child_anemia": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/cb6572af20b822d4eceba2a2d32ad5e3ab98f6af/districts_12_child_anemia.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_12_child_anemia.csv",
     "title": "NFHS-5: Children 6-59m anaemic (%)"
   },
   "districts_13_exclusive_breastfeeding": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/7a3fc4e19cc8c81e4e4ee2bfce86f5e163449ace/districts_13_exclusive_breastfeeding.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_13_exclusive_breastfeeding.csv",
     "title": "NFHS-5: Exclusive breastfeeding under 6m (%)"
   },
   "districts_14_full_vaccination": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/be45b466b46fd409a160c5064e47035119f83622/districts_14_full_vaccination.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_14_full_vaccination.csv",
     "title": "NFHS-5: Children 12-23m fully vaccinated (%)"
   },
   "districts_15_diarrhoea_ors": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/5b053381ac6abe9122a7dad8681c1fd6a6288684/districts_15_diarrhoea_ors.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_15_diarrhoea_ors.csv",
     "title": "NFHS-5: Children with diarrhoea given ORS (%)"
   },
   "districts_16_women_bmi_low": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/a1e8ff23666448969bf90905d095a6e9b8a069b8/districts_16_women_bmi_low.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_16_women_bmi_low.csv",
     "title": "NFHS-5: Women BMI below normal (%)"
   },
   "districts_17_women_anemia": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/8c0ffa873ca7cff9fad0fdc0a010b0b8ac3c7096/districts_17_women_anemia.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_17_women_anemia.csv",
     "title": "NFHS-5: Women 15-49 anaemic (%)"
   },
   "districts_18_women_hypertension": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/8f0c72f5b2b420c830325aab175b47825c425882/districts_18_women_hypertension.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_18_women_hypertension.csv",
     "title": "NFHS-5: Women with hypertension (%)"
   },
   "districts_19_clean_cooking_fuel": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/6a3b4cbaa39c35af49a0b2fc5941370fa931ad73/districts_19_clean_cooking_fuel.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_19_clean_cooking_fuel.csv",
     "title": "NFHS-5: Households using clean cooking fuel (%)"
   },
   "districts_20_health_insurance": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/57c185b5ca1e5508bb82cb58e4e64f795a249b34/districts_20_health_insurance.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_20_health_insurance.csv",
     "title": "NFHS-5: Households with health insurance (%)"
   },
   "districts_21_measles_dose1": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/073776f0adf7b25b9d5b9fd0529be447ec0e3019/districts_21_measles_dose1.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_21_measles_dose1.csv",
     "title": "NFHS-5: Children 12-23m measles 1st dose (%)"
   },
   "districts_22_measles_dose2": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/b15c026b89ba68b95c314fae37956a188e39fd74/districts_22_measles_dose2.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_22_measles_dose2.csv",
     "title": "NFHS-5: Children 24-35m measles 2nd dose (%)"
   },
   "districts_23_men_hypertension": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/a03ec43ed6f8e848bdf6d58c989650341cc433c9/districts_23_men_hypertension.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_23_men_hypertension.csv",
     "title": "NFHS-5: Men with hypertension (%)"
   },
   "districts_24_women_diabetes": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/bea2316ae61c2c733d1c7389cbdc2c2e087fd8a1/districts_24_women_diabetes.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_24_women_diabetes.csv",
     "title": "NFHS-5: Women with high blood sugar (%)"
   },
   "districts_25_men_diabetes": {
-    "url": "https://gist.githubusercontent.com/saketkc/65906cd34d50f2f4bba853a3456fd7c7/raw/a11cdc41c678bbdcb86b2c9dcbc7c3f01f9e5ccd/districts_25_men_diabetes.csv",
+    "url": "https://geo.bharatviz.org/csv/showcase/districts_25_men_diabetes.csv",
     "title": "NFHS-5: Men with high blood sugar (%)"
   }
 }

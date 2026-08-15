@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { ExternalLink, Download, Hash, Search } from 'lucide-react';
+import { CITY_DATASETS } from '@/lib/cityMapConfig';
+import cityGistMapping from '@/lib/city-gist-mapping.json';
+import pincodeGistMapping from '@/lib/pincode-gist-mapping.json';
+import historicalMapping from '@/lib/gist-mapping.json';
 
 interface MapsGalleryProps {
   darkMode?: boolean;
@@ -119,7 +123,59 @@ const ALL_MAPS: MapEntry[] = [
   { id: 'livingatlas-health-facilities', level: 'Points', source: 'Esri Living Atlas', year: 2024, description: 'Health facilities across India from the Esri Living Atlas, aggregating multiple open government sources.', parquetUrl: `${R2}/geoparquet/health/livingatlas_health_facilities.parquet`, category: 'Health', tab: 'districts' },
 ];
 
-const CATEGORIES = ['All', 'Census', 'Official', 'Survey', 'Sub-admin', 'Electoral', 'Environment', 'Urban', 'Points', 'SHRUG', 'Health'];
+// Mirrors the geojsons/ -> geoparquet/ layout produced by scripts/19, 20, and 37.
+const parquetUrl = (geojsonUrl: string): string =>
+  geojsonUrl.replace('/geojsons/', '/geoparquet/').replace(/\.geojson$/, '.parquet');
+
+// City ward geojsons, keyed by dataset id -> R2 geojson URL (post gist-to-R2 migration).
+const cityGistUrls = cityGistMapping as Record<string, string>;
+const CITY_ENTRIES: MapEntry[] = CITY_DATASETS
+  .filter(ds => cityGistUrls[ds.id])
+  .map(ds => ({
+    id: `city-${ds.id}`,
+    level: ds.type === 'wards' ? 'Wards' : ds.type === 'zones' ? 'Zones' : 'Boundary',
+    source: ds.source,
+    year: 2024,
+    description: `${ds.displayName} (${ds.state}) — ${ds.label}, ${ds.featureCount} features`,
+    geojsonUrl: cityGistUrls[ds.id],
+    parquetUrl: parquetUrl(cityGistUrls[ds.id]),
+    category: 'Cities',
+    tab: 'cities',
+  }));
+
+// Pincode boundaries, per state.
+const pincodeUrls = pincodeGistMapping as Record<string, string>;
+const PINCODE_ENTRIES: MapEntry[] = Object.entries(pincodeUrls).map(([state, url]) => ({
+  id: `pincode-${state.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+  level: 'Pincodes',
+  source: 'BharatViz',
+  year: 2024,
+  description: `Pincode boundaries for ${state}`,
+  geojsonUrl: url,
+  parquetUrl: parquetUrl(url),
+  category: 'Pincodes',
+  tab: 'pincodes',
+}));
+
+// Historical district evolution, per year/tag and state.
+const historicalUrls = historicalMapping as Record<string, Record<string, string>>;
+const HISTORICAL_ENTRIES: MapEntry[] = Object.entries(historicalUrls).flatMap(([year, states]) =>
+  Object.entries(states).map(([state, url]) => ({
+    id: `historical-${year}-${state.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    level: 'Districts',
+    source: /^\d+$/.test(year) ? `Census ${year}` : year,
+    year: /^\d+$/.test(year) ? Number(year) : 0,
+    description: `${state} district boundaries (${year})`,
+    geojsonUrl: url,
+    parquetUrl: parquetUrl(url),
+    category: 'Historical',
+    tab: 'districts',
+  }))
+);
+
+ALL_MAPS.push(...CITY_ENTRIES, ...PINCODE_ENTRIES, ...HISTORICAL_ENTRIES);
+
+const CATEGORIES = ['All', 'Census', 'Official', 'Survey', 'Sub-admin', 'Electoral', 'Environment', 'Urban', 'Points', 'SHRUG', 'Health', 'Cities', 'Pincodes', 'Historical'];
 
 const categoryColors: Record<string, string> = {
   Census: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
@@ -132,6 +188,9 @@ const categoryColors: Record<string, string> = {
   Points: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300',
   SHRUG: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
   Health: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+  Cities: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-300',
+  Pincodes: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300',
+  Historical: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
 };
 
 function viewInBharatViz(map: MapEntry): string | null {
@@ -153,15 +212,33 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
   const tableHeaderClass = 'text-left p-3 font-semibold text-sm bg-[hsl(35,20%,97%)] text-[hsl(28,20%,22%)] border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,12%)] dark:text-[hsl(35,10%,82%)] dark:border-[hsl(25,8%,14%)]';
   const tableCellClass = 'p-3 text-sm border-[hsl(35,18%,84%)] text-[hsl(28,8%,40%)] dark:border-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,58%)]';
 
+  // These three categories add ~3400 rows total (one per city/state/year) — excluded from the
+  // "All" view and rendered a page at a time so the table stays fast by default.
+  const BULK_CATEGORIES = ['Cities', 'Pincodes', 'Historical'];
+  const PAGE_SIZE = 200;
+
   const [activeCategory, setActiveCategory] = useState('All');
   const [query, setQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = ALL_MAPS.filter(m => {
-    const matchCat = activeCategory === 'All' || m.category === activeCategory;
     const q = query.toLowerCase();
     const matchQ = !q || m.id.includes(q) || m.source.toLowerCase().includes(q) || m.description.toLowerCase().includes(q) || String(m.year).includes(q) || m.level.toLowerCase().includes(q);
-    return matchCat && matchQ;
+    if (!matchQ) return false;
+    if (activeCategory === 'All') return q ? true : !BULK_CATEGORIES.includes(m.category);
+    return m.category === activeCategory;
   });
+
+  const visible = filtered.slice(0, visibleCount);
+
+  const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat);
+    setVisibleCount(PAGE_SIZE);
+  };
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    setVisibleCount(PAGE_SIZE);
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -171,8 +248,8 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
           <SectionAnchor id="maps-gallery" />
         </h2>
         <p className={`${textClass} text-lg`}>
-          All {ALL_MAPS.length} layers available in BharatViz - boundary sets, SHRUG socioeconomic data,
-          and health facility point layers. Download as GeoJSON or GeoParquet.
+          {ALL_MAPS.length} layers available in BharatViz - boundary sets, SHRUG socioeconomic data,
+          city/pincode/historical boundaries, and health facility point layers. Download as GeoJSON or GeoParquet.
         </p>
       </div>
 
@@ -183,7 +260,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
             type="text"
             placeholder="Search maps..."
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => handleQueryChange(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,12%)] dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,12%,90%)] dark:placeholder-[hsl(30,6%,40%)] focus:outline-none focus:ring-2 focus:ring-[hsl(28,55%,48%)]"
           />
         </div>
@@ -191,7 +268,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
           {CATEGORIES.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => handleCategoryChange(cat)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 activeCategory === cat
                   ? 'bg-[hsl(28,62%,48%)] text-white'
@@ -204,7 +281,10 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
         </div>
       </div>
 
-      <p className={`text-sm ${textClass}`}>{filtered.length} layer{filtered.length !== 1 ? 's' : ''}</p>
+      <p className={`text-sm ${textClass}`}>
+        {filtered.length} layer{filtered.length !== 1 ? 's' : ''}
+        {activeCategory === 'All' && !query && ' (Cities, Pincodes, Historical filtered by default — pick a category or search to include them)'}
+      </p>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-[hsl(35,18%,84%)] dark:border-[hsl(25,8%,14%)]">
@@ -219,7 +299,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(m => (
+            {visible.map(m => (
               <tr key={m.id} className="hover:bg-[hsl(35,14%,97%)] dark:hover:bg-[hsl(25,8%,11%)] transition-colors">
                 <td className={`${tableCellClass} border`}>
                   <div className="flex flex-col gap-1">
@@ -273,6 +353,17 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
           </tbody>
         </table>
       </div>
+
+      {visibleCount < filtered.length && (
+        <div className="flex justify-center">
+          <button
+            onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
+            className="px-4 py-2 rounded-md text-sm font-medium bg-[hsl(35,18%,94%)] text-[hsl(28,20%,30%)] hover:bg-[hsl(35,18%,88%)] dark:bg-[hsl(25,8%,14%)] dark:text-[hsl(30,8%,65%)] dark:hover:bg-[hsl(25,8%,18%)] transition-colors"
+          >
+            Show {Math.min(PAGE_SIZE, filtered.length - visibleCount)} more (of {filtered.length - visibleCount} remaining)
+          </button>
+        </div>
+      )}
     </div>
   );
 };

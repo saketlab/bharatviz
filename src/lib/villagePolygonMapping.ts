@@ -1,16 +1,16 @@
-// Village polygons bypass MAP_REGISTRY; the source/state/url mapping is fetched from a
-// gist at runtime so sources and states can change without a redeploy.
+// Village polygons bypass MAP_REGISTRY; the source/state/url mapping is fetched at
+// runtime so sources and states can change without a redeploy.
 export type VillageSource = 'soi_direct' | 'lgd' | 'bhuvan' | 'soi' | 'bhuvan_jk';
 
 type VillageMapping = Record<string, { label: string; states: Record<string, string> }>;
 
-const GIST_URL =
-  'https://gist.githubusercontent.com/saketkc/081d56fd97703f70c578ff87de677ebc/raw/village-polygon-mapping.json';
+const MAPPING_URL =
+  'https://geo.bharatviz.org/geojsons/villages/village-polygon-mapping.json';
 
 let inflight: Promise<VillageMapping> | null = null;
 
 export function loadVillageMapping(): Promise<VillageMapping> {
-  return (inflight ??= fetch(GIST_URL)
+  return (inflight ??= fetch(MAPPING_URL)
     .then(r => (r.ok ? r.json() : {}))
     .catch(() => ({})));
 }

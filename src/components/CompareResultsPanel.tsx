@@ -2,13 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import type { DiffResult, DiffClassification } from '@/lib/compareTypes';
 
-const LEGEND: { cls: DiffClassification; label: string; swatch: string; hint: string }[] = [
-  { cls: 'unchanged', label: 'Unchanged', swatch: 'bg-green-500', hint: 'Same boundary in both sources.' },
+const legendFor = (nameA: string, nameB: string): { cls: DiffClassification; label: string; swatch: string; hint: string }[] => [
+  { cls: 'unchanged', label: 'Unchanged', swatch: 'bg-green-500', hint: `Same boundary in ${nameA} and ${nameB}.` },
   { cls: 'modified', label: 'Modified', swatch: 'bg-orange-500', hint: 'Same district, boundary redrawn.' },
-  { cls: 'split', label: 'Split', swatch: 'bg-purple-500', hint: 'One district in the first source covers several districts in the second.' },
-  { cls: 'merged', label: 'Merged', swatch: 'bg-purple-500', hint: 'Several districts in the first source were combined into one district in the second.' },
-  { cls: 'added', label: 'Added', swatch: 'bg-blue-500', hint: 'Only exists in the second source.' },
-  { cls: 'removed', label: 'Removed', swatch: 'bg-red-500', hint: 'Only exists in the first source.' },
+  { cls: 'split', label: 'Split', swatch: 'bg-purple-500', hint: `One district in ${nameA} covers several districts in ${nameB}.` },
+  { cls: 'merged', label: 'Merged', swatch: 'bg-purple-500', hint: `Several districts in ${nameA} were combined into one district in ${nameB}.` },
+  { cls: 'added', label: 'Added', swatch: 'bg-blue-500', hint: `Only exists in ${nameB}.` },
+  { cls: 'removed', label: 'Removed', swatch: 'bg-red-500', hint: `Only exists in ${nameA}.` },
 ];
 
 const FILTERABLE: DiffClassification[] = ['modified', 'split', 'merged', 'added', 'removed'];
@@ -18,6 +18,8 @@ interface CompareResultsPanelProps {
   loading: boolean;
   selectedFeatureId: string | null;
   onSelectFeature: (id: string | null) => void;
+  nameA: string;
+  nameB: string;
 }
 
 export const CompareResultsPanel: React.FC<CompareResultsPanelProps> = ({
@@ -25,7 +27,10 @@ export const CompareResultsPanel: React.FC<CompareResultsPanelProps> = ({
   loading,
   selectedFeatureId,
   onSelectFeature,
+  nameA,
+  nameB,
 }) => {
+  const LEGEND = useMemo(() => legendFor(nameA, nameB), [nameA, nameB]);
   const [filter, setFilter] = useState<DiffClassification | 'all'>('all');
 
   const rows = useMemo(() => {
@@ -67,6 +72,10 @@ export const CompareResultsPanel: React.FC<CompareResultsPanelProps> = ({
 
   return (
     <div className="mt-4">
+      <p className="text-xs text-muted-foreground mb-2">
+        Comparing <span className="font-medium text-foreground">{nameA}</span> (baseline) against{' '}
+        <span className="font-medium text-foreground">{nameB}</span>.
+      </p>
       <div className="flex flex-wrap items-center gap-2 mb-3">
         {LEGEND.map(({ cls, label, swatch, hint }) => (
           <button
@@ -94,8 +103,8 @@ export const CompareResultsPanel: React.FC<CompareResultsPanelProps> = ({
       {(filter === 'split' || filter === 'merged') && (
         <p className="text-xs text-muted-foreground mb-2">
           {filter === 'split'
-            ? 'Split: one district in the first source covers several districts in the second (e.g. an old district later divided).'
-            : 'Merged: several districts in the first source were combined into one district in the second.'}
+            ? `Split: one district in ${nameA} covers several districts in ${nameB} (e.g. an old district later divided).`
+            : `Merged: several districts in ${nameA} were combined into one district in ${nameB}.`}
         </p>
       )}
 

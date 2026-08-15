@@ -235,8 +235,8 @@ export const CompareMap: React.FC<CompareMapProps> = ({
             {cls === 'merged' && otherNames.size > 0 && (
               <div className="text-[hsl(35,12%,70%)] mt-0.5">Merged from: {Array.from(otherNames).join(', ')}</div>
             )}
-            {cls === 'removed' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in the other source</div>}
-            {cls === 'added' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in the first source</div>}
+            {cls === 'removed' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in {sources[1]?.displayName ?? 'the second source'}</div>}
+            {cls === 'added' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in {sources[0]?.displayName ?? 'the first source'}</div>}
           </div>
         );
       })()}
