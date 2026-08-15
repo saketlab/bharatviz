@@ -1,0 +1,35 @@
+{
+  "lgd": {
+    "label": "LGD",
+    "states": {
+      "Andaman & Nicobar": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_andaman-nicobar.parquet",
+      "Andhra Pradesh": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_andhra-pradesh.parquet",
+      "Assam": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_assam.parquet",
+      "Bihar": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_bihar.parquet",
+      "Chandigarh": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_chandigarh.parquet",
+      "Chhattisgarh": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_chhattisgarh.parquet",
+      "Dadra & Nagar Haveli": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_dadra-nagar-haveli-daman-diu.parquet",
+      "Delhi": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_delhi.parquet",
+      "Goa": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_goa.parquet",
+      "Gujarat": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_gujarat.parquet",
+      "Haryana": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_haryana.parquet",
+      "Jharkhand": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_jharkhand.parquet",
+      "Karnataka": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_karnataka.parquet",
+      "Kerala": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_kerala.parquet",
+      "Lakshadweep": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_lakshadweep.parquet",
+      "Madhya Pradesh": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_madhya-pradesh.parquet",
+      "Maharashtra": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_maharashtra.parquet",
+      "Meghalaya": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_meghalaya.parquet",
+      "Odisha": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_odisha.parquet",
+      "Puducherry": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_puducherry.parquet",
+      "Punjab": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_punjab.parquet",
+      "Rajasthan": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_rajasthan.parquet",
+      "Tamil Nadu": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_tamil-nadu.parquet",
+      "Telangana": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_telangana.parquet",
+      "Tripura": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_tripura.parquet",
+      "Uttar Pradesh": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_uttar-pradesh.parquet",
+      "Uttarakhand": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_uttarakhand.parquet",
+      "West Bengal": "https://geo.bharatviz.org/geoparquet/villages/lgd/lgd_villages_west-bengal.parquet"
+    }
+  }
+}
