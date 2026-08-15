@@ -16,6 +16,16 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
+import { CompareMap } from '@/components/CompareMap';
+import { CompareResultsPanel } from '@/components/CompareResultsPanel';
+import { CompareSourceList } from '@/components/CompareSourceList';
+import { useLayerDiff } from '@/lib/useLayerDiff';
+import { useSourceFeatureLists } from '@/lib/useSourceFeatureLists';
+import {
+  LAYER_GROUPS, getLayerCatalogEntries, getCityGroups, getVillageStates, getVillageCatalogEntries,
+  getGeoDataLayerStates, getDistrictStates,
+  type LayerGroup, type LayerCatalogEntry,
+} from '@/lib/layerCatalog';
 import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
@@ -86,13 +96,15 @@ interface MultiYearSeries {
   naInfo?: NAInfo;
 }
 
+const STATE_SCOPED_GROUPS: LayerGroup[] = ['sub-admin', 'electoral', 'villages'];
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'compare', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -137,6 +149,99 @@ const Index = () => {
   const [selectedDistrictMapType, setSelectedDistrictMapType] = useState<string>(DEFAULT_DISTRICT_MAP_TYPE);
   const [districtMapTypeOpen, setDistrictMapTypeOpen] = useState(false);
   const [districtNAInfo, setDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
+
+  const [compareGroup, setCompareGroup] = useState<LayerGroup>('districts');
+  const [compareSourceIds, setCompareSourceIds] = useState<string[]>(['LGD', 'SOI']);
+  const [compareCityKey, setCompareCityKey] = useState<string | null>(null);
+  const [compareScopeState, setCompareScopeState] = useState<string | null>(null);
+  const [compareScopeStates, setCompareScopeStates] = useState<string[]>([]);
+  // District focus stays separate because nationwide rendering is safe and scoping is optional.
+  const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>(null);
+  const [compareDistrictsStates, setCompareDistrictsStates] = useState<string[]>([]);
+  const [compareDiffMode, setCompareDiffMode] = useState(true);
+  const [compareFocusChanged, setCompareFocusChanged] = useState(false);
+  const [compareSelectedFeatureId, setCompareSelectedFeatureId] = useState<string | null>(null);
+  const [comparePickerOpen, setComparePickerOpen] = useState<number | null>(null);
+  const [compareCityPickerOpen, setCompareCityPickerOpen] = useState(false);
+  const [compareSourceListOpen, setCompareSourceListOpen] = useState(false);
+
+  // Sub-admin/electoral exceed 10M vertices nationwide, while villages have no nationwide file.
+  const compareCityGroups = useMemo(() => (compareGroup === 'cities' ? getCityGroups() : []), [compareGroup]);
+  const [compareVillageEntries, setCompareVillageEntries] = useState<LayerCatalogEntry[]>([]);
+
+  useEffect(() => {
+    if (!STATE_SCOPED_GROUPS.includes(compareGroup)) return;
+    let cancelled = false;
+    const load = compareGroup === 'villages' ? getVillageStates() : getGeoDataLayerStates(compareGroup);
+    load.then(states => { if (!cancelled) setCompareScopeStates(states); });
+    return () => { cancelled = true; };
+  }, [compareGroup]);
+
+  useEffect(() => {
+    if (compareGroup !== 'districts') return;
+    let cancelled = false;
+    getDistrictStates().then(states => { if (!cancelled) setCompareDistrictsStates(states); });
+    return () => { cancelled = true; };
+  }, [compareGroup]);
+
+  useEffect(() => {
+    if (compareGroup !== 'villages' || !compareScopeState) { setCompareVillageEntries([]); return; }
+    let cancelled = false;
+    getVillageCatalogEntries(compareScopeState).then(entries => { if (!cancelled) setCompareVillageEntries(entries); });
+    return () => { cancelled = true; };
+  }, [compareGroup, compareScopeState]);
+
+  const compareAvailableEntries = useMemo<LayerCatalogEntry[]>(() => {
+    if (compareGroup === 'villages') return compareVillageEntries;
+    if (compareGroup === 'cities') {
+      const city = compareCityGroups.find(g => g.scopeKey === compareCityKey);
+      return city?.entries ?? [];
+    }
+    if ((compareGroup === 'sub-admin' || compareGroup === 'electoral') && !compareScopeState) return [];
+    return getLayerCatalogEntries(compareGroup);
+  }, [compareGroup, compareVillageEntries, compareCityGroups, compareCityKey, compareScopeState]);
+
+  // Stable reference: useLayerDiff keys its effect on entry identity.
+  const compareEntries = useMemo<LayerCatalogEntry[]>(
+    () => compareSourceIds
+      .map(id => compareAvailableEntries.find(e => e.id === id))
+      .filter((e): e is LayerCatalogEntry => !!e),
+    [compareSourceIds, compareAvailableEntries]
+  );
+
+  const switchCompareGroup = (group: LayerGroup) => {
+    if (group === compareGroup) return;
+    setCompareGroup(group);
+    setCompareSourceIds([]);
+    setCompareCityKey(null);
+    setCompareScopeState(null);
+    setCompareDistrictsFocus(null);
+    setCompareSelectedFeatureId(null);
+  };
+
+  const compareEffectiveState = compareGroup === 'districts' ? compareDistrictsFocus : compareScopeState;
+
+  useEffect(() => {
+    const stillValid = compareSourceIds.filter(id => compareAvailableEntries.some(e => e.id === id));
+    if (stillValid.length === compareSourceIds.length && compareSourceIds.length > 0) return;
+    if (compareAvailableEntries.length === 0) {
+      if (compareSourceIds.length > 0) setCompareSourceIds([]);
+      return;
+    }
+    setCompareSourceIds(compareAvailableEntries.slice(0, 2).map(e => e.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compareAvailableEntries]);
+
+  const compareDiff = useLayerDiff(
+    compareDiffMode && compareEntries.length === 2 ? compareEntries[0] : null,
+    compareDiffMode && compareEntries.length === 2 ? compareEntries[1] : null,
+    compareEffectiveState ?? undefined
+  );
+
+  const compareSourceLists = useSourceFeatureLists(
+    compareSourceListOpen ? compareEntries : [],
+    compareEffectiveState ?? undefined
+  );
 
   const [stateDistrictMapData, setStateDistrictMapData] = useState<DistrictMapData[]>([]);
   const [stateDistrictColorScale, setStateDistrictColorScale] = useState<ColorScale>('spectral');
@@ -1707,6 +1812,7 @@ const Index = () => {
                 <TabsTrigger value="villages" className={primaryTabClass}>Villages</TabsTrigger>
                 <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
                 <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
+                <TabsTrigger value="compare" className={primaryTabClass}>Compare</TabsTrigger>
               </TabsList>
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)] sm:hidden" aria-hidden="true" />
             </div>
@@ -1910,6 +2016,308 @@ const Index = () => {
                     onBoundaryWidthChange={setBoundaryWidth}
                   />
                 </div>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'compare'}>
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <CompareMap
+                  sources={compareEntries}
+                  scopeState={compareEffectiveState ?? undefined}
+                  diffResult={compareDiff.result}
+                  diffColorMode={compareDiffMode && compareEntries.length === 2}
+                  focusChanged={compareFocusChanged}
+                  darkMode={darkMode}
+                  highlightedId={compareSelectedFeatureId}
+                  onFeatureClick={(_sourceId, feature) => {
+                    const diffId = feature.properties.__diffId;
+                    setCompareSelectedFeatureId(typeof diffId === 'string' ? diffId : null);
+                  }}
+                />
+                {compareDiffMode && compareEntries.length === 2 && (
+                  <CompareResultsPanel
+                    diffResult={compareDiff.result}
+                    loading={compareDiff.loading}
+                    selectedFeatureId={compareSelectedFeatureId}
+                    onSelectFeature={setCompareSelectedFeatureId}
+                  />
+                )}
+                {compareDiff.error && (
+                  <p className="mt-3 text-sm text-destructive">{compareDiff.error}</p>
+                )}
+
+                <div className="mt-4">
+                  <button
+                    onClick={() => setCompareSourceListOpen(v => !v)}
+                    className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] hover:text-foreground"
+                  >
+                    {compareSourceListOpen ? '▾' : '▸'} Sources (check feature counts per source)
+                  </button>
+                  {compareSourceListOpen && (
+                    <CompareSourceList lists={compareSourceLists} sourceIds={compareEntries.map(e => e.id)} />
+                  )}
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Layer group
+                  </Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {LAYER_GROUPS.map(({ group, label }) => (
+                      <button
+                        key={group}
+                        onClick={() => switchCompareGroup(group)}
+                        className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
+                          compareGroup === group
+                            ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10 font-medium'
+                            : 'border-input hover:bg-accent text-muted-foreground'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {compareGroup === 'districts' && (
+                  <div className="mb-5">
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                      Focus
+                    </Label>
+                    <Select
+                      value={compareDistrictsFocus ?? 'india'}
+                      onValueChange={(v) => setCompareDistrictsFocus(v === 'india' ? null : v)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All India" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="india">All India</SelectItem>
+                        {compareDistrictsStates.map(s => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {STATE_SCOPED_GROUPS.includes(compareGroup) && (
+                  <div className="mb-5">
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                      State
+                    </Label>
+                    <Select
+                      value={compareScopeState ?? undefined}
+                      onValueChange={(v) => { setCompareScopeState(v); setCompareSourceIds([]); }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {compareScopeStates.map(s => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {compareGroup === 'villages'
+                        ? "Village boundaries are compared one state at a time. There's no nationwide village file per source."
+                        : 'These boundaries are compared one state at a time. The nationwide files run into millions of vertices, and rendering them all at once would freeze the page.'}
+                    </p>
+                  </div>
+                )}
+
+                {compareGroup === 'cities' && (
+                  <div className="mb-5">
+                    <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                      City
+                    </Label>
+                    <Popover open={compareCityPickerOpen} onOpenChange={setCompareCityPickerOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          role="combobox"
+                          aria-expanded={compareCityPickerOpen}
+                          className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                        >
+                          <span className="truncate text-left">
+                            {compareCityGroups.find(g => g.scopeKey === compareCityKey)?.displayName ?? 'Select a city'}
+                          </span>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                        <Command>
+                          <CommandInput placeholder="Search city..." className="h-9" />
+                          <CommandList className="max-h-60">
+                            <CommandEmpty>No city found.</CommandEmpty>
+                            <CommandGroup>
+                              {compareCityGroups.map((city) => (
+                                <CommandItem
+                                  key={city.scopeKey}
+                                  value={`${city.displayName} ${city.state}`}
+                                  onSelect={() => {
+                                    setCompareCityKey(city.scopeKey);
+                                    setCompareSourceIds([]);
+                                    setCompareCityPickerOpen(false);
+                                  }}
+                                  className="flex items-start gap-2"
+                                >
+                                  <Check className={cn('mt-0.5 h-4 w-4 shrink-0', compareCityKey === city.scopeKey ? 'opacity-100' : 'opacity-0')} />
+                                  <div className="flex flex-col min-w-0">
+                                    <span>{city.displayName}</span>
+                                    <span className="text-xs text-muted-foreground truncate">{city.state} · {city.entries.length} datasets</span>
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Ward boundaries only compare within a single city. Pick one, then 2-3 of its datasets below.
+                    </p>
+                  </div>
+                )}
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    Sources
+                  </Label>
+                  <div className="space-y-2">
+                    {compareSourceIds.map((sourceId, i) => {
+                      const selectedEntry = compareAvailableEntries.find(e => e.id === sourceId);
+                      return (
+                        <div key={i} className="flex items-center gap-2">
+                          <Popover open={comparePickerOpen === i} onOpenChange={(open) => setComparePickerOpen(open ? i : null)}>
+                            <PopoverTrigger asChild>
+                              <button
+                                role="combobox"
+                                aria-expanded={comparePickerOpen === i}
+                                aria-label={`Source ${i + 1}: ${selectedEntry?.displayName ?? 'Select a source'}`}
+                                className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background border-input hover:bg-accent transition-colors"
+                              >
+                                <span className="truncate text-left">
+                                  {selectedEntry?.displayName ?? 'Select a source'}
+                                </span>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                              <Command>
+                                <CommandInput placeholder="Search source..." className="h-9" />
+                                <CommandList className="max-h-60">
+                                  <CommandEmpty>No source found.</CommandEmpty>
+                                  <CommandGroup>
+                                    {compareAvailableEntries.map((entry) => (
+                                      <CommandItem
+                                        key={entry.id}
+                                        value={`${entry.displayName} ${entry.description ?? ''}`}
+                                        onSelect={() => {
+                                          setCompareSourceIds(prev => prev.map((s, idx) => idx === i ? entry.id : s));
+                                          setComparePickerOpen(null);
+                                        }}
+                                        className="flex items-start gap-2"
+                                      >
+                                        <Check className={cn('mt-0.5 h-4 w-4 shrink-0', sourceId === entry.id ? 'opacity-100' : 'opacity-0')} />
+                                        <div className="flex flex-col min-w-0">
+                                          <span>{entry.displayName}</span>
+                                          {entry.description && (
+                                            <span className="text-xs text-muted-foreground truncate">{entry.description}</span>
+                                          )}
+                                        </div>
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                          {compareSourceIds.length > 2 && (
+                            <button
+                              onClick={() => setCompareSourceIds(prev => prev.filter((_, idx) => idx !== i))}
+                              className="text-xs text-muted-foreground hover:text-foreground shrink-0"
+                              aria-label={`Remove source ${i + 1}`}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {compareSourceIds.length < 3 && (
+                      <button
+                        onClick={() => setCompareSourceIds(prev => [...prev, compareAvailableEntries.find(e => !prev.includes(e.id))?.id ?? compareAvailableEntries[0]?.id].filter((x): x is string => !!x))}
+                        disabled={compareAvailableEntries.length === 0}
+                        className="text-xs font-medium text-[hsl(28,62%,42%)] dark:text-[hsl(28,55%,60%)] hover:underline disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
+                      >
+                        + Add source
+                      </button>
+                    )}
+                    {compareGroup === 'cities' && !compareCityKey && (
+                      <p className="text-xs text-muted-foreground">Pick a city above first.</p>
+                    )}
+                    {STATE_SCOPED_GROUPS.includes(compareGroup) && !compareScopeState && (
+                      <p className="text-xs text-muted-foreground">Pick a state above first.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mb-5">
+                  <Label className="text-xs font-semibold uppercase tracking-wide text-[hsl(28,10%,50%)] dark:text-[hsl(30,6%,40%)] mb-2 block">
+                    View mode
+                  </Label>
+                  <div className="flex gap-1.5">
+                    <button
+                      onClick={() => setCompareDiffMode(false)}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors ${!compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                    >
+                      Overlay
+                    </button>
+                    <button
+                      onClick={() => setCompareDiffMode(true)}
+                      disabled={compareEntries.length !== 2}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                    >
+                      Diff
+                    </button>
+                  </div>
+                  {compareEntries.length !== 2 && (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Select exactly 2 sources to see a geometric diff.
+                    </p>
+                  )}
+                </div>
+
+                {compareDiffMode && compareEntries.length === 2 && (
+                  <label className="mb-5 flex items-center gap-2 text-sm cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={compareFocusChanged}
+                      onChange={(e) => setCompareFocusChanged(e.target.checked)}
+                      className="h-4 w-4 rounded border-input accent-[hsl(28,62%,48%)]"
+                    />
+                    Focus on changed areas only
+                  </label>
+                )}
+
+                {!compareDiffMode || compareEntries.length !== 2 ? (
+                  <div className="space-y-1.5">
+                    {compareEntries.map((entry, i) => (
+                      <div key={entry.id} className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: ['#d97706', '#0d9488', '#9333ea'][i % 3] }}
+                        />
+                        {entry.displayName}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </div>
           </TabPanel>
@@ -3540,7 +3948,7 @@ POST /api/v1/districts/map
       <footer className="w-full text-center text-xs mt-8 mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">
         <div className="flex flex-col items-center gap-2">
           <div>
-            (c) 2025 Saket Choudhary | <a href="http://saketlab.in/" target="_blank" rel="noopener noreferrer" className="underline">Saket Lab</a>
+            (c) {new Date().getFullYear()} Saket Choudhary | <a href="http://saketlab.in/" target="_blank" rel="noopener noreferrer" className="underline">Saket Lab</a>
           </div>
           <div className="flex items-center gap-1">
             <a
