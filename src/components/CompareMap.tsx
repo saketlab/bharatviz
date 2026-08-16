@@ -9,19 +9,32 @@ import type { DiffResult, DiffClassification } from '@/lib/compareTypes';
 const VIEW_W = 800;
 const VIEW_H = 890;
 
-const OVERLAY_PALETTE: { fill: RGBA; line: RGBA }[] = [
+const OVERLAY_PALETTE_LIGHT: { fill: RGBA; line: RGBA }[] = [
   { fill: [217, 119, 6, 60], line: [180, 83, 9, 220] },
   { fill: [13, 148, 136, 60], line: [15, 118, 110, 220] },
   { fill: [147, 51, 234, 60], line: [126, 34, 206, 220] },
 ];
+const OVERLAY_PALETTE_DARK: { fill: RGBA; line: RGBA }[] = [
+  { fill: [251, 191, 36, 130], line: [253, 224, 71, 240] },
+  { fill: [45, 212, 191, 130], line: [153, 246, 228, 240] },
+  { fill: [192, 132, 252, 130], line: [233, 213, 255, 240] },
+];
 
-const DIFF_COLORS: Record<DiffClassification, RGBA> = {
+const DIFF_COLORS_LIGHT: Record<DiffClassification, RGBA> = {
   unchanged: [34, 197, 94, 90],
   modified: [249, 115, 22, 140],
   removed: [239, 68, 68, 150],
   added: [59, 130, 246, 150],
   split: [168, 85, 247, 150],
   merged: [168, 85, 247, 150],
+};
+const DIFF_COLORS_DARK: Record<DiffClassification, RGBA> = {
+  unchanged: [74, 222, 128, 190],
+  modified: [251, 146, 60, 220],
+  removed: [248, 113, 113, 230],
+  added: [96, 165, 250, 230],
+  split: [216, 180, 254, 230],
+  merged: [216, 180, 254, 230],
 };
 
 interface LoadedLayer {
@@ -112,6 +125,10 @@ export const CompareMap: React.FC<CompareMapProps> = ({
     };
   }, [bounds]);
 
+  const DIFF_COLORS = darkMode ? DIFF_COLORS_DARK : DIFF_COLORS_LIGHT;
+  const OVERLAY_PALETTE = darkMode ? OVERLAY_PALETTE_DARK : OVERLAY_PALETTE_LIGHT;
+  const diffLineColor: RGBA = darkMode ? [15, 12, 8, 210] : [255, 255, 255, 160];
+
   const layers = useMemo<SourceLayerSpec[]>(() => {
     if (diffColorMode && diffResult && sources.length === 2) {
       const loadedA = loadedById[sources[0].id];
@@ -153,7 +170,7 @@ export const CompareMap: React.FC<CompareMapProps> = ({
           id: 'diff',
           features: bColored,
           fillColor: DIFF_COLORS.unchanged,
-          lineColor: [255, 255, 255, 160],
+          lineColor: diffLineColor,
           getFillColor: (f) => {
             const cls = (f.properties.__cls as DiffClassification) ?? 'unchanged';
             if (focusChanged && cls === 'unchanged') return [0, 0, 0, 0];
@@ -162,7 +179,7 @@ export const CompareMap: React.FC<CompareMapProps> = ({
           getLineColor: (f) => {
             const cls = (f.properties.__cls as DiffClassification) ?? 'unchanged';
             if (focusChanged && cls === 'unchanged') return [0, 0, 0, 0];
-            return [255, 255, 255, 160];
+            return diffLineColor;
           },
         },
       ];
@@ -178,7 +195,7 @@ export const CompareMap: React.FC<CompareMapProps> = ({
         lineColor: palette.line,
       };
     });
-  }, [sources, loadedById, diffColorMode, diffResult, focusChanged]);
+  }, [sources, loadedById, diffColorMode, diffResult, focusChanged, DIFF_COLORS, OVERLAY_PALETTE, diffLineColor]);
 
   // Index by both aId and bId: a split/merged feature spans several matches.
   const matchesByDiffId = useMemo(() => {

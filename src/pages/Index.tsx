@@ -1743,6 +1743,34 @@ const Index = () => {
   const primaryTabClass = 'primary-tab shrink-0 rounded-none px-3 py-2.5 sm:px-5 sm:py-3 font-semibold text-sm sm:text-base transition-all duration-150 border-b-2 border-transparent bg-transparent text-[hsl(28,10%,45%)] hover:text-[hsl(28,20%,22%)] hover:border-[hsl(28,30%,68%)] data-[state=active]:border-[hsl(28,55%,42%)] data-[state=active]:text-[hsl(28,38%,22%)] data-[state=active]:bg-[hsl(35,28%,93%)] dark:text-[hsl(30,8%,55%)] dark:hover:text-[hsl(35,10%,82%)] dark:hover:border-[hsl(28,30%,40%)] dark:data-[state=active]:border-[hsl(28,55%,52%)] dark:data-[state=active]:text-[hsl(35,10%,88%)] dark:data-[state=active]:bg-[hsl(25,8%,12%)]';
   const secondaryTabClass = 'shrink-0 rounded px-2.5 py-1.5 sm:px-4 sm:py-2 font-medium text-xs sm:text-sm transition-all duration-150 border border-[hsl(35,16%,87%)] bg-transparent text-[hsl(28,8%,50%)] hover:border-[hsl(28,25%,72%)] hover:text-[hsl(28,18%,30%)] data-[state=active]:border-[hsl(28,42%,52%)] data-[state=active]:text-[hsl(28,38%,24%)] data-[state=active]:bg-[hsl(35,28%,92%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)] dark:text-[hsl(30,8%,50%)] dark:hover:border-[hsl(28,30%,40%)] dark:hover:text-[hsl(30,8%,68%)] dark:data-[state=active]:border-[hsl(28,45%,42%)] dark:data-[state=active]:text-[hsl(35,10%,82%)] dark:data-[state=active]:bg-[hsl(28,14%,20%)]';
 
+  const MAP_TABS: { value: string; label: string }[] = [
+    { value: 'states', label: 'States' },
+    { value: 'districts', label: 'Districts' },
+    { value: 'regions', label: 'Regions' },
+    { value: 'state-districts', label: 'State Detail' },
+    { value: 'sub-admin', label: 'Sub-Admin' },
+    { value: 'electoral', label: 'Electoral' },
+    { value: 'environment', label: 'Environment' },
+    { value: 'urban', label: 'Urban' },
+    { value: 'health', label: 'Health' },
+    { value: 'villages', label: 'Villages' },
+    { value: 'cities', label: 'Cities' },
+    { value: 'pincodes', label: 'Pincodes' },
+    { value: 'compare', label: 'Compare' },
+  ];
+  const TOOL_TABS: { value: string; label: string }[] = [
+    { value: 'district-stats', label: 'District Stats' },
+    { value: 'city-stats', label: 'City Stats' },
+    { value: 'evolution', label: 'Evolution' },
+    { value: 'census', label: 'Census 2011' },
+    { value: 'help', label: 'Help' },
+    { value: 'credits', label: 'Credits' },
+    { value: 'maps', label: 'Maps' },
+    { value: 'mcp', label: 'MCP' },
+    { value: 'api', label: 'API' },
+  ];
+  const mobileTabSelectClass = 'w-full text-sm font-semibold border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] dark:bg-[hsl(25,8%,9%)]';
+
   return (
     <div className="min-h-screen p-3 sm:p-6 bg-[hsl(38,30%,97%)] dark:bg-[hsl(25,8%,6%)]">
       <a
@@ -1840,37 +1868,51 @@ const Index = () => {
             <div className="mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Maps</span>
             </div>
-            <div className="relative">
+            <div className="sm:hidden mb-3">
+              <Select
+                value={MAP_TABS.some(t => t.value === activeTab) ? activeTab : undefined}
+                onValueChange={handleTabChange}
+              >
+                <SelectTrigger className={mobileTabSelectClass}>
+                  <SelectValue placeholder="Jump to a map…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MAP_TABS.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="relative hidden sm:block">
               <TabsList className="flex flex-nowrap overflow-x-auto scrollbar-none gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] w-full">
-                <TabsTrigger value="states" className={primaryTabClass}>States</TabsTrigger>
-                <TabsTrigger value="districts" className={primaryTabClass}>Districts</TabsTrigger>
-                <TabsTrigger value="regions" className={primaryTabClass}>Regions</TabsTrigger>
-                <TabsTrigger value="state-districts" className={primaryTabClass}>State Detail</TabsTrigger>
-                <TabsTrigger value="sub-admin" className={primaryTabClass}>Sub-Admin</TabsTrigger>
-                <TabsTrigger value="electoral" className={primaryTabClass}>Electoral</TabsTrigger>
-                <TabsTrigger value="environment" className={primaryTabClass}>Environment</TabsTrigger>
-                <TabsTrigger value="urban" className={primaryTabClass}>Urban</TabsTrigger>
-                <TabsTrigger value="health" className={primaryTabClass}>Health</TabsTrigger>
-                <TabsTrigger value="villages" className={primaryTabClass}>Villages</TabsTrigger>
-                <TabsTrigger value="cities" className={primaryTabClass}>Cities</TabsTrigger>
-                <TabsTrigger value="pincodes" className={primaryTabClass}>Pincodes</TabsTrigger>
-                <TabsTrigger value="compare" className={primaryTabClass}>Compare</TabsTrigger>
+                {MAP_TABS.map(t => (
+                  <TabsTrigger key={t.value} value={t.value} className={primaryTabClass}>{t.label}</TabsTrigger>
+                ))}
               </TabsList>
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)]" aria-hidden="true" />
             </div>
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
             </div>
-            <TabsList className="flex flex-nowrap overflow-x-auto gap-1 sm:gap-1.5 bg-transparent p-0 h-auto scrollbar-none">
-              <TabsTrigger value="district-stats" className={secondaryTabClass}>District Stats</TabsTrigger>
-              <TabsTrigger value="city-stats" className={secondaryTabClass}>City Stats</TabsTrigger>
-              <TabsTrigger value="evolution" className={secondaryTabClass}>Evolution</TabsTrigger>
-              <TabsTrigger value="census" className={secondaryTabClass}>Census 2011</TabsTrigger>
-              <TabsTrigger value="help" className={secondaryTabClass}>Help</TabsTrigger>
-              <TabsTrigger value="credits" className={secondaryTabClass}>Credits</TabsTrigger>
-              <TabsTrigger value="maps" className={secondaryTabClass}>Maps</TabsTrigger>
-              <TabsTrigger value="mcp" className={secondaryTabClass}>MCP</TabsTrigger>
-              <TabsTrigger value="api" className={secondaryTabClass}>API</TabsTrigger>
+            <div className="sm:hidden">
+              <Select
+                value={TOOL_TABS.some(t => t.value === activeTab) ? activeTab : undefined}
+                onValueChange={handleTabChange}
+              >
+                <SelectTrigger className={mobileTabSelectClass}>
+                  <SelectValue placeholder="Jump to a tool…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TOOL_TABS.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <TabsList className="hidden sm:flex flex-nowrap overflow-x-auto gap-1 sm:gap-1.5 bg-transparent p-0 h-auto scrollbar-none">
+              {TOOL_TABS.map(t => (
+                <TabsTrigger key={t.value} value={t.value} className={secondaryTabClass}>{t.label}</TabsTrigger>
+              ))}
             </TabsList>
           </div>
 
