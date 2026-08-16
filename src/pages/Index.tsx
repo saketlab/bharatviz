@@ -167,7 +167,7 @@ const Index = () => {
   // Defaults to Rajasthan, not all-India: a nationwide diff is slow to load and hard to read at a glance.
   const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>('Rajasthan');
   const [compareDistrictsStates, setCompareDistrictsStates] = useState<string[]>([]);
-  const [compareDiffMode, setCompareDiffMode] = useState(true);
+  const [compareViewMode, setCompareViewMode] = useState<'diff' | 'overlay' | 'sideBySide'>('diff');
   const [compareFocusChanged, setCompareFocusChanged] = useState(false);
   const [compareSelectedFeatureId, setCompareSelectedFeatureId] = useState<string | null>(null);
   const [comparePickerOpen, setComparePickerOpen] = useState<number | null>(null);
@@ -218,6 +218,11 @@ const Index = () => {
     [compareSourceIds, compareAvailableEntries]
   );
 
+  const compareSideBySideSources = useMemo(
+    () => compareEntries.map(entry => ({ entry, sources: [entry] })),
+    [compareEntries]
+  );
+
   const switchCompareGroup = (group: LayerGroup) => {
     if (group === compareGroup) return;
     setCompareGroup(group);
@@ -246,7 +251,8 @@ const Index = () => {
     const sources = params.get('sources');
     if (sources) setCompareSourceIds(sources.split(',').filter(Boolean));
     const view = params.get('view');
-    if (view === 'overlay') setCompareDiffMode(false);
+    if (view === 'overlay') setCompareViewMode('overlay');
+    else if (view === 'side-by-side') setCompareViewMode('sideBySide');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
@@ -256,13 +262,14 @@ const Index = () => {
     const params = new URLSearchParams();
     if (compareEffectiveState) params.set('state', compareEffectiveState);
     if (compareSourceIds.length > 0) params.set('sources', compareSourceIds.join(','));
-    if (!compareDiffMode) params.set('view', 'overlay');
+    if (compareViewMode === 'overlay') params.set('view', 'overlay');
+    else if (compareViewMode === 'sideBySide') params.set('view', 'side-by-side');
     const search = params.toString();
     const newUrl = `/compare/${compareGroup}${search ? '?' + search : ''}`;
     if (location.pathname + location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
-  }, [activeTab, compareGroup, compareEffectiveState, compareSourceIds, compareDiffMode, location.pathname, location.search, navigate]);
+  }, [activeTab, compareGroup, compareEffectiveState, compareSourceIds, compareViewMode, location.pathname, location.search, navigate]);
 
   useEffect(() => {
     const stillValid = compareSourceIds.filter(id => compareAvailableEntries.some(e => e.id === id));
@@ -276,8 +283,8 @@ const Index = () => {
   }, [compareAvailableEntries]);
 
   const compareDiff = useLayerDiff(
-    compareDiffMode && compareEntries.length === 2 ? compareEntries[0] : null,
-    compareDiffMode && compareEntries.length === 2 ? compareEntries[1] : null,
+    compareViewMode === 'diff' && compareEntries.length === 2 ? compareEntries[0] : null,
+    compareViewMode === 'diff' && compareEntries.length === 2 ? compareEntries[1] : null,
     compareEffectiveState ?? undefined
   );
 
@@ -1883,13 +1890,12 @@ const Index = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="relative hidden sm:block">
-              <TabsList className="flex flex-nowrap overflow-x-auto scrollbar-none gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] w-full">
+            <div className="hidden sm:block">
+              <TabsList className="flex flex-wrap gap-0 bg-transparent p-0 h-auto border-b border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] w-full">
                 {MAP_TABS.map(t => (
                   <TabsTrigger key={t.value} value={t.value} className={primaryTabClass}>{t.label}</TabsTrigger>
                 ))}
               </TabsList>
-              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[hsl(38,30%,97%)] to-transparent dark:from-[hsl(25,8%,6%)]" aria-hidden="true" />
             </div>
             <div className="mt-5 mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(28,10%,56%)] dark:text-[hsl(30,6%,38%)] select-none">Data & Tools</span>
@@ -1909,7 +1915,7 @@ const Index = () => {
                 </SelectContent>
               </Select>
             </div>
-            <TabsList className="hidden sm:flex flex-nowrap overflow-x-auto gap-1 sm:gap-1.5 bg-transparent p-0 h-auto scrollbar-none">
+            <TabsList className="hidden sm:flex flex-wrap gap-1 sm:gap-1.5 bg-transparent p-0 h-auto">
               {TOOL_TABS.map(t => (
                 <TabsTrigger key={t.value} value={t.value} className={secondaryTabClass}>{t.label}</TabsTrigger>
               ))}
@@ -2107,20 +2113,39 @@ const Index = () => {
           <TabPanel active={activeTab === 'compare'}>
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
-                <CompareMap
-                  sources={compareEntries}
-                  scopeState={compareEffectiveState ?? undefined}
-                  diffResult={compareDiff.result}
-                  diffColorMode={compareDiffMode && compareEntries.length === 2}
-                  focusChanged={compareFocusChanged}
-                  darkMode={darkMode}
-                  highlightedId={compareSelectedFeatureId}
-                  onFeatureClick={(_sourceId, feature) => {
-                    const diffId = feature.properties.__diffId;
-                    setCompareSelectedFeatureId(typeof diffId === 'string' ? diffId : null);
-                  }}
-                />
-                {compareDiffMode && compareEntries.length === 2 && (
+                {compareViewMode === 'sideBySide' && compareEntries.length === 2 ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    {compareSideBySideSources.map(({ entry, sources }) => (
+                      <div key={entry.id}>
+                        <p className="mb-1.5 text-xs font-semibold text-muted-foreground truncate" title={entry.displayName}>
+                          {entry.displayName}
+                        </p>
+                        <CompareMap
+                          sources={sources}
+                          scopeState={compareEffectiveState ?? undefined}
+                          diffResult={null}
+                          diffColorMode={false}
+                          darkMode={darkMode}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <CompareMap
+                    sources={compareEntries}
+                    scopeState={compareEffectiveState ?? undefined}
+                    diffResult={compareDiff.result}
+                    diffColorMode={compareViewMode === 'diff' && compareEntries.length === 2}
+                    focusChanged={compareFocusChanged}
+                    darkMode={darkMode}
+                    highlightedId={compareSelectedFeatureId}
+                    onFeatureClick={(_sourceId, feature) => {
+                      const diffId = feature.properties.__diffId;
+                      setCompareSelectedFeatureId(typeof diffId === 'string' ? diffId : null);
+                    }}
+                  />
+                )}
+                {compareViewMode === 'diff' && compareEntries.length === 2 && (
                   <CompareResultsPanel
                     diffResult={compareDiff.result}
                     loading={compareDiff.loading}
@@ -2362,27 +2387,34 @@ const Index = () => {
                   </Label>
                   <div className="flex gap-1.5">
                     <button
-                      onClick={() => setCompareDiffMode(true)}
+                      onClick={() => setCompareViewMode('diff')}
                       disabled={compareEntries.length !== 2}
-                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${compareViewMode === 'diff' ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
                     >
                       Diff
                     </button>
                     <button
-                      onClick={() => setCompareDiffMode(false)}
-                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors ${!compareDiffMode ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                      onClick={() => setCompareViewMode('overlay')}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors ${compareViewMode === 'overlay' ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
                     >
                       Overlay
+                    </button>
+                    <button
+                      onClick={() => setCompareViewMode('sideBySide')}
+                      disabled={compareEntries.length !== 2}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${compareViewMode === 'sideBySide' ? 'border-[hsl(28,62%,48%)] bg-[hsl(28,62%,48%)]/10' : 'border-input hover:bg-accent'}`}
+                    >
+                      Side by side
                     </button>
                   </div>
                   {compareEntries.length !== 2 && (
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Select exactly 2 sources to see a geometric diff.
+                      Select exactly 2 sources to see a geometric diff or side-by-side view.
                     </p>
                   )}
                 </div>
 
-                {compareDiffMode && compareEntries.length === 2 && (
+                {compareViewMode === 'diff' && compareEntries.length === 2 && (
                   <label className="mb-5 flex items-center gap-2 text-sm cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -2394,7 +2426,7 @@ const Index = () => {
                   </label>
                 )}
 
-                {!compareDiffMode || compareEntries.length !== 2 ? (
+                {compareViewMode !== 'diff' || compareEntries.length !== 2 ? (
                   <div className="space-y-1.5">
                     {compareEntries.map((entry, i) => (
                       <div key={entry.id} className="flex items-center gap-2 text-xs text-muted-foreground">
