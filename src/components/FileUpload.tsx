@@ -381,6 +381,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
 
       Papa.parse<Record<string, string>>(csvText, {
         header: true,
+        comments: '#',
         complete: async (result) => {
           await processUploadedData(result);
           setDemoLoading(false);
@@ -467,6 +468,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
 
       Papa.parse<Record<string, string>>(csvText, {
         header: true,
+        comments: '#',
         complete: async (result) => {
           await processUploadedData(result);
           setLoadingSheet(false);
