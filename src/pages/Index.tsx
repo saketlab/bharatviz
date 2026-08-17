@@ -864,6 +864,7 @@ const Index = () => {
           Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true,
+            comments: '#',
             complete: (results) => {
               const data = results.data as Record<string, string>[];
               const headers = results.meta.fields || [];
