@@ -6,6 +6,7 @@ import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
 import { PolygonLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
 import type { PolygonFeature } from './DeckPolygonsLayer';
+import { isHighlighted } from '@/lib/compareTypes';
 
 export type RGBA = [number, number, number, number];
 
@@ -24,7 +25,8 @@ interface MultiSourcePolygonsLayerProps {
   project: ((lng: number, lat: number) => { x: number; y: number }) | null;
   viewBoxWidth: number;
   viewBoxHeight: number;
-  highlightedId?: string | null;
+  /** __diffId values to outline - a Set since a split/merged feature has several. */
+  highlightedId?: Set<string> | null;
   onPolygonHover?: (info: { x: number; y: number; sourceId: string; feature: PolygonFeature } | null) => void;
   onPolygonClick?: (info: { sourceId: string; feature: PolygonFeature }) => void;
 }
@@ -98,11 +100,11 @@ export const MultiSourcePolygonsLayer: React.FC<MultiSourcePolygonsLayerProps> =
         ? (d: Datum) => spec.getFillColor!(d.feature)
         : spec.fillColor,
       getLineColor: (d: Datum) => {
-        if (highlightedId && d.feature.properties.__diffId === highlightedId) return [255, 255, 255, 255];
+        if (isHighlighted(d.feature.properties.__diffId, highlightedId)) return [255, 255, 255, 255];
         return spec.getLineColor ? spec.getLineColor(d.feature) : spec.lineColor;
       },
       getLineWidth: (d: Datum) =>
-        highlightedId && d.feature.properties.__diffId === highlightedId ? 2.5 : 0.75,
+        isHighlighted(d.feature.properties.__diffId, highlightedId) ? 2.5 : 0.75,
       lineWidthUnits: 'pixels',
       pickable: true,
       autoHighlight: true,

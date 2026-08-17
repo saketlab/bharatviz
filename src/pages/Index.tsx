@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { DEFAULT_DISTRICT_MAP_TYPE, getDistrictMapConfig, getDistrictMapTypesList } from '@/lib/districtMapConfig';
 import { CompareMap } from '@/components/CompareMap';
 import { CompareResultsPanel } from '@/components/CompareResultsPanel';
+import { CompareSelectionStatus } from '@/components/CompareSelectionStatus';
 import { CompareSourceList } from '@/components/CompareSourceList';
 import { useLayerDiff } from '@/lib/useLayerDiff';
 import { useSourceFeatureLists } from '@/lib/useSourceFeatureLists';
@@ -178,7 +179,7 @@ const Index = () => {
   );
   const [compareDistrictsStates, setCompareDistrictsStates] = useState<string[]>([]);
   const [compareViewMode, setCompareViewMode] = useState<'diff' | 'overlay' | 'sideBySide'>(
-    initialCompareView === 'overlay' ? 'overlay' : initialCompareView === 'side-by-side' ? 'sideBySide' : 'diff'
+    initialCompareView === 'overlay' ? 'overlay' : initialCompareView === 'diff' ? 'diff' : 'sideBySide'
   );
   const [compareFocusChanged, setCompareFocusChanged] = useState(false);
   const [compareSelectedFeatureId, setCompareSelectedFeatureId] = useState<string | null>(null);
@@ -264,7 +265,8 @@ const Index = () => {
     if (sources) setCompareSourceIds(sources.split(',').filter(Boolean));
     const view = params.get('view');
     if (view === 'overlay') setCompareViewMode('overlay');
-    else if (view === 'side-by-side') setCompareViewMode('sideBySide');
+    else if (view === 'diff') setCompareViewMode('diff');
+    else if (view === 'side-by-side') setCompareViewMode('sideBySide'); // back-compat with previously shared links
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
@@ -275,7 +277,7 @@ const Index = () => {
     if (compareEffectiveState) params.set('state', compareEffectiveState);
     if (compareSourceIds.length > 0) params.set('sources', compareSourceIds.join(','));
     if (compareViewMode === 'overlay') params.set('view', 'overlay');
-    else if (compareViewMode === 'sideBySide') params.set('view', 'side-by-side');
+    else if (compareViewMode === 'diff') params.set('view', 'diff');
     const search = params.toString();
     const newUrl = `/compare/${compareGroup}${search ? '?' + search : ''}`;
     if (location.pathname + location.search !== newUrl) {
@@ -295,8 +297,8 @@ const Index = () => {
   }, [compareAvailableEntries]);
 
   const compareDiff = useLayerDiff(
-    compareViewMode === 'diff' && compareEntries.length === 2 ? compareEntries[0] : null,
-    compareViewMode === 'diff' && compareEntries.length === 2 ? compareEntries[1] : null,
+    compareEntries.length === 2 ? compareEntries[0] : null,
+    compareEntries.length === 2 ? compareEntries[1] : null,
     compareEffectiveState ?? undefined
   );
 
@@ -2126,21 +2128,38 @@ const Index = () => {
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2 order-1 lg:order-2">
                 {compareViewMode === 'sideBySide' && compareEntries.length === 2 ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    {compareSideBySideSources.map(({ entry, sources }) => (
-                      <div key={entry.id}>
-                        <p className="mb-1.5 text-xs font-semibold text-muted-foreground truncate" title={entry.displayName}>
-                          {entry.displayName}
-                        </p>
-                        <CompareMap
-                          sources={sources}
-                          scopeState={compareEffectiveState ?? undefined}
-                          diffResult={null}
-                          diffColorMode={false}
-                          darkMode={darkMode}
-                        />
-                      </div>
-                    ))}
+                  <div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {compareSideBySideSources.map(({ entry, sources }) => (
+                        <div key={entry.id}>
+                          <p className="mb-1.5 text-xs font-semibold text-muted-foreground truncate" title={entry.displayName}>
+                            {entry.displayName}
+                          </p>
+                          <CompareMap
+                            sources={sources}
+                            scopeState={compareEffectiveState ?? undefined}
+                            diffResult={compareDiff.result}
+                            diffColorMode={false}
+                            darkMode={darkMode}
+                            highlightedId={compareSelectedFeatureId}
+                            onFeatureClick={(_sourceId, feature) => {
+                              const diffId = feature.properties.__diffId;
+                              setCompareSelectedFeatureId(prev => {
+                                const next = typeof diffId === 'string' ? diffId : null;
+                                return prev === next ? null : next;
+                              });
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <CompareSelectionStatus
+                      diffResult={compareDiff.result}
+                      loading={compareDiff.loading}
+                      selectedFeatureId={compareSelectedFeatureId}
+                      nameA={compareEntries[0]?.displayName ?? 'the first source'}
+                      nameB={compareEntries[1]?.displayName ?? 'the second source'}
+                    />
                   </div>
                 ) : (
                   <CompareMap

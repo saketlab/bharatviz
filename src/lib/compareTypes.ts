@@ -28,3 +28,23 @@ export interface DiffResult {
   summary: Record<DiffClassification, number>;
   computeTimeMs: number;
 }
+
+export function isHighlighted(diffId: unknown, highlightedId: Set<string> | null | undefined): boolean {
+  return typeof diffId === 'string' && !!highlightedId && highlightedId.has(diffId);
+}
+
+export function describeMatch(
+  diffResult: DiffResult,
+  diffId: string,
+  matches: DiffMatch[]
+): { classification: DiffClassification | null; otherNames: string[] } {
+  if (matches.length === 0) return { classification: null, otherNames: [] };
+  const otherNames = new Set<string>();
+  for (const m of matches) {
+    const otherId = m.aId === diffId ? m.bId : m.aId;
+    if (!otherId) continue;
+    const other = diffResult.featuresA.get(otherId) ?? diffResult.featuresB.get(otherId);
+    if (other?.name) otherNames.add(other.name);
+  }
+  return { classification: matches[0].classification, otherNames: Array.from(otherNames) };
+}

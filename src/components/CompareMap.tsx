@@ -4,7 +4,7 @@ import { geoJsonFeatureToPolygonFeature, computeBoundsFromFeatureSets, type Boun
 import { MultiSourcePolygonsLayer, type SourceLayerSpec, type RGBA } from '@/components/MultiSourcePolygonsLayer';
 import { MapProcessingOverlay } from '@/components/MapProcessingOverlay';
 import type { PolygonFeature } from '@/components/DeckPolygonsLayer';
-import type { DiffResult, DiffClassification } from '@/lib/compareTypes';
+import { describeMatch, isHighlighted, type DiffResult, type DiffClassification, type DiffFeature } from '@/lib/compareTypes';
 
 const VIEW_W = 800;
 const VIEW_H = 890;
@@ -129,25 +129,70 @@ export const CompareMap: React.FC<CompareMapProps> = ({
   const OVERLAY_PALETTE = darkMode ? OVERLAY_PALETTE_DARK : OVERLAY_PALETTE_LIGHT;
   const diffLineColor: RGBA = darkMode ? [15, 12, 8, 210] : [255, 255, 255, 160];
 
-  const layers = useMemo<SourceLayerSpec[]>(() => {
-    if (diffColorMode && diffResult && sources.length === 2) {
+  // diffFeatures must be index-aligned with loaded.features.
+  const tagWithDiffId = useCallback((
+    loaded: LoadedLayer,
+    diffFeatures: DiffFeature[],
+    idToClass: Map<string, DiffClassification> | null,
+  ): PolygonFeature[] => {
+    return loaded.features
+      .map(f => geoJsonFeatureToPolygonFeature(f, loaded.nameProp, loaded.stateProp))
+      .map((f, i) => {
+        const diffFeature = diffFeatures[i];
+        const cls = idToClass && diffFeature ? idToClass.get(diffFeature.id) ?? 'unchanged' : undefined;
+        return { ...f, properties: { ...f.properties, __diffId: diffFeature?.id ?? null, ...(cls ? { __cls: cls } : {}) } };
+      });
+  }, []);
+
+  // Also true for a single-source panel, so side-by-side gets __diffId tags too.
+  const diffAppliesToSources = !!diffResult && sources.every(s => s.id === diffResult.sourceA || s.id === diffResult.sourceB);
+
+  const matchesByDiffId = useMemo(() => {
+    const map = new Map<string, DiffResult['matches']>();
+    if (!diffResult) return map;
+    for (const m of diffResult.matches) {
+      if (m.aId) map.set(m.aId, [...(map.get(m.aId) ?? []), m]);
+      if (m.bId) map.set(m.bId, [...(map.get(m.bId) ?? []), m]);
+    }
+    return map;
+  }, [diffResult]);
+
+  const highlightedIdSet = useMemo(() => {
+    if (!highlightedId) return null;
+    const set = new Set<string>([highlightedId]);
+    for (const m of matchesByDiffId.get(highlightedId) ?? []) {
+      if (m.aId) set.add(m.aId);
+      if (m.bId) set.add(m.bId);
+    }
+    return set;
+  }, [highlightedId, matchesByDiffId]);
+
+  // Derived from matchesByDiffId rather than a second pass over diffResult.matches.
+  const idToClassBothSides = useMemo(() => {
+    if (!diffAppliesToSources || !diffResult) return null;
+    const map = new Map<string, DiffClassification>();
+    for (const matches of matchesByDiffId.values()) {
+      for (const m of matches) {
+        if (m.aId) map.set(m.aId, m.classification);
+        if (m.bId) map.set(m.bId, m.classification);
+      }
+    }
+    return map;
+  }, [diffAppliesToSources, diffResult, matchesByDiffId]);
+
+  // Kept separate from layers so highlight-only changes skip this re-tagging pass.
+  const baseLayers = useMemo<(SourceLayerSpec & { classified?: boolean })[]>(() => {
+    if (diffColorMode && diffResult && sources.length === 2 && diffAppliesToSources) {
       const loadedA = loadedById[sources[0].id];
       const loadedB = loadedById[sources[1].id];
       if (!loadedA || !loadedB) return [];
 
-      // Build order must match buildDiffFeatures' iteration so index i lines up with the worker's DiffFeature.
       const idToClass = new Map<string, DiffClassification>();
       for (const m of diffResult.matches) {
         if (m.bId) idToClass.set(m.bId, m.classification);
       }
       const bDiffFeatures = Array.from(diffResult.featuresB.values());
-      const bColored: PolygonFeature[] = loadedB.features
-        .map(f => geoJsonFeatureToPolygonFeature(f, loadedB.nameProp, loadedB.stateProp))
-        .map((f, i) => {
-          const diffFeature = bDiffFeatures[i];
-          const cls = diffFeature ? idToClass.get(diffFeature.id) ?? 'unchanged' : 'unchanged';
-          return { ...f, properties: { ...f.properties, __diffId: diffFeature?.id ?? null, __cls: cls } };
-        });
+      const bColored = tagWithDiffId(loadedB, bDiffFeatures, idToClass);
 
       const removedAIds = new Set(diffResult.matches.filter(m => m.classification === 'removed' && m.aId).map(m => m.aId));
       const aDiffFeatures = Array.from(diffResult.featuresA.values());
@@ -188,25 +233,40 @@ export const CompareMap: React.FC<CompareMapProps> = ({
     return sources.map((entry, i) => {
       const loaded = loadedById[entry.id];
       const palette = OVERLAY_PALETTE[i % OVERLAY_PALETTE.length];
+      if (!loaded) return { id: entry.id, features: [], fillColor: palette.fill, lineColor: palette.line };
+
+      if (diffAppliesToSources && diffResult && idToClassBothSides) {
+        const isA = entry.id === diffResult.sourceA;
+        const diffFeatures = Array.from((isA ? diffResult.featuresA : diffResult.featuresB).values());
+        return {
+          id: entry.id,
+          features: tagWithDiffId(loaded, diffFeatures, idToClassBothSides),
+          fillColor: palette.fill,
+          lineColor: palette.line,
+          classified: true,
+        };
+      }
+
       return {
         id: entry.id,
-        features: loaded ? loaded.features.map(f => geoJsonFeatureToPolygonFeature(f, loaded.nameProp, loaded.stateProp)) : [],
+        features: loaded.features.map(f => geoJsonFeatureToPolygonFeature(f, loaded.nameProp, loaded.stateProp)),
         fillColor: palette.fill,
         lineColor: palette.line,
       };
     });
-  }, [sources, loadedById, diffColorMode, diffResult, focusChanged, DIFF_COLORS, OVERLAY_PALETTE, diffLineColor]);
+  }, [sources, loadedById, diffColorMode, diffResult, diffAppliesToSources, idToClassBothSides, focusChanged, DIFF_COLORS, OVERLAY_PALETTE, diffLineColor, tagWithDiffId]);
 
-  // Index by both aId and bId: a split/merged feature spans several matches.
-  const matchesByDiffId = useMemo(() => {
-    const map = new Map<string, DiffResult['matches']>();
-    if (!diffResult) return map;
-    for (const m of diffResult.matches) {
-      if (m.aId) map.set(m.aId, [...(map.get(m.aId) ?? []), m]);
-      if (m.bId) map.set(m.bId, [...(map.get(m.bId) ?? []), m]);
-    }
-    return map;
-  }, [diffResult]);
+  // Only highlighted feature(s) switch to classification color.
+  const layers = useMemo<SourceLayerSpec[]>(() => {
+    const colorFor = (base: RGBA) => (f: PolygonFeature): RGBA => {
+      if (!isHighlighted(f.properties.__diffId, highlightedIdSet)) return base;
+      return DIFF_COLORS[(f.properties.__cls as DiffClassification) ?? 'unchanged'];
+    };
+    return baseLayers.map(spec => {
+      if (!spec.classified) return spec;
+      return { ...spec, getFillColor: colorFor(spec.fillColor), getLineColor: colorFor(spec.lineColor) };
+    });
+  }, [baseLayers, highlightedIdSet, DIFF_COLORS]);
 
   return (
     <div ref={containerRef} className="relative w-full aspect-[800/890] bg-[hsl(38,30%,98%)] dark:bg-[hsl(25,8%,9%)] rounded-lg border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] overflow-hidden">
@@ -216,22 +276,16 @@ export const CompareMap: React.FC<CompareMapProps> = ({
         project={bounds ? project : null}
         viewBoxWidth={VIEW_W}
         viewBoxHeight={VIEW_H}
-        highlightedId={highlightedId}
+        highlightedId={highlightedIdSet}
         onPolygonHover={setHover}
         onPolygonClick={(info) => onFeatureClick?.(info.sourceId, info.feature)}
       />
       {hover && (() => {
         const diffId = typeof hover.feature.properties.__diffId === 'string' ? hover.feature.properties.__diffId : null;
-        const cls = typeof hover.feature.properties.__cls === 'string' ? hover.feature.properties.__cls : null;
         const matches = diffId && diffResult ? matchesByDiffId.get(diffId) ?? [] : [];
-
-        const otherNames = new Set<string>();
-        for (const m of matches) {
-          const otherId = m.aId === diffId ? m.bId : m.aId;
-          if (!otherId || !diffResult) continue;
-          const other = diffResult.featuresA.get(otherId) ?? diffResult.featuresB.get(otherId);
-          if (other?.name) otherNames.add(other.name);
-        }
+        const { classification: cls, otherNames } = diffId && diffResult
+          ? describeMatch(diffResult, diffId, matches)
+          : { classification: null, otherNames: [] as string[] };
 
         return (
           <div
@@ -240,17 +294,17 @@ export const CompareMap: React.FC<CompareMapProps> = ({
           >
             <div className="font-medium">{hover.feature.name ?? 'Unnamed'}</div>
             {cls && <div className="text-[hsl(35,12%,70%)] capitalize">{cls}</div>}
-            {cls === 'unchanged' && otherNames.size > 0 && (
-              <div className="text-[hsl(35,12%,70%)] mt-0.5">Same as: {Array.from(otherNames).join(', ')}</div>
+            {cls === 'unchanged' && otherNames.length > 0 && (
+              <div className="text-[hsl(35,12%,70%)] mt-0.5">Same as: {otherNames.join(', ')}</div>
             )}
-            {cls === 'modified' && otherNames.size > 0 && (
-              <div className="text-[hsl(35,12%,70%)] mt-0.5">Was: {Array.from(otherNames).join(', ')}</div>
+            {cls === 'modified' && otherNames.length > 0 && (
+              <div className="text-[hsl(35,12%,70%)] mt-0.5">Was: {otherNames.join(', ')}</div>
             )}
-            {cls === 'split' && otherNames.size > 0 && (
-              <div className="text-[hsl(35,12%,70%)] mt-0.5">Split into: {Array.from(otherNames).join(', ')}</div>
+            {cls === 'split' && otherNames.length > 0 && (
+              <div className="text-[hsl(35,12%,70%)] mt-0.5">Split into: {otherNames.join(', ')}</div>
             )}
-            {cls === 'merged' && otherNames.size > 0 && (
-              <div className="text-[hsl(35,12%,70%)] mt-0.5">Merged from: {Array.from(otherNames).join(', ')}</div>
+            {cls === 'merged' && otherNames.length > 0 && (
+              <div className="text-[hsl(35,12%,70%)] mt-0.5">Merged from: {otherNames.join(', ')}</div>
             )}
             {cls === 'removed' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in {sources[1]?.displayName ?? 'the second source'}</div>}
             {cls === 'added' && <div className="text-[hsl(35,12%,70%)] mt-0.5">Not present in {sources[0]?.displayName ?? 'the first source'}</div>}
