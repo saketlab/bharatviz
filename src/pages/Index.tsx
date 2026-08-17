@@ -158,16 +158,28 @@ const Index = () => {
   const [districtMapTypeOpen, setDistrictMapTypeOpen] = useState(false);
   const [districtNAInfo, setDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
-  const [compareGroup, setCompareGroup] = useState<LayerGroup>(getCompareGroupFromPath(location.pathname) ?? 'districts');
-  const [compareSourceIds, setCompareSourceIds] = useState<string[]>(['LGD', 'SOI']);
+  const initialCompareGroup = getCompareGroupFromPath(location.pathname) ?? 'districts';
+  const initialCompareParams = new URLSearchParams(location.search);
+  const initialCompareState = initialCompareParams.get('state');
+  const initialCompareSources = initialCompareParams.get('sources');
+  const initialCompareView = initialCompareParams.get('view');
+
+  const [compareGroup, setCompareGroup] = useState<LayerGroup>(initialCompareGroup);
+  const [compareSourceIds, setCompareSourceIds] = useState<string[]>(
+    initialCompareSources ? initialCompareSources.split(',').filter(Boolean) : ['LGD', 'SOI']
+  );
   const [compareCityKey, setCompareCityKey] = useState<string | null>(null);
-  const [compareScopeState, setCompareScopeState] = useState<string | null>(null);
+  const [compareScopeState, setCompareScopeState] = useState<string | null>(
+    initialCompareGroup !== 'districts' ? initialCompareState : null
+  );
   const [compareScopeStates, setCompareScopeStates] = useState<string[]>([]);
-  // District focus stays separate because nationwide rendering is safe and scoping is optional.
-  // Defaults to Rajasthan, not all-India: a nationwide diff is slow to load and hard to read at a glance.
-  const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>('Rajasthan');
+  const [compareDistrictsFocus, setCompareDistrictsFocus] = useState<string | null>(
+    initialCompareGroup === 'districts' ? (initialCompareState ?? 'Rajasthan') : 'Rajasthan'
+  );
   const [compareDistrictsStates, setCompareDistrictsStates] = useState<string[]>([]);
-  const [compareViewMode, setCompareViewMode] = useState<'diff' | 'overlay' | 'sideBySide'>('diff');
+  const [compareViewMode, setCompareViewMode] = useState<'diff' | 'overlay' | 'sideBySide'>(
+    initialCompareView === 'overlay' ? 'overlay' : initialCompareView === 'side-by-side' ? 'sideBySide' : 'diff'
+  );
   const [compareFocusChanged, setCompareFocusChanged] = useState(false);
   const [compareSelectedFeatureId, setCompareSelectedFeatureId] = useState<string | null>(null);
   const [comparePickerOpen, setComparePickerOpen] = useState<number | null>(null);
