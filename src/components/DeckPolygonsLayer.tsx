@@ -151,6 +151,8 @@ export const DeckPolygonsLayer: React.FC<DeckPolygonsLayerProps> = ({
       : null;
 
     deck.setProps({
+      width: mapRect.width,
+      height: mapRect.height,
       viewState: { target: [mapRect.width / 2, mapRect.height / 2, 0], zoom: 0 },
       layers: textLayer ? [layer, textLayer] : [layer],
     });
