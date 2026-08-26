@@ -47,6 +47,11 @@ import { DATA_FILES, MAP_DIMENSIONS, DEFAULT_FALLBACK_STATE, ALL_INDIA_STATE } f
 import type { DynamicChatContext, DataPoint } from '@/lib/chat/types';
 
 const IndiaMap = lazy(() => import('@/components/IndiaMap').then(m => ({ default: m.IndiaMap })));
+// Stable identity: an inline [] re-fires useSourceFeatureLists' effect every render.
+const NO_ENTRIES: LayerCatalogEntry[] = [];
+// Stable identity: IndiaDistrictsMap memoises label geometry on `data`.
+const NO_DATA: DistrictMapData[] = [];
+
 const IndiaDistrictsMap = lazy(() => import('@/components/IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap })));
 const IndiaCityMap = lazy(() => import('@/components/IndiaCityMap').then(m => ({ default: m.IndiaCityMap })));
 const IndiaPincodesMap = lazy(() => import('@/components/IndiaPincodesMap').then(m => ({ default: m.IndiaPincodesMap })));
@@ -192,26 +197,29 @@ const Index = () => {
   const [compareVillageEntries, setCompareVillageEntries] = useState<LayerCatalogEntry[]>([]);
 
   useEffect(() => {
+    if (activeTab !== 'compare') return;
     if (!STATE_SCOPED_GROUPS.includes(compareGroup)) return;
     let cancelled = false;
     const load = compareGroup === 'villages' ? getVillageStates() : getGeoDataLayerStates(compareGroup);
     load.then(states => { if (!cancelled) setCompareScopeStates(states); });
     return () => { cancelled = true; };
-  }, [compareGroup]);
+  }, [activeTab, compareGroup]);
 
   useEffect(() => {
+    if (activeTab !== 'compare') return;
     if (compareGroup !== 'districts') return;
     let cancelled = false;
     getDistrictStates().then(states => { if (!cancelled) setCompareDistrictsStates(states); });
     return () => { cancelled = true; };
-  }, [compareGroup]);
+  }, [activeTab, compareGroup]);
 
   useEffect(() => {
+    if (activeTab !== 'compare') return;
     if (compareGroup !== 'villages' || !compareScopeState) { setCompareVillageEntries([]); return; }
     let cancelled = false;
     getVillageCatalogEntries(compareScopeState).then(entries => { if (!cancelled) setCompareVillageEntries(entries); });
     return () => { cancelled = true; };
-  }, [compareGroup, compareScopeState]);
+  }, [activeTab, compareGroup, compareScopeState]);
 
   const compareAvailableEntries = useMemo<LayerCatalogEntry[]>(() => {
     if (compareGroup === 'villages') return compareVillageEntries;
@@ -286,6 +294,7 @@ const Index = () => {
   }, [activeTab, compareGroup, compareEffectiveState, compareSourceIds, compareViewMode, location.pathname, location.search, navigate]);
 
   useEffect(() => {
+    if (activeTab !== 'compare') return;
     const stillValid = compareSourceIds.filter(id => compareAvailableEntries.some(e => e.id === id));
     if (stillValid.length === compareSourceIds.length && compareSourceIds.length > 0) return;
     if (compareAvailableEntries.length === 0) {
@@ -294,16 +303,18 @@ const Index = () => {
     }
     setCompareSourceIds(compareAvailableEntries.slice(0, 2).map(e => e.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [compareAvailableEntries]);
+  }, [activeTab, compareAvailableEntries]);
 
+  // Only on the compare tab: these boundary sets are megabytes each.
+  const compareActive = activeTab === 'compare' && compareEntries.length === 2;
   const compareDiff = useLayerDiff(
-    compareEntries.length === 2 ? compareEntries[0] : null,
-    compareEntries.length === 2 ? compareEntries[1] : null,
+    compareActive ? compareEntries[0] : null,
+    compareActive ? compareEntries[1] : null,
     compareEffectiveState ?? undefined
   );
 
   const compareSourceLists = useSourceFeatureLists(
-    compareSourceListOpen ? compareEntries : [],
+    compareSourceListOpen ? compareEntries : NO_ENTRIES,
     compareEffectiveState ?? undefined
   );
 
@@ -326,6 +337,8 @@ const Index = () => {
   const [stateDistrictHideValues, setStateDistrictHideValues] = useState(false);
   const [availableStates, setAvailableStates] = useState<string[]>([]);
   const [stateGistMapping, setStateGistMapping] = useState<StateGistMapping | null>(null);
+  // Until this settles, the map can't tell "still loading" from "unavailable" and fetches the whole-country GeoJSON.
+  const [stateGistResolved, setStateGistResolved] = useState(false);
   const [stateSearchQuery, setStateSearchQuery] = useState<string>('');
   const [stateDistrictNAInfo, setStateDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
@@ -1016,6 +1029,8 @@ const Index = () => {
           setAvailableStates(states);
           setStateGistMapping(null);
           reconcileSelectedState(states);
+        } finally {
+          setStateGistResolved(true);
         }
       };
 
@@ -1648,12 +1663,14 @@ const Index = () => {
     pdf.save(`bharatviz-states-multi-${Date.now()}.pdf`);
   };
 
-  const createGistUrlProvider = () => {
-    return (stateName: string) => {
+  // Stable identity: IndiaDistrictsMap keys its GeoJSON-loading effect on this prop.
+  const gistUrlProvider = useCallback(
+    (stateName: string) => {
       if (!stateGistMapping) return null;
       return getStateGeoJSONUrl(stateGistMapping, selectedStateMapType, stateName);
-    };
-  };
+    },
+    [stateGistMapping, selectedStateMapType]
+  );
 
   const getSEOContent = () => {
     const baseUrl = 'https://bharatviz.org';
@@ -2683,6 +2700,11 @@ const Index = () => {
             <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="relative lg:col-span-2 order-1 lg:order-2">
                 <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
+                {!stateGistResolved ? (
+                  <div className="w-full h-96 flex items-center justify-center border border-border rounded bg-background">
+                    <div className="text-xl text-muted-foreground">Loading map...</div>
+                  </div>
+                ) : (
                 <IndiaDistrictsMap
                   ref={stateDistrictMapRef}
                   data={stateDistrictMapData}
@@ -2694,7 +2716,7 @@ const Index = () => {
                   geojsonPath={getDistrictMapConfig(selectedStateMapType).geojsonPath}
                   statesGeojsonPath={getDistrictMapConfig(selectedStateMapType).states}
                   selectedState={selectedStateForMap}
-                  gistUrlProvider={createGistUrlProvider()}
+                  gistUrlProvider={gistUrlProvider}
                   hideDistrictNames={stateDistrictHideNames}
                   hideDistrictValues={stateDistrictHideValues}
                   onHideDistrictNamesChange={setStateDistrictHideNames}
@@ -2706,6 +2728,7 @@ const Index = () => {
                   boundaryColor={boundaryColor}
                   boundaryWidth={boundaryWidth}
                 />
+                )}
                 <div className="mt-4">
                   <ExportOptions
                     onExportPNG={handleExportPNG}
@@ -3231,7 +3254,7 @@ const Index = () => {
                 <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={environmentMapRef}
-                  data={[]}
+                  data={NO_DATA}
                   colorScale="spectral"
                   invertColors={false}
                   dataTitle=""
@@ -3322,7 +3345,7 @@ const Index = () => {
                 <MapProcessingOverlay active={uploadProcessing.active} message={uploadProcessing.message} />
                 <IndiaDistrictsMap
                   ref={urbanMapRef}
-                  data={[]}
+                  data={NO_DATA}
                   colorScale="spectral"
                   invertColors={false}
                   dataTitle=""

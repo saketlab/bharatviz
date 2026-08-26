@@ -8,6 +8,9 @@ import type { BoundaryColor } from '@/lib/colorUtils';
 import type { PointFeature } from '@/components/IndiaDistrictsMap';
 import type { PointViewMode } from '@/components/DeckPointsLayer';
 
+// Stable identity: IndiaDistrictsMap memoises label geometry on `data`.
+const NO_DATA: Array<{ district: string; state: string; value: number }> = [];
+
 const IndiaDistrictsMap = React.lazy(() =>
   import('@/components/IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap }))
 );
@@ -387,7 +390,7 @@ export const HealthMap: React.FC<HealthMapProps> = ({
         <React.Suspense fallback={<div className="h-96 rounded border border-border bg-background animate-pulse" />}>
           <IndiaDistrictsMap
             ref={mapRef}
-            data={viewMode === 'choropleth' ? choroData : []}
+            data={viewMode === 'choropleth' ? choroData : NO_DATA}
             colorScale="oranges"
             invertColors={false}
             dataTitle={viewMode === 'choropleth' ? `${dataset.displayName} per district` : ''}

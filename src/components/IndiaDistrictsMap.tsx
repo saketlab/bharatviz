@@ -1193,11 +1193,31 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
       const area = calculateDistrictArea(feature);
       if (area > max) max = area;
       if (area < min) min = area;
-      return { feature, area };
+      return { feature, area, center: getPolygonCenter(feature.geometry) };
     });
 
     return { districtLabelData: labels, maxArea: max, minArea: min === Infinity ? 0 : min, districtDataMap: map };
   }, [geojsonData, data]);
+
+  const districtPaths = useMemo(
+    () => geojsonData
+      ? geojsonData.features.map(f => convertCoordinatesToPath(f.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset))
+      : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [geojsonData, layout, bounds]
+  );
+
+  const stateBoundaries = useMemo(() => {
+    if (!showStateBoundaries || !statesData) return [];
+    return statesData.features
+      .filter(f => {
+        if (!selectedState) return true;
+        const name = f.properties.state_name || f.properties.NAME_1 || f.properties.name || f.properties.ST_NM;
+        return name === selectedState;
+      })
+      .map(f => convertCoordinatesToPath(f.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statesData, selectedState, showStateBoundaries, layout, bounds]);
 
   // Track SVG bounding rect for deck.gl canvas positioning
   useEffect(() => {
@@ -1250,13 +1270,12 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               aria-label={dataTitle ? `India districts map - ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` - ${selectedState}` : ''}`}
             >
               {geojsonData.features.map((feature, index) => {
-                const path = convertCoordinatesToPath(feature.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset);
+                const path = districtPaths[index];
                 const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
-                const districtData = data.find(d =>
-                  d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
-                  d.state.toLowerCase().trim() === (feature.properties.state_name || '').toLowerCase().trim()
+                const districtValue = districtDataMap.get(
+                  `${(feature.properties.state_name || '').toLowerCase().trim()}|${districtOrRegion.toLowerCase().trim()}`
                 );
-                const fillColor = getDistrictColorForValue(districtData?.value, dataExtent);
+                const fillColor = getDistrictColorForValue(districtValue, dataExtent);
                 const isHovered = hoveredDistrict &&
                   hoveredDistrict.district === districtOrRegion &&
                   hoveredDistrict.state === feature.properties.state_name;
@@ -1274,7 +1293,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                   >
                     <title>
                       {districtOrRegion}, {feature.properties.state_name}
-                      {districtData?.value !== undefined ? `: ${typeof districtData.value === 'number' ? roundToSignificantDigits(districtData.value) : String(districtData.value)}` : ''}
+                      {districtValue !== undefined ? `: ${typeof districtValue === 'number' ? roundToSignificantDigits(districtValue) : String(districtValue)}` : ''}
                     </title>
                   </path>
                 );
@@ -1283,12 +1302,12 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
 {((!hideDistrictNames && !hideDistrictValues) || (!hideDistrictNames) || (!hideDistrictValues)) &&
   districtLabelData.length > 0 && (
     <g className="district-labels">
-      {districtLabelData.map(({ feature, area }, index) => {
+      {districtLabelData.map(({ feature, area, center }, index) => {
         const districtName = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
         const stateName = feature.properties.state_name || '';
         if (!districtName) return null;
 
-        const [lng, lat] = getPolygonCenter(feature.geometry);
+        const [lng, lat] = center;
         const screenPos = geoToScreen(lng, lat);
         let labelPosition = { x: screenPos.x, y: screenPos.y };
 
@@ -1375,23 +1394,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
   )}
 
 
-              {showStateBoundaries && statesData && statesData.features
-                .filter(stateFeature => {
-                  // If selectedState is provided, only show that state's boundary
-                  if (selectedState) {
-                    // Check various possible state name properties in the GeoJSON
-                    const stateName = stateFeature.properties.state_name || 
-                                     stateFeature.properties.NAME_1 || 
-                                     stateFeature.properties.name || 
-                                     stateFeature.properties.ST_NM;
-                    return stateName === selectedState;
-                  }
-                  // If no selectedState, show all state boundaries (for Districts tab)
-                  return true;
-                })
-                .map((stateFeature, index) => {
-                const path = convertCoordinatesToPath(stateFeature.geometry.coordinates, layout.mapWidth, layout.mapHeight, layout.yOffset, layout.xOffset);
-                
+              {stateBoundaries.map((path, index) => {
                 return (
                   <path
                     key={`state-boundary-${index}`}

@@ -17,6 +17,11 @@ export function useSourceFeatureLists(
 
   useEffect(() => {
     let cancelled = false;
+    // Nothing to load: keep the previous object so an unstable `sources` arg can't loop renders.
+    if (sources.length === 0) {
+      setLists(prev => (Object.keys(prev).length === 0 ? prev : {}));
+      return;
+    }
     setLists(prev => {
       const next: Record<string, SourceFeatureList> = {};
       for (const entry of sources) {
