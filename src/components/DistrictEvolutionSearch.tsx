@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { Search, X, ChevronDown } from 'lucide-react';
+import { useEvolutionPlayback, PlaybackControls } from './EvolutionPlayback';
 
 interface DistrictName {
   district: string;
@@ -89,7 +90,7 @@ function YearMap({
     const H = Math.round(W * 1.2);
     const d3svg = d3.select(svg);
     d3svg.selectAll('*').remove();
-    d3svg.attr('width', W).attr('height', H);
+    d3svg.attr('width', W).attr('height', H).style('font-family', "'DM Sans', Arial, sans-serif");
 
     const strokeColor = darkMode ? 'hsl(25, 8%, 20%)' : 'hsl(38, 30%, 80%)';
 
@@ -174,6 +175,15 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
   const [response, setResponse] = useState<EvolutionResponse | null>(null);
   const [selectedMatchIdx, setSelectedMatchIdx] = useState(0);
   const [stateDropdownOpen, setStateDropdownOpen] = useState(false);
+
+  const [yearIdx, setYearIdx] = useState(0);
+  const { playing, toggle: togglePlay, stop: stopPlay } = useEvolutionPlayback({
+    yearsLength: CENSUS_YEARS.length, setYearIdx,
+  });
+  const yearCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const getFrameSvg = useCallback(async (frameIdx: number) => {
+    return yearCardRefs.current[frameIdx]?.querySelector('svg') ?? null;
+  }, []);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -270,6 +280,8 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
     setSelectedMatchIdx(0);
     setStateDropdownOpen(false);
     setShowSuggestions(false);
+    setYearIdx(0);
+    stopPlay();
 
     try {
       const params = new URLSearchParams({ district: trimmed, geojson: 'true' });
@@ -324,6 +336,8 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
     setError(null);
     setSelectedMatchIdx(0);
     setShowSuggestions(false);
+    setYearIdx(0);
+    stopPlay();
   };
 
   const clear = () => {
@@ -347,6 +361,17 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
   };
 
   const match = response?.matches[selectedMatchIdx] ?? null;
+
+  const mergedGeoByYear = useMemo(() => {
+    const result = new Map<number, any>();
+    if (!match) return result;
+    for (const y of CENSUS_YEARS) {
+      const entries = match.evolution[String(y)] ?? [];
+      const allFeatures = entries.flatMap(e => e.geojson?.features ?? []);
+      result.set(y, allFeatures.length ? { type: 'FeatureCollection', features: allFeatures } : null);
+    }
+    return result;
+  }, [match]);
 
   const bg = darkMode ? 'bg-[hsl(25,8%,9%)]' : 'bg-white';
   const border = darkMode ? 'border-[hsl(25,8%,14%)]' : 'border-[hsl(35,18%,84%)]';
@@ -565,15 +590,33 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
               </div>
             </div>
 
+            <div className="mb-3">
+              <PlaybackControls
+                playing={playing}
+                onToggle={togglePlay}
+                onStop={stopPlay}
+                darkMode={darkMode}
+                years={CENSUS_YEARS}
+                yearIdx={yearIdx}
+                setYearIdx={setYearIdx}
+                getFrameSvg={getFrameSvg}
+                filenamePrefix={`bharatviz-${(response?.query.district ?? 'district').toLowerCase().replace(/\s+/g, '-')}-evolution`}
+              />
+            </div>
+
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-              {CENSUS_YEARS.map(y => {
+              {CENSUS_YEARS.map((y, i) => {
                 const entries = match.evolution[String(y)] ?? [];
-                const allFeatures = entries.flatMap(e => e.geojson?.features ?? []);
-                const mergedGeo = allFeatures.length ? { type: 'FeatureCollection', features: allFeatures } : null;
+                const mergedGeo = mergedGeoByYear.get(y) ?? null;
                 const label = entries.length ? entries.map(e => e.district).join(' / ') : null;
                 const labelDiffers = label && label !== response?.query.district;
+                const isActive = i === yearIdx;
                 return (
-                  <div key={y}>
+                  <div
+                    key={y}
+                    ref={el => { yearCardRefs.current[i] = el; }}
+                    className={isActive ? 'rounded ring-2 ring-amber-500' : ''}
+                  >
                     {entries.length > 0 ? (
                       <>
                         {mergedGeo ? (

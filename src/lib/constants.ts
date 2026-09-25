@@ -56,7 +56,7 @@ export const DEFAULT_LEGEND_POSITION = {
   DISTRICTS: { x: 390, y: 200 }
 };
 
-const R2 = 'https://geo.bharatviz.org';
+export const R2 = 'https://geo.bharatviz.org';
 
 // File paths
 export const DATA_FILES = {
@@ -66,6 +66,8 @@ export const DATA_FILES = {
   STATES_DEMO_CSV: '/nfhs5_protein_consumption_eggs.csv',
   DISTRICTS_DEMO_CSV: '/districts_demo.csv'
 };
+
+export const censusDistrictsUrl = (year: number) => `${R2}/geojsons/census/India-${year}-districts.geojson`;
 
 // Default state selections
 export const DEFAULT_FALLBACK_STATE = 'Maharashtra';

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import * as d3 from 'd3';
 import { Feature } from 'geojson';
 import { Search, X } from 'lucide-react';
+import { useEvolutionPlayback, PlaybackControls } from './EvolutionPlayback';
+import { censusDistrictsUrl } from '@/lib/constants';
 
 interface EvoNode {
   id: string;
@@ -91,7 +93,7 @@ function makeGeoJSONFetcher(gjYearMap: Record<number, number>, firstYear: number
     const alreadyParsed = gjYear !== year && geojsonCache.has(cacheKey);
     const base = alreadyParsed
       ? Promise.resolve(geojsonCache.get(cacheKey)!)
-      : fetch(`/India-${gjYear}-districts.geojson`)
+      : fetch(censusDistrictsUrl(gjYear))
           .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
           .then(gj => { const fc = prepareGeoJSON(gj); geojsonCache.set(cacheKey, fc); return fc; });
     return base.then(fc => {
@@ -134,7 +136,7 @@ function initPanel(
 
   const svg = d3.select(svgEl);
   svg.selectAll('*').remove();
-  svg.attr('width', W).attr('height', H);
+  svg.attr('width', W).attr('height', H).style('font-family', "'DM Sans', Arial, sans-serif");
   svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
   const fitTarget = refFC ?? fc;
@@ -351,6 +353,15 @@ export function IndiaEvolutionMap({
   } | null>(null);
 
   const year = YEARS[yearIdx];
+  const singlePanelWrapRef = useRef<HTMLDivElement>(null);
+  const { playing, toggle: togglePlay, stop: stopPlay } = useEvolutionPlayback({
+    yearsLength: YEARS.length, setYearIdx,
+  });
+
+  const getFrameSvg = useCallback(async (frameIdx: number) => {
+    await fetchGeoJSON(YEARS[frameIdx]);
+    return singlePanelWrapRef.current?.querySelector('svg') ?? null;
+  }, [YEARS, fetchGeoJSON]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -486,6 +497,7 @@ export function IndiaEvolutionMap({
     setHovered(null);
     setTooltip(null);
     setSearchQuery('');
+    stopPlay();
   };
 
   const selectedMeta = clickedChainId != null ? chainMeta.get(clickedChainId) : null;
@@ -580,11 +592,22 @@ export function IndiaEvolutionMap({
 
       {mode === 'single' && (
         <div className={`flex items-center gap-3 px-4 py-2 border-b ${darkMode ? 'border-[hsl(25,8%,14%)]' : 'border-[hsl(35,16%,92%)]'}`}>
+          <PlaybackControls
+            playing={playing}
+            onToggle={togglePlay}
+            onStop={stopPlay}
+            darkMode={darkMode}
+            years={YEARS}
+            yearIdx={yearIdx}
+            setYearIdx={setYearIdx}
+            getFrameSvg={getFrameSvg}
+            filenamePrefix={`bharatviz-india-evolution-${originYear}`}
+          />
           <span className={`text-sm font-semibold w-10 shrink-0 ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>{year}</span>
           <div className="flex-1 overflow-x-auto">
             <div className="flex items-center gap-1">
             {YEARS.map((y, i) => (
-              <button key={y} onClick={() => setYearIdx(i)} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
+              <button key={y} onClick={() => { stopPlay(); setYearIdx(i); }} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
                 <div className={`h-2 w-full rounded-full transition-all ${
                   i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-[hsl(25,8%,18%)] group-hover:bg-[hsl(25,8%,22%)]' : 'bg-[hsl(35,14%,88%)] group-hover:bg-[hsl(35,14%,82%)]'
                 }`} />
@@ -601,14 +624,16 @@ export function IndiaEvolutionMap({
       )}
 
       {mode === 'single' && allFCs.get(year) && (
-        <Panel
-          year={year}
-          fc={allFCs.get(year)}
-          refFC={refFC}
-          colorLookup={colorLookups.get(year) ?? new Map()}
-          showLabel={false}
-          {...panelProps}
-        />
+        <div ref={singlePanelWrapRef}>
+          <Panel
+            year={year}
+            fc={allFCs.get(year)}
+            refFC={refFC}
+            colorLookup={colorLookups.get(year) ?? new Map()}
+            showLabel={false}
+            {...panelProps}
+          />
+        </div>
       )}
 
       {mode === 'grid' && (

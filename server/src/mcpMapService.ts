@@ -557,26 +557,49 @@ export class McpMapService {
     return 'other';
   }
 
-  async listMaps(): Promise<Array<MapEntry & { featureCount: number; category: string }>> {
-    const results = [];
-    for (const entry of Object.values(MAP_REGISTRY)) {
+  private listMapsCache: Array<MapEntry & { featureCount: number | null; category: string }> | null = null;
+
+  async listMaps(): Promise<Array<MapEntry & { featureCount: number | null; category: string }>> {
+    if (this.listMapsCache) return this.listMapsCache;
+
+    const GEOJSON_COUNT_SKIP_BYTES = 20 * 1024 * 1024;
+    const entries = Object.values(MAP_REGISTRY);
+    const results = new Array<MapEntry & { featureCount: number | null; category: string }>(entries.length);
+
+    const countOne = async (i: number) => {
+      const entry = entries[i];
       const category = McpMapService.categoryForId(entry.id);
       try {
-        let featureCount = 0;
+        let featureCount: number | null;
         if (entry.file.endsWith('.parquet')) {
           const { asyncBufferFromUrl, parquetMetadataAsync } = await import('hyparquet');
           const file = await asyncBufferFromUrl({ url: entry.file });
           const meta = await parquetMetadataAsync(file);
           featureCount = Number(meta.num_rows);
         } else {
-          const data = await loadGeoJSON(entry.file);
-          featureCount = data.features.length;
+          const head = await fetch(entry.file, { method: 'HEAD', headers: { 'Accept-Encoding': 'identity' } });
+          const size = Number(head.headers.get('content-length') ?? 0);
+          if (size > GEOJSON_COUNT_SKIP_BYTES) {
+            featureCount = null;
+          } else {
+            const data = await loadGeoJSON(entry.file);
+            featureCount = data.features.length;
+          }
         }
-        results.push({ ...entry, category, featureCount });
+        results[i] = { ...entry, category, featureCount };
       } catch {
-        results.push({ ...entry, category, featureCount: 0 });
+        results[i] = { ...entry, category, featureCount: 0 };
       }
-    }
+    };
+
+    const CONCURRENCY = 8;
+    let next = 0;
+    const worker = async () => {
+      while (next < entries.length) await countOne(next++);
+    };
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
+    this.listMapsCache = results;
     return results;
   }
 
