@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { Feature } from 'geojson';
 import { Search, X } from 'lucide-react';
 import { useEvolutionPlayback, PlaybackControls } from './EvolutionPlayback';
-import { censusDistrictsUrl } from '@/lib/constants';
+import { censusDistrictsUrl, DATA_FILES } from '@/lib/constants';
 
 interface EvoNode {
   id: string;
@@ -68,6 +68,35 @@ function isSriLanka(f: Feature): boolean {
   return maxX < 82.1 && minX > 79.4 && maxY < 10.0;
 }
 
+// Shoelace area; used to detect/fix ring winding d3-geo's clipper needs.
+function ringSignedArea(ring: number[][]): number {
+  let a = 0;
+  for (let i = 0; i < ring.length - 1; i++) {
+    const [x1, y1] = ring[i];
+    const [x2, y2] = ring[i + 1];
+    a += (x2 - x1) * (y2 + y1);
+  }
+  return a;
+}
+
+function fixWinding(geom: any): any {
+  if (!geom) return geom;
+  const fixRing = (ring: number[][], shouldBePositive: boolean) => {
+    const area = ringSignedArea(ring);
+    const isPositive = area > 0;
+    return isPositive === shouldBePositive ? ring : [...ring].reverse();
+  };
+  const fixPolygon = (poly: number[][][]) =>
+    poly.map((ring, i) => fixRing(ring, i === 0));
+  if (geom.type === 'Polygon') {
+    return { ...geom, coordinates: fixPolygon(geom.coordinates) };
+  }
+  if (geom.type === 'MultiPolygon') {
+    return { ...geom, coordinates: geom.coordinates.map(fixPolygon) };
+  }
+  return geom;
+}
+
 function prepareGeoJSON(gj: any): any {
   return {
     type: 'FeatureCollection',
@@ -78,22 +107,29 @@ function prepareGeoJSON(gj: any): any {
         const s = (f.properties?.state_name || '').toLowerCase();
         return {
           ...f,
+          geometry: fixWinding(f.geometry),
           properties: { ...f.properties, _dname: d, _sname: s, _key: `${s}:${d}` },
         };
       }),
   };
 }
 
+// 2024 has no census file; 2011's J&K predates the Ladakh split, so use LGD districts instead.
+const YEAR_URL_OVERRIDES: Record<number, string> = {
+  2024: DATA_FILES.DISTRICTS_GEOJSON,
+};
+
 function makeGeoJSONFetcher(gjYearMap: Record<number, number>, firstYear: number) {
   return function fetchGeoJSON(year: number): Promise<any> {
     const gjYear = gjYearMap[year] ?? year;
-    const cacheKey = String(gjYear);
+    const cacheKey = YEAR_URL_OVERRIDES[year] ? `url:${YEAR_URL_OVERRIDES[year]}` : String(gjYear);
     const yearKey = String(year);
     if (geojsonCache.has(yearKey)) return Promise.resolve(geojsonCache.get(yearKey)!);
-    const alreadyParsed = gjYear !== year && geojsonCache.has(cacheKey);
+    const alreadyParsed = cacheKey !== yearKey && geojsonCache.has(cacheKey);
+    const url = YEAR_URL_OVERRIDES[year] ?? censusDistrictsUrl(gjYear);
     const base = alreadyParsed
       ? Promise.resolve(geojsonCache.get(cacheKey)!)
-      : fetch(censusDistrictsUrl(gjYear))
+      : fetch(url)
           .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
           .then(gj => { const fc = prepareGeoJSON(gj); geojsonCache.set(cacheKey, fc); return fc; });
     return base.then(fc => {
@@ -139,7 +175,8 @@ function initPanel(
   svg.attr('width', W).attr('height', H).style('font-family', "'DM Sans', Arial, sans-serif");
   svg.append('rect').attr('width', W).attr('height', H).attr('fill', bgColor);
 
-  const fitTarget = refFC ?? fc;
+  // Different geometry source (e.g. LGD for 2024) can't fit against another year's refFC.
+  const fitTarget = YEAR_URL_OVERRIDES[year] ? fc : (refFC ?? fc);
   const pad = showLabel ? 16 : 8;
   const projection = d3.geoMercator()
     .fitExtent([[pad, pad], [W - pad, H - pad - (showLabel ? 18 : 0)]], fitTarget);

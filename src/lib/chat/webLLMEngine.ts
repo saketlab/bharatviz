@@ -33,6 +33,16 @@ function isKVCacheError(error: unknown): boolean {
   return msg.includes('filledKVCacheLength') || msg.includes('KVCache');
 }
 
+// Stale interrupt flag resetChat() doesn't clear.
+function isStuckInterruptError(error: unknown): boolean {
+  const msg = error instanceof Error ? error.message : String(error);
+  return msg.includes('Message error should not be 0');
+}
+
+function isRecoverableEngineError(error: unknown): boolean {
+  return isKVCacheError(error) || isStuckInterruptError(error);
+}
+
 function isToolCallParseError(error: unknown): boolean {
   if (error instanceof SyntaxError) return true;
   const msg = error instanceof Error ? error.message : String(error);
@@ -237,7 +247,7 @@ export class WebLLMEngine {
       };
 
     } catch (error) {
-      if (isKVCacheError(error) && await this.recoverFromKVCacheError()) {
+      if (isRecoverableEngineError(error) && await this.recoverFromKVCacheError()) {
         return this.query(userQuery, context);
       }
       console.error("WebLLM query error:", error);
@@ -310,7 +320,7 @@ export class WebLLMEngine {
       }
 
     } catch (error) {
-      if (isKVCacheError(error) && await this.recoverFromKVCacheError()) {
+      if (isRecoverableEngineError(error) && await this.recoverFromKVCacheError()) {
         return this.streamQuery(userQuery, context, onChunk, onComplete);
       }
       console.error("WebLLM streaming error:", error);
@@ -451,7 +461,7 @@ export class WebLLMEngine {
       }
 
     } catch (error) {
-      if (isKVCacheError(error) && await this.recoverFromKVCacheError()) {
+      if (isRecoverableEngineError(error) && await this.recoverFromKVCacheError()) {
         return this.queryWithTools(userQuery, context, onChunk, onToolStatus, onComplete);
       }
       console.error("WebLLM tool query error:", error);
@@ -534,7 +544,7 @@ export class WebLLMEngine {
       await this.engine.resetChat();
       return questions.slice(0, 4);
     } catch (error) {
-      if (isKVCacheError(error) && await this.recoverFromKVCacheError()) {
+      if (isRecoverableEngineError(error) && await this.recoverFromKVCacheError()) {
         return this.generateDataQuestions(context);
       }
       console.error("Failed to generate data questions:", error);
