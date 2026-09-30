@@ -8,6 +8,7 @@ interface CreditSource {
   url: string;
   usedFor: string[];
   geojsonFiles?: { name: string; path: string }[];
+  parquetOnlyFiles?: { name: string; path: string }[];
 }
 
 // Mirrors the geojsons/ -> geoparquet/ layout produced by scripts/19 and 20.
@@ -143,6 +144,28 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       url: 'https://sbm.gov.in/',
       usedFor: URBAN_LAYERS.map(l => l.displayName),
       geojsonFiles: URBAN_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
+    },
+    {
+      title: 'SHRUG - Development Data Lab',
+      description: 'Socioeconomic High-resolution Rural-Urban Geographic (SHRUG) platform: district-level attribute data spanning Census, Economic Census, SECC, environment, Facebook population/wealth, and PMGSY roads, harmonized to PC11 district codes',
+      url: 'https://www.devdatalab.org/shrug_download/',
+      usedFor: [
+        'Census 1991-2011 (population, literacy, SC/ST shares)',
+        'Economic Census 1990-2013 (firms, employment)',
+        'SECC 2011 (rural deprivation indicators)',
+        'Environment (PM2.5, night-lights, terrain)',
+        'Facebook population & Relative Wealth Index (RWI)',
+        'PMGSY roads (rural connectivity)'
+      ],
+      parquetOnlyFiles: [
+        { name: 'Census attributes', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_census.parquet' },
+        { name: 'Economic Census attributes', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_economic.parquet' },
+        { name: 'SECC attributes', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_secc.parquet' },
+        { name: 'Environment attributes', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_environment.parquet' },
+        { name: 'Facebook wealth index (RWI)', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_facebook.parquet' },
+        { name: 'PMGSY roads attributes', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_roads.parquet' },
+        { name: 'All SHRUG modules joined', path: 'https://geo.bharatviz.org/geoparquet/shrug/shrug_districts_all.parquet' }
+      ]
     }
   ];
 
@@ -270,6 +293,27 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
                           </a>
                           <a
                             href={parquetUrl(file.path)}
+                            download
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
+                          >
+                            <Download className="h-3 w-3" />
+                            GeoParquet
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {source.parquetOnlyFiles && source.parquetOnlyFiles.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-sm font-medium mb-2 text-muted-foreground dark:text-[hsl(30,8%,55%)]">Download:</p>
+                    <div className="flex flex-col gap-1.5">
+                      {source.parquetOnlyFiles.map((file, i) => (
+                        <div key={i} className="flex flex-wrap items-center gap-2">
+                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-[9rem]">{file.name}</span>
+                          <a
+                            href={file.path}
                             download
                             className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
                           >

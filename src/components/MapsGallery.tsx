@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ExternalLink, Download, Hash, Search } from 'lucide-react';
 import { CITY_DATASETS } from '@/lib/cityMapConfig';
-import cityGistMapping from '@/lib/city-gist-mapping.json';
-import pincodeGistMapping from '@/lib/pincode-gist-mapping.json';
-import historicalMapping from '@/lib/gist-mapping.json';
+import cityMapping from '@/lib/city-mapping.json';
+import pincodeMapping from '@/lib/pincode-mapping.json';
+import historicalMapping from '@/lib/historical-mapping.json';
 
 interface MapsGalleryProps {
   darkMode?: boolean;
@@ -128,23 +128,23 @@ const parquetUrl = (geojsonUrl: string): string =>
   geojsonUrl.replace('/geojsons/', '/geoparquet/').replace(/\.geojson$/, '.parquet');
 
 // City ward geojsons, keyed by dataset id -> R2 geojson URL (post gist-to-R2 migration).
-const cityGistUrls = cityGistMapping as Record<string, string>;
+const cityUrls = cityMapping as Record<string, string>;
 const CITY_ENTRIES: MapEntry[] = CITY_DATASETS
-  .filter(ds => cityGistUrls[ds.id])
+  .filter(ds => cityUrls[ds.id])
   .map(ds => ({
     id: `city-${ds.id}`,
     level: ds.type === 'wards' ? 'Wards' : ds.type === 'zones' ? 'Zones' : 'Boundary',
     source: ds.source,
     year: 2024,
     description: `${ds.displayName} (${ds.state}) — ${ds.label}, ${ds.featureCount} features`,
-    geojsonUrl: cityGistUrls[ds.id],
-    parquetUrl: parquetUrl(cityGistUrls[ds.id]),
+    geojsonUrl: cityUrls[ds.id],
+    parquetUrl: parquetUrl(cityUrls[ds.id]),
     category: 'Cities',
     tab: 'cities',
   }));
 
 // Pincode boundaries, per state.
-const pincodeUrls = pincodeGistMapping as Record<string, string>;
+const pincodeUrls = pincodeMapping as Record<string, string>;
 const PINCODE_ENTRIES: MapEntry[] = Object.entries(pincodeUrls).map(([state, url]) => ({
   id: `pincode-${state.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
   level: 'Pincodes',
