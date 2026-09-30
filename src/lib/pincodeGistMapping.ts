@@ -1,4 +1,4 @@
-import mapping from './pincode-gist-mapping.json';
+import mapping from './pincode-mapping.json';
 import { ALL_INDIA_STATE } from './constants';
 
 const gistMap = mapping as Record<string, string>;

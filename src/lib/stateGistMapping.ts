@@ -3,7 +3,7 @@
  * Maps state names to GitHub Gist raw URLs for per-state GeoJSON files
  */
 
-import gistMapping from './gist-mapping.json';
+import gistMapping from './historical-mapping.json';
 
 export interface StateGistMapping {
   [mapType: string]: {
