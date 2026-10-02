@@ -1,0 +1,184 @@
+{
+  "national": {
+    "features": 226991,
+    "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/india.geojson",
+    "template": "https://geo.bharatviz.org/csv/panchayats/india_template.csv"
+  },
+  "states": {
+    "PUNJAB": {
+      "state_lgd_name": "Punjab",
+      "state_lgd_code": 3,
+      "features": 10878,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/punjab.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/punjab_template.csv"
+    },
+    "UTTARAKHAND": {
+      "state_lgd_name": "Uttarakhand",
+      "state_lgd_code": 5,
+      "features": 7407,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/uttarakhand.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/uttarakhand_template.csv"
+    },
+    "HARYANA": {
+      "state_lgd_name": "Haryana",
+      "state_lgd_code": 6,
+      "features": 5458,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/haryana.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/haryana_template.csv"
+    },
+    "RAJASTHAN": {
+      "state_lgd_name": "Rajasthan",
+      "state_lgd_code": 8,
+      "features": 10950,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/rajasthan.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/rajasthan_template.csv"
+    },
+    "UTTAR PRADESH": {
+      "state_lgd_name": "Uttar Pradesh",
+      "state_lgd_code": 9,
+      "features": 56137,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/uttar-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/uttar-pradesh_template.csv"
+    },
+    "BIHAR": {
+      "state_lgd_name": "Bihar",
+      "state_lgd_code": 10,
+      "features": 7877,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/bihar.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/bihar_template.csv"
+    },
+    "TRIPURA": {
+      "state_lgd_name": "Tripura",
+      "state_lgd_code": 16,
+      "features": 601,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/tripura.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/tripura_template.csv"
+    },
+    "ASSAM": {
+      "state_lgd_name": "Assam",
+      "state_lgd_code": 18,
+      "features": 2563,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/assam.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/assam_template.csv"
+    },
+    "WEST BENGAL": {
+      "state_lgd_name": "West Bengal",
+      "state_lgd_code": 19,
+      "features": 3256,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/west-bengal.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/west-bengal_template.csv"
+    },
+    "JHARKHAND": {
+      "state_lgd_name": "Jharkhand",
+      "state_lgd_code": 20,
+      "features": 4132,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/jharkhand.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/jharkhand_template.csv"
+    },
+    "ODISHA": {
+      "state_lgd_name": "Odisha",
+      "state_lgd_code": 21,
+      "features": 6782,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/odisha.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/odisha_template.csv"
+    },
+    "CHHATTISGARH": {
+      "state_lgd_name": "Chhattisgarh",
+      "state_lgd_code": 22,
+      "features": 11231,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/chhattisgarh.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/chhattisgarh_template.csv"
+    },
+    "MADHYA PRADESH": {
+      "state_lgd_name": "Madhya Pradesh",
+      "state_lgd_code": 23,
+      "features": 21615,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/madhya-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/madhya-pradesh_template.csv"
+    },
+    "GUJARAT": {
+      "state_lgd_name": "Gujarat",
+      "state_lgd_code": 24,
+      "features": 13650,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/gujarat.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/gujarat_template.csv"
+    },
+    "MAHARASHTRA": {
+      "state_lgd_name": "Maharashtra",
+      "state_lgd_code": 27,
+      "features": 27352,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/maharashtra.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/maharashtra_template.csv"
+    },
+    "ANDHRA PRADESH": {
+      "state_lgd_name": "Andhra Pradesh",
+      "state_lgd_code": 28,
+      "features": 10310,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/andhra-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/andhra-pradesh_template.csv"
+    },
+    "KARNATAKA": {
+      "state_lgd_name": "Karnataka",
+      "state_lgd_code": 29,
+      "features": 5948,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/karnataka.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/karnataka_template.csv"
+    },
+    "GOA": {
+      "state_lgd_name": "Goa",
+      "state_lgd_code": 30,
+      "features": 178,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/goa.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/goa_template.csv"
+    },
+    "LAKSHADWEEP": {
+      "state_lgd_name": "Lakshadweep",
+      "state_lgd_code": 31,
+      "features": 10,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/lakshadweep.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/lakshadweep_template.csv"
+    },
+    "KERALA": {
+      "state_lgd_name": "Kerala",
+      "state_lgd_code": 32,
+      "features": 877,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/kerala.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/kerala_template.csv"
+    },
+    "TAMIL NADU": {
+      "state_lgd_name": "Tamil Nadu",
+      "state_lgd_code": 33,
+      "features": 11452,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/tamil-nadu.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/tamil-nadu_template.csv"
+    },
+    "PUDUCHERRY": {
+      "state_lgd_name": "Puducherry",
+      "state_lgd_code": 34,
+      "features": 71,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/puducherry.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/puducherry_template.csv"
+    },
+    "ANDAMAN & NICOBAR": {
+      "state_lgd_name": "Andaman & Nicobar Islands",
+      "state_lgd_code": 35,
+      "features": 72,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/andaman-nicobar-islands.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/andaman-nicobar-islands_template.csv"
+    },
+    "TELANGANA": {
+      "state_lgd_name": "Telangana",
+      "state_lgd_code": 36,
+      "features": 8154,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/telangana.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/telangana_template.csv"
+    },
+    "DADRA,NAGAR HAVELI,DAMAN & DIU": {
+      "state_lgd_name": "Dadra & Nagar Haveli & Daman & Diu",
+      "state_lgd_code": 38,
+      "features": 30,
+      "url": "https://geo.bharatviz.org/geojsons/admin/panchayats/dadra-nagar-haveli-daman-diu.geojson",
+      "template": "https://geo.bharatviz.org/csv/panchayats/dadra-nagar-haveli-daman-diu_template.csv"
+    }
+  }
+}

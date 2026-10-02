@@ -4,6 +4,7 @@ import { CITY_DATASETS } from '@/lib/cityMapConfig';
 import cityMapping from '@/lib/city-mapping.json';
 import pincodeMapping from '@/lib/pincode-mapping.json';
 import historicalMapping from '@/lib/historical-mapping.json';
+import panchayatMapping from '@/lib/panchayat-mapping.json';
 
 interface MapsGalleryProps {
   darkMode?: boolean;
@@ -157,6 +158,32 @@ const PINCODE_ENTRIES: MapEntry[] = Object.entries(pincodeUrls).map(([state, url
   tab: 'pincodes',
 }));
 
+// Gram Panchayats: per-state GeoJSON, one national GeoParquet
+const PANCHAYAT_SOURCE = 'Ministry of Panchayati Raj (LGD)';
+const PANCHAYAT_ENTRIES: MapEntry[] = [
+  ...Object.values(panchayatMapping.states).map(f => ({
+    id: `lgd-panchayats-${f.state_lgd_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    level: 'Gram Panchayats',
+    source: PANCHAYAT_SOURCE,
+    year: 2024,
+    description: `Gram Panchayat boundaries for ${f.state_lgd_name} (${f.features.toLocaleString('en-IN')} GPs)`,
+    geojsonUrl: f.url,
+    category: 'Sub-admin',
+    tab: 'sub-admin',
+  })),
+  {
+    id: 'lgd-panchayats-all',
+    level: 'Gram Panchayats',
+    source: PANCHAYAT_SOURCE,
+    year: 2024,
+    description: `All ${panchayatMapping.national.features.toLocaleString('en-IN')} Gram Panchayats (${Object.keys(panchayatMapping.states).length} states): heavily simplified GeoJSON for national maps, full-resolution GeoParquet`,
+    geojsonUrl: panchayatMapping.national.url,
+    parquetUrl: `${ADMIN_P}/India-lgd-panchayats.parquet`,
+    category: 'Sub-admin',
+    tab: 'sub-admin',
+  },
+];
+
 // Historical district evolution, per year/tag and state.
 const historicalUrls = historicalMapping as Record<string, Record<string, string>>;
 const HISTORICAL_ENTRIES: MapEntry[] = Object.entries(historicalUrls).flatMap(([year, states]) =>
@@ -173,7 +200,7 @@ const HISTORICAL_ENTRIES: MapEntry[] = Object.entries(historicalUrls).flatMap(([
   }))
 );
 
-ALL_MAPS.push(...CITY_ENTRIES, ...PINCODE_ENTRIES, ...HISTORICAL_ENTRIES);
+ALL_MAPS.push(...PANCHAYAT_ENTRIES, ...CITY_ENTRIES, ...PINCODE_ENTRIES, ...HISTORICAL_ENTRIES);
 
 const CATEGORIES = ['All', 'Census', 'Official', 'Survey', 'Sub-admin', 'Electoral', 'Environment', 'Urban', 'Points', 'SHRUG', 'Health', 'Cities', 'Pincodes', 'Historical'];
 

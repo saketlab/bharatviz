@@ -2,7 +2,7 @@
 
 > Fast, high-quality choropleth map generator for India
 
-BharatViz generates publication-ready choropleth maps of India at state and district levels. It supports 27 different administrative boundary sets spanning Census years 1941-2011, LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions.
+BharatViz generates publication-ready choropleth maps of India at state and district levels. It supports 27 different administrative boundary sets spanning Census years 1941-2011, LGD (latest official), NFHS-4, NFHS-5, Survey of India, ISRO Bhuvan, and NSSO regions. Below district level it also covers subdistricts, blocks, and Gram Panchayats (Ministry of Panchayati Raj, LGD-coded, one file per state: MCP map IDs `lgd-panchayats-<state>`, e.g. `lgd-panchayats-uttar-pradesh`).
 
 ## MCP Server
 

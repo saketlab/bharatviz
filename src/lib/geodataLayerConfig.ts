@@ -1,5 +1,13 @@
+import panchayatMapping from './panchayat-mapping.json';
+
 const R2 = 'https://geo.bharatviz.org';
 const STATES_URL = `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`;
+
+export interface StateFile {
+  url: string;
+  template: string;
+  features: number;
+}
 
 export interface GeoDataLayer {
   id: string;
@@ -12,6 +20,34 @@ export interface GeoDataLayer {
   templateCsvPath?: string; // downloadable upload template generated from this layer
   googleSheetLink?: string; // shareable Google Sheets template for this layer
   source: string; // key for citations.ts
+  // per-state layers (too large nationally), keyed by state_name; url is then the state-file index
+  stateFiles?: Record<string, StateFile>;
+  nationalFile?: StateFile; // optional lighter All-India file for per-state layers
+  parquetUrl?: string; // when the GeoParquet path does not mirror url
+  defaultHideNames?: boolean; // dense layers where per-feature labels are unreadable
+}
+
+const PANCHAYAT_STATE_FILES: Record<string, StateFile> = Object.fromEntries(
+  Object.entries(panchayatMapping.states).map(([state, f]) => [state, { url: f.url, template: f.template, features: f.features }])
+);
+
+export function getLayerStateFile(layer: GeoDataLayer, state?: string): StateFile | undefined {
+  if (!layer.stateFiles || !state) return undefined;
+  const key = Object.keys(layer.stateFiles).find(s => s.toLowerCase() === state.toLowerCase());
+  return key ? layer.stateFiles[key] : undefined;
+}
+
+function resolveLayerFile(layer: GeoDataLayer, state?: string): StateFile | undefined {
+  if (!layer.stateFiles) return undefined;
+  return getLayerStateFile(layer, state) ?? layer.nationalFile ?? Object.values(layer.stateFiles)[0];
+}
+
+export function getLayerGeojsonUrl(layer: GeoDataLayer, state?: string): string {
+  return resolveLayerFile(layer, state)?.url ?? layer.url;
+}
+
+export function getLayerTemplateUrl(layer: GeoDataLayer, state?: string): string | undefined {
+  return resolveLayerFile(layer, state)?.template ?? layer.templateCsvPath;
 }
 
 export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
@@ -74,6 +110,20 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     templateCsvPath: '/bharatviz-pmgsy-blocks-template.csv',
     googleSheetLink: 'https://docs.google.com/spreadsheets/d/1V6FLF2pvAHe7ZxVGQNQ57rKcLgo0hSbed4GUdFS4XmM/edit?usp=sharing',
     source: 'LGD',
+  },
+  {
+    id: 'lgd_panchayats',
+    displayName: 'LGD Gram Panchayats',
+    description: 'Gram Panchayat boundaries (Ministry of Panchayati Raj, LGD-coded): detailed per state, simplified for All India',
+    url: `${R2}/geojsons/admin/panchayats/index.json`,
+    statesUrl: STATES_URL,
+    featureNameProp: 'panchayat_label',
+    csvColumns: ['state_name', 'panchayat_label', 'value'],
+    source: 'MoPR',
+    stateFiles: PANCHAYAT_STATE_FILES,
+    nationalFile: panchayatMapping.national,
+    parquetUrl: `${R2}/geoparquet/admin/India-lgd-panchayats.parquet`,
+    defaultHideNames: true,
   },
   {
     id: 'shrug_subdistricts',

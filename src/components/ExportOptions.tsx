@@ -115,13 +115,26 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
     return () => { cancelled = true; };
   }, [parquetDownloadUrl, derivedParquetUrl]);
 
-  const triggerDownload = (url: string, name: string) => {
+  const clickLink = (href: string, name: string) => {
     const link = document.createElement('a');
-    link.href = url;
+    link.href = href;
     link.download = name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // cross-origin <a download> opens instead of saving (R2), so fetch a blob
+  const triggerDownload = async (url: string, name: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blobUrl = URL.createObjectURL(await res.blob());
+      clickLink(blobUrl, name);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
+    } catch {
+      clickLink(url, name);
+    }
   };
 
   const handleDownloadGeoJSON = () => {
@@ -129,7 +142,8 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
   };
 
   const handleDownloadParquet = () => {
-    if (resolvedParquetUrl) triggerDownload(resolvedParquetUrl, parquetDownloadName || resolvedParquetUrl.split('/').pop() || 'data.parquet');
+    // plain link: binaries download anyway; national parquets are too big for a blob
+    if (resolvedParquetUrl) clickLink(resolvedParquetUrl, parquetDownloadName || resolvedParquetUrl.split('/').pop() || 'data.parquet');
   };
 
   const handleCopy = () => {

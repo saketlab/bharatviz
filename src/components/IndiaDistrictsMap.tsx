@@ -18,6 +18,7 @@ import { DeckPointsLayer, type PointViewMode } from './DeckPointsLayer';
 import { DeckPolygonsLayer, type PolygonFeature } from './DeckPolygonsLayer';
 
 import polylabel from "@mapbox/polylabel";
+import { fetchJSONShared } from '@/lib/geoJsonCache';
 
 function getPolygonCenter(geometry: { type: string; coordinates: number[][][] | number[][][][] }): [number, number] {
   try {
@@ -159,6 +160,12 @@ const colorScales: Record<ColorScale, (t: number) => string> = {
   puor: interpolatePuOr,
 };
 
+// above this, per-feature paths take tens of seconds to mount; draw one path per fill colour
+const DENSE_FEATURE_LIMIT = 20000;
+// Chrome stops painting a single path once its data runs to tens of MB
+const DENSE_CHUNK = 5000;
+const roundPath = (d: string) => d.replace(/(\.\d)\d+/g, '$1'); // 0.1 px is enough at 800 px wide
+
 const toDisplayName = (name: string): string =>
   name === name.toUpperCase()
     ? name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
@@ -295,6 +302,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   }, [scopedNumericValues, data.length, dataType]);
 
   useEffect(() => {
+    let cancelled = false; // a slow load for a previous layer or state must not overwrite this one
     const loadGeoData = async () => {
       setRenderingData(true);
 
@@ -305,37 +313,15 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
           return;
         }
 
-        let districtsDataPromise;
-
-        if (gistUrlProvider && selectedState) {
-          const gistUrl = gistUrlProvider(selectedState);
-          if (gistUrl) {
-            districtsDataPromise = fetch(gistUrl).then(response => {
-              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-              return response.json();
-            });
-          } else {
-            districtsDataPromise = fetch(geojsonPath).then(response => {
-              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-              return response.json();
-            });
-          }
-        } else {
-          districtsDataPromise = fetch(geojsonPath).then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-          });
-        }
-
-        const statesDataPromise = fetch(statesGeojsonPath).then(response => {
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          return response.json();
-        });
+        const gistUrl = gistUrlProvider && selectedState ? gistUrlProvider(selectedState) : undefined;
+        const districtsDataPromise = fetchJSONShared<{ features: GeoJSONFeature[] }>(gistUrl || geojsonPath);
+        const statesDataPromise = fetchJSONShared<{ features: GeoJSONFeature[] }>(statesGeojsonPath);
 
         const [districtsData, statesDataResponse] = await Promise.all([
           districtsDataPromise,
           statesDataPromise
         ]);
+        if (cancelled) return;
 
         let filteredDistrictsData = districtsData;
         if (selectedState) {
@@ -355,12 +341,14 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
           setRenderingData(false);
         }, 300);
       } catch (error) {
+        if (cancelled) return;
         console.error('Failed to load GeoJSON data:', error);
         setRenderingData(false);
       }
     };
 
     loadGeoData();
+    return () => { cancelled = true; };
   }, [geojsonPath, statesGeojsonPath, selectedState, gistUrlProvider]);
 
   useEffect(() => {
@@ -1189,6 +1177,9 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
 
     let max = 0;
     let min = Infinity;
+    if (geojsonData.features.length > DENSE_FEATURE_LIMIT) {
+      return { districtLabelData: [], maxArea: 0, minArea: 0, districtDataMap: map }; // labels unreadable at this density
+    }
     const labels = geojsonData.features.map(feature => {
       const area = calculateDistrictArea(feature);
       if (area > max) max = area;
@@ -1269,7 +1260,28 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               role="img"
               aria-label={dataTitle ? `India districts map - ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` - ${selectedState}` : ''}`}
             >
-              {geojsonData.features.map((feature, index) => {
+              {geojsonData.features.length > DENSE_FEATURE_LIMIT ? (() => {
+                const byFill = new Map<string, string[]>();
+                geojsonData.features.forEach((feature, index) => {
+                  const name = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
+                  const value = districtDataMap.get(`${(feature.properties.state_name || '').toLowerCase().trim()}|${name.toLowerCase().trim()}`);
+                  const fill = getDistrictColorForValue(value, dataExtent);
+                  const group = byFill.get(fill);
+                  const d = roundPath(districtPaths[index]);
+                  if (group) group.push(d); else byFill.set(fill, [d]);
+                });
+                return [...byFill].flatMap(([fill, paths]) =>
+                  Array.from({ length: Math.ceil(paths.length / DENSE_CHUNK) }, (_, i) => (
+                    <path
+                      key={`dense-${fill}-${i}`}
+                      d={paths.slice(i * DENSE_CHUNK, (i + 1) * DENSE_CHUNK).join('')}
+                      fill={fill}
+                      stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fill, darkMode)}
+                      strokeWidth={boundaryWidth}
+                    />
+                  ))
+                );
+              })() : geojsonData.features.map((feature, index) => {
                 const path = districtPaths[index];
                 const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
                 const districtValue = districtDataMap.get(

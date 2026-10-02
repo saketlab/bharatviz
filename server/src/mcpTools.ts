@@ -41,7 +41,7 @@ export function createMcpServer(): Server {
         '- Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
         '- Villages (mapId: villages-soi-points) - 584,615 LGD village points (centroids of LGD village ' +
         '  polygons), the finest admin level, complete nationwide; fields village_name, state_name, district\n' +
-        '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, constituencies\n\n' +
+        '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, Gram Panchayats (per state), constituencies\n\n' +
         'TOOLS:\n' +
         '- rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
         '- correlate: Pearson/Spearman between two columns across districts or states\n' +
@@ -173,7 +173,8 @@ export function createMcpServer(): Server {
             '{state, district, value} data points. Can render all-India districts or zoom into a single state. ' +
             'Supports 17 color scales, dark mode, state boundary overlays, and multiple boundary sets including ' +
             'districts (lgd-districts, census-*-districts), subdistricts (lgd-subdistricts, soi-subdistricts), ' +
-            'blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), and constituencies (lgd-parliament, lgd-assembly). ' +
+            'blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), Gram Panchayats (lgd-panchayats-<state>, e.g. lgd-panchayats-uttar-pradesh; one map per state, feature name = panchayat_label), ' +
+            'and constituencies (lgd-parliament, lgd-assembly). ' +
             'Default output is 300 DPI PNG.',
           inputSchema: {
             type: 'object' as const,
@@ -184,7 +185,7 @@ export function createMcpServer(): Server {
                   type: 'object',
                   properties: {
                     state: { type: 'string', description: 'State name (omit for stateless layers like eco-zones)' },
-                    district: { type: 'string', description: 'Feature name (district, subdistrict, block, constituency, or area name depending on mapId)' },
+                    district: { type: 'string', description: 'Feature name (district, subdistrict, block, panchayat_label, constituency, or area name depending on mapId)' },
                     value: { type: 'number', description: 'Numeric value for this feature' },
                   },
                   required: ['district', 'value'],
@@ -194,7 +195,7 @@ export function createMcpServer(): Server {
               },
               mapId: {
                 type: 'string',
-                description: 'Map boundary ID. Default: "lgd-districts". Also supports subdistricts (lgd-subdistricts, soi-subdistricts), blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), constituencies (lgd-parliament, lgd-assembly). Use list_available_maps to see all options.',
+                description: 'Map boundary ID. Default: "lgd-districts". Also supports subdistricts (lgd-subdistricts, soi-subdistricts), blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), Gram Panchayats per state (lgd-panchayats-<state>, e.g. lgd-panchayats-goa), constituencies (lgd-parliament, lgd-assembly). Use list_available_maps to see all options.',
               },
               state: {
                 type: 'string',
@@ -1112,7 +1113,7 @@ export function createMcpServer(): Server {
           name: 'list_categories',
           description:
             'Lists all available BharatViz map layers grouped by category. ' +
-            'Categories: admin (Census 1872-2011 boundaries, LGD, SOI, Bhuvan, blocks, subdistricts; ' +
+            'Categories: admin (Census 1872-2011 boundaries, LGD, SOI, Bhuvan, blocks, subdistricts, Gram Panchayats per state; ' +
             'SHRUG data layers: shrug-census/shrug-secc/shrug-economic/shrug-environment/shrug-roads/shrug-facebook), ' +
             'electoral (Lok Sabha, Vidhan Sabha constituencies), ' +
             'survey (NFHS-4, NFHS-5, NSSO regions), ' +

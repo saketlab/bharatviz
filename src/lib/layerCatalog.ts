@@ -2,7 +2,7 @@ import { fetchGeoJSON } from './geoJsonCache';
 import { getDistrictMapConfig, getDistrictMapTypesList } from './districtMapConfig';
 import {
   SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS,
-  getSubAdminLayer, getElectoralLayer, getEnvironmentLayer, getUrbanLayer,
+  getSubAdminLayer, getElectoralLayer, getEnvironmentLayer, getUrbanLayer, getLayerStateFile,
   type GeoDataLayer,
 } from './geodataLayerConfig';
 import { CITY_DATASETS, type CityDataset } from './cityMapConfig';
@@ -186,7 +186,13 @@ export async function getLayerFeatures(
 
   const layer = getGeoDataLayer(entry.group, entry.id);
   if (!layer) throw new Error(`Unknown ${entry.group} layer: ${entry.id}`);
-  const geo = await fetchGeoJSON(COMPARE_URL_OVERRIDES[entry.id] ?? layer.url);
+  let url = COMPARE_URL_OVERRIDES[entry.id] ?? layer.url;
+  if (layer.stateFiles) {
+    const stateFile = getLayerStateFile(layer, opts?.geoDataState);
+    if (!stateFile) throw new Error(`${layer.displayName} has no boundaries for ${opts?.geoDataState ?? 'this state'}`);
+    url = stateFile.url;
+  }
+  const geo = await fetchGeoJSON(url);
   const stateProp = layer.csvColumns.includes('state_name') ? 'state_name' : NO_STATE_PROP;
   // Simplification can collapse sliver rings to null geometry, which downstream Turf calls reject.
   let features = (geo.features as GeoJSONFeatureLike[]).filter(f => f.geometry != null);

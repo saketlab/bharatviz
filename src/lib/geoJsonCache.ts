@@ -36,3 +36,20 @@ export async function fetchGeoJSON(path: string): Promise<GeoJSON> {
 export function clearCache() {
   cache.clear();
 }
+
+const inflight = new Map<string, Promise<unknown>>();
+
+// Concurrent callers share one request, which is forgotten once settled: Chrome fails a second
+// simultaneous read of a large uncached response with ERR_CACHE_WRITE_FAILURE.
+export function fetchJSONShared<T = unknown>(path: string): Promise<T> {
+  const pending = inflight.get(path);
+  if (pending) return pending as Promise<T>;
+  const promise = fetch(path)
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json() as Promise<T>;
+    })
+    .finally(() => inflight.delete(path));
+  inflight.set(path, promise);
+  return promise;
+}

@@ -1,13 +1,14 @@
 import React from 'react';
 import { ExternalLink, Download } from 'lucide-react';
-import { SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS } from '@/lib/geodataLayerConfig';
+import { SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS, getSubAdminLayer } from '@/lib/geodataLayerConfig';
+import panchayatMapping from '@/lib/panchayat-mapping.json';
 
 interface CreditSource {
   title: string;
   description: string;
   url: string;
   usedFor: string[];
-  geojsonFiles?: { name: string; path: string }[];
+  geojsonFiles?: { name: string; path: string; parquet?: string | null }[]; // parquet: null hides the GeoParquet link
   parquetOnlyFiles?: { name: string; path: string }[];
 }
 
@@ -121,8 +122,23 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       title: 'Sub-Admin boundaries (LGD, SOI, Bhuvan, PMGSY, SHRUG)',
       description: 'Subdistrict and block-level administrative boundaries used in the Sub-Admin tab',
       url: 'https://lgdirectory.gov.in/',
-      usedFor: SUB_ADMIN_LAYERS.map(l => l.displayName),
-      geojsonFiles: SUB_ADMIN_LAYERS.map(l => ({ name: l.displayName, path: l.url })),
+      usedFor: SUB_ADMIN_LAYERS.filter(l => !l.stateFiles).map(l => l.displayName),
+      geojsonFiles: SUB_ADMIN_LAYERS.filter(l => !l.stateFiles).map(l => ({ name: l.displayName, path: l.url })),
+    },
+    {
+      title: 'Ministry of Panchayati Raj - Gram Panchayat boundaries',
+      description: 'Gram Panchayat polygons published by the Ministry of Panchayati Raj on the BharatMaps service (AdminGPHierarchy layer), coded to the Local Government Directory. Village-level rows are dissolved into one polygon per Gram Panchayat; web files are simplified per state. The publisher attaches no explicit licence; please attribute the Ministry of Panchayati Raj / LGD. Not covered by the source: Himachal Pradesh, Jammu & Kashmir, Ladakh, Sikkim, Arunachal Pradesh, Nagaland, Manipur, Mizoram, Meghalaya, and urban areas.',
+      url: 'https://mapservice.gov.in/mapserviceserv176/rest/services/Panchayat/AdminGPHierarchy/MapServer/3',
+      usedFor: [`${getSubAdminLayer('lgd_panchayats').displayName} (Sub-Admin tab, ${Object.keys(panchayatMapping.states).length} states)`],
+      geojsonFiles: [
+        { name: 'All India (simplified)', path: panchayatMapping.national.url, parquet: null },
+        ...Object.values(panchayatMapping.states)
+          .sort((a, b) => a.state_lgd_name.localeCompare(b.state_lgd_name))
+          .map(f => ({ name: f.state_lgd_name, path: f.url, parquet: null })),
+      ],
+      parquetOnlyFiles: [
+        { name: 'All states (full resolution)', path: getSubAdminLayer('lgd_panchayats').parquetUrl ?? '' },
+      ],
     },
     {
       title: 'Electoral constituencies (LGD, Susewind)',
@@ -291,14 +307,16 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
                             <Download className="h-3 w-3" />
                             GeoJSON
                           </a>
-                          <a
-                            href={parquetUrl(file.path)}
-                            download
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
-                          >
-                            <Download className="h-3 w-3" />
-                            GeoParquet
-                          </a>
+                          {file.parquet !== null && (
+                            <a
+                              href={file.parquet ?? parquetUrl(file.path)}
+                              download
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-colors bg-secondary hover:bg-secondary/80 text-secondary-foreground dark:bg-[hsl(25,8%,14%)] dark:hover:bg-[hsl(25,10%,25%)] dark:text-[hsl(35,10%,80%)]"
+                            >
+                              <Download className="h-3 w-3" />
+                              GeoParquet
+                            </a>
+                          )}
                         </div>
                       ))}
                     </div>

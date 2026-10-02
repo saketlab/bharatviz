@@ -27,11 +27,11 @@ import {
   getGeoDataLayerStates, getDistrictStates,
   type LayerGroup, type LayerCatalogEntry,
 } from '@/lib/layerCatalog';
-import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
+import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, getLayerGeojsonUrl, getLayerTemplateUrl, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
-import { getUniqueStatesFromGeoJSON, reconcileSelectedState } from '@/lib/stateUtils';
+import { getUniqueStatesFromGeoJSON, reconcileSelectedState, toTitleCase } from '@/lib/stateUtils';
 import { loadStateGistMapping, getAvailableStates, getStateGeoJSONUrl, type StateGistMapping } from '@/lib/stateGistMapping';
 import { getPincodeGeoJSONUrl, getPincodeGistStates, hasPincodeGists } from '@/lib/pincodeGistMapping';
 import { fetchWithCorsFallback } from '@/lib/corsProxy';
@@ -1042,18 +1042,34 @@ const Index = () => {
     if (activeTab !== 'sub-admin') return;
     if (subAdminStates.length > 0) return;
     const layer = getSubAdminLayer(subAdminLayerId);
+    if (layer.stateFiles) {
+      const states = Object.keys(layer.stateFiles).map(toTitleCase).sort();
+      setSubAdminStates(states);
+      setSubAdminSelectedState(current => reconcileSelectedState(current, states));
+      return;
+    }
+    let cancelled = false; // a slow fetch for the previous layer must not overwrite this layer's states
     setSubAdminStatesLoading(true);
     getUniqueStatesFromGeoJSON(layer.url).then(states => {
+      if (cancelled) return;
       setSubAdminStates(states);
       setSubAdminStatesLoading(false);
       setSubAdminSelectedState(current => reconcileSelectedState(current, states));
-    }).catch(() => setSubAdminStatesLoading(false));
-  }, [activeTab, subAdminLayerId]);
+    }).catch(() => { if (!cancelled) setSubAdminStatesLoading(false); });
+    return () => { cancelled = true; };
+    // length dep: the layer-switch reset below must trigger a reload
+  }, [activeTab, subAdminLayerId, subAdminStates.length]);
 
   useEffect(() => {
     setSubAdminSelectedState('Maharashtra');
     setSubAdminStates([]);
+    if (getSubAdminLayer(subAdminLayerId).defaultHideNames) setSubAdminHideNames(true);
   }, [subAdminLayerId]);
+
+  const subAdminGeojsonUrl = getLayerGeojsonUrl(
+    getSubAdminLayer(subAdminLayerId),
+    subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState
+  );
 
   const subAdminMapRef = useRef<IndiaDistrictsMapRef>(null);
 
@@ -2886,7 +2902,7 @@ const Index = () => {
                   dataTitle={subAdminDataTitle}
                   showStateBoundaries={subAdminSelectedState === ALL_INDIA_STATE}
                   colorBarSettings={subAdminColorBarSettings}
-                  geojsonPath={getSubAdminLayer(subAdminLayerId).url}
+                  geojsonPath={subAdminGeojsonUrl}
                   statesGeojsonPath={getSubAdminLayer(subAdminLayerId).statesUrl}
                   selectedState={subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState}
                   hideDistrictNames={subAdminHideNames}
@@ -2907,7 +2923,8 @@ const Index = () => {
                     onExportPDF={handleExportPDF}
                     onCopyToClipboard={handleCopyToClipboard}
                     disabled={subAdminMapData.length === 0}
-                    geojsonDownloadUrl={getSubAdminLayer(subAdminLayerId).url}
+                    geojsonDownloadUrl={subAdminGeojsonUrl}
+                    parquetDownloadUrl={getSubAdminLayer(subAdminLayerId).parquetUrl}
                     geojsonDownloadName={`India-${subAdminLayerId}${subAdminSelectedState !== 'All India' ? '-' + subAdminSelectedState : ''}.geojson`}
                     citationInfo={{ source: getSubAdminLayer(subAdminLayerId).source, mapLabel: getSubAdminLayer(subAdminLayerId).displayName }}
                   />
@@ -2916,7 +2933,7 @@ const Index = () => {
 
               <div className="lg:col-span-1 order-2 lg:order-1 lg:border-r lg:pr-5 border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)]">
                 <div className="mb-5">
-                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Sub-district & Block Boundaries</h3>
+                  <h3 className="text-sm font-semibold mb-1 text-[hsl(28,20%,22%)] dark:text-[hsl(35,12%,90%)]">Sub-district, Block & Panchayat Boundaries</h3>
                   <p className="text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
                     Fine-grained administrative boundaries below district level. Select a layer, then optionally zoom into a single state.
                   </p>
@@ -2995,17 +3012,19 @@ const Index = () => {
                         <CommandList className="max-h-72">
                           <CommandEmpty>No state found.</CommandEmpty>
                           <CommandGroup>
-                            <CommandItem
-                              value="All India"
-                              onSelect={() => {
-                                setSubAdminSelectedState('All India');
-                                setSubAdminStateOpen(false);
-                              }}
-                              className="flex items-center gap-2"
-                            >
-                              <Check className={cn('h-4 w-4 shrink-0', subAdminSelectedState === 'All India' ? 'opacity-100' : 'opacity-0')} />
-                              All India
-                            </CommandItem>
+                            {(!getSubAdminLayer(subAdminLayerId).stateFiles || getSubAdminLayer(subAdminLayerId).nationalFile) && (
+                              <CommandItem
+                                value="All India"
+                                onSelect={() => {
+                                  setSubAdminSelectedState('All India');
+                                  setSubAdminStateOpen(false);
+                                }}
+                                className="flex items-center gap-2"
+                              >
+                                <Check className={cn('h-4 w-4 shrink-0', subAdminSelectedState === 'All India' ? 'opacity-100' : 'opacity-0')} />
+                                All India
+                              </CommandItem>
+                            )}
                             {subAdminStates.map(state => (
                               <CommandItem
                                 key={state}
@@ -3027,13 +3046,19 @@ const Index = () => {
                   </Popover>
                 </div>
 
+                {getSubAdminLayer(subAdminLayerId).nationalFile && subAdminSelectedState === ALL_INDIA_STATE && (
+                  <p className="-mt-3 mb-5 text-xs text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,55%)]">
+                    All India shows {getSubAdminLayer(subAdminLayerId).nationalFile!.features.toLocaleString('en-IN')} heavily simplified boundaries and can take a while to draw. Pick a state for detailed boundaries.
+                  </p>
+                )}
+
                 <FileUpload
                   onDataLoad={handleSubAdminDataLoad}
                   onProcessingChange={handleUploadProcessing}
                   mode="districts"
-                  templateCsvPath={getSubAdminLayer(subAdminLayerId).templateCsvPath}
+                  templateCsvPath={getLayerTemplateUrl(getSubAdminLayer(subAdminLayerId), subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState)}
                   googleSheetLink={getSubAdminLayer(subAdminLayerId).googleSheetLink}
-                  geojsonPath={getSubAdminLayer(subAdminLayerId).url}
+                  geojsonPath={subAdminGeojsonUrl}
                   locationProp={getSubAdminLayer(subAdminLayerId).featureNameProp}
                   selectedState={subAdminSelectedState !== 'All India' ? subAdminSelectedState : undefined}
                 />

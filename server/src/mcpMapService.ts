@@ -10,6 +10,7 @@ import { ExportService } from './services/exportService.js';
 import { queryEvolution, getDistrictGeoJSON, getDistrictNames, ensureLoaded as ensureEvolutionLoaded } from './services/districtEvolutionService.js';
 import type { FeatureCollection, Feature, Geometry } from 'geojson';
 import { LRUCache } from './utils/lruCache.js';
+import { PANCHAYAT_STATE_LAYERS, PANCHAYAT_GEOJSON_BASE, PANCHAYAT_PARQUET_URL } from './panchayatLayers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,6 +26,8 @@ export interface MapEntry {
   featureNameProp?: string;
   parquetUrl?: string;
   aggregatedByDistrictUrl?: string;
+  featureCount?: number; // known up front; listMaps skips the download
+  defaultState?: string; // single-state maps: render that state when none is given (all-India overlay is too big)
 }
 
 const R2 = 'https://geo.bharatviz.org';
@@ -96,6 +99,23 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
   'bhuvan-blocks': { id: 'bhuvan-blocks', file: `${R2}/geojsons/admin/India-geodata-bhuvan-blocks.geojson`, level: 'districts', source: 'ISRO Bhuvan', year: 2020, description: 'NRSC Bhuvan block-level boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-bhuvan-states.geojson`, featureNameProp: 'block_name' },
   'pmgsy-blocks': { id: 'pmgsy-blocks', file: `${R2}/geojsons/admin/India-geodata-pmgsy-blocks.geojson`, level: 'districts', source: 'PMGSY', year: 2024, description: 'PMGSY (Pradhan Mantri Gram Sadak Yojana) block boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'block_name' },
   'shrug-subdistricts': { id: 'shrug-subdistricts', file: `${R2}/geojsons/admin/India-shrug-subdistrict-pc11_simplified.geojson`, level: 'districts', source: 'SHRUG (Census 2011)', year: 2011, description: 'Census 2011 subdistrict polygons from the SHRUG platform (Asher, Lunt, Matsuura & Novosad). License: CC BY-NC-SA 4.0.', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'subdistrict_name' },
+
+  // one map per state; the national file is too large to render server-side
+  ...Object.fromEntries(PANCHAYAT_STATE_LAYERS.map((s): [string, MapEntry] => [`lgd-panchayats-${s.slug}`, {
+    id: `lgd-panchayats-${s.slug}`,
+    file: `${PANCHAYAT_GEOJSON_BASE}/${s.slug}.geojson`,
+    level: 'districts',
+    source: 'Ministry of Panchayati Raj (LGD)',
+    year: 2024,
+    description: `Gram Panchayat boundaries for ${s.displayName} (${s.features.toLocaleString('en-IN')} GPs), from the MoPR AdminGPHierarchy layer with LGD district codes. ` +
+      'Feature name is panchayat_label: the GP name, disambiguated as "NAME (Block)" or "NAME (Block, District)" only where the name repeats within the state. ' +
+      'Fields: state_name, district_name, district_lgd_code, block_name, panchayat_name, panchayat_code. Simplified for display; full-resolution national GeoParquet in parquetUrl.',
+    statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
+    featureNameProp: 'panchayat_label',
+    parquetUrl: PANCHAYAT_PARQUET_URL,
+    featureCount: s.features,
+    defaultState: s.stateName,
+  }])),
 
   'lgd-parliament': { id: 'lgd-parliament', file: `${R2}/geojsons/electoral/India-geodata-lgd-parliament.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Lok Sabha parliamentary constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
   'lgd-assembly': { id: 'lgd-assembly', file: `${R2}/geojsons/electoral/India-geodata-lgd-assembly.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Vidhan Sabha assembly constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
@@ -571,7 +591,9 @@ export class McpMapService {
       const category = McpMapService.categoryForId(entry.id);
       try {
         let featureCount: number | null;
-        if (entry.file.endsWith('.parquet')) {
+        if (entry.featureCount !== undefined) {
+          featureCount = entry.featureCount;
+        } else if (entry.file.endsWith('.parquet')) {
           const { asyncBufferFromUrl, parquetMetadataAsync } = await import('hyparquet');
           const file = await asyncBufferFromUrl({ url: entry.file });
           const meta = await parquetMetadataAsync(file);
@@ -763,7 +785,7 @@ export class McpMapService {
       mainTitle: options.title || 'BharatViz',
       legendTitle: options.legendTitle || 'Values',
       showStateBoundaries: options.showStateBoundaries ?? true,
-      state: options.state ? (fuzzyMatchName(options.state, geojsonStates) || options.state) : undefined,
+      state: (options.state ?? entry.defaultState) ? (fuzzyMatchName(options.state ?? entry.defaultState!, geojsonStates) || options.state || entry.defaultState) : undefined,
       darkMode: options.darkMode ?? false,
       formats: ['svg'],
       featureNameProp: entry.featureNameProp || 'district_name',

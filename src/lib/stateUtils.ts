@@ -1,5 +1,7 @@
-function toTitleCase(s: string): string {
-  return s.toLowerCase().replace(/(?:^|\s|-|&)\S/g, c => c.toUpperCase());
+import { fetchJSONShared } from './geoJsonCache';
+
+export function toTitleCase(s: string): string {
+  return s.toLowerCase().replace(/(?:^|\s|-|&|,)\S/g, c => c.toUpperCase());
 }
 
 export function reconcileSelectedState(current: string, states: string[]): string {
@@ -30,11 +32,7 @@ interface GeoJSONData {
  */
 export async function getUniqueStatesFromGeoJSON(geojsonPath: string): Promise<string[]> {
   try {
-    const response = await fetch(geojsonPath);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const geojsonData: GeoJSONData = await response.json();
+    const geojsonData = await fetchJSONShared<GeoJSONData>(geojsonPath);
 
     const stateSet = new Set<string>();
 

@@ -59,6 +59,16 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
     apa: 'Ministry of Panchayati Raj, Government of India. (2024). Local Government Directory (LGD): Administrative Boundaries. https://lgdirectory.gov.in',
   },
 
+  MoPR: {
+    bibtex: `@misc{mopr_gp_boundaries,
+  author = {{Ministry of Panchayati Raj, Government of India}},
+  title  = {Gram Panchayat Boundaries ({AdminGPHierarchy}, {LGD}-coded)},
+  year   = {2024},
+  url    = {https://mapservice.gov.in/mapserviceserv176/rest/services/Panchayat/AdminGPHierarchy/MapServer/3}
+}`,
+    apa: 'Ministry of Panchayati Raj, Government of India. (2024). Gram Panchayat Boundaries (AdminGPHierarchy, LGD-coded). https://mapservice.gov.in/mapserviceserv176/rest/services/Panchayat/AdminGPHierarchy/MapServer/3',
+  },
+
   SOI: {
     bibtex: `@misc{soi_india,
   author = {{Survey of India}},
