@@ -1056,7 +1056,7 @@ const Index = () => {
       setSubAdminStatesLoading(false);
       setSubAdminSelectedState(current => reconcileSelectedState(current, states));
     }).catch(() => { if (!cancelled) setSubAdminStatesLoading(false); });
-    return () => { cancelled = true; };
+    return () => { cancelled = true; setSubAdminStatesLoading(false); };
     // length dep: the layer-switch reset below must trigger a reload
   }, [activeTab, subAdminLayerId, subAdminStates.length]);
 

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, us
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import * as d3 from 'd3';
+import turfBbox from '@turf/bbox';
+import type { Geometry } from 'geojson';
+import { geometryToPolygons } from '@/lib/geojsonToPolygonFeature';
 import { scaleSequential } from 'd3-scale';
 import { interpolateSpectral, interpolateViridis, interpolateWarm, interpolateCool, interpolatePlasma, interpolateInferno, interpolateMagma, interpolateTurbo, interpolateRdYlBu, interpolateRdYlGn, interpolateBrBG, interpolatePRGn, interpolatePiYG, interpolateRdBu, interpolateRdGy, interpolatePuOr, interpolateBlues, interpolateGreens, interpolateReds, interpolateOranges, interpolatePurples, interpolatePuRd, interpolateSpectral as interpolateSpectralReversed } from 'd3-scale-chromatic';
 import { extent } from 'd3-array';
@@ -166,6 +169,13 @@ const DENSE_FEATURE_LIMIT = 20000;
 const DENSE_CHUNK = 5000;
 const roundPath = (d: string) => d.replace(/(\.\d)\d+/g, '$1'); // 0.1 px is enough at 800 px wide
 
+type Pt = [number, number];
+const geometryContains = (g: GeoJSONFeature['geometry'], p: Pt) =>
+  (geometryToPolygons(g) as Pt[][][]).some(([shell, ...holes]) =>
+    shell && d3.polygonContains(shell, p) && !holes.some(h => d3.polygonContains(h, p)));
+const featureSubtitle = (props: GeoJSONFeature['properties'], nameProp: string) =>
+  ['block_name', 'district_name', 'state_name'].filter(k => k !== nameProp && props[k]).map(k => props[k]).join(', ');
+
 const toDisplayName = (name: string): string =>
   name === name.toUpperCase()
     ? name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
@@ -214,7 +224,7 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   const [statesData, setStatesData] = useState<{ features: GeoJSONFeature[] } | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [renderingData, setRenderingData] = useState(false);
-  const [hoveredDistrict, setHoveredDistrict] = useState<{ district: string; state: string; value?: number | string } | null>(null);
+  const [hoveredDistrict, setHoveredDistrict] = useState<{ index: number; district: string; subtitle: string; value?: number | string } | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; feature: PointFeature } | null>(null);
   const [editingMainTitle, setEditingMainTitle] = useState(false);
   const [mainTitle, setMainTitle] = useState('BharatViz (double-click to edit)');
@@ -447,10 +457,10 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
     return { mapWidth: 760, mapHeight: 810, xOffset: 20, yOffset: 75 };
   }, [isMobile, selectedState]);
 
-  const geoToScreen = useCallback((lng: number, lat: number): { x: number; y: number } => {
+  const fit = useMemo(() => {
     const { mapWidth, mapHeight, xOffset, yOffset } = layout;
 
-    if (!bounds) return { x: 0, y: 0 };
+    if (!bounds) return null;
 
     const geoWidth = bounds.maxLng - bounds.minLng;
     const geoHeight = bounds.maxLat - bounds.minLat;
@@ -470,11 +480,15 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
       offsetX = (mapWidth - projectionWidth) / 2;
     }
 
-    const x = ((lng - bounds.minLng) / geoWidth) * projectionWidth + offsetX + xOffset;
-    const y = ((bounds.maxLat - lat) / geoHeight) * projectionHeight + offsetY + yOffset;
-
-    return { x, y };
+    return {
+      kx: projectionWidth / geoWidth, ky: projectionHeight / geoHeight,
+      x0: offsetX + xOffset, y0: offsetY + yOffset, minLng: bounds.minLng, maxLat: bounds.maxLat,
+    };
   }, [layout, bounds]);
+
+  const geoToScreen = useCallback((lng: number, lat: number): { x: number; y: number } =>
+    fit ? { x: (lng - fit.minLng) * fit.kx + fit.x0, y: (fit.maxLat - lat) * fit.ky + fit.y0 } : { x: 0, y: 0 },
+  [fit]);
 
   const overlayViewBoxWidth = isMobile ? 350 : 800;
   const overlayViewBoxHeight = isMobile ? 440 : selectedState ? 1100 : 890;
@@ -681,17 +695,13 @@ return isPointInPolygonScreen([screenPoint.x, screenPoint.y], screenPolygon);
     return darkMode ? '#1a1a1a' : '#e5e7eb';
   };
 
-  const handleDistrictHover = (feature: GeoJSONFeature) => {
-    const { state_name } = feature.properties;
-    const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
-    const districtData = data.find(d =>
-      d.district.toLowerCase().trim() === districtOrRegion.toLowerCase().trim() &&
-      d.state.toLowerCase().trim() === (state_name || '').toLowerCase().trim()
-    );
+  const handleDistrictHover = (feature: GeoJSONFeature, index: number) => {
+    const name = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
     setHoveredDistrict({
-      district: districtOrRegion,
-      state: state_name,
-      value: districtData?.value
+      index,
+      district: name,
+      subtitle: featureSubtitle(feature.properties, featureNameProp),
+      value: districtDataMap.get(`${(feature.properties.state_name || '').toLowerCase().trim()}|${name.toLowerCase().trim()}`),
     });
   };
 
@@ -1166,6 +1176,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     }
   }));
 
+  const isDense = !!geojsonData && geojsonData.features.length > DENSE_FEATURE_LIMIT;
   const { districtLabelData, maxArea, minArea, districtDataMap } = useMemo(() => {
     if (!geojsonData) return { districtLabelData: [], maxArea: 0, minArea: 0, districtDataMap: new Map() };
 
@@ -1177,7 +1188,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
 
     let max = 0;
     let min = Infinity;
-    if (geojsonData.features.length > DENSE_FEATURE_LIMIT) {
+    if (isDense) {
       return { districtLabelData: [], maxArea: 0, minArea: 0, districtDataMap: map }; // labels unreadable at this density
     }
     const labels = geojsonData.features.map(feature => {
@@ -1188,7 +1199,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     });
 
     return { districtLabelData: labels, maxArea: max, minArea: min === Infinity ? 0 : min, districtDataMap: map };
-  }, [geojsonData, data]);
+  }, [geojsonData, data, isDense]);
 
   const districtPaths = useMemo(
     () => geojsonData
@@ -1197,6 +1208,63 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [geojsonData, layout, bounds]
   );
+
+  const featureBoxes = useMemo(
+    () => (isDense && geojsonData ? geojsonData.features.map(f => turfBbox(f.geometry as Geometry)) : []),
+    [isDense, geojsonData]
+  );
+
+  const handleDenseMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    const ctm = svgRef.current?.getScreenCTM();
+    if (!ctm || !fit || !geojsonData) return;
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    const p: Pt = [fit.minLng + (pt.x - fit.x0) / fit.kx, fit.maxLat - (pt.y - fit.y0) / fit.ky];
+    const inside = (j: number) => {
+      const [x0, y0, x1, y1] = featureBoxes[j];
+      return p[0] >= x0 && p[0] <= x1 && p[1] >= y0 && p[1] <= y1 && geometryContains(geojsonData.features[j].geometry, p);
+    };
+    if (hoveredDistrict && inside(hoveredDistrict.index)) return;
+    const i = featureBoxes.findIndex((_, j) => inside(j));
+    if (i < 0) setHoveredDistrict(null);
+    else handleDistrictHover(geojsonData.features[i], i);
+  };
+
+  const dataExtent = useMemo((): [number, number] | undefined => {
+    if (scopedNumericValues.length === 0) return undefined;
+    let lo = Infinity, hi = -Infinity;
+    for (const v of scopedNumericValues) { if (v < lo) lo = v; if (v > hi) hi = v; }
+    return [lo, hi];
+  }, [scopedNumericValues]);
+
+  // fill key covers every colour input
+  const denseFills = isDense && geojsonData
+    ? geojsonData.features.map(f => {
+      const name = f.properties[featureNameProp] || f.properties.district_name || f.properties.nss_region || '';
+      return getDistrictColorForValue(districtDataMap.get(`${(f.properties.state_name || '').toLowerCase().trim()}|${name.toLowerCase().trim()}`), dataExtent);
+    })
+    : [];
+  const denseFillKey = denseFills.join();
+  const denseLayer = useMemo(() => {
+    if (!isDense) return null;
+    const byFill = new Map<string, string[]>();
+    denseFills.forEach((fill, index) => {
+      const group = byFill.get(fill);
+      const d = roundPath(districtPaths[index]);
+      if (group) group.push(d); else byFill.set(fill, [d]);
+    });
+    return [...byFill].flatMap(([fill, paths]) =>
+      Array.from({ length: Math.ceil(paths.length / DENSE_CHUNK) }, (_, i) => (
+        <path
+          key={`dense-${fill}-${i}`}
+          d={paths.slice(i * DENSE_CHUNK, (i + 1) * DENSE_CHUNK).join('')}
+          fill={fill}
+          stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fill, darkMode)}
+          strokeWidth={boundaryWidth}
+        />
+      ))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDense, districtPaths, denseFillKey, data.length === 0, stateBoundaryStroke, boundaryColor, darkMode, boundaryWidth]);
 
   const stateBoundaries = useMemo(() => {
     if (!showStateBoundaries || !statesData) return [];
@@ -1229,10 +1297,6 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     );
   }
 
-  const dataExtent: [number, number] | undefined = scopedNumericValues.length > 0
-    ? [Math.min(...scopedNumericValues), Math.max(...scopedNumericValues)]
-    : undefined;
-
 
   return (
     <div className="w-full flex justify-center relative" ref={containerRef}>
@@ -1257,41 +1321,20 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 willChange: renderingData ? 'contents' : 'auto',
                 transform: 'translateZ(0)',
               }}
+              onMouseMove={isDense ? handleDenseMouseMove : undefined}
+              onMouseLeave={isDense ? handleDistrictLeave : undefined}
               role="img"
               aria-label={dataTitle ? `India districts map - ${dataTitle}${selectedState ? ` (${selectedState})` : ''}` : `India districts choropleth map${selectedState ? ` - ${selectedState}` : ''}`}
             >
-              {geojsonData.features.length > DENSE_FEATURE_LIMIT ? (() => {
-                const byFill = new Map<string, string[]>();
-                geojsonData.features.forEach((feature, index) => {
-                  const name = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
-                  const value = districtDataMap.get(`${(feature.properties.state_name || '').toLowerCase().trim()}|${name.toLowerCase().trim()}`);
-                  const fill = getDistrictColorForValue(value, dataExtent);
-                  const group = byFill.get(fill);
-                  const d = roundPath(districtPaths[index]);
-                  if (group) group.push(d); else byFill.set(fill, [d]);
-                });
-                return [...byFill].flatMap(([fill, paths]) =>
-                  Array.from({ length: Math.ceil(paths.length / DENSE_CHUNK) }, (_, i) => (
-                    <path
-                      key={`dense-${fill}-${i}`}
-                      d={paths.slice(i * DENSE_CHUNK, (i + 1) * DENSE_CHUNK).join('')}
-                      fill={fill}
-                      stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fill, darkMode)}
-                      strokeWidth={boundaryWidth}
-                    />
-                  ))
-                );
-              })() : geojsonData.features.map((feature, index) => {
+              {isDense ? denseLayer : geojsonData.features.map((feature, index) => {
                 const path = districtPaths[index];
                 const districtOrRegion = feature.properties[featureNameProp] || feature.properties.district_name || feature.properties.nss_region || '';
                 const districtValue = districtDataMap.get(
                   `${(feature.properties.state_name || '').toLowerCase().trim()}|${districtOrRegion.toLowerCase().trim()}`
                 );
                 const fillColor = getDistrictColorForValue(districtValue, dataExtent);
-                const isHovered = hoveredDistrict &&
-                  hoveredDistrict.district === districtOrRegion &&
-                  hoveredDistrict.state === feature.properties.state_name;
-                
+                const isHovered = hoveredDistrict?.index === index;
+
                 return (
                   <path
                     key={index}
@@ -1300,7 +1343,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                     stroke={data.length === 0 ? stateBoundaryStroke : resolveBoundaryStroke(boundaryColor, fillColor, darkMode)}
                     strokeWidth={isHovered ? boundaryWidth * 5 : boundaryWidth}
                     className="cursor-pointer transition-all duration-200"
-                    onMouseEnter={() => handleDistrictHover(feature)}
+                    onMouseEnter={() => handleDistrictHover(feature, index)}
                     onMouseLeave={handleDistrictLeave}
                   >
                     <title>
@@ -1310,6 +1353,9 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                   </path>
                 );
               })}
+              {isDense && hoveredDistrict && (
+                <path d={districtPaths[hoveredDistrict.index]} fill="none" stroke={stateBoundaryStroke} strokeWidth={Math.max(1.5, boundaryWidth * 3)} pointerEvents="none" />
+              )}
               
 {((!hideDistrictNames && !hideDistrictValues) || (!hideDistrictNames) || (!hideDistrictValues)) &&
   districtLabelData.length > 0 && (
@@ -1747,7 +1793,9 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                 }}
               >
                 <div className="font-medium text-sm">{hoveredDistrict.district}</div>
-                <div className="text-xs mt-0.5" style={{ color: darkMode ? 'hsl(30, 8%, 55%)' : 'hsl(28, 10%, 46%)' }}>{hoveredDistrict.state}</div>
+                <div className="text-xs mt-0.5" style={{ color: darkMode ? 'hsl(30, 8%, 55%)' : 'hsl(28, 10%, 46%)' }}>
+                  {hoveredDistrict.subtitle}
+                </div>
                 {hoveredDistrict.value !== undefined && (
                   <div className="text-xs mt-0.5" style={{ color: darkMode ? 'hsl(30, 8%, 62%)' : 'hsl(28, 10%, 46%)' }}>
                     {typeof hoveredDistrict.value === 'number' ? roundToSignificantDigits(hoveredDistrict.value) : String(hoveredDistrict.value)}
