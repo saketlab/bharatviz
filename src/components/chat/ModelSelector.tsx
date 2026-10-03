@@ -251,7 +251,7 @@ function ModelCard({ model, onSelect, disabled }: ModelCardProps) {
           <Button
             onClick={onSelect}
             disabled={disabled}
-            variant={(model.recommended && !isMobile) || isMobileRecommended ? "default" : "outline"}
+            variant={(model.recommended && !isMobile) || isMobileRecommended ? "default" : "outline-solid"}
             className="w-full sm:w-auto"
           >
             Select

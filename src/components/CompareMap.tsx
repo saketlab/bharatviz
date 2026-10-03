@@ -269,7 +269,7 @@ export const CompareMap: React.FC<CompareMapProps> = ({
   }, [baseLayers, highlightedIdSet, DIFF_COLORS]);
 
   return (
-    <div ref={containerRef} className="relative w-full aspect-[800/890] bg-[hsl(38,30%,98%)] dark:bg-[hsl(25,8%,9%)] rounded-lg border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] overflow-hidden">
+    <div ref={containerRef} className="relative w-full aspect-800/890 bg-[hsl(38,30%,98%)] dark:bg-[hsl(25,8%,9%)] rounded-lg border border-[hsl(35,18%,88%)] dark:border-[hsl(25,8%,14%)] overflow-hidden">
       <MultiSourcePolygonsLayer
         layers={layers}
         mapRect={mapRect}

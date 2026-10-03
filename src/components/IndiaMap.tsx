@@ -11,6 +11,7 @@ import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { GeoJSON } from 'geojson';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
 import { svgToHighDpiBlob } from '@/lib/exportUtils';
+import { LabelEditPopup, type LabelEdit } from './LabelEditPopup';
 import { 
   BLACK_TEXT_STATES, 
   ABBREVIATED_STATES, 
@@ -68,6 +69,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
   const dragRafRef = useRef<number | null>(null);
   const [mapData, setMapData] = useState<GeoJSON.FeatureCollection | null>(null);
   const [renderingData, setRenderingData] = useState(false);
+  const [labelEdit, setLabelEdit] = useState<LabelEdit | null>(null);
 
   const [legendPosition, setLegendPosition] = useState<{ x: number; y: number }>(DEFAULT_LEGEND_POSITION.STATES);
   const [dragging, setDragging] = useState(false);
@@ -90,6 +92,9 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
   const [titleDragOffset, setTitleDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const [showNALegend, setShowNALegend] = useState(true);
+
+  // Edits are applied to the DOM directly; the ref re-applies them when the map redraws.
+  const labelEditsRef = useRef(new Map<string, { text?: string; dx: number; dy: number }>());
 
   const isMobile = useIsMobile();
   const mapBg = darkMode ? 'hsl(25, 8%, 6%)' : 'hsl(38, 30%, 97%)';
@@ -612,6 +617,8 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
     const path = d3.geoPath().projection(projection);
 
     const dataMap = new Map(data.map(d => [d.state.toLowerCase().trim(), d.value]));
+    const stateLabel = (d: GeoJSON.Feature): string => d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM;
+    const stateKey = (d: GeoJSON.Feature): string => stateLabel(d)?.toLowerCase().trim();
 
     const getColorInterpolator = (scale: ColorScale) => {
       const interpolators = {
@@ -672,7 +679,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
           return theme.emptyFill;
         }
 
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
+        const stateName = stateKey(d);
         const value = dataMap.get(stateName);
 
         if (value === undefined) {
@@ -691,7 +698,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
 
         if (data.length === 0) return theme.stroke;
 
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
+        const stateName = stateKey(d);
         const value = dataMap.get(stateName);
 
         if (value === undefined || isNaN(value)) return theme.stroke;
@@ -706,8 +713,8 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
       .attr("stroke-width", boundaryWidthRef.current)
       .style("cursor", "pointer")
       .on("mouseenter", function(event: MouseEvent, d: GeoJSON.Feature) {
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
-        const originalName = d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM;
+        const stateName = stateKey(d);
+        const originalName = stateLabel(d);
         const value = dataMap.get(stateName);
 
         setHoveredState({
@@ -729,12 +736,8 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
 
     const stateAbbreviations = STATE_ABBREVIATIONS;
 
-    g.selectAll("text")
-      .data(mapData.features)
-      .enter()
-      .append("text")
-      .attr("transform", (d: GeoJSON.Feature) => {
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
+    const baseTransform = (d: GeoJSON.Feature): string => {
+        const stateName = stateKey(d);
         const centroid = path.centroid(d);
         
         const externalLabelStates = EXTERNAL_LABEL_STATES;
@@ -812,9 +815,18 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
         }
         
         return `translate(${centroid[0]}, ${centroid[1]})`;
+    };
+
+    const labels = g.selectAll("text")
+      .data(mapData.features)
+      .enter()
+      .append("text")
+      .attr("transform", (d: GeoJSON.Feature) => {
+        const edit = labelEditsRef.current.get(stateKey(d));
+        return edit ? `translate(${edit.dx}, ${edit.dy}) ${baseTransform(d)}` : baseTransform(d);
       })
       .attr("text-anchor", (d: GeoJSON.Feature) => {
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
+        const stateName = stateKey(d);
         const externalLabelStates = EXTERNAL_LABEL_STATES;
         if (externalLabelStates.includes(stateName)) {
           if (stateName === 'mizoram' || stateName === 'lakshadweep' || stateName === 'sikkim' || stateName === 'andhra pradesh' || stateName === 'karnataka' || stateName === 'delhi' || stateName === 'chandigarh' || stateName === 'a & n islands' || stateName === 'andaman and nicobar islands') {
@@ -830,9 +842,9 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
       .style("pointer-events", "none")
       .each(function(d: GeoJSON.Feature) {
         const text = d3.select(this);
-        const stateName = (d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM)?.toLowerCase().trim();
+        const stateName = stateKey(d);
         const value = dataMap.get(stateName);
-        const originalName = d.properties.state_name || d.properties.NAME_1 || d.properties.name || d.properties.ST_NM;
+        const originalName = stateLabel(d);
         
         if (data.length > 0 && value !== undefined && originalName) {
           const bounds = path.bounds(d);
@@ -890,15 +902,22 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
             valueColor = textColor;
           }
           
-          const displayName = stateAbbreviations[stateName] || originalName;
+          const customText = labelEditsRef.current.get(stateName)?.text;
+          const external = EXTERNAL_LABEL_STATES.includes(stateName);
+          const abbreviation = stateAbbreviations[stateName];
           if (!hideStateNames) {
-            text.append("tspan")
+            const nameSpan = text.append("tspan")
+              .attr("class", "state-name")
               .attr("x", 0)
               .attr("dy", "-0.4em")
               .style("font-size", `${fontSize}px`)
               .style("font-weight", "600")
               .style("fill", textColor)
-              .text(displayName);
+              .text(customText ?? (external && abbreviation ? abbreviation : originalName));
+            // Prefer the full name; fall back to the abbreviation only when it overflows the state.
+            if (customText === undefined && !external && abbreviation && nameSpan.node()!.getComputedTextLength() > width * 0.85) {
+              nameSpan.text(abbreviation);
+            }
           }
           if (!hideValues && !hideStateNames) {
             text.append("tspan")
@@ -919,6 +938,34 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
           }
         }
       });
+
+    labels
+      .style("pointer-events", "auto")
+      .style("cursor", "grab")
+      .on("dblclick", function(event: MouseEvent, d: GeoJSON.Feature) {
+        event.stopPropagation();
+        const key = stateKey(d);
+        const nameSpan = d3.select(this).select("tspan.state-name");
+        if (nameSpan.empty()) return;
+        setLabelEdit({
+          x: event.clientX,
+          y: event.clientY,
+          text: nameSpan.text(),
+          onCommit: (next) => {
+            const edit = labelEditsRef.current.get(key) ?? { dx: 0, dy: 0 };
+            labelEditsRef.current.set(key, { ...edit, text: next });
+            nameSpan.text(next);
+          },
+        });
+      })
+      .call(d3.drag<SVGTextElement, GeoJSON.Feature>()
+        .on("drag", function(event, d) {
+          const key = stateKey(d);
+          const edit = labelEditsRef.current.get(key) ?? { dx: 0, dy: 0 };
+          const moved = { ...edit, dx: edit.dx + event.dx, dy: edit.dy + event.dy };
+          labelEditsRef.current.set(key, moved);
+          d3.select(this).attr("transform", `translate(${moved.dx}, ${moved.dy}) ${baseTransform(d)}`);
+        }));
 
     } catch (_) {
       // ignore render errors
@@ -1150,6 +1197,7 @@ export const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ data, colorSca
 
   return (
     <div className="w-full flex justify-center relative">
+      {labelEdit && <LabelEditPopup key={`${labelEdit.x},${labelEdit.y}`} edit={labelEdit} onClose={() => setLabelEdit(null)} />}
       {renderingData && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-50 rounded-lg">
           <div className="text-center">

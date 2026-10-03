@@ -395,7 +395,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                 setShowStateDropdown(o => !o);
                 setTimeout(() => stateInputRef.current?.focus(), 50);
               }}
-              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 ${inputBg}`}
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-sm transition-colors focus:outline-hidden focus:ring-2 focus:ring-amber-500 ${inputBg}`}
             >
               <span className={selectedState ? '' : 'opacity-50'}>
                 {selectedState || 'Filter by state (optional)'}
@@ -424,7 +424,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                     value={stateSearchValue}
                     onChange={e => setStateSearchValue(e.target.value)}
                     placeholder="Search states..."
-                    className={`w-full px-2 py-1 rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 ${inputBg}`}
+                    className={`w-full px-2 py-1 rounded text-xs focus:outline-hidden focus:ring-1 focus:ring-amber-500 ${inputBg}`}
                     autoComplete="off"
                   />
                 </div>
@@ -460,7 +460,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                 onKeyDown={handleKeyDown}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 placeholder={selectedState ? `Search districts in ${selectedState}...` : 'Type a district name, e.g. 24 Para, Coimbatore, Bombay...'}
-                className={`w-full pl-9 pr-8 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 ${inputBg}`}
+                className={`w-full pl-9 pr-8 py-2 rounded-lg border text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500 ${inputBg}`}
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -623,7 +623,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                           <YearMap year={y} geojson={mergedGeo} color={DISTRICT_COLOR} darkMode={darkMode} />
                         ) : (
                           <div className={`rounded border ${darkMode ? 'bg-[hsl(25,8%,6%)] border-[hsl(25,8%,14%)]' : 'bg-[hsl(35,18%,96%)] border-[hsl(35,18%,88%)]'}`}>
-                            <div className={`aspect-[5/6] flex flex-col items-center justify-center gap-1 text-[9px] italic ${muted} opacity-60`}>
+                            <div className={`aspect-5/6 flex flex-col items-center justify-center gap-1 text-[9px] italic ${muted} opacity-60`}>
                               <span>{entries[0].district}</span>
                               <span className="opacity-60">no boundary</span>
                             </div>
@@ -638,7 +638,7 @@ export function DistrictEvolutionSearch({ darkMode = false, defaultDistrict, onD
                       </>
                     ) : (
                       <div className={`rounded border ${darkMode ? 'bg-[hsl(25,8%,6%)] border-[hsl(25,8%,14%)]' : 'bg-[hsl(35,18%,96%)] border-[hsl(35,18%,88%)]'}`}>
-                        <div className={`aspect-[5/6] flex items-center justify-center text-[9px] italic ${muted} opacity-50`}>
+                        <div className={`aspect-5/6 flex items-center justify-center text-[9px] italic ${muted} opacity-50`}>
                           not extant
                         </div>
                         <p className={`text-center text-[9px] font-bold pb-1 ${darkMode ? 'text-amber-500' : 'text-amber-700'}`}>{y}</p>

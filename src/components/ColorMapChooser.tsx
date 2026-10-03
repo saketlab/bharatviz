@@ -118,7 +118,7 @@ export const ColorMapChooser: React.FC<ColorMapChooserProps> = ({
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-accent dark:hover:bg-[hsl(25,8%,12%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-inset"
+        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-accent dark:hover:bg-[hsl(25,8%,12%)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-inset"
       >
         {dataType === 'categorical' ? (
           <span className="text-xs font-medium flex-1 text-left text-[hsl(28,45%,36%)] dark:text-[hsl(28,45%,52%)]">

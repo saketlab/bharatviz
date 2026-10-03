@@ -276,10 +276,10 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
             <>
               <Popover open={modelPopoverOpen} onOpenChange={setModelPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <button aria-expanded={modelPopoverOpen} aria-haspopup="listbox" className="flex items-center gap-1.5 text-sm sm:text-base font-semibold hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded">
-                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  <button aria-expanded={modelPopoverOpen} aria-haspopup="listbox" className="flex items-center gap-1.5 text-sm sm:text-base font-semibold hover:text-primary transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded">
+                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                     <span className="truncate">{currentModelName}</span>
-                    <ChevronDown className="h-3 w-3 flex-shrink-0 opacity-50" />
+                    <ChevronDown className="h-3 w-3 shrink-0 opacity-50" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64 max-h-80 overflow-y-auto p-1" align="start" sideOffset={8}>
@@ -303,7 +303,7 @@ export function ChatPanel({ context, onMapAction }: ChatPanelProps) {
                             <span className="text-xs text-muted-foreground">{model.size} - {model.speed}</span>
                           </div>
                           {model.id === currentModelId && (
-                            <Check className="h-4 w-4 flex-shrink-0 text-primary" />
+                            <Check className="h-4 w-4 shrink-0 text-primary" />
                           )}
                         </button>
                       ))}

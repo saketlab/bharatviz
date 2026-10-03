@@ -556,7 +556,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataLoad, onMultiDataL
             <div className="relative">
               <input
                 type="text"
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent border-[hsl(35,18%,84%)] bg-[hsl(38,22%,99%)] text-[hsl(28,20%,14%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)]"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent border-[hsl(35,18%,84%)] bg-[hsl(38,22%,99%)] text-[hsl(28,20%,14%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)]"
                 placeholder="https://docs.google.com/... or https://example.com/data.csv"
                 value={googleSheetUrl}
                 onChange={e => setGoogleSheetUrl(e.target.value)}

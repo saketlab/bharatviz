@@ -25,7 +25,7 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
 };
 
 const SectionAnchor: React.FC<{ id: string }> = ({ id }) => (
-  <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 hover:!opacity-100 text-inherit transition-opacity" aria-hidden>
+  <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 hover:opacity-100! text-inherit transition-opacity" aria-hidden>
     <Hash className="h-4 w-4 inline" />
   </a>
 );

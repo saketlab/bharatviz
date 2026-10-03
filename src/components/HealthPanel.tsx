@@ -192,7 +192,7 @@ aggregate_by_boundary(
           placeholder="Search datasets..."
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-[hsl(38,22%,99%)] border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)] focus:outline-none focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent"
+          className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-[hsl(38,22%,99%)] border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,11%)] dark:border-[hsl(25,8%,16%)] dark:text-[hsl(35,10%,82%)] dark:placeholder-[hsl(28,8%,36%)] focus:outline-hidden focus:ring-2 focus:ring-[hsl(28,62%,48%)] focus:border-transparent"
         />
       </div>
 

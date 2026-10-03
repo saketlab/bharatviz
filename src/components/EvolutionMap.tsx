@@ -409,7 +409,7 @@ export function EvolutionMap({ darkMode: darkModeProp }: EvolutionMapProps) {
           onClick={() => resetMode(m)}
           className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
             mode === m
-              ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-sm'
+              ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-xs'
               : darkMode ? 'text-[hsl(30,8%,52%)] hover:text-[hsl(35,10%,78%)]' : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)]'
           }`}
         >
@@ -438,7 +438,7 @@ export function EvolutionMap({ darkMode: darkModeProp }: EvolutionMapProps) {
       <div className="flex-1 overflow-x-auto">
         <div className="flex items-center gap-1 min-w-0">
         {YEARS.map((y, i) => (
-          <button key={y} onClick={() => { stopPlay(); setYearIdx(i); }} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
+          <button key={y} onClick={() => { stopPlay(); setYearIdx(i); }} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
             <div className={`h-3 w-full rounded-sm transition-all ${
               i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-[hsl(25,8%,18%)] hover:bg-[hsl(25,8%,22%)]' : 'bg-[hsl(35,14%,88%)] hover:bg-[hsl(35,14%,82%)]'
             }`} />

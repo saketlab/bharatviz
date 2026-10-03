@@ -83,9 +83,9 @@ export function HistoricalEvolution({ darkMode: _darkMode }: { darkMode?: boolea
               <button
                 key={v.id}
                 onClick={() => handleViewChange(v.id)}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 ${
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 ${
                   view === v.id
-                    ? 'bg-white text-amber-700 shadow-sm dark:bg-[hsl(25,8%,18%)] dark:text-[hsl(28,55%,58%)]'
+                    ? 'bg-white text-amber-700 shadow-xs dark:bg-[hsl(25,8%,18%)] dark:text-[hsl(28,55%,58%)]'
                     : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)] dark:text-[hsl(30,8%,50%)] dark:hover:text-[hsl(35,10%,75%)]'
                 }`}
               >

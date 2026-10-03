@@ -265,7 +265,7 @@ function viewInBharatViz(map: MapEntry): string | null {
 }
 
 const SectionAnchor: React.FC<{ id: string }> = ({ id }) => (
-  <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 hover:!opacity-100 text-inherit transition-opacity" aria-hidden>
+  <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 hover:opacity-100! text-inherit transition-opacity" aria-hidden>
     <Hash className="h-4 w-4 inline" />
   </a>
 );
@@ -325,7 +325,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
             placeholder="Search maps..."
             value={query}
             onChange={e => handleQueryChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,12%)] dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,12%,90%)] dark:placeholder-[hsl(30,6%,40%)] focus:outline-none focus:ring-2 focus:ring-[hsl(28,55%,48%)]"
+            className="w-full pl-9 pr-3 py-1.5 text-sm border rounded-md bg-white border-[hsl(35,18%,84%)] text-[hsl(28,20%,14%)] placeholder-[hsl(28,8%,56%)] dark:bg-[hsl(25,8%,12%)] dark:border-[hsl(25,8%,18%)] dark:text-[hsl(35,12%,90%)] dark:placeholder-[hsl(30,6%,40%)] focus:outline-hidden focus:ring-2 focus:ring-[hsl(28,55%,48%)]"
           />
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -384,7 +384,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-[hsl(28,55%,42%)] dark:text-[hsl(35,55%,60%)] hover:underline"
                       >
-                        <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                        <ExternalLink className="h-3 w-3 shrink-0" />
                         Open in BharatViz
                       </a>
                     )}
@@ -395,7 +395,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,58%)] hover:underline"
                       >
-                        <Download className="h-3 w-3 flex-shrink-0" />
+                        <Download className="h-3 w-3 shrink-0" />
                         GeoJSON
                       </a>
                     )}
@@ -406,7 +406,7 @@ const MapsGallery: React.FC<MapsGalleryProps> = () => {
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-[hsl(28,8%,44%)] dark:text-[hsl(30,8%,58%)] hover:underline"
                       >
-                        <Download className="h-3 w-3 flex-shrink-0" />
+                        <Download className="h-3 w-3 shrink-0" />
                         GeoParquet
                       </a>
                     )}

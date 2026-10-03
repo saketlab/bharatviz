@@ -63,7 +63,7 @@ function CitationBlock({ label, apa, bibtex }: {
           <span className={`text-xs ${labelCls}`}>APA</span>
           <CopyButton text={apa} />
         </div>
-        <pre className={`text-xs p-2 rounded border whitespace-pre-wrap break-words font-sans ${mono}`}>{apa}</pre>
+        <pre className={`text-xs p-2 rounded border whitespace-pre-wrap wrap-break-word font-sans ${mono}`}>{apa}</pre>
       </div>
       <div>
         <div className="flex items-center justify-between mb-1">
@@ -169,7 +169,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors hover:bg-accent dark:hover:bg-[hsl(25,8%,12%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-inset"
+        className="w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors hover:bg-accent dark:hover:bg-[hsl(25,8%,12%)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-inset"
       >
         <span className="flex items-center gap-2 text-sm font-medium text-foreground dark:text-[hsl(35,12%,93%)]">
           <Download className="h-4 w-4 text-[hsl(28,48%,42%)] dark:text-[hsl(28,55%,52%)]" />
@@ -227,7 +227,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
             {citationInfo && (
               <Button
                 onClick={() => setShowCitation(v => !v)}
-                variant={showCitation ? "default" : "outline"}
+                variant={showCitation ? "default" : "outline-solid"}
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -243,7 +243,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({
                 <span className="text-xs font-semibold text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,93%)]">{citationInfo!.mapLabel}</span>
                 <div className="flex items-center gap-2">
                   <CopyButton text={allText} />
-                  <button onClick={() => setShowCitation(false)} aria-label="Close citation" className="text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,50%)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded">
+                  <button onClick={() => setShowCitation(false)} aria-label="Close citation" className="text-[hsl(28,8%,46%)] dark:text-[hsl(30,8%,50%)] hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded">
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>

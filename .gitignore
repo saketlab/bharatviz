@@ -316,3 +316,9 @@ data/cache/
 data/nwdp_villages_out/
 data/nwdp_village_points_out/
 data/nwdp_village_layers_out/
+
+# npm only
+bun.lockb
+bun.lock
+yarn.lock
+pnpm-lock.yaml

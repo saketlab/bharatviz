@@ -2298,7 +2298,7 @@ const Index = () => {
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                         <Command>
                           <CommandInput placeholder="Search city..." className="h-9" />
                           <CommandList className="max-h-60">
@@ -2359,7 +2359,7 @@ const Index = () => {
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                            <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                               <Command>
                                 <CommandInput placeholder="Search source..." className="h-9" />
                                 <CommandList className="max-h-60">
@@ -2536,7 +2536,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandInput placeholder="Search boundary type..." className="h-9" />
                         <CommandList className="max-h-60">
@@ -2751,7 +2751,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandInput placeholder="Search boundary type..." className="h-9" />
                         <CommandList className="max-h-60">
@@ -2930,7 +2930,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandInput placeholder="Search layer..." className="h-9" />
                         <CommandList className="max-h-60">
@@ -2983,7 +2983,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandInput placeholder="Search state..." className="h-9" />
                         <CommandList className="max-h-72">
@@ -3133,7 +3133,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandList className="max-h-60">
                           <CommandGroup>
@@ -3184,7 +3184,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandInput placeholder="Search state..." className="h-9" />
                         <CommandList className="max-h-72">
@@ -3310,7 +3310,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandList className="max-h-60">
                           <CommandGroup>
@@ -3401,7 +3401,7 @@ const Index = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
                       <Command>
                         <CommandList className="max-h-60">
                           <CommandGroup>
@@ -3501,7 +3501,7 @@ const Index = () => {
                   </p>
                   <div className="space-y-6">
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">1</div>
+                      <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">1</div>
                       <div className="flex-1 pt-0.5">
                         <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Upload your data</h3>
                         <p className="text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-2">Upload a CSV file with your data. Required columns:</p>
@@ -3516,7 +3516,7 @@ const Index = () => {
                     </div>
 
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">2</div>
+                      <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">2</div>
                       <div className="flex-1 pt-0.5">
                         <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Customize your map</h3>
                         <ul className="list-disc list-inside space-y-1 text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)]">
@@ -3530,7 +3530,7 @@ const Index = () => {
                     </div>
 
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">3</div>
+                      <div className="shrink-0 w-7 h-7 rounded-full bg-[hsl(28,42%,52%)] dark:bg-[hsl(28,35%,38%)] flex items-center justify-center text-white text-xs font-bold mt-0.5">3</div>
                       <div className="flex-1 pt-0.5">
                         <h3 className="text-base font-semibold mb-2 text-[hsl(28,20%,14%)] dark:text-[hsl(35,12%,90%)]">Export your map</h3>
                         <p className="text-sm text-[hsl(28,8%,48%)] dark:text-[hsl(30,8%,65%)] mb-2">Export in multiple formats:</p>
@@ -3855,7 +3855,7 @@ POST /api/v1/districts/map
                         role="combobox"
                         aria-expanded={cityPickerOpen}
                         className={cn(
-                          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
                           !selectedCity && "text-muted-foreground"
                         )}
                       >

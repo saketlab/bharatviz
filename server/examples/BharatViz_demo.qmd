@@ -42,7 +42,7 @@ if (!file.exists("bharatviz.R")) {
     quiet = TRUE
   )
 }
-source("bhartviz.R")
+source("bharatviz.R")
 
 API_URL <- "https://bharatviz.saketlab.org"
 

@@ -17,6 +17,7 @@ import { CategoricalLegend } from '@/lib/categoricalLegend';
 import { createRotationCalculator } from '@/lib/rotationUtils';
 import { DataType, CategoryColorMapping, getCategoryColor, getUniqueCategories } from '@/lib/categoricalUtils';
 import { svgToHighDpiBlob } from '@/lib/exportUtils';
+import { LabelEditPopup, type LabelEdit } from './LabelEditPopup';
 import { DeckPointsLayer, type PointViewMode } from './DeckPointsLayer';
 import { DeckPolygonsLayer, type PolygonFeature } from './DeckPolygonsLayer';
 
@@ -242,6 +243,8 @@ export const IndiaDistrictsMap = forwardRef<IndiaDistrictsMapRef, IndiaDistricts
   const [editingMean, setEditingMean] = useState(false);
 
   const [labelPositions, setLabelPositions] = useState<Map<string, { x: number; y: number }>>(new Map());
+  const [labelTexts, setLabelTexts] = useState<Map<string, string>>(new Map());
+  const [labelEdit, setLabelEdit] = useState<LabelEdit | null>(null);
   const [draggingLabel, setDraggingLabel] = useState<{ districtKey: string; offset: { x: number; y: number } } | null>(null);
   const [labelDragOffset, setLabelDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -1191,7 +1194,12 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     if (isDense) {
       return { districtLabelData: [], maxArea: 0, minArea: 0, districtDataMap: map }; // labels unreadable at this density
     }
-    const labels = geojsonData.features.map(feature => {
+    const hasValue = (f: GeoJSONFeature) => {
+      const dn = f.properties[featureNameProp] || f.properties.district_name || f.properties.nss_region || '';
+      return map.has(`${(f.properties.state_name || '').toLowerCase().trim()}|${dn.toLowerCase().trim()}`);
+    };
+    const labelFeatures = data.length > 0 ? geojsonData.features.filter(hasValue) : geojsonData.features;
+    const labels = labelFeatures.map(feature => {
       const area = calculateDistrictArea(feature);
       if (area > max) max = area;
       if (area < min) min = area;
@@ -1199,7 +1207,7 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
     });
 
     return { districtLabelData: labels, maxArea: max, minArea: min === Infinity ? 0 : min, districtDataMap: map };
-  }, [geojsonData, data, isDense]);
+  }, [geojsonData, data, isDense, featureNameProp]);
 
   const districtPaths = useMemo(
     () => geojsonData
@@ -1300,8 +1308,9 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
 
   return (
     <div className="w-full flex justify-center relative" ref={containerRef}>
+      {labelEdit && <LabelEditPopup key={`${labelEdit.x},${labelEdit.y}`} edit={labelEdit} onClose={() => setLabelEdit(null)} />}
       {renderingData && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50 rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-xs z-50 rounded-lg">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
             <p className="mt-3 text-sm font-medium text-foreground">
@@ -1393,6 +1402,8 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
           fillColor === 'white' || !isColorDark(fillColor) ? '#0f172a' : '#ffffff';
 
         if (hideDistrictNames) return null;
+        const labelText = labelTexts.get(districtKey) ?? toDisplayName(districtName);
+        if (labelText === '') return null;
 
         const rotationAngle = 0;
         const transform = `translate(${labelPosition.x}, ${labelPosition.y}) rotate(${rotationAngle})`;
@@ -1420,8 +1431,17 @@ const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 1;
               onTouchStart={(e) =>
                 handleLabelTouchStart(e, districtKey, labelPosition.x, labelPosition.y)
               }
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                setLabelEdit({
+                  x: e.clientX,
+                  y: e.clientY,
+                  text: labelText,
+                  onCommit: (next) => setLabelTexts(prev => new Map(prev).set(districtKey, next)),
+                });
+              }}
             >
-              {toDisplayName(districtName)}
+              {labelText}
             </text>
 
             {districtValue !== undefined && (

@@ -267,7 +267,7 @@ function SegBtn({ label, active, darkMode, onClick }: { label: string; active: b
       onClick={onClick}
       className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
         active
-          ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-sm'
+          ? darkMode ? 'bg-[hsl(25,8%,18%)] text-amber-400' : 'bg-white text-amber-700 shadow-xs'
           : darkMode ? 'text-[hsl(30,8%,52%)] hover:text-[hsl(35,10%,78%)]' : 'text-[hsl(28,8%,44%)] hover:text-[hsl(28,20%,22%)]'
       }`}
     >
@@ -581,7 +581,7 @@ export function IndiaEvolutionMap({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search district..."
-                className="bg-transparent outline-none w-28 placeholder:opacity-40"
+                className="bg-transparent outline-hidden w-28 placeholder:opacity-40"
               />
               {searchQuery && (
                 <button onClick={clearSearch} aria-label="Clear search" className="opacity-50 hover:opacity-100">
@@ -616,7 +616,7 @@ export function IndiaEvolutionMap({
               <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0" />
               {selectedMeta.name}
               {selectedMeta.state && <span className={darkMode ? 'text-[hsl(30,8%,44%)]' : 'text-amber-600'}> - {selectedMeta.state}</span>}
-              <button onClick={() => { setClickedChainId(null); setSearchQuery(''); }} aria-label="Clear selection" className={`ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>x</button>
+              <button onClick={() => { setClickedChainId(null); setSearchQuery(''); }} aria-label="Clear selection" className={`ml-1 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-[hsl(28,62%,48%)] rounded ${darkMode ? 'text-[hsl(30,8%,44%)] hover:text-[hsl(35,10%,72%)]' : 'text-amber-400 hover:text-amber-700'}`}>x</button>
             </span>
           ) : (
             <span className={`text-xs italic hidden sm:inline ${darkMode ? 'text-[hsl(30,8%,36%)]' : 'text-[hsl(28,8%,58%)]'}`}>
@@ -644,7 +644,7 @@ export function IndiaEvolutionMap({
           <div className="flex-1 overflow-x-auto">
             <div className="flex items-center gap-1">
             {YEARS.map((y, i) => (
-              <button key={y} onClick={() => { stopPlay(); setYearIdx(i); }} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
+              <button key={y} onClick={() => { stopPlay(); setYearIdx(i); }} aria-label={String(y)} aria-pressed={i === yearIdx} className="flex-1 min-w-[28px] flex flex-col items-center gap-1 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] rounded-sm">
                 <div className={`h-2 w-full rounded-full transition-all ${
                   i === yearIdx ? 'bg-amber-500' : darkMode ? 'bg-[hsl(25,8%,18%)] group-hover:bg-[hsl(25,8%,22%)]' : 'bg-[hsl(35,14%,88%)] group-hover:bg-[hsl(35,14%,82%)]'
                 }`} />

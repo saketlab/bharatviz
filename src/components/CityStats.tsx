@@ -122,7 +122,7 @@ function usePagination(itemsPerPage = 50) {
 
 function tableClasses() {
   const thBase = 'px-3 py-2 sm:px-4 sm:py-3 text-xs font-medium uppercase tracking-wider transition-colors text-[hsl(28,20%,22%)] dark:text-[hsl(35,10%,75%)]';
-  const thBtnBase = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 rounded';
+  const thBtnBase = 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(28,62%,48%)] focus-visible:ring-offset-1 rounded';
   const tdBase = 'px-3 py-2.5 sm:px-4 sm:py-3 text-sm';
   const tdMuted = `${tdBase} text-[hsl(28,8%,40%)] dark:text-[hsl(30,8%,52%)]`;
   const tdPrimary = `${tdBase} font-medium text-[hsl(28,20%,14%)] dark:text-[hsl(35,10%,82%)]`;
@@ -227,7 +227,7 @@ function DatasetView({ onDrillDown }: { onDrillDown: (id: string) => void }) {
 
       <div className="border rounded-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[48rem]">
+          <table className="w-full min-w-3xl">
             <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
               <tr>
                 <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('displayName')} aria-label={`Sort by city${sortField === 'displayName' ? `, currently ${sortDirection}ending` : ''}`}>City<SortIcon active={sortField === 'displayName'} dir={sortDirection} /></button></th>
@@ -380,7 +380,7 @@ function WardMetricsView({ onBack }: { onBack: () => void }) {
 
           <div className="border rounded-lg overflow-hidden bg-white border-[hsl(35,18%,84%)] dark:bg-[hsl(25,8%,9%)] dark:border-[hsl(25,8%,14%)]">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[32rem]">
+              <table className="w-full min-w-lg">
                 <thead className="bg-[hsl(35,20%,97%)] dark:bg-[hsl(25,8%,12%)]">
                   <tr>
                     <th className={`${thBase} text-left`}><button className={`flex items-center w-full ${thBtnBase}`} onClick={() => handleSort('ward_name')} aria-label={`Sort by ward${sortField === 'ward_name' ? `, currently ${sortDirection}ending` : ''}`}>Ward<SortIcon active={sortField === 'ward_name'} dir={sortDirection} /></button></th>

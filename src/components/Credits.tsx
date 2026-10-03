@@ -314,7 +314,7 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
                     <div className="flex flex-col gap-1.5">
                       {source.geojsonFiles.map((file, i) => (
                         <div key={i} className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-[9rem]">{file.name}</span>
+                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-36">{file.name}</span>
                           <a
                             href={file.path}
                             download
@@ -345,7 +345,7 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
                     <div className="flex flex-col gap-1.5">
                       {source.parquetOnlyFiles.map((file, i) => (
                         <div key={i} className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-[9rem]">{file.name}</span>
+                          <span className="text-sm text-muted-foreground dark:text-[hsl(30,8%,60%)] min-w-36">{file.name}</span>
                           <a
                             href={file.path}
                             download

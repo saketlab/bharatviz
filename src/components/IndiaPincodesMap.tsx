@@ -715,7 +715,7 @@ export const IndiaPincodesMap = forwardRef<IndiaPincodesMapRef, IndiaPincodesMap
   return (
     <div ref={containerRef} className="relative w-full flex justify-center">
       {renderingData && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50 rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-xs z-50 rounded-lg">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
             <p className="mt-3 text-sm font-medium text-foreground">
