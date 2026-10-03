@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { ColorMapChooser, type ColorScale } from '@/components/ColorMapChooser';
 import type { IndiaDistrictsMapRef } from '@/components/IndiaDistrictsMap';
+import { useUrlState } from '@/hooks/useUrlState';
 
 const IndiaDistrictsMap = lazy(() =>
   import('@/components/IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap }))
@@ -70,10 +71,12 @@ export const CensusMap = forwardRef<IndiaDistrictsMapRef, { darkMode?: boolean }
   const [features, setFeatures] = useState<Feature[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [metric, setMetric] = useState('literacy_pct');
-  const [level, setLevel] = useState<'l1' | 'l2' | 'combined'>('l1');
-  const [colorScale, setColorScale] = useState<ColorScale>('spectral');
-  const [invertColors, setInvertColors] = useState(false);
+  const [metric, setMetric] = useUrlState('metric', 'literacy_pct');
+  const [level, setLevel] = useUrlState<'l1' | 'l2' | 'combined'>('level', 'l1');
+  const [colorScale, setColorScale] = useUrlState<ColorScale>('colorScale', 'spectral');
+  const [invertParam, setInvertParam] = useUrlState('invertColors', '');
+  const invertColors = invertParam === 'true';
+  const setInvertColors = (v: boolean) => setInvertParam(v ? 'true' : '');
 
   useEffect(() => {
     const controller = new AbortController();

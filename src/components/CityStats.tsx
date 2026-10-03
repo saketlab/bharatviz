@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import Papa from 'papaparse';
 import { CITY_DATASETS } from '@/lib/cityMapConfig';
+import { useUrlState } from '@/hooks/useUrlState';
 
 type SortDirection = 'asc' | 'desc' | null;
 
@@ -268,8 +269,8 @@ function DatasetView({ onDrillDown }: { onDrillDown: (id: string) => void }) {
   );
 }
 
-function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: string; onBack: () => void }) {
-  const [selectedId, setSelectedId] = useState(initialDatasetId);
+function WardMetricsView({ onBack }: { onBack: () => void }) {
+  const [selectedId, setSelectedId] = useUrlState('dataset', '');
   const [wards, setWards] = useState<WardMetric[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -415,7 +416,7 @@ function WardMetricsView({ initialDatasetId, onBack }: { initialDatasetId: strin
 }
 
 export const CityStats: React.FC<{ darkMode?: boolean }> = () => {
-  const [drillDownId, setDrillDownId] = useState<string | null>(null);
+  const [drillDownId, setDrillDownId] = useUrlState('dataset', '');
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -432,8 +433,7 @@ export const CityStats: React.FC<{ darkMode?: boolean }> = () => {
 
       {drillDownId ? (
         <WardMetricsView
-          initialDatasetId={drillDownId}
-          onBack={() => setDrillDownId(null)}
+          onBack={() => setDrillDownId('')}
         />
       ) : (
         <DatasetView onDrillDown={setDrillDownId} />

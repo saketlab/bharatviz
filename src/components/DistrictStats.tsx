@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import Papa from 'papaparse';
 import { DISTRICT_MAP_TYPES } from '@/lib/districtMapConfig';
+import { useUrlState } from '@/hooks/useUrlState';
 
 interface DistrictMetric {
   state_name: string;
@@ -30,7 +31,7 @@ const SHAPEFILE_OPTIONS = Object.values(DISTRICT_MAP_TYPES).map((cfg) => ({
 }));
 
 export const DistrictStats: React.FC<{ darkMode?: boolean }> = () => {
-  const [selectedShapefile, setSelectedShapefile] = useState('India_LGD_districts');
+  const [selectedShapefile, setSelectedShapefile] = useUrlState('shapefile', 'India_LGD_districts');
   const [data, setData] = useState<DistrictMetric[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

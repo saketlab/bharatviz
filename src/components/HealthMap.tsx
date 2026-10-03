@@ -7,6 +7,7 @@ import { ExportOptions } from '@/components/ExportOptions';
 import type { BoundaryColor } from '@/lib/colorUtils';
 import type { PointFeature } from '@/components/IndiaDistrictsMap';
 import type { PointViewMode } from '@/components/DeckPointsLayer';
+import { useUrlState } from '@/hooks/useUrlState';
 
 // Stable identity: IndiaDistrictsMap memoises label geometry on `data`.
 const NO_DATA: Array<{ district: string; state: string; value: number }> = [];
@@ -246,25 +247,13 @@ export const HealthMap: React.FC<HealthMapProps> = ({
   const [pointRadius, setPointRadius] = useState(2);
   const [pointOpacity, setPointOpacity] = useState(0.7);
   const [totalRows, setTotalRows] = useState(0);
-  const [viewMode, setViewMode] = useState<ViewMode>('points');
+  const [viewModeParam, setViewMode] = useUrlState<ViewMode>('mode', 'points');
   const [choroData, setChoroData] = useState<Array<{ district: string; state: string; value: number }>>([]);
   const [choroLoading, setChoroLoading] = useState(false);
   const mapRef = useRef<IndiaDistrictsMapRef>(null);
 
-  // URL state arrives after mount, so the prop must remain authoritative.
-  useEffect(() => {
-    if (selectedDatasetIdProp && selectedDatasetIdProp !== selectedDatasetId) {
-      setSelectedDatasetId(selectedDatasetIdProp);
-      setLoadedDatasetId(null);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDatasetIdProp]);
-
   const dataset = DATASETS.find(d => d.id === selectedDatasetId)!;
-
-  useEffect(() => {
-    if (dataset.choroplethOnly) setViewMode('choropleth');
-  }, [dataset]);
+  const viewMode: ViewMode = dataset.choroplethOnly ? 'choropleth' : viewModeParam;
 
   useEffect(() => {
     if (viewMode !== 'choropleth' || !dataset.choroplethUrl) return;

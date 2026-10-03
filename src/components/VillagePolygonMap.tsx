@@ -18,6 +18,7 @@ import {
 } from '@/lib/villagePolygonMapping';
 import type { BoundaryColor } from '@/lib/colorUtils';
 import { getCitation, getVillageCitationInfo } from '@/lib/citations';
+import { useUrlState } from '@/hooks/useUrlState';
 
 const IndiaDistrictsMap = lazy(() => import('./IndiaDistrictsMap').then(m => ({ default: m.IndiaDistrictsMap })));
 
@@ -34,8 +35,7 @@ const featureCache = new Map<string, PolygonFeature[]>();
 
 export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, boundaryColor, boundaryWidth }) => {
   const [mapping, setMapping] = useState<Mapping | null>(null);
-  const [source, setSource] = useState<VillageSource>('soi_direct');
-  const [state, setState] = useState<string>(DEFAULT_STATE);
+  const [state, setState] = useUrlState('state', DEFAULT_STATE);
   const [features, setFeatures] = useState<PolygonFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,12 +45,12 @@ export const VillagePolygonMap: React.FC<VillagePolygonMapProps> = ({ darkMode, 
     loadVillageMapping().then(m => {
       if (cancelled) return;
       setMapping(m);
-      setSource(getVillageSources(m)[0]?.id ?? 'soi_direct');
     });
     return () => { cancelled = true; };
   }, []);
 
   const sources = useMemo(() => (mapping ? getVillageSources(mapping) : []), [mapping]);
+  const [source, setSource] = useUrlState<VillageSource>('source', sources[0]?.id ?? 'soi_direct');
   const states = useMemo(() => (mapping ? getVillagePolygonStates(mapping, source) : []), [mapping, source]);
   const activeSourceLabel = useMemo(
     () => sources.find(s => s.id === source)?.label ?? null,

@@ -103,6 +103,7 @@ interface MultiYearSeries {
 }
 
 const STATE_SCOPED_GROUPS: LayerGroup[] = ['sub-admin', 'electoral', 'villages'];
+const tabPath = (tab: string) => (tab === 'states' ? '/' : `/${tab}`);
 
 const Index = () => {
   const location = useLocation();
@@ -122,7 +123,9 @@ const Index = () => {
     return segment && (COMPARE_GROUPS as string[]).includes(segment) ? (segment as LayerGroup) : null;
   };
 
-  const [activeTab, setActiveTab] = useState<string>(getTabFromPath(location.pathname));
+  const activeTab = getTabFromPath(location.pathname);
+  const initialParam = (tab: string, key: string, fallback: string) =>
+    activeTab === tab ? new URLSearchParams(window.location.search).get(key) ?? fallback : fallback;
 
   const [stateMapData, setStateMapData] = useState<StateMapData[]>([]);
   const [stateMultiYearSeries, setStateMultiYearSeries] = useState<MultiYearSeries[]>([]);
@@ -165,7 +168,7 @@ const Index = () => {
   const [districtNAInfo, setDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
   const initialCompareGroup = getCompareGroupFromPath(location.pathname) ?? 'districts';
-  const initialCompareParams = new URLSearchParams(location.search);
+  const initialCompareParams = new URLSearchParams(window.location.search);
   const initialCompareState = initialCompareParams.get('state');
   const initialCompareSources = initialCompareParams.get('sources');
   const initialCompareView = initialCompareParams.get('view');
@@ -263,7 +266,7 @@ const Index = () => {
   useEffect(() => {
     if (activeTab !== 'compare' || hasReadInitialUrl.current.has('compare')) return;
     hasReadInitialUrl.current.add('compare');
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
     const state = params.get('state');
     if (state) {
       if (compareGroup === 'districts') setCompareDistrictsFocus(state);
@@ -288,7 +291,7 @@ const Index = () => {
     else if (compareViewMode === 'diff') params.set('view', 'diff');
     const search = params.toString();
     const newUrl = `/compare/${compareGroup}${search ? '?' + search : ''}`;
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, compareGroup, compareEffectiveState, compareSourceIds, compareViewMode, location.pathname, location.search, navigate]);
@@ -342,9 +345,9 @@ const Index = () => {
   const [stateSearchQuery, setStateSearchQuery] = useState<string>('');
   const [stateDistrictNAInfo, setStateDistrictNAInfo] = useState<NAInfo | undefined>(undefined);
 
-  const [subAdminLayerId, setSubAdminLayerId] = useState<string>(DEFAULT_SUB_ADMIN_LAYER);
+  const [subAdminLayerId, setSubAdminLayerId] = useState<string>(() => initialParam('sub-admin', 'layer', DEFAULT_SUB_ADMIN_LAYER));
   const [subAdminLayerOpen, setSubAdminLayerOpen] = useState(false);
-  const [subAdminSelectedState, setSubAdminSelectedState] = useState<string>('Maharashtra');
+  const [subAdminSelectedState, setSubAdminSelectedState] = useState<string>(() => initialParam('sub-admin', 'state', DEFAULT_FALLBACK_STATE));
   const [subAdminStateOpen, setSubAdminStateOpen] = useState(false);
   const [subAdminStates, setSubAdminStates] = useState<string[]>([]);
   const [subAdminStatesLoading, setSubAdminStatesLoading] = useState(false);
@@ -363,9 +366,9 @@ const Index = () => {
   const [subAdminNAInfo, setSubAdminNAInfo] = useState<NAInfo | undefined>(undefined);
   const [subAdminHideNames, setSubAdminHideNames] = useState(false);
 
-  const [electoralLayerId, setElectoralLayerId] = useState<string>(DEFAULT_ELECTORAL_LAYER);
+  const [electoralLayerId, setElectoralLayerId] = useState<string>(() => initialParam('electoral', 'layer', DEFAULT_ELECTORAL_LAYER));
   const [electoralLayerOpen, setElectoralLayerOpen] = useState(false);
-  const [electoralSelectedState, setElectoralSelectedState] = useState<string>('Maharashtra');
+  const [electoralSelectedState, setElectoralSelectedState] = useState<string>(() => initialParam('electoral', 'state', DEFAULT_FALLBACK_STATE));
   const [electoralStateOpen, setElectoralStateOpen] = useState(false);
   const [electoralStates, setElectoralStates] = useState<string[]>([]);
   const [electoralStatesLoading, setElectoralStatesLoading] = useState(false);
@@ -381,14 +384,14 @@ const Index = () => {
   const [electoralNAInfo, setElectoralNAInfo] = useState<NAInfo | undefined>(undefined);
   const [electoralHideNames, setElectoralHideNames] = useState(false);
 
-  const [environmentLayerId, setEnvironmentLayerId] = useState<string>(DEFAULT_ENVIRONMENT_LAYER);
+  const [environmentLayerId, setEnvironmentLayerId] = useState<string>(() => initialParam('environment', 'layer', DEFAULT_ENVIRONMENT_LAYER));
   const [environmentLayerOpen, setEnvironmentLayerOpen] = useState(false);
 
-  const [urbanLayerId, setUrbanLayerId] = useState<string>(DEFAULT_URBAN_LAYER);
+  const [urbanLayerId, setUrbanLayerId] = useState<string>(() => initialParam('urban', 'layer', DEFAULT_URBAN_LAYER));
   const [urbanLayerOpen, setUrbanLayerOpen] = useState(false);
 
-  const [healthDatasetId, setHealthDatasetId] = useState<string>('nhp-hospital-directory');
-  const [villageView, setVillageView] = useState<'points' | 'boundaries'>('points');
+  const [healthDatasetId, setHealthDatasetId] = useState<string>(() => initialParam('health', 'dataset', 'nhp-hospital-directory'));
+  const [villageView, setVillageView] = useState<'points' | 'boundaries'>(() => initialParam('villages', 'view', 'points') === 'boundaries' ? 'boundaries' : 'points');
 
   const [cityMapData, setCityMapData] = useState<CityWardData[]>([]);
   const [cityColorScale, setCityColorScale] = useState<ColorScale>('spectral');
@@ -457,14 +460,6 @@ const Index = () => {
   const currentCityDataset = useMemo(() => getCityDataset(selectedCityDataset), [selectedCityDataset]);
   const currentCityDatasets = useMemo(() => getCityDatasets(selectedCity), [selectedCity]);
 
-  useEffect(() => {
-    const tabFromPath = getTabFromPath(location.pathname);
-    if (tabFromPath !== activeTab) {
-      setActiveTab(tabFromPath);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
-
   // The active tab can be offscreen in the mobile scrolling bar.
   useEffect(() => {
     const trigger = document.querySelector(`[data-state="active"].primary-tab`) as HTMLElement | null;
@@ -475,7 +470,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('states')) return;
     if (activeTab !== 'states') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const colorScale = params.get('colorScale') as ColorScale;
     if (colorScale) setStateColorScale(colorScale);
@@ -496,15 +491,14 @@ const Index = () => {
   const buildUrl = (params: URLSearchParams) => {
     if (darkMode) params.set('darkMode', 'true'); else params.delete('darkMode');
     const search = params.toString();
-    const currentPath = location.pathname === '/' ? '/' : location.pathname;
-    return `${currentPath}${search ? '?' + search : ''}`;
+    return `${window.location.pathname}${search ? '?' + search : ''}`;
   };
 
   useEffect(() => {
     if (!hasReadInitialUrl.current.has('states')) return;
     if (activeTab !== 'states') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     params.set('colorScale', stateColorScale);
 
@@ -528,7 +522,7 @@ const Index = () => {
 
     const newUrl = buildUrl(params);
 
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, stateColorScale, stateInvertColors, stateHideNames, stateHideValues, darkMode, location.pathname, location.search, navigate]);
@@ -537,7 +531,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('districts')) return;
     if (activeTab !== 'districts') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const colorScale = params.get('colorScale') as ColorScale;
     if (colorScale) setDistrictColorScale(colorScale);
@@ -564,7 +558,7 @@ const Index = () => {
     if (!hasReadInitialUrl.current.has('districts')) return;
     if (activeTab !== 'districts') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     params.set('colorScale', districtColorScale);
     params.set('mapType', selectedDistrictMapType);
@@ -583,7 +577,7 @@ const Index = () => {
 
     const newUrl = buildUrl(params);
 
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, districtColorScale, districtInvertColors, selectedDistrictMapType, showStateBoundaries, darkMode, location.pathname, location.search, navigate]);
@@ -592,7 +586,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('regions')) return;
     if (activeTab !== 'regions') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const colorScale = params.get('colorScale') as ColorScale;
     if (colorScale) setDistrictColorScale(colorScale);
@@ -608,7 +602,7 @@ const Index = () => {
     if (!hasReadInitialUrl.current.has('regions')) return;
     if (activeTab !== 'regions') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     params.set('colorScale', districtColorScale);
 
@@ -620,7 +614,7 @@ const Index = () => {
 
     const newUrl = buildUrl(params);
 
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, districtColorScale, districtInvertColors, darkMode, location.pathname, location.search, navigate]);
@@ -629,7 +623,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('state-districts')) return;
     if (activeTab !== 'state-districts') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const colorScale = params.get('colorScale') as ColorScale;
     if (colorScale) setStateDistrictColorScale(colorScale);
@@ -657,7 +651,7 @@ const Index = () => {
     if (!hasReadInitialUrl.current.has('state-districts')) return;
     if (activeTab !== 'state-districts') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     params.set('colorScale', stateDistrictColorScale);
     params.set('mapType', selectedStateMapType);
@@ -683,7 +677,7 @@ const Index = () => {
 
     const newUrl = buildUrl(params);
 
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, stateDistrictColorScale, stateDistrictInvertColors, stateDistrictHideNames, stateDistrictHideValues, selectedStateForMap, selectedStateMapType, darkMode, location.pathname, location.search, navigate]);
@@ -692,7 +686,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('cities')) return;
     if (activeTab !== 'cities') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const city = params.get('city');
     if (city) {
@@ -743,7 +737,7 @@ const Index = () => {
 
     const newUrl = buildUrl(params);
 
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -753,7 +747,7 @@ const Index = () => {
     if (hasReadInitialUrl.current.has('pincodes')) return;
     if (activeTab !== 'pincodes') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
 
     const colorScale = params.get('colorScale') as ColorScale;
     if (colorScale) setPincodeColorScale(colorScale);
@@ -772,14 +766,14 @@ const Index = () => {
     if (!hasReadInitialUrl.current.has('pincodes')) return;
     if (activeTab !== 'pincodes') return;
 
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
     params.set('colorScale', pincodeColorScale);
     params.set('selectedState', selectedPincodeState);
     if (pincodeInvertColors) params.set('invertColors', 'true');
     else params.delete('invertColors');
 
     const newUrl = buildUrl(params);
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
   }, [activeTab, pincodeColorScale, pincodeInvertColors, selectedPincodeState, darkMode, location.pathname, location.search, navigate]);
@@ -800,51 +794,35 @@ const Index = () => {
   }, [activeTab]);
 
   const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value);
-    const basePath = value === 'states' ? '' : value;
     const globalParams = new URLSearchParams();
     if (darkMode) globalParams.set('darkMode', 'true');
     const search = globalParams.toString();
-    navigate(`/${basePath}${search ? '?' + search : ''}`);
+    navigate(`${tabPath(value)}${search ? '?' + search : ''}`);
   }, [darkMode, navigate]);
 
   useEffect(() => {
-    if (hasReadInitialUrl.current.has('health')) return;
-    if (activeTab !== 'health') return;
-    const params = new URLSearchParams(location.search);
-    const dataset = params.get('dataset');
-    if (dataset) setHealthDatasetId(dataset);
-    hasReadInitialUrl.current.add('health');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (activeTab !== 'health') return;
-    const params = new URLSearchParams(location.search);
-    params.set('dataset', healthDatasetId);
-    if (darkMode) params.set('darkMode', 'true'); else params.delete('darkMode');
-    const newUrl = `/health?${params.toString()}`;
-    if (location.pathname + location.search !== newUrl) {
-      navigate(newUrl, { replace: true });
-    }
-  }, [activeTab, healthDatasetId, darkMode, location.pathname, location.search, navigate]);
-
-  useEffect(() => {
-    const nonMapTabs = ['district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages'];
-    if (!nonMapTabs.includes(activeTab)) return;
-
-    const params = new URLSearchParams(location.search);
-    const hasDarkParam = params.get('darkMode') === 'true';
-    if (darkMode === hasDarkParam) return;
-
+    const tabParams: Record<string, Record<string, string>> = {
+      'sub-admin': { layer: subAdminLayerId, state: subAdminSelectedState },
+      electoral: { layer: electoralLayerId, state: electoralSelectedState },
+      environment: { layer: environmentLayerId },
+      urban: { layer: urbanLayerId },
+      villages: { view: villageView },
+      health: { dataset: healthDatasetId },
+      'district-stats': {}, 'city-stats': {}, evolution: {}, census: {}, help: {}, credits: {}, mcp: {}, api: {}, maps: {},
+    };
+    const entries = tabParams[activeTab];
+    if (!entries) return;
+    const params = new URLSearchParams(window.location.search);
+    for (const [key, value] of Object.entries(entries)) params.set(key, value);
     const newUrl = buildUrl(params);
-    if (location.pathname + location.search !== newUrl) {
+    if (window.location.pathname + window.location.search !== newUrl) {
       navigate(newUrl, { replace: true });
     }
-  }, [activeTab, darkMode, location.pathname, location.search, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, subAdminLayerId, subAdminSelectedState, electoralLayerId, electoralSelectedState, environmentLayerId, urbanLayerId, villageView, healthDatasetId, darkMode]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     let dataUrl = searchParams.get('dataUrl');
     let titleFromParams = searchParams.get('title') || '';
 
@@ -852,8 +830,7 @@ const Index = () => {
     if (demoParam && !dataUrl) {
       const demoIndex = parseInt(demoParam, 10);
       if (!isNaN(demoIndex) && demoIndex >= 1) {
-        const tabFromPath = getTabFromPath(location.pathname);
-        const level = tabFromPath === 'districts' ? 'districts' : 'states';
+        const level = activeTab === 'districts' ? 'districts' : 'states';
         const demos = Object.entries(showcaseDemoUrls as Record<string, { url: string; title: string }>)
           .filter(([key]) => key.startsWith(level + '_'));
         if (demoIndex <= demos.length) {
@@ -940,7 +917,7 @@ const Index = () => {
                 }
 
                 if (title) setDistrictMapTitle(title);
-                setActiveTab('districts');
+                navigate(tabPath('districts') + window.location.search, { replace: true });
               } else {
                 if (valueColumns.length > 1) {
                   const allSeries = valueColumns.map(col => ({
@@ -975,7 +952,7 @@ const Index = () => {
                 setStateColorScale(colorScale);
                 setStateInvertColors(invertColors);
                 if (title) setStateMapTitle(title);
-                setActiveTab('states');
+                navigate(tabPath('states') + window.location.search, { replace: true });
               }
             },
             error: (error) => {
@@ -1038,6 +1015,9 @@ const Index = () => {
     }
   }, [activeTab, selectedStateMapType]);
 
+  const keepAllIndia = (current: string, layer: ReturnType<typeof getSubAdminLayer>) =>
+    current === ALL_INDIA_STATE && (!layer.stateFiles || !!layer.nationalFile);
+
   useEffect(() => {
     if (activeTab !== 'sub-admin') return;
     if (subAdminStates.length > 0) return;
@@ -1045,7 +1025,7 @@ const Index = () => {
     if (layer.stateFiles) {
       const states = Object.keys(layer.stateFiles).map(toTitleCase).sort();
       setSubAdminStates(states);
-      setSubAdminSelectedState(current => reconcileSelectedState(current, states));
+      setSubAdminSelectedState(current => keepAllIndia(current, layer) ? current : reconcileSelectedState(current, states));
       return;
     }
     let cancelled = false; // a slow fetch for the previous layer must not overwrite this layer's states
@@ -1054,15 +1034,13 @@ const Index = () => {
       if (cancelled) return;
       setSubAdminStates(states);
       setSubAdminStatesLoading(false);
-      setSubAdminSelectedState(current => reconcileSelectedState(current, states));
+      setSubAdminSelectedState(current => keepAllIndia(current, layer) ? current : reconcileSelectedState(current, states));
     }).catch(() => { if (!cancelled) setSubAdminStatesLoading(false); });
     return () => { cancelled = true; setSubAdminStatesLoading(false); };
-    // length dep: the layer-switch reset below must trigger a reload
+    // length dep: the layer picker's states reset must trigger a reload
   }, [activeTab, subAdminLayerId, subAdminStates.length]);
 
   useEffect(() => {
-    setSubAdminSelectedState('Maharashtra');
-    setSubAdminStates([]);
     if (getSubAdminLayer(subAdminLayerId).defaultHideNames) setSubAdminHideNames(true);
   }, [subAdminLayerId]);
 
@@ -1081,14 +1059,9 @@ const Index = () => {
     getUniqueStatesFromGeoJSON(layer.url).then(states => {
       setElectoralStates(states);
       setElectoralStatesLoading(false);
-      setElectoralSelectedState(current => reconcileSelectedState(current, states));
+      setElectoralSelectedState(current => current === ALL_INDIA_STATE ? current : reconcileSelectedState(current, states));
     }).catch(() => setElectoralStatesLoading(false));
   }, [activeTab, electoralLayerId]);
-
-  useEffect(() => {
-    setElectoralSelectedState('Maharashtra');
-    setElectoralStates([]);
-  }, [electoralLayerId]);
 
   const electoralMapRef = useRef<IndiaDistrictsMapRef>(null);
 
@@ -2968,7 +2941,11 @@ const Index = () => {
                                 key={layer.id}
                                 value={`${layer.displayName} ${layer.description}`}
                                 onSelect={() => {
-                                  setSubAdminLayerId(layer.id);
+                                  if (layer.id !== subAdminLayerId) {
+                                    setSubAdminLayerId(layer.id);
+                                    setSubAdminSelectedState(DEFAULT_FALLBACK_STATE);
+                                    setSubAdminStates([]);
+                                  }
                                   setSubAdminLayerOpen(false);
                                 }}
                                 className="flex items-start gap-2"
@@ -3165,7 +3142,11 @@ const Index = () => {
                                 key={layer.id}
                                 value={layer.displayName}
                                 onSelect={() => {
-                                  setElectoralLayerId(layer.id);
+                                  if (layer.id !== electoralLayerId) {
+                                    setElectoralLayerId(layer.id);
+                                    setElectoralSelectedState(DEFAULT_FALLBACK_STATE);
+                                    setElectoralStates([]);
+                                  }
                                   setElectoralLayerOpen(false);
                                 }}
                                 className="flex items-start gap-2"
