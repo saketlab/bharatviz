@@ -1,4 +1,5 @@
 import panchayatMapping from './panchayat-mapping.json';
+import nwdpVillageMapping from './nwdp-village-mapping.json';
 
 const R2 = 'https://geo.bharatviz.org';
 const STATES_URL = `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`;
@@ -7,7 +8,12 @@ export interface StateFile {
   url: string;
   template: string;
   features: number;
+  googleSheet?: string;
 }
+
+type MappedStateFile = Omit<StateFile, 'googleSheet'> & { google_sheet?: string };
+const toStateFile = (f: MappedStateFile): StateFile =>
+  ({ url: f.url, template: f.template, features: f.features, googleSheet: f.google_sheet });
 
 export interface GeoDataLayer {
   id: string;
@@ -28,8 +34,15 @@ export interface GeoDataLayer {
 }
 
 const PANCHAYAT_STATE_FILES: Record<string, StateFile> = Object.fromEntries(
-  Object.entries(panchayatMapping.states).map(([state, f]) => [state, { url: f.url, template: f.template, features: f.features }])
+  Object.entries(panchayatMapping.states).map(([state, f]) => [state, toStateFile(f)])
 );
+
+const NWDP_VILLAGE_STATE_FILES: Record<string, StateFile> = Object.fromEntries(
+  Object.entries(nwdpVillageMapping.states).map(([state, f]) => [state, toStateFile(f)])
+);
+
+export const NWDP_VILLAGE_POINTS_URL = `${R2}/geoparquet/points/nwdp_village_points.parquet`;
+export const NWDP_VILLAGE_COUNT = Object.values(nwdpVillageMapping.states).reduce((n, f) => n + f.features, 0);
 
 export function getLayerStateFile(layer: GeoDataLayer, state?: string): StateFile | undefined {
   if (!layer.stateFiles || !state) return undefined;
@@ -48,6 +61,11 @@ export function getLayerGeojsonUrl(layer: GeoDataLayer, state?: string): string 
 
 export function getLayerTemplateUrl(layer: GeoDataLayer, state?: string): string | undefined {
   return resolveLayerFile(layer, state)?.template ?? layer.templateCsvPath;
+}
+
+// '' stops FileUpload falling back to the districts sheet
+export function getLayerGoogleSheetLink(layer: GeoDataLayer, state?: string): string | undefined {
+  return layer.stateFiles ? (resolveLayerFile(layer, state)?.googleSheet ?? '') : layer.googleSheetLink;
 }
 
 export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
@@ -121,8 +139,20 @@ export const SUB_ADMIN_LAYERS: GeoDataLayer[] = [
     csvColumns: ['state_name', 'panchayat_label', 'value'],
     source: 'MoPR',
     stateFiles: PANCHAYAT_STATE_FILES,
-    nationalFile: panchayatMapping.national,
+    nationalFile: toStateFile(panchayatMapping.national),
     parquetUrl: `${R2}/geoparquet/admin/India-lgd-panchayats.parquet`,
+    defaultHideNames: true,
+  },
+  {
+    id: 'nwdp_villages',
+    displayName: 'SOI Villages (NWDP)',
+    description: 'Survey of India village boundaries from the National Water Data Portal (NWIC): one file per state',
+    url: `${R2}/geojsons/admin/villages-nwdp/index.json`,
+    statesUrl: STATES_URL,
+    featureNameProp: 'village_label',
+    csvColumns: ['state_name', 'village_label', 'value'],
+    source: 'NWDP Villages',
+    stateFiles: NWDP_VILLAGE_STATE_FILES,
     defaultHideNames: true,
   },
   {

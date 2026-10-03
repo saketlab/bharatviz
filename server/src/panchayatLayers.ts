@@ -5,6 +5,8 @@ export interface PanchayatStateLayer {
   stateName: string;
   displayName: string;
   features: number;
+  templateUrl: string;
+  googleSheetUrl?: string;
 }
 
 export const PANCHAYAT_GEOJSON_BASE = 'https://geo.bharatviz.org/geojsons/admin/panchayats';
@@ -12,29 +14,29 @@ export const PANCHAYAT_PARQUET_URL = 'https://geo.bharatviz.org/geoparquet/admin
 export const PANCHAYAT_NATIONAL_URL = 'https://geo.bharatviz.org/geojsons/admin/panchayats/india.geojson';
 
 export const PANCHAYAT_STATE_LAYERS: PanchayatStateLayer[] = [
-  { slug: 'punjab', stateName: 'PUNJAB', displayName: 'Punjab', features: 10878 },
-  { slug: 'uttarakhand', stateName: 'UTTARAKHAND', displayName: 'Uttarakhand', features: 7407 },
-  { slug: 'haryana', stateName: 'HARYANA', displayName: 'Haryana', features: 5458 },
-  { slug: 'rajasthan', stateName: 'RAJASTHAN', displayName: 'Rajasthan', features: 10950 },
-  { slug: 'uttar-pradesh', stateName: 'UTTAR PRADESH', displayName: 'Uttar Pradesh', features: 56137 },
-  { slug: 'bihar', stateName: 'BIHAR', displayName: 'Bihar', features: 7877 },
-  { slug: 'tripura', stateName: 'TRIPURA', displayName: 'Tripura', features: 601 },
-  { slug: 'assam', stateName: 'ASSAM', displayName: 'Assam', features: 2563 },
-  { slug: 'west-bengal', stateName: 'WEST BENGAL', displayName: 'West Bengal', features: 3256 },
-  { slug: 'jharkhand', stateName: 'JHARKHAND', displayName: 'Jharkhand', features: 4132 },
-  { slug: 'odisha', stateName: 'ODISHA', displayName: 'Odisha', features: 6782 },
-  { slug: 'chhattisgarh', stateName: 'CHHATTISGARH', displayName: 'Chhattisgarh', features: 11231 },
-  { slug: 'madhya-pradesh', stateName: 'MADHYA PRADESH', displayName: 'Madhya Pradesh', features: 21615 },
-  { slug: 'gujarat', stateName: 'GUJARAT', displayName: 'Gujarat', features: 13650 },
-  { slug: 'maharashtra', stateName: 'MAHARASHTRA', displayName: 'Maharashtra', features: 27352 },
-  { slug: 'andhra-pradesh', stateName: 'ANDHRA PRADESH', displayName: 'Andhra Pradesh', features: 10310 },
-  { slug: 'karnataka', stateName: 'KARNATAKA', displayName: 'Karnataka', features: 5948 },
-  { slug: 'goa', stateName: 'GOA', displayName: 'Goa', features: 178 },
-  { slug: 'lakshadweep', stateName: 'LAKSHADWEEP', displayName: 'Lakshadweep', features: 10 },
-  { slug: 'kerala', stateName: 'KERALA', displayName: 'Kerala', features: 877 },
-  { slug: 'tamil-nadu', stateName: 'TAMIL NADU', displayName: 'Tamil Nadu', features: 11452 },
-  { slug: 'puducherry', stateName: 'PUDUCHERRY', displayName: 'Puducherry', features: 71 },
-  { slug: 'andaman-nicobar-islands', stateName: 'ANDAMAN & NICOBAR', displayName: 'Andaman & Nicobar Islands', features: 72 },
-  { slug: 'telangana', stateName: 'TELANGANA', displayName: 'Telangana', features: 8154 },
-  { slug: 'dadra-nagar-haveli-daman-diu', stateName: 'DADRA,NAGAR HAVELI,DAMAN & DIU', displayName: 'Dadra & Nagar Haveli & Daman & Diu', features: 30 },
+  {"slug": "punjab", "stateName": "PUNJAB", "displayName": "Punjab", "features": 10878, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/punjab_template.csv"},
+  {"slug": "uttarakhand", "stateName": "UTTARAKHAND", "displayName": "Uttarakhand", "features": 7407, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/uttarakhand_template.csv"},
+  {"slug": "haryana", "stateName": "HARYANA", "displayName": "Haryana", "features": 5458, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/haryana_template.csv"},
+  {"slug": "rajasthan", "stateName": "RAJASTHAN", "displayName": "Rajasthan", "features": 10950, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/rajasthan_template.csv"},
+  {"slug": "uttar-pradesh", "stateName": "UTTAR PRADESH", "displayName": "Uttar Pradesh", "features": 56137, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/uttar-pradesh_template.csv"},
+  {"slug": "bihar", "stateName": "BIHAR", "displayName": "Bihar", "features": 7877, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/bihar_template.csv"},
+  {"slug": "tripura", "stateName": "TRIPURA", "displayName": "Tripura", "features": 601, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/tripura_template.csv"},
+  {"slug": "assam", "stateName": "ASSAM", "displayName": "Assam", "features": 2563, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/assam_template.csv"},
+  {"slug": "west-bengal", "stateName": "WEST BENGAL", "displayName": "West Bengal", "features": 3256, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/west-bengal_template.csv"},
+  {"slug": "jharkhand", "stateName": "JHARKHAND", "displayName": "Jharkhand", "features": 4132, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/jharkhand_template.csv"},
+  {"slug": "odisha", "stateName": "ODISHA", "displayName": "Odisha", "features": 6782, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/odisha_template.csv"},
+  {"slug": "chhattisgarh", "stateName": "CHHATTISGARH", "displayName": "Chhattisgarh", "features": 11231, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/chhattisgarh_template.csv"},
+  {"slug": "madhya-pradesh", "stateName": "MADHYA PRADESH", "displayName": "Madhya Pradesh", "features": 21615, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/madhya-pradesh_template.csv"},
+  {"slug": "gujarat", "stateName": "GUJARAT", "displayName": "Gujarat", "features": 13650, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/gujarat_template.csv"},
+  {"slug": "maharashtra", "stateName": "MAHARASHTRA", "displayName": "Maharashtra", "features": 27352, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/maharashtra_template.csv"},
+  {"slug": "andhra-pradesh", "stateName": "ANDHRA PRADESH", "displayName": "Andhra Pradesh", "features": 10310, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/andhra-pradesh_template.csv"},
+  {"slug": "karnataka", "stateName": "KARNATAKA", "displayName": "Karnataka", "features": 5948, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/karnataka_template.csv"},
+  {"slug": "goa", "stateName": "GOA", "displayName": "Goa", "features": 178, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/goa_template.csv"},
+  {"slug": "lakshadweep", "stateName": "LAKSHADWEEP", "displayName": "Lakshadweep", "features": 10, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/lakshadweep_template.csv"},
+  {"slug": "kerala", "stateName": "KERALA", "displayName": "Kerala", "features": 877, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/kerala_template.csv"},
+  {"slug": "tamil-nadu", "stateName": "TAMIL NADU", "displayName": "Tamil Nadu", "features": 11452, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/tamil-nadu_template.csv"},
+  {"slug": "puducherry", "stateName": "PUDUCHERRY", "displayName": "Puducherry", "features": 71, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/puducherry_template.csv"},
+  {"slug": "andaman-nicobar-islands", "stateName": "ANDAMAN & NICOBAR", "displayName": "Andaman & Nicobar Islands", "features": 72, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/andaman-nicobar-islands_template.csv"},
+  {"slug": "telangana", "stateName": "TELANGANA", "displayName": "Telangana", "features": 8154, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/telangana_template.csv"},
+  {"slug": "dadra-nagar-haveli-daman-diu", "stateName": "DADRA,NAGAR HAVELI,DAMAN & DIU", "displayName": "Dadra & Nagar Haveli & Daman & Diu", "features": 30, "templateUrl": "https://geo.bharatviz.org/csv/panchayats/dadra-nagar-haveli-daman-diu_template.csv"},
 ];

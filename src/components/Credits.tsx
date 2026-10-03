@@ -1,7 +1,8 @@
 import React from 'react';
 import { ExternalLink, Download } from 'lucide-react';
-import { SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS, getSubAdminLayer } from '@/lib/geodataLayerConfig';
+import { SUB_ADMIN_LAYERS, ELECTORAL_LAYERS, ENVIRONMENT_LAYERS, URBAN_LAYERS, getSubAdminLayer, NWDP_VILLAGE_POINTS_URL } from '@/lib/geodataLayerConfig';
 import panchayatMapping from '@/lib/panchayat-mapping.json';
+import nwdpVillageMapping from '@/lib/nwdp-village-mapping.json';
 
 interface CreditSource {
   title: string;
@@ -138,6 +139,21 @@ const Credits: React.FC<{ darkMode?: boolean }> = () => {
       ],
       parquetOnlyFiles: [
         { name: 'All states (full resolution)', path: getSubAdminLayer('lgd_panchayats').parquetUrl ?? '' },
+      ],
+    },
+    {
+      title: 'National Water Data Portal (NWIC) - Village boundaries',
+      description: 'Survey of India village polygons for 36 states/UTs, published as "Village Boundary" on the National Water Data Portal by the National Water Informatics Centre, Ministry of Jal Shakti (licence: Other (Open)). Reprojected to WGS84 and simplified for the web. Please attribute Survey of India and NWIC.',
+      url: 'https://nwdp.nwic.gov.in/dataset/9bad17f2-9d88-428d-98ad-831ef01ae2e4',
+      usedFor: [
+        'Survey of India (NWDP) village polygons and all-India village points (Villages tab)',
+        `${getSubAdminLayer('nwdp_villages').displayName} (Sub-Admin tab, ${Object.keys(nwdpVillageMapping.states).length} states)`,
+      ],
+      geojsonFiles: Object.values(nwdpVillageMapping.states)
+        .sort((a, b) => a.state_display_name.localeCompare(b.state_display_name))
+        .map(f => ({ name: f.state_display_name, path: f.url, parquet: null })),
+      parquetOnlyFiles: [
+        { name: 'All-India village points', path: NWDP_VILLAGE_POINTS_URL },
       ],
     },
     {

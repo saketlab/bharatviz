@@ -90,6 +90,18 @@ const SOURCE_CITATIONS: Record<string, CitationOutput> = {
     apa: 'Survey of India, Government of India. (2025). Village Boundary Database of Entire India. https://surveyofindia.gov.in/pages/village-boundary-data-base-of-entire-india',
   },
 
+  'NWDP Villages': {
+    bibtex: `@misc{nwdp_village_boundary,
+  author = {{Survey of India} and {National Water Informatics Centre, Ministry of Jal Shakti}},
+  title  = {Village Boundary},
+  year   = {2025},
+  publisher = {India Water Resources Information System, National Water Data Portal},
+  url    = {https://nwdp.nwic.gov.in/dataset/9bad17f2-9d88-428d-98ad-831ef01ae2e4},
+  note   = {Boundaries: Survey of India. Licence: Other (Open)}
+}`,
+    apa: 'Survey of India & National Water Informatics Centre, Ministry of Jal Shakti. (2025). Village Boundary [Data set]. National Water Data Portal. https://nwdp.nwic.gov.in/dataset/9bad17f2-9d88-428d-98ad-831ef01ae2e4',
+  },
+
   BHUVAN: {
     bibtex: `@misc{bhuvan_isro,
   author = {{National Remote Sensing Centre (NRSC), ISRO}},
@@ -284,6 +296,7 @@ const DISTRICT_SOURCE_KEYS: Record<string, string> = {
 
 const VILLAGE_SOURCE_KEYS: Record<string, string> = {
   soi_direct: 'SOI Villages',
+  nwdp: 'NWDP Villages',
   soi: 'SOI',
   lgd: 'LGD',
   bhuvan: 'BHUVAN',

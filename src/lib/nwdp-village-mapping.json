@@ -1,0 +1,256 @@
+{
+  "states": {
+    "ANDAMAN & NICOBAR": {
+      "state_display_name": "Andaman & Nicobar Islands",
+      "slug": "andaman-and-nicobar-islands",
+      "features": 669,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/andaman-and-nicobar-islands.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/andaman-and-nicobar-islands_template.csv"
+    },
+    "ANDHRA PRADESH": {
+      "state_display_name": "Andhra Pradesh",
+      "slug": "andhra-pradesh",
+      "features": 18100,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/andhra-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/andhra-pradesh_template.csv"
+    },
+    "ARUNACHAL PRADESH": {
+      "state_display_name": "Arunachal Pradesh",
+      "slug": "arunachal-pradesh",
+      "features": 5803,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/arunachal-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/arunachal-pradesh_template.csv"
+    },
+    "ASSAM": {
+      "state_display_name": "Assam",
+      "slug": "assam",
+      "features": 26662,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/assam.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/assam_template.csv"
+    },
+    "BIHAR": {
+      "state_display_name": "Bihar",
+      "slug": "bihar",
+      "features": 45063,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/bihar.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/bihar_template.csv"
+    },
+    "CHANDIGARH": {
+      "state_display_name": "Chandigarh",
+      "slug": "chandigarh",
+      "features": 13,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/chandigarh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/chandigarh_template.csv"
+    },
+    "CHHATTISGARH": {
+      "state_display_name": "Chhattisgarh",
+      "slug": "chhattisgarh",
+      "features": 20811,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/chhattisgarh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/chhattisgarh_template.csv"
+    },
+    "DADRA,NAGAR HAVELI,DAMAN & DIU": {
+      "state_display_name": "Dadra & Nagar Haveli and Daman & Diu",
+      "slug": "dadra-and-nagar-haveli-and-daman-and-diu",
+      "features": 101,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/dadra-and-nagar-haveli-and-daman-and-diu.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/dadra-and-nagar-haveli-and-daman-and-diu_template.csv"
+    },
+    "DELHI": {
+      "state_display_name": "Delhi",
+      "slug": "delhi",
+      "features": 254,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/delhi.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/delhi_template.csv"
+    },
+    "GOA": {
+      "state_display_name": "Goa",
+      "slug": "goa",
+      "features": 412,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/goa.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/goa_template.csv"
+    },
+    "GUJARAT": {
+      "state_display_name": "Gujarat",
+      "slug": "gujarat",
+      "features": 18838,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/gujarat.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/gujarat_template.csv"
+    },
+    "HARYANA": {
+      "state_display_name": "Haryana",
+      "slug": "haryana",
+      "features": 7010,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/haryana.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/haryana_template.csv"
+    },
+    "HIMACHAL PRADESH": {
+      "state_display_name": "Himachal Pradesh",
+      "slug": "himachal-pradesh",
+      "features": 20773,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/himachal-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/himachal-pradesh_template.csv"
+    },
+    "JAMMU & KASHMIR": {
+      "state_display_name": "Jammu & Kashmir",
+      "slug": "jammu-and-kashmir",
+      "features": 6593,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/jammu-and-kashmir.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/jammu-and-kashmir_template.csv"
+    },
+    "JHARKHAND": {
+      "state_display_name": "Jharkhand",
+      "slug": "jharkhand",
+      "features": 32678,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/jharkhand.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/jharkhand_template.csv"
+    },
+    "KARNATAKA": {
+      "state_display_name": "Karnataka",
+      "slug": "karnataka",
+      "features": 29789,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/karnataka.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/karnataka_template.csv"
+    },
+    "KERALA": {
+      "state_display_name": "Kerala",
+      "slug": "kerala",
+      "features": 1556,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/kerala.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/kerala_template.csv"
+    },
+    "LADAKH": {
+      "state_display_name": "Ladakh",
+      "slug": "ladakh",
+      "features": 250,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/ladakh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/ladakh_template.csv"
+    },
+    "LAKSHADWEEP": {
+      "state_display_name": "Lakshadweep",
+      "slug": "lakshadweep",
+      "features": 34,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/lakshadweep.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/lakshadweep_template.csv"
+    },
+    "MADHYA PRADESH": {
+      "state_display_name": "Madhya Pradesh",
+      "slug": "madhya-pradesh",
+      "features": 55937,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/madhya-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/madhya-pradesh_template.csv"
+    },
+    "MAHARASHTRA": {
+      "state_display_name": "Maharashtra",
+      "slug": "maharashtra",
+      "features": 44468,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/maharashtra.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/maharashtra_template.csv"
+    },
+    "MANIPUR": {
+      "state_display_name": "Manipur",
+      "slug": "manipur",
+      "features": 2674,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/manipur.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/manipur_template.csv"
+    },
+    "MEGHALAYA": {
+      "state_display_name": "Meghalaya",
+      "slug": "meghalaya",
+      "features": 6897,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/meghalaya.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/meghalaya_template.csv"
+    },
+    "MIZORAM": {
+      "state_display_name": "Mizoram",
+      "slug": "mizoram",
+      "features": 881,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/mizoram.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/mizoram_template.csv"
+    },
+    "NAGALAND": {
+      "state_display_name": "Nagaland",
+      "slug": "nagaland",
+      "features": 1564,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/nagaland.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/nagaland_template.csv"
+    },
+    "ODISHA": {
+      "state_display_name": "Odisha",
+      "slug": "odisha",
+      "features": 53320,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/odisha.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/odisha_template.csv"
+    },
+    "PUDUCHERRY": {
+      "state_display_name": "Puducherry",
+      "slug": "puducherry",
+      "features": 101,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/puducherry.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/puducherry_template.csv"
+    },
+    "PUNJAB": {
+      "state_display_name": "Punjab",
+      "slug": "punjab",
+      "features": 12860,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/punjab.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/punjab_template.csv"
+    },
+    "RAJASTHAN": {
+      "state_display_name": "Rajasthan",
+      "slug": "rajasthan",
+      "features": 45012,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/rajasthan.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/rajasthan_template.csv"
+    },
+    "SIKKIM": {
+      "state_display_name": "Sikkim",
+      "slug": "sikkim",
+      "features": 484,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/sikkim.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/sikkim_template.csv"
+    },
+    "TAMIL NADU": {
+      "state_display_name": "Tamil Nadu",
+      "slug": "tamil-nadu",
+      "features": 17119,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/tamil-nadu.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/tamil-nadu_template.csv"
+    },
+    "TELANGANA": {
+      "state_display_name": "Telangana",
+      "slug": "telangana",
+      "features": 10718,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/telangana.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/telangana_template.csv"
+    },
+    "TRIPURA": {
+      "state_display_name": "Tripura",
+      "slug": "tripura",
+      "features": 917,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/tripura.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/tripura_template.csv"
+    },
+    "UTTAR PRADESH": {
+      "state_display_name": "Uttar Pradesh",
+      "slug": "uttar-pradesh",
+      "features": 107816,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/uttar-pradesh.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/uttar-pradesh_template.csv"
+    },
+    "UTTARAKHAND": {
+      "state_display_name": "Uttarakhand",
+      "slug": "uttarakhand",
+      "features": 16920,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/uttarakhand.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/uttarakhand_template.csv"
+    },
+    "WEST BENGAL": {
+      "state_display_name": "West Bengal",
+      "slug": "west-bengal",
+      "features": 41188,
+      "url": "https://geo.bharatviz.org/geojsons/admin/villages-nwdp/west-bengal.geojson",
+      "template": "https://geo.bharatviz.org/csv/villages-nwdp/west-bengal_template.csv"
+    }
+  }
+}

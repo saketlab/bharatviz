@@ -313,3 +313,6 @@ data/panchayats_full/
 data/panchayats_out/
 data/cache/
 !src/lib/
+data/nwdp_villages_out/
+data/nwdp_village_points_out/
+data/nwdp_village_layers_out/

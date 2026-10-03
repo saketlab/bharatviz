@@ -174,7 +174,7 @@ const geometryContains = (g: GeoJSONFeature['geometry'], p: Pt) =>
   (geometryToPolygons(g) as Pt[][][]).some(([shell, ...holes]) =>
     shell && d3.polygonContains(shell, p) && !holes.some(h => d3.polygonContains(h, p)));
 const featureSubtitle = (props: GeoJSONFeature['properties'], nameProp: string) =>
-  ['block_name', 'district_name', 'state_name'].filter(k => k !== nameProp && props[k]).map(k => props[k]).join(', ');
+  ['block_name', 'subdistrict_name', 'district_name', 'state_name'].filter(k => k !== nameProp && props[k]).map(k => props[k]).join(', ');
 
 const toDisplayName = (name: string): string =>
   name === name.toUpperCase()

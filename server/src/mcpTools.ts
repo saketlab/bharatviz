@@ -5,7 +5,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { McpMapService } from './mcpMapService.js';
+import { McpMapService, NWDP_VILLAGE_COUNT } from './mcpMapService.js';
 import { ColorScales } from './types/index.js';
 import { ALL_INDIA_STATE } from './utils/constants.js';
 
@@ -41,7 +41,10 @@ export function createMcpServer(): Server {
         '- Health facilities: 10 point datasets (hospitals, blood banks, anganwadis 1.2M, PHCs)\n' +
         '- Villages (mapId: villages-soi-points) - 584,615 LGD village points (centroids of LGD village ' +
         '  polygons), the finest admin level, complete nationwide; fields village_name, state_name, district\n' +
-        '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, Gram Panchayats (per state), constituencies\n\n' +
+        `- Villages (mapId: villages-nwdp-points) - ${NWDP_VILLAGE_COUNT} Survey of India village points (NWDP), all 36 states/UTs; ` +
+        '  fields village_name, district, state_name, population\n' +
+        '- 60+ boundary sets: Census 1872-2011, LGD, SOI, Bhuvan, blocks, subdistricts, Gram Panchayats (per state), ' +
+        '  Survey of India villages (per state), constituencies\n\n' +
         'TOOLS:\n' +
         '- rank_features: rank districts by any column (literacy_pct, sc_pct, pm25__pm25_mean, RWI)\n' +
         '- correlate: Pearson/Spearman between two columns across districts or states\n' +
@@ -174,6 +177,7 @@ export function createMcpServer(): Server {
             'Supports 17 color scales, dark mode, state boundary overlays, and multiple boundary sets including ' +
             'districts (lgd-districts, census-*-districts), subdistricts (lgd-subdistricts, soi-subdistricts), ' +
             'blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), Gram Panchayats (lgd-panchayats-<state>, e.g. lgd-panchayats-uttar-pradesh; one map per state, feature name = panchayat_label), ' +
+            'Survey of India villages (nwdp-villages-<state>, e.g. nwdp-villages-bihar; one map per state, feature name = village_label), ' +
             'and constituencies (lgd-parliament, lgd-assembly). ' +
             'Default output is 300 DPI PNG.',
           inputSchema: {
@@ -185,7 +189,7 @@ export function createMcpServer(): Server {
                   type: 'object',
                   properties: {
                     state: { type: 'string', description: 'State name (omit for stateless layers like eco-zones)' },
-                    district: { type: 'string', description: 'Feature name (district, subdistrict, block, panchayat_label, constituency, or area name depending on mapId)' },
+                    district: { type: 'string', description: 'Feature name (district, subdistrict, block, panchayat_label, village_label, constituency, or area name depending on mapId)' },
                     value: { type: 'number', description: 'Numeric value for this feature' },
                   },
                   required: ['district', 'value'],
@@ -195,7 +199,7 @@ export function createMcpServer(): Server {
               },
               mapId: {
                 type: 'string',
-                description: 'Map boundary ID. Default: "lgd-districts". Also supports subdistricts (lgd-subdistricts, soi-subdistricts), blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), Gram Panchayats per state (lgd-panchayats-<state>, e.g. lgd-panchayats-goa), constituencies (lgd-parliament, lgd-assembly). Use list_available_maps to see all options.',
+                description: 'Map boundary ID. Default: "lgd-districts". Also supports subdistricts (lgd-subdistricts, soi-subdistricts), blocks (lgd-blocks, bhuvan-blocks, pmgsy-blocks), Gram Panchayats per state (lgd-panchayats-<state>, e.g. lgd-panchayats-goa), Survey of India villages per state (nwdp-villages-<state>, e.g. nwdp-villages-goa), constituencies (lgd-parliament, lgd-assembly). Use list_available_maps to see all options.',
               },
               state: {
                 type: 'string',
@@ -227,7 +231,8 @@ export function createMcpServer(): Server {
           description:
             'Returns a CSV template for a given map boundary set. The template includes all entity names ' +
             '(states or districts) pre-filled with empty value columns. Use this to understand what names ' +
-            'the map expects, then fill in values and pass to render tools.',
+            'the map expects, then fill in values and pass to render tools. Per-state Gram Panchayat and village ' +
+            'maps return their published template (with context columns) plus a public Google Sheets copy when one exists.',
           inputSchema: {
             type: 'object' as const,
             properties: {
@@ -1392,9 +1397,12 @@ export function createMcpServer(): Server {
         case 'get_csv_template': {
           const mapId = args?.mapId as string;
           if (!mapId) throw new Error('mapId is required');
-          const csv = await mapService.getCsvTemplate(mapId);
+          const { csv, googleSheetUrl: sheet } = await mapService.getCsvTemplate(mapId);
           return {
-            content: [{ type: 'text', text: csv }],
+            content: [
+              { type: 'text', text: csv },
+              ...(sheet ? [{ type: 'text' as const, text: `Google Sheets copy of this template: ${sheet}` }] : []),
+            ],
           };
         }
 

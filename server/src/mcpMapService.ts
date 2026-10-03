@@ -11,6 +11,7 @@ import { queryEvolution, getDistrictGeoJSON, getDistrictNames, ensureLoaded as e
 import type { FeatureCollection, Feature, Geometry } from 'geojson';
 import { LRUCache } from './utils/lruCache.js';
 import { PANCHAYAT_STATE_LAYERS, PANCHAYAT_GEOJSON_BASE, PANCHAYAT_PARQUET_URL } from './panchayatLayers.js';
+import { NWDP_VILLAGE_STATE_LAYERS, NWDP_VILLAGE_GEOJSON_BASE, NWDP_VILLAGE_POINTS_URL } from './nwdpVillageLayers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,11 +29,15 @@ export interface MapEntry {
   aggregatedByDistrictUrl?: string;
   featureCount?: number; // known up front; listMaps skips the download
   defaultState?: string; // single-state maps: render that state when none is given (all-India overlay is too big)
+  templateUrl?: string; // served as-is by get_csv_template
+  googleSheetUrl?: string;
 }
 
 const R2 = 'https://geo.bharatviz.org';
 const CENSUS = `${R2}/geojsons/census`;
 const DIST = `${R2}/geojsons/districts`;
+
+export const NWDP_VILLAGE_COUNT = NWDP_VILLAGE_STATE_LAYERS.reduce((n, s) => n + s.features, 0).toLocaleString('en-US');
 
 export const MAP_REGISTRY: Record<string, MapEntry> = {
   'census-1872-states': { id: 'census-1872-states', file: `${CENSUS}/India-1872-states.geojson`, level: 'states', source: 'Census 1872', year: 1872, description: 'State boundaries from the 1872 Census of India' },
@@ -115,6 +120,25 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     parquetUrl: PANCHAYAT_PARQUET_URL,
     featureCount: s.features,
     defaultState: s.stateName,
+    templateUrl: s.templateUrl,
+    googleSheetUrl: s.googleSheetUrl,
+  }])),
+
+  ...Object.fromEntries(NWDP_VILLAGE_STATE_LAYERS.map((s): [string, MapEntry] => [`nwdp-villages-${s.slug}`, {
+    id: `nwdp-villages-${s.slug}`,
+    file: `${NWDP_VILLAGE_GEOJSON_BASE}/${s.slug}.geojson`,
+    level: 'districts',
+    source: 'Survey of India, via the National Water Data Portal (NWIC, Ministry of Jal Shakti)',
+    year: 2025,
+    description: `Village boundaries for ${s.displayName} (${s.features.toLocaleString('en-IN')} villages), Survey of India. ` +
+      'Feature name is village_label: the village name, disambiguated as "NAME (Subdistrict)" or "NAME (Subdistrict, District)" only where the name repeats within the state. ' +
+      'Fields: state_name, district_name, subdistrict_name, village_code, population, village_label. Simplified for display.',
+    statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`,
+    featureNameProp: 'village_label',
+    featureCount: s.features,
+    defaultState: s.stateName,
+    templateUrl: s.templateUrl,
+    googleSheetUrl: s.googleSheetUrl,
   }])),
 
   'lgd-parliament': { id: 'lgd-parliament', file: `${R2}/geojsons/electoral/India-geodata-lgd-parliament.geojson`, level: 'districts', source: 'LGD', year: 2024, description: 'Lok Sabha parliamentary constituency boundaries', statesFile: `${R2}/geojsons/admin/India-geodata-lgd-states.geojson`, featureNameProp: 'constituency_name' },
@@ -399,9 +423,20 @@ export const MAP_REGISTRY: Record<string, MapEntry> = {
     description: '584,615 village points across India, computed as centroids of LGD village polygons. Complete nationwide coverage (the earlier SOI point source was missing most of UP/Bihar/Jharkhand). Fields: village_name, state_name, district.',
     featureNameProp: 'village_name',
   },
+  'villages-nwdp-points': {
+    id: 'villages-nwdp-points',
+    file: NWDP_VILLAGE_POINTS_URL,
+    parquetUrl: NWDP_VILLAGE_POINTS_URL,
+    level: 'points',
+    source: 'Survey of India village boundaries, via the National Water Data Portal (NWIC, Ministry of Jal Shakti)',
+    year: 2025,
+    description: `${NWDP_VILLAGE_COUNT} village points across India, one inside each Survey of India village polygon (NWDP). Fields: village_name, district, state_name, population.`,
+    featureNameProp: 'village_name',
+  },
 };
 
 const geojsonCache = new LRUCache<string, FeatureCollection>(50);
+const templateCache = new LRUCache<string, string>(20);
 
 const WARMUP_LAYERS = [
   'census-2011-enriched',
@@ -568,7 +603,7 @@ export class McpMapService {
   private static categoryForId(id: string): string {
     if (id.startsWith('census-')) return 'admin';
     if (id.startsWith('lgd-parliament') || id.startsWith('lgd-assembly') || id.startsWith('susewind-')) return 'electoral';
-    if (id.startsWith('lgd-') || id.startsWith('soi-') || id.startsWith('bhuvan-') || id.startsWith('pmgsy-') || id.startsWith('shrug-')) return 'admin';
+    if (id.startsWith('lgd-') || id.startsWith('soi-') || id.startsWith('nwdp-villages-') || id.startsWith('bhuvan-') || id.startsWith('pmgsy-') || id.startsWith('shrug-')) return 'admin';
     if (id.startsWith('nfhs') || id.startsWith('nsso-')) return 'survey';
     if (id.startsWith('gs-') || id.startsWith('bm-') || id.startsWith('fsi-')) return 'environment';
     if (id.startsWith('sbm-')) return 'urban';
@@ -666,9 +701,23 @@ export class McpMapService {
     return results.sort((a, b) => a.state.localeCompare(b.state) || a.district.localeCompare(b.district));
   }
 
-  async getCsvTemplate(mapId: string): Promise<string> {
+  async getCsvTemplate(mapId: string): Promise<{ csv: string; googleSheetUrl?: string }> {
     const entry = MAP_REGISTRY[mapId];
     if (!entry) throw new Error(`Unknown map ID: ${mapId}. Use list_available_maps to see valid IDs.`);
+    return { csv: await this.buildCsvTemplate(entry), googleSheetUrl: entry.googleSheetUrl };
+  }
+
+  private async buildCsvTemplate(entry: MapEntry): Promise<string> {
+    const mapId = entry.id;
+    if (entry.templateUrl) {
+      const cached = templateCache.get(entry.templateUrl);
+      if (cached !== undefined) return cached;
+      const res = await fetch(entry.templateUrl);
+      if (!res.ok) throw new Error(`Template download failed (${res.status}): ${entry.templateUrl}`);
+      const csv = (await res.text()).split('\n').filter(line => !line.startsWith('#')).join('\n');
+      templateCache.set(entry.templateUrl, csv);
+      return csv;
+    }
 
     if (entry.level === 'states') {
       const states = await this.listStates(mapId);

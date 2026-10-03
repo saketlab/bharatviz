@@ -27,7 +27,7 @@ import {
   getGeoDataLayerStates, getDistrictStates,
   type LayerGroup, type LayerCatalogEntry,
 } from '@/lib/layerCatalog';
-import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, getLayerGeojsonUrl, getLayerTemplateUrl, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
+import { SUB_ADMIN_LAYERS, DEFAULT_SUB_ADMIN_LAYER, getSubAdminLayer, getLayerGeojsonUrl, getLayerTemplateUrl, getLayerGoogleSheetLink, ELECTORAL_LAYERS, DEFAULT_ELECTORAL_LAYER, getElectoralLayer, ENVIRONMENT_LAYERS, DEFAULT_ENVIRONMENT_LAYER, getEnvironmentLayer, URBAN_LAYERS, DEFAULT_URBAN_LAYER, getUrbanLayer } from '@/lib/geodataLayerConfig';
 import { getCityList, getCityDataset, getCityDatasets, getCityCsvUrls, DEFAULT_CITY, DEFAULT_CITY_DATASET } from '@/lib/cityMapConfig';
 import type { IndiaCityMapRef, CityWardData } from '@/components/IndiaCityMap';
 import type { IndiaPincodesMapRef, PincodeMapData } from '@/components/IndiaPincodesMap';
@@ -3034,7 +3034,7 @@ const Index = () => {
                   onProcessingChange={handleUploadProcessing}
                   mode="districts"
                   templateCsvPath={getLayerTemplateUrl(getSubAdminLayer(subAdminLayerId), subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState)}
-                  googleSheetLink={getSubAdminLayer(subAdminLayerId).googleSheetLink}
+                  googleSheetLink={getLayerGoogleSheetLink(getSubAdminLayer(subAdminLayerId), subAdminSelectedState === ALL_INDIA_STATE ? undefined : subAdminSelectedState)}
                   geojsonPath={subAdminGeojsonUrl}
                   locationProp={getSubAdminLayer(subAdminLayerId).featureNameProp}
                   selectedState={subAdminSelectedState !== 'All India' ? subAdminSelectedState : undefined}
@@ -3469,10 +3469,10 @@ const Index = () => {
                   darkMode={darkMode}
                   boundaryColor={boundaryColor}
                   boundaryWidth={boundaryWidth}
-                  datasetIds={['villages-soi-points']}
+                  datasetIds={['villages-soi-points', 'villages-nwdp-points']}
                   selectedDatasetId="villages-soi-points"
                   mapLabel="Villages"
-                  heading="Village Map (LGD)"
+                  heading="Village Map"
                 />
               ) : (
                 <VillagePolygonMap

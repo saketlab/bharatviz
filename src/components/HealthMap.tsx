@@ -8,6 +8,7 @@ import type { BoundaryColor } from '@/lib/colorUtils';
 import type { PointFeature } from '@/components/IndiaDistrictsMap';
 import type { PointViewMode } from '@/components/DeckPointsLayer';
 import { useUrlState } from '@/hooks/useUrlState';
+import { NWDP_VILLAGE_COUNT, NWDP_VILLAGE_POINTS_URL } from '@/lib/geodataLayerConfig';
 
 // Stable identity: IndiaDistrictsMap memoises label geometry on `data`.
 const NO_DATA: Array<{ district: string; state: string; value: number }> = [];
@@ -159,6 +160,16 @@ const DATASETS: HealthDataset[] = [
     rows: '584,615', defaultRadius: 1,
     hiddenFromHealth: true,
     tooltipFields: ['district', 'state_name'],
+  },
+  {
+    id: 'villages-nwdp-points',
+    displayName: 'Villages (Survey of India, NWDP)',
+    parquetUrl: NWDP_VILLAGE_POINTS_URL,
+    latField: 'lat', lonField: 'lon',
+    labelField: 'village_name', colorField: undefined,
+    rows: NWDP_VILLAGE_COUNT.toLocaleString('en-US'), defaultRadius: 1,
+    hiddenFromHealth: true,
+    tooltipFields: ['district', 'state_name', 'population'],
   },
 ];
 

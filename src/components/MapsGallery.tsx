@@ -5,6 +5,8 @@ import cityMapping from '@/lib/city-mapping.json';
 import pincodeMapping from '@/lib/pincode-mapping.json';
 import historicalMapping from '@/lib/historical-mapping.json';
 import panchayatMapping from '@/lib/panchayat-mapping.json';
+import nwdpVillageMapping from '@/lib/nwdp-village-mapping.json';
+import { NWDP_VILLAGE_COUNT, NWDP_VILLAGE_POINTS_URL } from '@/lib/geodataLayerConfig';
 
 interface MapsGalleryProps {
   darkMode?: boolean;
@@ -184,6 +186,41 @@ const PANCHAYAT_ENTRIES: MapEntry[] = [
   },
 ];
 
+// Villages: per-state NWDP polygons, all-India point layers
+const NWDP_VILLAGE_SOURCE = 'Survey of India (NWDP)';
+const VILLAGE_ENTRIES: MapEntry[] = [
+  ...Object.values(nwdpVillageMapping.states).map(f => ({
+    id: `nwdp-villages-${f.slug}`,
+    level: 'Villages',
+    source: NWDP_VILLAGE_SOURCE,
+    year: 2025,
+    description: `Village boundaries for ${f.state_display_name} (${f.features.toLocaleString('en-IN')} villages)`,
+    geojsonUrl: f.url,
+    category: 'Sub-admin',
+    tab: 'sub-admin',
+  })),
+  {
+    id: 'villages-nwdp-points',
+    level: 'Points',
+    source: NWDP_VILLAGE_SOURCE,
+    year: 2025,
+    description: `${NWDP_VILLAGE_COUNT.toLocaleString('en-IN')} village points (one inside each NWDP village polygon) with district and population`,
+    parquetUrl: NWDP_VILLAGE_POINTS_URL,
+    category: 'Points',
+    tab: 'villages',
+  },
+  {
+    id: 'villages-soi-points',
+    level: 'Points',
+    source: 'LGD',
+    year: 2024,
+    description: '584,615 village points (centroids of LGD village polygons)',
+    parquetUrl: `${R2}/geoparquet/points/lgd_village_points.parquet`,
+    category: 'Points',
+    tab: 'villages',
+  },
+];
+
 // Historical district evolution, per year/tag and state.
 const historicalUrls = historicalMapping as Record<string, Record<string, string>>;
 const HISTORICAL_ENTRIES: MapEntry[] = Object.entries(historicalUrls).flatMap(([year, states]) =>
@@ -200,7 +237,7 @@ const HISTORICAL_ENTRIES: MapEntry[] = Object.entries(historicalUrls).flatMap(([
   }))
 );
 
-ALL_MAPS.push(...PANCHAYAT_ENTRIES, ...CITY_ENTRIES, ...PINCODE_ENTRIES, ...HISTORICAL_ENTRIES);
+ALL_MAPS.push(...PANCHAYAT_ENTRIES, ...VILLAGE_ENTRIES, ...CITY_ENTRIES, ...PINCODE_ENTRIES, ...HISTORICAL_ENTRIES);
 
 const CATEGORIES = ['All', 'Census', 'Official', 'Survey', 'Sub-admin', 'Electoral', 'Environment', 'Urban', 'Points', 'SHRUG', 'Health', 'Cities', 'Pincodes', 'Historical'];
 
