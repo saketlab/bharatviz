@@ -57,6 +57,7 @@ const IndiaCityMap = lazy(() => import('@/components/IndiaCityMap').then(m => ({
 const IndiaPincodesMap = lazy(() => import('@/components/IndiaPincodesMap').then(m => ({ default: m.IndiaPincodesMap })));
 const DistrictStats = lazy(() => import('@/components/DistrictStats').then(m => ({ default: m.DistrictStats })));
 const CityStats = lazy(() => import('@/components/CityStats').then(m => ({ default: m.CityStats })));
+const ByomMap = lazy(() => import('@/components/ByomMap').then(m => ({ default: m.ByomMap })));
 const HistoricalEvolution = lazy(() => import('@/components/HistoricalEvolution').then(m => ({ default: m.HistoricalEvolution })));
 const Credits = lazy(() => import('@/components/Credits'));
 const MCPDocs = lazy(() => import('@/components/MCPDocs'));
@@ -112,7 +113,7 @@ const Index = () => {
   const getTabFromPath = (pathname: string): string => {
     const path = pathname.replace(/^\/|\/$/g, '');
     if (path === 'compare' || path.startsWith('compare/')) return 'compare';
-    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'compare', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
+    const validTabs = ['states', 'districts', 'regions', 'state-districts', 'sub-admin', 'electoral', 'environment', 'urban', 'health', 'villages', 'cities', 'pincodes', 'compare', 'byom', 'district-stats', 'city-stats', 'evolution', 'census', 'help', 'credits', 'mcp', 'api', 'maps'];
     return validTabs.includes(path) ? path : 'states';
   };
 
@@ -1785,6 +1786,7 @@ const Index = () => {
     { value: 'cities', label: 'Cities' },
     { value: 'pincodes', label: 'Pincodes' },
     { value: 'compare', label: 'Compare' },
+    { value: 'byom', label: 'Your Map' },
   ];
   const TOOL_TABS: { value: string; label: string }[] = [
     { value: 'district-stats', label: 'District Stats' },
@@ -2129,6 +2131,16 @@ const Index = () => {
                 </div>
               </div>
             </div>
+          </TabPanel>
+
+          <TabPanel active={activeTab === 'byom'}>
+            <ByomMap
+              darkMode={darkMode}
+              boundaryColor={boundaryColor}
+              onBoundaryColorChange={setBoundaryColor}
+              boundaryWidth={boundaryWidth}
+              onBoundaryWidthChange={setBoundaryWidth}
+            />
           </TabPanel>
 
           <TabPanel active={activeTab === 'compare'}>

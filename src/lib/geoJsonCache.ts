@@ -37,6 +37,10 @@ export function clearCache() {
   cache.clear();
 }
 
+export function evictGeoJSON(path: string) {
+  cache.delete(path);
+}
+
 const inflight = new Map<string, Promise<unknown>>();
 
 // Concurrent callers share one request, which is forgotten once settled: Chrome fails a second

@@ -11,14 +11,11 @@ const PROXY_SERVICES = [
 const DIRECT_TIMEOUT = 10000;
 const PROXY_TIMEOUT = 30000;
 
-function createTimeoutSignal(timeoutMs: number): AbortSignal {
-  const controller = new AbortController();
-  setTimeout(() => controller.abort(), timeoutMs);
-  return controller.signal;
-}
-
+// timeout covers headers only; large bodies stream longer
 async function tryFetch(url: string, timeout: number): Promise<Response> {
-  const response = await fetch(url, { signal: createTimeoutSignal(timeout) });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
   if (!response.ok) {
     throw new Error(`${response.status} ${response.statusText}`);
   }

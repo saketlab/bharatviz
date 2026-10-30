@@ -57,13 +57,13 @@ function getPolygonCenter(geometry: { type: string; coordinates: number[][][] | 
   return d3.geoCentroid(geometry) as [number, number];
 }
 
-interface DistrictMapData {
+export interface DistrictMapData {
   state: string;
   district: string;
   value: number | string;
 }
 
-interface NAInfo {
+export interface NAInfo {
   states?: string[];
   districts?: Array<{ state: string; district: string }>;
   count: number;

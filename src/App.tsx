@@ -32,6 +32,7 @@ const App = () => (
         <Route path="/villages" element={<Index />} />
         <Route path="/compare" element={<Index />} />
         <Route path="/compare/:group" element={<Index />} />
+        <Route path="/byom" element={<Index />} />
         <Route path="/embed-demo" element={<EmbedDemo />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
