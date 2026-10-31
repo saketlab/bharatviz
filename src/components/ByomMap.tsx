@@ -103,8 +103,33 @@ async function loadGeometry(src: File | string) {
   return readGeoJSON(text);
 }
 
-const pickColumn = (columns: string[], patterns: RegExp[]) =>
-  patterns.map(p => columns.find(c => p.test(c))).find(Boolean);
+const STATE_HEADER = /state|st_?nm|^st_?name$/i;
+const UNIT_HEADER = /name|dist|^dt|s(ub_?)?dt|block|tehsil|taluk|mandal|village|ward|panchayat|constituency|^(ac|pc)_?n/i;
+const MAX_STATES = 40; // all states/UTs plus spelling variants
+const SAMPLE = 2000; // distinct counts only rank columns
+
+function detectColumns(features: Feature[], columns: string[]): { name: string; state: string } {
+  const step = Math.ceil(features.length / SAMPLE);
+  const sample = step > 1 ? features.filter((_, i) => i % step === 0) : features;
+  const stats = new Map(columns.map(c => {
+    const vals = sample.map(f => f.properties[c]).filter(v => v != null && v !== '');
+    const distinct = new Set(vals.map(String)).size;
+    const textual = vals.filter(v => typeof v === 'string' && isNaN(Number(v))).length > vals.length / 2;
+    return [c, { distinct, textual }];
+  }));
+  const s = (c: string) => stats.get(c)!;
+
+  const state = columns
+    .filter(c => STATE_HEADER.test(c) && s(c).distinct > 0 && s(c).distinct <= MAX_STATES)
+    .sort((a, b) => Number(s(b).textual) - Number(s(a).textual) || Number(/name/i.test(b)) - Number(/name/i.test(a)))[0];
+
+  // finest admin unit wins (most distinct values)
+  const name = columns
+    .filter(c => c !== state && !STATE_HEADER.test(c) && s(c).textual)
+    .sort((a, b) => Number(UNIT_HEADER.test(b)) - Number(UNIT_HEADER.test(a)) || s(b).distinct - s(a).distinct)[0];
+
+  return { name: name ?? columns.find(c => c !== state) ?? columns[0] ?? '', state: state ?? NO_STATE };
+}
 
 declare global {
   interface Window {
@@ -192,8 +217,10 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
   const [srcUrl, setSrcUrl] = useUrlState('src', '');
   const urlInputRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<{ name: string; features: Feature[]; columns: string[] } | null>(null);
-  const [nameCol, setNameCol] = useState('');
-  const [stateCol, setStateCol] = useState(NO_STATE);
+  const [nameCol, setNameCol] = useUrlState('name', '');
+  // empty until load() auto-picks
+  const [stateCol, setStateCol] = useUrlState('state', '');
+  const [colorCol, setColorCol] = useUrlState('col', '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sheet, setSheet] = useState<{ busy: boolean; link?: string; error?: string }>({ busy: false });
@@ -203,8 +230,9 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
   const [dataTitle, setDataTitle] = useState('');
   const [naInfo, setNAInfo] = useState<NAInfo | undefined>();
   const [categoryColors, setCategoryColors] = useState<CategoryColorMapping>({});
-  const [colorScale, setColorScale] = useState<ColorScale>('spectral');
-  const [invertColors, setInvertColors] = useState(false);
+  const [colorScale, setColorScale] = useUrlState<ColorScale>('colorScale', 'spectral');
+  const [invertParam, setInvertParam] = useUrlState('invertColors', '');
+  const invertColors = invertParam === 'true';
   const [hideNames, setHideNames] = useState(false);
   const [colorBarSettings, setColorBarSettings] = useState<ColorBarSettings>({
     isDiscrete: false, binCount: 5, customBoundaries: [], useCustomBoundaries: false,
@@ -219,8 +247,10 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
       const { features, columns } = await loadGeometry(src);
       const name = typeof src === 'string' ? src.split('/').pop() || src : src.name;
       setSource({ name, features, columns });
-      setNameCol(pickColumn(columns, [/^name$/i, /_name$/i, /name/i]) ?? columns[0] ?? '');
-      setStateCol(pickColumn(columns, [/^state_?name$/i, /^state$/i, /^st_nm$/i]) ?? NO_STATE);
+      const detected = detectColumns(features, columns);
+      if (!columns.includes(nameCol)) setNameCol(detected.name);
+      if (stateCol !== NO_STATE && !columns.includes(stateCol)) setStateCol(detected.state);
+      if (!columns.includes(colorCol)) setColorCol('');
       setHideNames(features.length > 500);
       resetData();
     } catch (e) {
@@ -236,7 +266,7 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
   }, []);
 
   const normalized = useMemo(() => {
-    if (!source || !nameCol) return null;
+    if (!source || !source.columns.includes(nameCol)) return null;
     const features = source.features.map(f => {
       const p = f.properties;
       const state = stateCol !== NO_STATE ? p[stateCol] : nameCol === 'state_name' ? p.state_name : NO_STATE_LABEL;
@@ -267,7 +297,13 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
   const templateUrl = useBlobUrl(templateCsv, 'text/csv');
   const demoUrl = useBlobUrl(demoCsv, 'text/csv');
 
-  const values = useMemo(() => mapData.map(d => d.value), [mapData]);
+  const columnData = useMemo(() => (colorCol && normalized ? normalized.features.map(f => {
+    const v = f.properties[colorCol];
+    return { state: f.properties.state_name, district: f.properties[nameCol] as string, value: v === '' || v === 'NA' ? null : v ?? null };
+  }) as DistrictMapData[] : null), [normalized, nameCol, colorCol]);
+  const shownData = columnData ?? mapData;
+
+  const values = useMemo(() => shownData.map(d => d.value), [shownData]);
   const dataType = useMemo(() => detectDataType(values), [values]);
   const categories = useMemo(() => getUniqueCategories(values), [values]);
 
@@ -281,6 +317,12 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
     const loaded = data.map(d => d.value);
     if (detectDataType(loaded) === 'categorical') setCategoryColors(generateDefaultCategoryColors(getUniqueCategories(loaded)));
   };
+
+  const handleCsvLoad: typeof handleDataLoad = (...args) => { setColorCol(''); handleDataLoad(...args); };
+
+  useEffect(() => {
+    if (columnData && dataType === 'categorical') setCategoryColors(generateDefaultCategoryColors(categories));
+  }, [columnData, dataType, categories]);
 
   const handleCreateSheet = async () => {
     setSheet({ busy: true });
@@ -308,10 +350,10 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
           <>
             <IndiaDistrictsMap
               ref={mapRef}
-              data={mapData}
+              data={shownData}
               colorScale={colorScale}
               invertColors={invertColors}
-              dataTitle={dataTitle}
+              dataTitle={columnData ? colorCol : dataTitle}
               showStateBoundaries={false}
               colorBarSettings={colorBarSettings}
               geojsonPath={geoUrl}
@@ -320,7 +362,7 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
               labelScale={0.7}
               dataType={dataType}
               categoryColors={categoryColors}
-              naInfo={naInfo}
+              naInfo={columnData ? undefined : naInfo}
               darkMode={darkMode}
               boundaryColor={boundaryColor}
               boundaryWidth={boundaryWidth}
@@ -333,7 +375,7 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
                 onExportSVG={() => mapRef.current?.exportSVG()}
                 onExportPDF={() => mapRef.current?.exportPDF()}
                 onCopyToClipboard={() => mapRef.current?.copyToClipboard()}
-                disabled={mapData.length === 0}
+                disabled={shownData.length === 0}
                 darkMode={darkMode}
               />
             </div>
@@ -409,6 +451,17 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
             </div>
 
             <div className="mb-5 space-y-2">
+              <Label className={labelClass}>Colour by column</Label>
+              <Select value={colorCol || NO_STATE} onValueChange={v => { if (v === NO_STATE) { setColorCol(''); resetData(); } else setColorCol(v); }}>
+                <SelectTrigger aria-label="Colour by column"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NO_STATE}>None (upload data below)</SelectItem>
+                  {columns.filter(c => c !== nameCol && c !== stateCol).map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="mb-5 space-y-2">
               <Label className={labelClass}>Data template</Label>
               <p className={`text-xs ${mutedText}`}>
                 {templateRows.length.toLocaleString('en-US')} rows, one per unique {stateCol !== NO_STATE ? 'state + ' : ''}{nameCol}. Fill in <code>value</code> and upload below.
@@ -439,7 +492,7 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
 
             <FileUpload
               key={geoUrl}
-              onDataLoad={handleDataLoad}
+              onDataLoad={handleCsvLoad}
               onProcessingChange={(active, message) => setProcessingMessage(active ? message ?? '' : null)}
               mode="districts"
               templateCsvPath={templateUrl}
@@ -453,7 +506,7 @@ export function ByomMap({ darkMode, boundaryColor, onBoundaryColorChange, bounda
                 selectedScale={colorScale}
                 onScaleChange={setColorScale}
                 invertColors={invertColors}
-                onInvertColorsChange={setInvertColors}
+                onInvertColorsChange={v => setInvertParam(v ? 'true' : '')}
                 hideDistrictNames={hideNames}
                 onHideDistrictNamesChange={setHideNames}
                 districtNamesLabel="Hide names"
